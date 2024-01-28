@@ -45,13 +45,66 @@ void skipblanks ()
           getchar();
     }
 
+// These functions are called from the parser driver in scanner.c
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
   {
+    tok.tokentype = IDENTIFIERTOK;
+    tok.basicdt = STRINGTYPE;
+
+    //loop through and get the identifier name
+    char *identifierName[16];
+    int i = 0;
+
+    while (peekchar() != EOF && CHARCLASS[peekchar()] == ALPHABETIC && i < 15)
+      {
+        identifierName[i] = getchar();
+        i++;
+      }
+
+    identifierName[i] = '\0';
+    tok.stringval = identifierName;
+
     }
 
 TOKEN getstring (TOKEN tok)
   {
+
+    tok.tokentype = STRINGTOK;
+    tok.basicdt = STRINGTYPE;
+
+    char *stringName[16];
+    int i = 0; 
+
+    while (peekchar() != EOF && CHARCLASS[peekchar()] == ALPHABETIC && i < 15)
+      {
+        curChar = getchar();
+        if (curChar == '\'')
+          {
+            if (peekchar() == '\'')
+              {
+                stringName[i] = curChar;
+                i++;
+                stringName[i] = curChar;
+                i++;
+                getchar();
+              }
+            else
+              {
+                break;
+              }
+          }
+        else
+          {
+            stringName[i] = curChar;
+            i++;
+          }
+      }
+
+    stringName[i] = '\0';
+    tok.stringval = stringName;
+
+
     }
 
 TOKEN special (TOKEN tok)
