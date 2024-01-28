@@ -26,8 +26,17 @@
 #include <string.h>
 #include "token.h"
 #include "lexan.h"
+#include <limits.h>
+#include <math.h>
+#include <float.h>
 
 extern int CHARCLASS[];
+char *reserved[] = {"array", "begin", "case", "const", "do", "downto", "else", "end", "file", "for", "function", "goto", "if", "label", "nil", "of", "packed", "procedure", "program", "record", "repeat", "set", "then", "type", "until", "var", "while", "with"};
+
+char *operators[] = {"+", "-", "*", "/", ":=", "=", "<>", "<", "<=", ">=", ">", "^", ".", "and", "or", "not", "div", "mod", "in"};
+
+char *delimiters[] = {",", ";", ":", "(", ")", "[", "]", ".."};
+
 
 /* This file will work as given with an input file consisting only
    of integers separated by blanks:
@@ -40,48 +49,124 @@ extern int CHARCLASS[];
 void skipblanks ()
   {
       int c;
-      while ((c = peekchar()) != EOF
-             && (c == ' ' || c == '\n' || c == '\t'))
+      while ((c = peekchar()) != EOF){
+
+        // {} comments
+        if (c == '{'){
+
+          //goes until close and then skips the closing bracket
+          while((c = peekchar()) != EOF && c != '}'){
+            getchar();
+          }
           getchar();
+
+        }
+
+        // (* *) comments
+        else if (c == '('){
+          if (peek2char() != EOF && peek2char() == '*'){
+
+            //skips opening
+            getchar();
+            getchar();
+
+            //goes until close and then skips the closing brackets
+            while((c = peekchar()) != EOF && c != '*' && peek2char() != EOF && peek2char() != ')'){
+              getchar();
+            }
+            getchar();
+            getchar();
+          }
+
+        }
+
+        //default skips
+        else if (c == ' ' || c == '\n' || c == '\t'){
+          getchar();
+        }
+
+        else{
+          break;
+        }
     }
+
+  }
+
+int isReserved(char *identifierName)
+  {
+    int i;
+    for (i = 0; i < 29; i++)
+      {
+        if (strcmp(identifierName, reserved[i]) == 0)
+          {
+            return i;
+          }
+      }
+    return -1;
+  }
 
 // These functions are called from the parser driver in scanner.c
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
   {
-    tok.tokentype = IDENTIFIERTOK;
-    tok.basicdt = STRINGTYPE;
+    // tok.tokentype = IDENTIFIERTOK;
+    // tok.basicdt = STRINGTYPE;
 
     //loop through and get the identifier name
-    char *identifierName[16];
+    char identifierName[16];
     int i = 0;
 
-    while (peekchar() != EOF && CHARCLASS[peekchar()] == ALPHABETIC && i < 15)
+    while (peekchar() != EOF && (CHARCLASS[peekchar()] == ALPHA || CHARCLASS[peekchar() == NUMERIC]) && i < 15)
       {
-        identifierName[i] = getchar();
+        char curChar = getchar();
+        identifierName[i] = curChar;
         i++;
       }
 
     identifierName[i] = '\0';
-    tok.stringval = identifierName;
+    // tok.stringval = identifierName;
+
+    //check if the identifier is a reserved word
+    int reservedIndex = isReserved(identifierName);
+    if (reservedIndex != -1)
+      {
+        tok->tokentype = RESERVED;
+        tok->whichval = reservedIndex + 1;
+        return tok;
+      }
+    
+    //if not a reserved word, check if it is a alphabetic operator
+    for (int j = 13; j < 19; j++){
+      if (strcmp(identifierName, operators[j]) == 0){
+        tok->tokentype = OPERATOR;
+        tok->whichval = j + 1;
+        return tok;
+      }
+    }
+
+    tok->tokentype = IDENTIFIERTOK;
+    strcpy(tok->stringval, identifierName);
+    return tok;
+
+
 
     }
 
 TOKEN getstring (TOKEN tok)
   {
 
-    tok.tokentype = STRINGTOK;
-    tok.basicdt = STRINGTYPE;
+    tok->tokentype = STRINGTOK;
+    tok->basicdt = STRINGTYPE;
 
-    char *stringName[16];
+    char stringName[16];
     int i = 0; 
 
-    while (peekchar() != EOF && CHARCLASS[peekchar()] == ALPHABETIC && i < 15)
+    while (peekchar() != EOF && CHARCLASS[peekchar()] == ALPHA && i < 15)
       {
-        curChar = getchar();
+        char curChar = getchar();
         if (curChar == '\'')
           {
-            if (peekchar() == '\'')
+            if (peekchar() != EOF && peekchar() == '\'')
               {
                 stringName[i] = curChar;
                 i++;
@@ -102,29 +187,227 @@ TOKEN getstring (TOKEN tok)
       }
 
     stringName[i] = '\0';
-    tok.stringval = stringName;
 
+    strcpy(tok->stringval, stringName);
+
+    return tok;
 
     }
 
 TOKEN special (TOKEN tok)
   {
-    }
+    int opIndex = 0;
+
+    char operatorName[3];
+    char curChar;
+
+    while(peekchar() != EOF && CHARCLASS[peekchar()] == SPECIAL)
+      {
+        curChar = getchar();
+        operatorName[opIndex] = curChar;
+        opIndex++;
+
+        if (CHARCLASS[peekchar()] == SPECIAL)
+          {
+            curChar = getchar();
+            operatorName[opIndex] = curChar;
+            opIndex++;
+          }
+
+        operatorName[opIndex] = '\0';
+
+
+        for (int i = 0; i < 13; i++)
+          {
+            if (strcmp(operatorName, operators[i]) == 0)
+              {
+                tok->tokentype = OPERATOR;
+                tok->whichval = i + 1;
+                return tok;
+              }
+          }
+
+        for (int i = 0; i < 8; i++){
+          if (strcmp(operatorName, delimiters[i]) == 0){
+            tok->tokentype = DELIMITER;
+            tok->whichval = i + 1;
+            return tok;
+          }
+        }
+      }
+    
+    return tok;
+  }
+
+TOKEN getRealTok(double val, TOKEN tok) {
+	tok->tokentype = NUMBERTOK;
+	tok->basicdt = REAL;
+	tok->realval = val;
+	return tok;
+}
+
+TOKEN handleRealError(TOKEN tok){
+	printf("Real number out of range \n");
+	return getRealTok(0.0, tok);
+}
+
+TOKEN returnRealTok(double real, TOKEN tok){
+	if (real > FLT_MAX || real < FLT_MIN) {
+		return handleRealError(tok);
+	} else {
+		return getRealTok(real, tok);
+	}
+}
+
+
 
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
-  { long num;
+
+  { 
+    	long num = 0, exponent = 0, expValue = 0;
+	double real = 0.0, decimal = 0.0, multiplier = 10.0;
+	int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0, intError = 0, floatError = 0;
+
+	while ((c = peekchar()) != EOF
+			&& (CHARCLASS[c] == NUMERIC))
+	{   
+		c = getchar();
+		charval = c - '0';
+
+		if ( num > INT_MAX ) {
+			exponent ++;
+			intError = 1;
+		} else {
+			num = num * 10 + charval;
+		}
+	
+	}
+
+	if ( num > INT_MAX ) {
+		exponent ++;
+		intError = 1;
+	} 
+
+	//The part after the decimal point
+	if(c == '.' && (d = peek2char()) != EOF && CHARCLASS[d] == NUMERIC) {
+		intError = 0;
+		dFlag = 1;
+		getchar();
+		while ((c = peekchar()) != EOF
+				&& (CHARCLASS[c] == NUMERIC)) {
+			c = getchar();
+			charval = c - '0';
+			decimal = decimal + ((double) charval / multiplier);
+			multiplier *= 10;
+		}	
+
+		real = (double) num + decimal;
+
+	}
+
+	//The exponent part
+	if(c == 'e') {
+		eFlag = 1;
+		getchar();
+		c = peekchar();
+		if (c == '-') {
+			negFlag = 1;
+			getchar();
+		} else if (c == '+') {
+			getchar();
+		}
+
+		while ((c = peekchar()) != EOF 
+				&& CHARCLASS[c] == NUMERIC) {	
+			c = getchar();
+			charval = c - '0';
+
+			if ( expValue > INT_MAX ){
+				continue ;
+			}
+			expValue = expValue * 10 + charval;
+		}
+
+	}
+
+	if (dFlag) {
+		if (eFlag) {
+			if (negFlag) {
+				exponent = exponent - expValue;
+				real = real / pow (10, exponent);
+			} else {
+				exponent = exponent + expValue;
+				real = real * pow (10, exponent);
+			}
+
+			return returnRealTok(real, tok);
+
+		} else {
+
+			return returnRealTok(real, tok);
+
+		}
+
+	}
+	
+	if (eFlag)  {
+		real = (double) num;
+		if (negFlag) {
+			exponent = exponent - expValue;
+			real = real / pow(10, exponent);
+		} else {
+			exponent = exponent + expValue;
+			real = real * pow(10, exponent);
+		}
+		return returnRealTok(real, tok);		
+	}
+    
+    
+    
+    
+    
+    /* long num;
     int  c, charval;
     num = 0;
-    while ( (c = peekchar()) != EOF
+    int exponent = 0;
+
+    while ((c = peekchar()) != EOF
             && CHARCLASS[c] == NUMERIC)
       {   c = getchar();
           charval = (c - '0');
-          num = num * 10 + charval;
+
+          if(num > (INT_MAX)){
+            exponent++;
+          }
+          else{
+            num = num * 10 + charval;
+          }
         }
+
+    if (num > INT_MAX){
+      exponent++;
+    }
+
+
+    if (c == '.')   
+      {   double d = num;
+          double power = 1.0;
+          while ( (c = peekchar()) != EOF
+                  && CHARCLASS[c] == NUMERIC)
+            {   c = getchar();
+                charval = (c - '0');
+                d = d * 10.0 + charval;
+                power *= 10.0;
+              }
+          tok->tokentype = NUMBERTOK;
+          tok->basicdt = REAL;
+          tok->realval = d / power;
+        }
+
     tok->tokentype = NUMBERTOK;
     tok->basicdt = INTEGER;
     tok->intval = num;
-    return (tok);
+    return (tok); */
   }
 
