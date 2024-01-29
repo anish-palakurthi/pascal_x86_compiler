@@ -115,6 +115,11 @@ int isInArray(char *arr[], int size, char word[]) {
   return -1;
 }
 
+TOKEN populateToken(TOKEN tok, int val, int ttype) {
+  tok->tokentype = ttype;
+  tok->whichval = val;
+  return tok;
+}
 
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
@@ -139,19 +144,13 @@ TOKEN identifier (TOKEN tok)
   int res = isInArray(operators, 19, word);
 
   if (res != -1) {
-    tok->tokentype = OPERATOR;
-    tok->whichval = res + 1;
-    return tok;
+    return populateToken(tok, res + 1, OPERATOR);
   }
 
   res = isInArray(reserved, 29, word);
   if (res != -1) {
-    tok->tokentype = RESERVED;
-    tok->whichval = res + 1;
-    return tok;
+    return populateToken(tok, res + 1, RESERVED);
   }
-
-
 
 
   tok->tokentype = IDENTIFIERTOK;
@@ -215,33 +214,29 @@ TOKEN special (TOKEN tok)
     res = isInArray(operators, 19, oper);
     if (res != -1) {
       getchar();
-      tok->tokentype = OPERATOR;
-      tok->whichval = res + 1;
-      return tok;
+      return populateToken(tok, res + 1, OPERATOR);
+
     }
 		
     res = isInArray(delimiters, 8, oper);
     if (res != -1) {
       getchar();
-      tok->tokentype = DELIMITER;
-      tok->whichval = res + 1;
-      return tok;
+      return populateToken(tok, res + 1, DELIMITER);
+
     }
 		
 		oper[size - 1] = '\0';
 
     res = isInArray(operators, 19, oper);
     if (res != -1) {
-      tok->tokentype = OPERATOR;
-      tok->whichval = res + 1;
-      return tok;
+      return populateToken(tok, res + 1, OPERATOR);
+
     }
 
     res = isInArray(delimiters, 8, oper);
     if (res != -1) {
-      tok->tokentype = DELIMITER;
-      tok->whichval = res + 1;
-      return tok;
+      return populateToken(tok, res + 1, DELIMITER);
+
     }
 
 	}
