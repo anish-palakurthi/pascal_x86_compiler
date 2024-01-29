@@ -51,18 +51,14 @@ a	if ( num > INT_MAX ) {
    12345 123    345  357
  */
 extern int CHARCLASS[];
-char* operators[] = { "+", "-", "*", "/", ":=", "=", "<>", "<",
-	"<=", ">=", ">", "^", ".", "and", "or", "not",
-	"div", "mod", "in" };
 
-char* delimiters[] = { ",", ";", ":", "(", ")", "[", "]", ".."};
 
-char* reservedWords[] = { "array", "begin", "case", "const", "do",
-	"downto", "else", "end", "file", "for", 
-	"function", "goto", "if", "label", "nil", 
-	"of", "packed", "procedure", "program", "record",
-	"repeat", "set", "then", "to", "type", "until",
-	"var", "while", "with"};
+extern int CHARCLASS[];
+char *reserved[] = { "array", "begin", "case", "const", "do", "downto", "else", "end", "file", "for",  "function", "goto", "if", "label", "nil", "of", "packed", "procedure", "program", "record", "repeat", "set", "then", "to", "type", "until", "var", "while", "with"};
+
+char *operators[] = { "+", "-", "*", "/", ":=", "=", "<>", "<", "<=", ">=", ">", "^", ".", "and", "or", "not", "div", "mod", "in" };  
+
+char *delimiters[] = { ",", ";", ":", "(", ")", "[", "]", ".."};
 
 
 
@@ -154,7 +150,7 @@ TOKEN identifier (TOKEN tok)
 
 	for (i = 0; i < 29; i++)
 	{
-		if (strcmp(word, reservedWords[i]) == 0)
+		if (strcmp(word, reserved[i]) == 0)
 		{
 			return getReservedWordTok(i + 1, tok);
 		}
