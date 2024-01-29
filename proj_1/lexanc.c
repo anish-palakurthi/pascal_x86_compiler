@@ -187,10 +187,19 @@ TOKEN getstring (TOKEN tok)
 	return tok;
 }
 
+int isInArray(char *arr[], int size, char word[]) {
+  for (int i = 0; i < size; i++) {
+    if (strcmp(arr[i], word) == 0) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 TOKEN special (TOKEN tok)
 {
-	int c, d, size = 0, flag = 0, val = 0, i;
+	int c, d, size = 0, res = -1;
+  int i = 0;
 	char oper[3];
 
 	if ( (c = peekchar()) != EOF
@@ -205,60 +214,43 @@ TOKEN special (TOKEN tok)
 		
 		oper[size] = '\0';
 
-		for(i = 4; i < 11; i ++){
-			if(strcmp(oper, operators[i]) == 0) {
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 1) {
-			getchar();
+    res = isInArray(operators, 19, oper);
+    if (res != -1) {
+      getchar();
       tok->tokentype = OPERATOR;
-      tok->whichval = i + 1;
+      tok->whichval = res + 1;
       return tok;
-		} 
+    }
 		
-		for(i = 0; i < 8; i ++){
-			if(strcmp(oper, delimiters[i]) == 0) {
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 1) {
-			getchar();
-			tok->tokentype = DELIMITER;
-      tok->whichval = i + 1;
+    res = isInArray(delimiters, 8, oper);
+    if (res != -1) {
+      getchar();
+      tok->tokentype = DELIMITER;
+      tok->whichval = res + 1;
       return tok;
-		}
+    }
 		
 		oper[size - 1] = '\0';
 
-		for(i = 0; i < 19; i ++){
-			if(strcmp(oper, operators[i]) == 0) {
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 1) {
+    res = isInArray(operators, 19, oper);
+    if (res != -1) {
       tok->tokentype = OPERATOR;
-      tok->whichval = i + 1;
+      tok->whichval = res + 1;
       return tok;
-		} 
-		
-		for(i = 0; i < 8; i ++){
-			if(strcmp(oper, delimiters[i]) == 0) {
-				flag = 1;
-				break;
-			}
-		}
-		if (flag == 1) {
-			tok->tokentype = DELIMITER;
-      tok->whichval = i + 1;
+    }
+
+    res = isInArray(delimiters, 8, oper);
+    if (res != -1) {
+      tok->tokentype = DELIMITER;
+      tok->whichval = res + 1;
       return tok;
-		}
+    }
+
 	}
 	
 }
+
+
 
 TOKEN handleRealError(TOKEN tok){
 	printf("Floating number out of range\n");
