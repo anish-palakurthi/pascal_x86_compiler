@@ -106,7 +106,14 @@ void skipblanks ()
 	}
 }
 
-
+int isInArray(char *arr[], int size, char word[]) {
+  for (int i = 0; i < size; i++) {
+    if (strcmp(arr[i], word) == 0) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 
 /* Get identifiers and reserved words */
@@ -129,23 +136,21 @@ TOKEN identifier (TOKEN tok)
 
 	word[length] = '\0';
 
-	for (int i = 13; i < 19 ; i++)
-	{
-		if (strcmp(word, operators[i]) == 0)
-		{
-			tok->tokentype = OPERATOR;
-      tok->whichval = i + 1;
-      return tok;
-		}
-	for (int i = 0; i < 29; i++)
-	{
-		if (strcmp(word, reserved[i]) == 0)
-		{
-      tok->tokentype = RESERVED;
-      tok->whichval = i + 1;
-      return tok;
-		}
-	}
+  int res = isInArray(operators, 19, word);
+
+  if (res != -1) {
+    tok->tokentype = OPERATOR;
+    tok->whichval = res + 1;
+    return tok;
+  }
+
+  res = isInArray(reserved, 29, word);
+  if (res != -1) {
+    tok->tokentype = RESERVED;
+    tok->whichval = res + 1;
+    return tok;
+  }
+
 
 
 
@@ -154,7 +159,7 @@ TOKEN identifier (TOKEN tok)
 	return tok;
   
 }
-}
+
 
 TOKEN getstring (TOKEN tok)
 {
@@ -187,14 +192,7 @@ TOKEN getstring (TOKEN tok)
 	return tok;
 }
 
-int isInArray(char *arr[], int size, char word[]) {
-  for (int i = 0; i < size; i++) {
-    if (strcmp(arr[i], word) == 0) {
-      return i;
-    }
-  }
-  return -1;
-}
+
 
 TOKEN special (TOKEN tok)
 {
