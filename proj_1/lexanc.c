@@ -265,6 +265,8 @@ TOKEN number (TOKEN tok)
     long exponent = 0, expValue = 0;
     int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0;
   
+
+    // The part before the decimal point
     while ((c = peekchar()) != EOF
             && (CHARCLASS[c] == NUMERIC))
     {   
@@ -273,8 +275,13 @@ TOKEN number (TOKEN tok)
         num = num * 10 + charval;
     }
 
+
+
+
+
+
     // The part after the decimal point
-    if(c == '.' && (d = peek2char()) != EOF && CHARCLASS[d] == NUMERIC) {
+    if (c == '.' && (CHARCLASS[peek2char()] == NUMERIC)) {
         dFlag = 1;
         getchar();
         while ((c = peekchar()) != EOF
@@ -307,26 +314,24 @@ TOKEN number (TOKEN tok)
 			c = getchar();
 			charval = c - '0';
 
-			if ( expValue > INT_MAX ){
-				continue ;
+			if (expValue > INT_MAX ){
+				continue;
 			}
 			expValue = expValue * 10 + charval;
 		}
 
-    if (negFlag){
-      expValue = -expValue;
-    
-    }
+
 	}
 
+
+  //Putting it together
 	if (dFlag) {
 		if (eFlag) {
 			if (negFlag) {
-				exponent = exponent - expValue;
-				real = real / pow (10, exponent);
-			} else {
-				exponent = exponent + expValue;
-				real = real * pow (10, exponent);
+				real = real / pow (10, expValue);
+			} 
+      else {
+				real = real * pow (10, expValue);
 			}
 
 			return returnRealTok(real, tok);
@@ -342,11 +347,9 @@ TOKEN number (TOKEN tok)
 	if (eFlag)  {
 		real = (double) num;
 		if (negFlag) {
-			exponent = exponent - expValue;
-			real = real / pow(10, exponent);
+			real = real / pow(10, expValue);
 		} else {
-			exponent = exponent + expValue;
-			real = real * pow(10, exponent);
+			real = real * pow(10, expValue);
 		}
 		return returnRealTok(real, tok);		
 	}
