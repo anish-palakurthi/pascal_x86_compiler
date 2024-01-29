@@ -353,7 +353,7 @@ TOKEN number (TOKEN tok)
 		}
 		return returnRealTok(real, tok);		
 	}
-
+ 
 
 	if (num > INT_MAX) {
     printf("Integer number out of range\n");
