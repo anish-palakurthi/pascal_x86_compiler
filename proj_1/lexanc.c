@@ -275,7 +275,12 @@ TOKEN returnRealTok(double real, TOKEN tok){
 	}
 }
 
-
+int shortenInteger(long num) {
+  while (num > INT_MAX) {
+    num = num / 10;
+  }
+  return num;
+}
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
@@ -289,13 +294,13 @@ TOKEN number (TOKEN tok)
 	{   
 		c = getchar();
 		charval = c - '0';
-    excess = 0;
+    // excess = 0;
 		if (num * 10 + charval > INT_MAX ) {
 			exponent ++;
 			intError = 1;
-      printf("Integer number out of range\n");
-      excess = 1;
-      break;
+      // printf("Integer number out of range\n");
+      // excess = 1;
+      // break;
 
 		} else {
 			num = num * 10 + charval;
@@ -303,15 +308,15 @@ TOKEN number (TOKEN tok)
 	
 	}
 
-  if (excess == 1) {
-    while ((c = peekchar()) != EOF
-        && (CHARCLASS[c] == NUMERIC))
-    {   
-      c = getchar();
-    }
-    return getIntegerTok(num, tok);
+  // if (excess == 1) {
+  //   while ((c = peekchar()) != EOF
+  //       && (CHARCLASS[c] == NUMERIC))
+  //   {   
+  //     c = getchar();
+  //   }
+  //   return getIntegerTok(num, tok);
 
-  }
+  // }
 
 	if ( num > INT_MAX ) {
 		exponent ++;
@@ -399,8 +404,9 @@ TOKEN number (TOKEN tok)
 
 	if (intError) {
 		printf("Integer number out of range\n");
-		return getIntegerTok(0, tok);
+		return getIntegerTok(shortenInteger(num), tok);
 	} else {
 		return getIntegerTok(num, tok);
 	}
 }
+
