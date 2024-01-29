@@ -24,7 +24,7 @@ tokentype:  1  which:    2            ;
 Integer number out of range
 tokentype:  5  type:     0    214748364
 Integer number out of range
-tokentype:  5  type:     0    999999999
+tokentype:  5  type:     0   1000000000
 tokentype:  0  which:    2            -
 tokentype:  3  value:                 x
 tokentype:  1  which:    2            ;
@@ -52,11 +52,10 @@ tokentype:  5  type:     1 3.141593e+00
 tokentype:  5  type:     1 3.141593e+00
 tokentype:  5  type:     1 3.141593e+00
 tokentype:  5  type:     1 3.141593e+00
-tokentype:  5  type:     1 3.141593e-04
-tokentype:  5  type:     1 3.141593e-32
-Floating number out of range
-tokentype:  5  type:     1 0.000000e+00
-tokentype:  5  type:     1 3.141593e+08
+tokentype:  5  type:     1 3.141593e+00
+tokentype:  5  type:     1 3.141593e+00
+tokentype:  5  type:     1 3.141593e+00
+tokentype:  5  type:     1 3.141593e+23
 tokentype:  5  type:     1 3.141593e-30
 tokentype:  5  type:     1 3.141593e-37
 Floating number out of range

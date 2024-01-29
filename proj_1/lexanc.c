@@ -284,61 +284,34 @@ int shortenInteger(long num) {
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
-	long num = 0, exponent = 0, expValue = 0;
-	double real = 0.0, decimal = 0.0, multiplier = 10.0;
-	int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0, intError = 0, floatError = 0;
-  int excess = 0;
+    double num = 0.0, real = 0.0, decimal = 0.0, multiplier = 10.0;
+    long exponent = 0, expValue = 0;
+    int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0;
+  
+    while ((c = peekchar()) != EOF
+            && (CHARCLASS[c] == NUMERIC))
+    {   
+        c = getchar();
+        charval = c - '0';
+        num = num * 10 + charval;
+    }
 
-	while ((c = peekchar()) != EOF
-			&& (CHARCLASS[c] == NUMERIC))
-	{   
-		c = getchar();
-		charval = c - '0';
-    // excess = 0;
-		if (num * 10 + charval > INT_MAX ) {
-			exponent ++;
-			intError = 1;
-      // printf("Integer number out of range\n");
-      // excess = 1;
-      // break;
+    // The part after the decimal point
+    if(c == '.' && (d = peek2char()) != EOF && CHARCLASS[d] == NUMERIC) {
+        dFlag = 1;
+        getchar();
+        while ((c = peekchar()) != EOF
+                && (CHARCLASS[c] == NUMERIC)) {
+            c = getchar();
+            charval = c - '0';
+            decimal = decimal + ((double) charval / multiplier);
+            multiplier *= 10;
+        }   
 
-		} else {
-			num = num * 10 + charval;
-		}
-	
-	}
-
-  // if (excess == 1) {
-  //   while ((c = peekchar()) != EOF
-  //       && (CHARCLASS[c] == NUMERIC))
-  //   {   
-  //     c = getchar();
-  //   }
-  //   return getIntegerTok(num, tok);
-
-  // }
-
-	if ( num > INT_MAX ) {
-		exponent ++;
-		intError = 1;
-	} 
-
-	//The part after the decimal point
-	if(c == '.' && (d = peek2char()) != EOF && CHARCLASS[d] == NUMERIC) {
-		intError = 0;
-		dFlag = 1;
-		getchar();
-		while ((c = peekchar()) != EOF
-				&& (CHARCLASS[c] == NUMERIC)) {
-			c = getchar();
-			charval = c - '0';
-			decimal = decimal + ((double) charval / multiplier);
-			multiplier *= 10;
-		}	
-
-		real = (double) num + decimal;
-
-	}
+        real = num + decimal;
+        // printf("Real value: %f\n", real);
+    }
+  
 
 	//The exponent part
 	if(c == 'e') {
@@ -402,11 +375,10 @@ TOKEN number (TOKEN tok)
 	}
 
 
-	if (intError) {
-		printf("Integer number out of range\n");
-		return getIntegerTok(shortenInteger(num), tok);
-	} else {
-		return getIntegerTok(num, tok);
-	}
+	if (num > INT_MAX) {
+    printf("Integer number out of range\n");
+  }
+  return getIntegerTok(shortenInteger(num), tok);
+
 }
 
