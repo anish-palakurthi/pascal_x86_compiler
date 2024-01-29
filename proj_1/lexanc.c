@@ -1,10 +1,3 @@
-/* lex1.c         14 Feb 01; 31 May 12       */
-
-/*
-Name: S. Ram Janarthana Raja	
-UT EID: rs53992
-*/
-
 
 /* This file contains code stubs for the lexical analyzer.
    Rename this file to be lexanc.c and fill in the stubs.    */
@@ -113,10 +106,13 @@ void skipblanks ()
 	}
 }
 
+
+
+
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
 {
-	int curChar;
+  int curChar;
   int length = 0;
 	char word[16];
 	while ( (curChar = peekchar()) != EOF
@@ -126,10 +122,21 @@ TOKEN identifier (TOKEN tok)
 		word[length] = curChar;
 		length++;
 	}
+  while ( (curChar = peekchar()) != EOF
+			&& (CHARCLASS[curChar] == ALPHA || CHARCLASS[curChar] == NUMERIC)){
+        getchar();
+      }
 
 	word[length] = '\0';
 
-
+	for (int i = 13; i < 19 ; i++)
+	{
+		if (strcmp(word, operators[i]) == 0)
+		{
+			tok->tokentype = OPERATOR;
+      tok->whichval = i + 1;
+      return tok;
+		}
 	for (int i = 0; i < 29; i++)
 	{
 		if (strcmp(word, reserved[i]) == 0)
@@ -140,19 +147,13 @@ TOKEN identifier (TOKEN tok)
 		}
 	}
 
-	for (int i = 13; i < 19 ; i++)
-	{
-		if (strcmp(word, operators[i]) == 0)
-		{
-			tok->tokentype = OPERATOR;
-      tok->whichval = i + 1;
-      return tok;
-		}
-	}
+
 
   tok->tokentype = IDENTIFIERTOK;
 	strcpy(tok->stringval, word);
 	return tok;
+  
+}
 }
 
 TOKEN getstring (TOKEN tok)
@@ -386,4 +387,3 @@ TOKEN number (TOKEN tok)
   
 
 }
-
