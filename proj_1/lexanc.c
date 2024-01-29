@@ -193,7 +193,7 @@ TOKEN special (TOKEN tok)
 	int c, d, size = 0, flag = 0, val = 0, i;
 	char oper[3];
 
-	while ( (c = peekchar()) != EOF
+	if ( (c = peekchar()) != EOF
 			&& CHARCLASS[c] == SPECIAL) {
 		c = getchar();	
 		oper[size] = c;
@@ -205,7 +205,7 @@ TOKEN special (TOKEN tok)
 		
 		oper[size] = '\0';
 
-		for(i = 0; i < 19; i ++){
+		for(i = 4; i < 11; i ++){
 			if(strcmp(oper, operators[i]) == 0) {
 				flag = 1;
 				break;
