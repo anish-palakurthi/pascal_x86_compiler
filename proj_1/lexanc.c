@@ -113,49 +113,9 @@ void skipblanks ()
 	}
 }
 
-TOKEN getReservedWordTok(int val, TOKEN tok) {
-	tok->tokentype = RESERVED;
-	tok->whichval = val;
-	return tok;
-}
 
-TOKEN getIdentifierTok(char word[], TOKEN tok) {
-	tok->tokentype = IDENTIFIERTOK;
-	strcpy(tok->stringval, word);
-	return tok;
-}
 
-TOKEN getDelimiterTok(int val, TOKEN tok) {
-	tok->tokentype = DELIMITER;
-	tok->whichval = val;
-	return tok;
-}
 
-TOKEN getOperatorTok(int val, TOKEN tok) {
-	tok->tokentype = OPERATOR;
-	tok->whichval = val;
-	return tok;
-}
-
-TOKEN getStringTok(char word[], TOKEN tok) {
-	tok->tokentype = STRINGTOK;
-	strcpy(tok->stringval, word);
-	return tok;
-} 
-
-TOKEN getIntegerTok(int val, TOKEN tok) {
-	tok->tokentype = NUMBERTOK;
-	tok->basicdt = INTEGER;
-	tok->intval = val;
-	return tok;
-}
-
-TOKEN getRealTok(double val, TOKEN tok) {
-	tok->tokentype = NUMBERTOK;
-	tok->basicdt = REAL;
-	tok->realval = val;
-	return tok;
-}
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
 {
@@ -179,7 +139,9 @@ TOKEN identifier (TOKEN tok)
 	{
 		if (strcmp(word, reserved[i]) == 0)
 		{
-			return getReservedWordTok(i + 1, tok);
+      tok->tokentype = RESERVED;
+      tok->whichval = i + 1;
+      return tok;
 		}
 	}
 
@@ -187,11 +149,15 @@ TOKEN identifier (TOKEN tok)
 	{
 		if (strcmp(word, operators[i]) == 0)
 		{
-			return getOperatorTok(i + 1, tok);
+			tok->tokentype = OPERATOR;
+      tok->whichval = i + 1;
+      return tok;
 		}
 	}
 
-	return getIdentifierTok(word, tok); 
+  tok->tokentype = IDENTIFIERTOK;
+	strcpy(tok->stringval, word);
+	return tok;
 }
 
 TOKEN getstring (TOKEN tok)
@@ -216,7 +182,9 @@ TOKEN getstring (TOKEN tok)
 		word[15] = '\0';
 	else
 		word[size] = '\0';
-	return getStringTok(word, tok);	
+  tok->tokentype = STRINGTOK;
+	strcpy(tok->stringval, word);
+	return tok;
 
 }
 
@@ -246,7 +214,9 @@ TOKEN special (TOKEN tok)
 		}
 		if (flag == 1) {
 			getchar();
-			return getOperatorTok(i + 1, tok);
+      tok->tokentype = OPERATOR;
+      tok->whichval = i + 1;
+      return tok;
 		} 
 		
 		for(i = 0; i < 8; i ++){
@@ -257,7 +227,9 @@ TOKEN special (TOKEN tok)
 		}
 		if (flag == 1) {
 			getchar();
-			return getDelimiterTok(i + 1, tok);
+			tok->tokentype = DELIMITER;
+      tok->whichval = i + 1;
+      return tok;
 		}
 		
 		oper[size - 1] = '\0';
@@ -269,7 +241,9 @@ TOKEN special (TOKEN tok)
 			}
 		}
 		if (flag == 1) {
-			return getOperatorTok(i + 1, tok);
+      tok->tokentype = OPERATOR;
+      tok->whichval = i + 1;
+      return tok;
 		} 
 		
 		for(i = 0; i < 8; i ++){
@@ -279,7 +253,9 @@ TOKEN special (TOKEN tok)
 			}
 		}
 		if (flag == 1) {
-			return getDelimiterTok(i + 1, tok);
+			tok->tokentype = DELIMITER;
+      tok->whichval = i + 1;
+      return tok;
 		}
 	}
 	
@@ -287,14 +263,20 @@ TOKEN special (TOKEN tok)
 
 TOKEN handleRealError(TOKEN tok){
 	printf("Floating number out of range\n");
-	return getRealTok(0.0, tok);
+  tok->tokentype = NUMBERTOK;
+	tok->basicdt = REAL;
+	tok->realval = 0.0;
+	return tok;
 }
 
 TOKEN returnRealTok(double real, TOKEN tok){
 	if (real > FLT_MAX || real < FLT_MIN) {
 		return handleRealError(tok);
 	} else {
-		return getRealTok(real, tok);
+  tok->tokentype = NUMBERTOK;
+	tok->basicdt = REAL;
+	tok->realval = real;
+	return tok;
 	}
 }
 
@@ -402,7 +384,11 @@ TOKEN number (TOKEN tok)
 	if (num > INT_MAX) {
     printf("Integer number out of range\n");
   }
-  return getIntegerTok(shortenInteger(num), tok);
+  tok->tokentype = NUMBERTOK;
+	tok->basicdt = INTEGER;
+	tok->intval = shortenInteger(num);
+	return tok;
+  
 
 }
 
