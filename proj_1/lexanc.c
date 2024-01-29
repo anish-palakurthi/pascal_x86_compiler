@@ -1,32 +1,25 @@
+/* lex1.c         14 Feb 01; 31 May 12; 11 Jan 18; 20 Jan 24       */
 
 /* This file contains code stubs for the lexical analyzer.
    Rename this file to be lexanc.c and fill in the stubs.    */
 
-/* Copyright (c) 2001 Gordon S. Novak Jr. and
+/* Copyright (c) 2024 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
 /*
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-utput);
 
-   GNU General Public License for more details.
-a	if ( num > INT_MAX ) {
-			exponent ++;
-			intError = 1;
-		} if ( num > INT_MAX ) {
-			exponent ++;
-			intError = 1;
-		} 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -37,12 +30,7 @@ a	if ( num > INT_MAX ) {
 #include "token.h"
 #include "lexan.h"
 
-/* This file will work as given with an input file consisting only
-   of integers separated by blanks:
-   make lex1
-   lex1
-   12345 123    345  357
- */
+
 extern int CHARCLASS[];
 
 
@@ -195,48 +183,46 @@ TOKEN getstring (TOKEN tok)
 
 TOKEN special (TOKEN tok)
 {
-	int c, d, size = 0, res = -1;
-  int i = 0;
-	char oper[3];
+	int firstChar;
+  
+	char opString[3];
 
-	if ( (c = peekchar()) != EOF
-			&& CHARCLASS[c] == SPECIAL) {
-		c = getchar();	
-		oper[size] = c;
-		size ++;
-
-		d = peekchar();
-		oper[size] = d;	
-		size ++;
+	if ((firstChar = peekchar()) != EOF
+			&& CHARCLASS[firstChar] == SPECIAL) {
+    
+    int length = 0, res = -1;
+		firstChar = getchar();	
+		int secondChar = peekchar();
+		opString[length] = firstChar;
+    length++;
+		opString[length] = secondChar;	
+		length ++;
 		
-		oper[size] = '\0';
+		opString[length] = '\0';
 
-    res = isInArray(operators, 19, oper);
-    if (res != -1) {
-      getchar();
-      return populateToken(tok, res + 1, OPERATOR);
-
-    }
-		
-    res = isInArray(delimiters, 8, oper);
+    res = isInArray(delimiters, 8, opString);
     if (res != -1) {
       getchar();
       return populateToken(tok, res + 1, DELIMITER);
-
     }
-		
-		oper[size - 1] = '\0';
 
-    res = isInArray(operators, 19, oper);
+    res = isInArray(operators, 19, opString);
     if (res != -1) {
+      getchar();
       return populateToken(tok, res + 1, OPERATOR);
-
     }
+	
+		opString[length - 1] = '\0';
 
-    res = isInArray(delimiters, 8, oper);
+
+    res = isInArray(delimiters, 8, opString);
     if (res != -1) {
       return populateToken(tok, res + 1, DELIMITER);
+    }
 
+    res = isInArray(operators, 19, opString);
+    if (res != -1) {
+      return populateToken(tok, res + 1, OPERATOR);
     }
 
 	}
@@ -270,6 +256,7 @@ int shortenInteger(long num) {
   }
   return num;
 }
+
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
