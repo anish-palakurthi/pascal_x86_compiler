@@ -252,15 +252,15 @@ TOKEN returnRealTok(double real, TOKEN tok){
 
 int shortenInteger(long num) {
   while (num > INT_MAX) {
-    num = num / 10;
-  }
+        num /= 10;
+    }
   return num;
 }
 
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
-    
+    long numInt = 0;
     double num = 0.0, real = 0.0, decimal = 0.0, multiplier = 10.0;
     long exponent = 0, expValue = 0;
     int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0;
@@ -272,7 +272,9 @@ TOKEN number (TOKEN tok)
     {   
         c = getchar();
         charval = c - '0';
+        numInt = numInt * 10 + charval;
         num = num * 10 + charval;
+
     }
 
 
@@ -294,7 +296,10 @@ TOKEN number (TOKEN tok)
 
         real = num + decimal;
         // printf("Real value: %f\n", real);
+    }else{
+      
     }
+
   
 
 	//The exponent part
@@ -345,7 +350,7 @@ TOKEN number (TOKEN tok)
 	}
 	
 	if (eFlag)  {
-		real = (double) num;
+		real = (double) numInt;
 		if (negFlag) {
 			real = real / pow(10, expValue);
 		} else {
@@ -355,8 +360,8 @@ TOKEN number (TOKEN tok)
 	}
  
 
-	if (num > INT_MAX) {
-    printf("Integer number out of range\n");
+	if (numInt > INT_MAX) {
+    printf("Integer number out of range: %ld\n", numInt);
   }
   tok->tokentype = NUMBERTOK;
 	tok->basicdt = INTEGER;
