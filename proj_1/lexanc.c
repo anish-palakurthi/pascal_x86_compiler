@@ -284,6 +284,7 @@ int shortenInteger(long num) {
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
+    
     double num = 0.0, real = 0.0, decimal = 0.0, multiplier = 10.0;
     long exponent = 0, expValue = 0;
     int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0;
