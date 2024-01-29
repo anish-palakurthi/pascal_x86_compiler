@@ -65,22 +65,49 @@ char *delimiters[] = { ",", ";", ":", "(", ")", "[", "]", ".."};
 /* Skip blanks and whitespace.  Expand this function to skip comments too. */
 void skipblanks ()
 {
-	int c, d;
-	while ((c = peekchar()) != EOF ){
-		if (c == ' ' || c == '\n' || c == '\t') {
+  
+	int firstChar, secondChar;
+
+  // Skip blanks, tabs, newlines, and comments (both kinds)
+	while ((firstChar = peekchar()) != EOF ){
+
+    //Single character skip
+		if (firstChar == ' ' || firstChar == '\n' || firstChar == '\t') {
+
+      //Consume single character
 			getchar();
-		} else if (c == '{'){
-			while ((c = peekchar()) != EOF && (c != '}'))
+		} 
+    //Skips comments of (* ... *) type when firstChar and secondChar match opening pattern
+    else if (firstChar == '(' && (secondChar = peek2char()) == '*' && secondChar != EOF){
+			
+      //Consume openers
+      getchar();
+			getchar(); 
+
+      //Skip until closing pattern is found
+			while ((firstChar = peekchar()) !=  EOF && (secondChar = peek2char()) != EOF && (firstChar != '*' || secondChar != ')')){
+          getchar();
+      }
+
+      //Consume closers
+			getchar();
+			getchar();  
+		} 
+
+    //Skips comments of { ... } type when firstChar matches opening pattern
+    else if (firstChar == '{'){
+
+      //Skips until closing pattern is found
+			while ((firstChar = peekchar()) != EOF && (firstChar != '}')){
 				getchar();
+      }
+
+      //Consume closer
 			getchar();
-		} else if (c == '(' && (d = peek2char()) != EOF && d == '*'){
-			getchar();
-			getchar();  //Skip over '(' and '*'
-			while ((c = peekchar()) !=  EOF && (d = peek2char()) != EOF && !(c == '*' && d== ')'))
-				getchar();
-			getchar();
-			getchar();  //Skip over '*' and ')'
-		} else {
+		} 
+
+    //No blanks, tabs, newlines, or comments found
+    else {
 			break;
 		}
 	}
