@@ -113,29 +113,24 @@ void skipblanks ()
 	}
 }
 
-
-
-
 /* Get identifiers and reserved words */
 TOKEN identifier (TOKEN tok)
 {
-	int c, i, size = 0;
-	char word[256];
-	while ( (c = peekchar()) != EOF
-			&& (CHARCLASS[c] == ALPHA || CHARCLASS[c] == NUMERIC))
+	int curChar;
+  int length = 0;
+	char word[16];
+	while ( (curChar = peekchar()) != EOF
+			&& (CHARCLASS[curChar] == ALPHA || CHARCLASS[curChar] == NUMERIC) && length < 15)
 	{ 
-		c = getchar();
-		word[size] = c;
-		size++;
+		curChar = getchar();
+		word[length] = curChar;
+		length++;
 	}
 
-	if (size >= 16)
-		word[15] = '\0';
-	else
-		word[size] = '\0';
+	word[length] = '\0';
 
 
-	for (i = 0; i < 29; i++)
+	for (int i = 0; i < 29; i++)
 	{
 		if (strcmp(word, reserved[i]) == 0)
 		{
@@ -145,7 +140,7 @@ TOKEN identifier (TOKEN tok)
 		}
 	}
 
-	for (i = 13; i < 19 ; i++)
+	for (int i = 13; i < 19 ; i++)
 	{
 		if (strcmp(word, operators[i]) == 0)
 		{
