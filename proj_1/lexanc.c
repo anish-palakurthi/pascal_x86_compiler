@@ -29,13 +29,11 @@
 #include <float.h>
 #include "token.h"
 #include "lexan.h"
-#include <stdlib.h>
 
 
 extern int CHARCLASS[];
 
-
-extern int CHARCLASS[];
+//Reserved words, operators, delimiters
 char *reserved[] = { "array", "begin", "case", "const", "do", "downto", "else", "end", "file", "for",  "function", "goto", "if", "label", "nil", "of", "packed", "procedure", "program", "record", "repeat", "set", "then", "to", "type", "until", "var", "while", "with"};
 
 char *operators[] = { "+", "-", "*", "/", ":=", "=", "<>", "<", "<=", ">=", ">", "^", ".", "and", "or", "not", "div", "mod", "in" };  
@@ -95,6 +93,8 @@ void skipblanks ()
 	}
 }
 
+
+//Helper to check if a word is in an array
 int isInArray(char *arr[], int size, char word[]) {
   for (int i = 0; i < size; i++) {
     if (strcmp(arr[i], word) == 0) {
@@ -104,6 +104,7 @@ int isInArray(char *arr[], int size, char word[]) {
   return -1;
 }
 
+//Generic token populator helper
 TOKEN populateToken(TOKEN tok, int val, int ttype) {
   tok->tokentype = ttype;
   tok->whichval = val;
@@ -116,32 +117,34 @@ TOKEN identifier (TOKEN tok)
   int curChar;
   int length = 0;
 	char word[16];
-	while ( (curChar = peekchar()) != EOF
-			&& (CHARCLASS[curChar] == ALPHA || CHARCLASS[curChar] == NUMERIC) && length < 15)
-	{ 
-		curChar = getchar();
+
+  //Get all characters in the word up to 15 characters
+	while ( (curChar = peekchar()) != EOF && (CHARCLASS[curChar] == ALPHA || CHARCLASS[curChar] == NUMERIC)){ 
+		
+    curChar = getchar();
+    if (length >= 15) {
+      continue;
+    }
+
 		word[length] = curChar;
 		length++;
 	}
-  while ( (curChar = peekchar()) != EOF
-			&& (CHARCLASS[curChar] == ALPHA || CHARCLASS[curChar] == NUMERIC)){
-        getchar();
-      }
 
 	word[length] = '\0';
 
+  //checks if the word is an operator
   int res = isInArray(operators, 19, word);
-
   if (res != -1) {
     return populateToken(tok, res + 1, OPERATOR);
   }
 
+  //checks if the word is a reserved word
   res = isInArray(reserved, 29, word);
   if (res != -1) {
     return populateToken(tok, res + 1, RESERVED);
   }
 
-
+  //if not an operator or reserved word, it is an identifier
   tok->tokentype = IDENTIFIERTOK;
 	strcpy(tok->stringval, word);
 	return tok;
@@ -149,24 +152,35 @@ TOKEN identifier (TOKEN tok)
 }
 
 
+//Get a string from where the stream pointer currently is
 TOKEN getstring (TOKEN tok)
 {
-
+  //consume first single quote
   getchar();
+
   int firstChar;
   int length = 0;
   char string[16];
 
+
+  //Get all characters in the string up to 15 characters
   while ((firstChar = peekchar()) != EOF){
     firstChar = getchar();
 
+    //if a single quote is followed by another, it is not seen as an ending quote
     if (firstChar == '\'') {
+
+      //end
       if (peekchar() != EOF && peekchar( ) != '\'') {
         break;
-      } else {
+      } 
+      //consume one of the quotes
+      else {
         getchar();
       }
     }
+
+    //truncation logic
     if (length >= 15) {
       continue;
     }
@@ -181,16 +195,17 @@ TOKEN getstring (TOKEN tok)
 }
 
 
-
+//Get the special character from the stream pointer
 TOKEN special (TOKEN tok)
 {
 	int firstChar;
-  
 	char opString[3];
 
+  //Since this is the default case, we have to make sure it is actually a special character
 	if ((firstChar = peekchar()) != EOF
 			&& CHARCLASS[firstChar] == SPECIAL) {
     
+    //get the first and second chars since some special characters are 2 characters long
     int length = 0, res = -1;
 		firstChar = getchar();	
 		int secondChar = peekchar();
@@ -201,21 +216,25 @@ TOKEN special (TOKEN tok)
 		
 		opString[length] = '\0';
 
+    //check if the special characters are a delimiter (2)
     res = isInArray(delimiters, 8, opString);
     if (res != -1) {
       getchar();
       return populateToken(tok, res + 1, DELIMITER);
     }
 
+    //check if the special characters are a operator (2)
     res = isInArray(operators, 19, opString);
     if (res != -1) {
       getchar();
       return populateToken(tok, res + 1, OPERATOR);
     }
 	
+    //test for single special. longer special chars are checked first since they take priority
 		opString[length - 1] = '\0';
 
 
+    //check if char is a delimiter or operator
     res = isInArray(delimiters, 8, opString);
     if (res != -1) {
       return populateToken(tok, res + 1, DELIMITER);
@@ -230,10 +249,7 @@ TOKEN special (TOKEN tok)
 	
 }
 
-
-
-
-
+//Helper method to truncate out of range integers for testing output
 int shortenInteger(long long num) {
   while (num > INT_MAX) {
         num /= 10;
@@ -241,7 +257,7 @@ int shortenInteger(long long num) {
   return (int)num;
 }
 
-
+//helper to return a float token or print an error message if it is out of range
 TOKEN returnFloat(double val, TOKEN tok){
 	if (val > FLT_MAX || val < FLT_MIN) {
     printf("Floating number out of range\n");
@@ -258,6 +274,7 @@ TOKEN returnFloat(double val, TOKEN tok){
 	}
 }
 
+//helper to apply the exponent to its base
 TOKEN exponentCheck(int exponent, double val, TOKEN tok){
   if (exponent > 0){
     val = val * pow (10, exponent);
@@ -268,6 +285,8 @@ TOKEN exponentCheck(int exponent, double val, TOKEN tok){
 
   returnFloat(val, tok);
 }
+
+
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
@@ -278,18 +297,24 @@ TOKEN number (TOKEN tok)
   double decimal = 0.0;
   double decimalScalar = 0.1;
   int exponent = 0;
-  //All digits before the "."
+
+
+
+  //Gets all digits before the "."
   while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
     firstChar = getchar();
     digit = firstChar - '0';
     val = val * 10 + digit;
   }
 
-  //decimal values
+  //all digits after the decimal if there is one
   if (peekchar() == '.'){
     if (CHARCLASS[peek2char()] == NUMERIC){
+
+      //Consume decimal
       getchar();
 
+      //Loop and divide by 10 to apply to the end
       while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
         firstChar = getchar();
         digit = firstChar - '0';
@@ -300,31 +325,33 @@ TOKEN number (TOKEN tok)
     }
   }
 
- if(peekchar() == 'e'){
-  getchar();
 
-  // Initialize the exponent sign as positive
-  int exponentSign = 1;
+  if(peekchar() == 'e'){
+    getchar();
 
-  // Check if the next character is a sign
-  if (peekchar() == '-' || peekchar() == '+'){
-    if (peekchar() == '-'){
-      exponentSign = -1;
+    // Initialize the exponent sign as positive
+    int exponentSign = 1;
+
+    // Check if the next character is a sign
+    if (peekchar() == '-' || peekchar() == '+'){
+      if (peekchar() == '-'){
+        exponentSign = -1;
+      }
+      getchar(); // Consume the sign character
     }
-    getchar(); // Consume the sign character
+
+    // Process the exponent value
+    while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
+      firstChar = getchar();
+      digit = firstChar - '0';
+      exponent = exponent * 10 + digit;
+    }
+
+    // Apply the sign to the exponent
+    exponent *= exponentSign;
   }
 
-  // Process the exponent value
-  while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
-    firstChar = getchar();
-    digit = firstChar - '0';
-    exponent = exponent * 10 + digit;
-  }
-
-  // Apply the sign to the exponent
-  exponent *= exponentSign;
-}
-
+  //If the number is an integer
   if (decimal == 0.0 && exponent == 0){
     if (val > INT_MAX){
       printf("Integer number out of range\n");
@@ -335,14 +362,10 @@ TOKEN number (TOKEN tok)
     tok->intval = shortenInteger(val);
     return tok;
   }
-
-  if (decimal == 0.0 || exponent != 0){
-    return exponentCheck(exponent, val, tok);
-  }
-
-  else{
-    returnFloat(val, tok);
-    }
+  
+  //any float can be used in this method, even if exponent = 0, the logic works
+  return exponentCheck(exponent, val, tok);
+  
   }
  
 
