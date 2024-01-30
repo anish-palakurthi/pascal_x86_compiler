@@ -336,23 +336,13 @@ TOKEN number (TOKEN tok)
     return tok;
   }
 
-  if (decimal == 0.0){
+  if (decimal == 0.0 || exponent != 0){
     return exponentCheck(exponent, val, tok);
-
   }
 
   else{
-    if (exponent != 0){
-      return exponentCheck(exponent, val, tok);
-
-
     returnFloat(val, tok);
-
-    }
-    else{
-    returnFloat(val, tok);
-
     }
   }
  
-}
+
