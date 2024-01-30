@@ -244,21 +244,22 @@ int shortenInteger(long long num) {
 
 
 TOKEN handleRealError(TOKEN tok){
-	printf("Floating number out of range\n");
-    tok->tokentype = NUMBERTOK;
-	tok->basicdt = REAL;
-	tok->realval = 0.0;
-	return tok;
+
 }
 
 TOKEN returnRealTok(double real, TOKEN tok){
 	if (real > FLT_MAX || real < FLT_MIN) {
-		return handleRealError(tok);
-	} else {
+		printf("Floating number out of range\n");
     tok->tokentype = NUMBERTOK;
-	tok->basicdt = REAL;
-	tok->realval = real;
-	return tok;
+    tok->basicdt = REAL;
+    tok->realval = 0.0;
+    return tok;
+	} 
+  else {
+    tok->tokentype = NUMBERTOK;
+    tok->basicdt = REAL;
+    tok->realval = real;
+    return tok;
 	}
 }
 
@@ -318,14 +319,6 @@ TOKEN number (TOKEN tok)
   // Apply the sign to the exponent
   exponent *= exponentSign;
 }
-
-  // if (abs(exponent) > 38){
-  //   printf("Floating number out of range\n");
-  //   tok->tokentype = NUMBERTOK;
-  //   tok->basicdt = REAL;
-  //   tok->realval = 0.0;
-  //   return tok;
-  // }
 
   if (decimal == 0.0 && exponent == 0){
     if (val > INT_MAX){

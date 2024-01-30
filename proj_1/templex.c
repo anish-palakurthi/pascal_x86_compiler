@@ -230,23 +230,19 @@ TOKEN special (TOKEN tok)
 }
 
 
-
-TOKEN handleRealError(TOKEN tok){
-	printf("Floating number out of range\n");
-    tok->tokentype = NUMBERTOK;
-	tok->basicdt = REAL;
-	tok->realval = 0.0;
-	return tok;
-}
-
 TOKEN returnRealTok(double real, TOKEN tok){
 	if (real > FLT_MAX || real < FLT_MIN) {
-		return handleRealError(tok);
-	} else {
+    printf("Floating number out of range\n");
     tok->tokentype = NUMBERTOK;
-	tok->basicdt = REAL;
-	tok->realval = real;
-	return tok;
+    tok->basicdt = REAL;
+    tok->realval = 0.0;
+	  return tok;
+	} 
+  else {
+    tok->tokentype = NUMBERTOK;
+    tok->basicdt = REAL;
+    tok->realval = real;
+    return tok;
 	}
 }
 
