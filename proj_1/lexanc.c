@@ -242,23 +242,18 @@ int shortenInteger(long long num) {
 }
 
 
-
-TOKEN handleRealError(TOKEN tok){
-
-}
-
-TOKEN returnRealTok(double real, TOKEN tok){
-	if (real > FLT_MAX || real < FLT_MIN) {
-		printf("Floating number out of range\n");
+TOKEN returnFloat(double val, TOKEN tok){
+	if (val > FLT_MAX || val < FLT_MIN) {
+    printf("Floating number out of range\n");
     tok->tokentype = NUMBERTOK;
     tok->basicdt = REAL;
     tok->realval = 0.0;
-    return tok;
+	  return tok;
 	} 
   else {
     tok->tokentype = NUMBERTOK;
     tok->basicdt = REAL;
-    tok->realval = real;
+    tok->realval = val;
     return tok;
 	}
 }
@@ -340,7 +335,7 @@ TOKEN number (TOKEN tok)
       val = val / pow(10, -exponent);
     }
 
-    returnRealTok(val, tok);
+    returnFloat(val, tok);
 
   }
 
@@ -353,11 +348,11 @@ TOKEN number (TOKEN tok)
         val = val / pow(10, -exponent);
       }
 
-    returnRealTok(val, tok);
+    returnFloat(val, tok);
 
     }
     else{
-    returnRealTok(val, tok);
+    returnFloat(val, tok);
 
     }
   }
