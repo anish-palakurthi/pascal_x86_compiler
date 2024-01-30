@@ -258,6 +258,16 @@ TOKEN returnFloat(double val, TOKEN tok){
 	}
 }
 
+TOKEN exponentCheck(int exponent, double val, TOKEN tok){
+  if (exponent > 0){
+    val = val * pow (10, exponent);
+  }
+  else{
+    val = val / pow(10, -exponent);
+  }
+
+  returnFloat(val, tok);
+}
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
@@ -327,26 +337,14 @@ TOKEN number (TOKEN tok)
   }
 
   if (decimal == 0.0){
-
-    if (exponent > 0){
-      val = val * pow (10, exponent);
-    }
-    else{
-      val = val / pow(10, -exponent);
-    }
-
-    returnFloat(val, tok);
+    return exponentCheck(exponent, val, tok);
 
   }
 
   else{
     if (exponent != 0){
-      if (exponent > 0){
-        val = val * pow (10, exponent);
-      }
-      else{
-        val = val / pow(10, -exponent);
-      }
+      return exponentCheck(exponent, val, tok);
+
 
     returnFloat(val, tok);
 
