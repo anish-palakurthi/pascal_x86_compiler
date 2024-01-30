@@ -29,7 +29,6 @@
 #include <float.h>
 #include "token.h"
 #include "lexan.h"
-#include <stdlib.h>
 
 
 extern int CHARCLASS[];
@@ -232,17 +231,6 @@ TOKEN special (TOKEN tok)
 
 
 
-
-
-int shortenInteger(long long num) {
-  while (num > INT_MAX) {
-        num /= 10;
-    }
-  return (int)num;
-}
-
-
-
 TOKEN handleRealError(TOKEN tok){
 	printf("Floating number out of range\n");
     tok->tokentype = NUMBERTOK;
@@ -262,111 +250,114 @@ TOKEN returnRealTok(double real, TOKEN tok){
 	}
 }
 
+int shortenInteger(long long num) {
+  while (num > INT_MAX) {
+        num /= 10;
+    }
+  return (int)num;
+}
+
 /* Get and convert unsigned numbers of all types. */
 TOKEN number (TOKEN tok)
 { 	
+    double num = 0.0, real = 0.0, decimal = 0.0, multiplier = 10.0;
+    long exponent = 0, expValue = 0;
+    int  c, d, charval, dFlag = 0, negFlag = 0, eFlag = 0;
+  
 
-  double val = 0.0;
-  int firstChar;
-  int digit;
-  double decimal = 0.0;
-  double decimalScalar = 0.1;
-  int exponent = 0;
-  //All digits before the "."
-  while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
-    firstChar = getchar();
-    digit = firstChar - '0';
-    val = val * 10 + digit;
-  }
-
-  //decimal values
-  if (peekchar() == '.'){
-    if (CHARCLASS[peek2char()] == NUMERIC){
-      getchar();
-
-      while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
-        firstChar = getchar();
-        digit = firstChar - '0';
-        decimal = decimal + ((double)digit * decimalScalar);
-        decimalScalar /= 10;
-      }
-      val = val + decimal;
-    }
-  }
-
- if(peekchar() == 'e'){
-  getchar();
-
-  // Initialize the exponent sign as positive
-  int exponentSign = 1;
-
-  // Check if the next character is a sign
-  if (peekchar() == '-' || peekchar() == '+'){
-    if (peekchar() == '-'){
-      exponentSign = -1;
-    }
-    getchar(); // Consume the sign character
-  }
-
-  // Process the exponent value
-  while (peekchar() != EOF && CHARCLASS[peekchar()] == NUMERIC){
-    firstChar = getchar();
-    digit = firstChar - '0';
-    exponent = exponent * 10 + digit;
-  }
-
-  // Apply the sign to the exponent
-  exponent *= exponentSign;
-}
-
-  // if (abs(exponent) > 38){
-  //   printf("Floating number out of range\n");
-  //   tok->tokentype = NUMBERTOK;
-  //   tok->basicdt = REAL;
-  //   tok->realval = 0.0;
-  //   return tok;
-  // }
-
-  if (decimal == 0.0 && exponent == 0){
-    if (val > INT_MAX){
-      printf("Integer number out of range\n");
-    }
-
-    tok->tokentype = NUMBERTOK;
-    tok->basicdt = INTEGER;
-    tok->intval = shortenInteger(val);
-    return tok;
-  }
-
-  if (decimal == 0.0){
-
-    if (exponent > 0){
-      val = val * pow (10, exponent);
-    }
-    else{
-      val = val / pow(10, -exponent);
-    }
-
-    returnRealTok(val, tok);
-
-  }
-
-  else{
-    if (exponent != 0){
-      if (exponent > 0){
-        val = val * pow (10, exponent);
-      }
-      else{
-        val = val / pow(10, -exponent);
-      }
-
-    returnRealTok(val, tok);
+    // The part before the decimal point
+    while ((c = peekchar()) != EOF
+            && (CHARCLASS[c] == NUMERIC))
+    {   
+        c = getchar();
+        charval = c - '0';
+        num = num * 10 + charval;
 
     }
-    else{
-    returnRealTok(val, tok);
 
+
+    // The part after the decimal point
+    if ((peekchar()) == '.' && (CHARCLASS[peek2char()] == NUMERIC)) {
+        dFlag = 1;
+        getchar();
+        while ((c = peekchar()) != EOF && (CHARCLASS[c] == NUMERIC)) {
+            c = getchar();
+            charval = c - '0';
+            decimal = decimal + ((double) charval / multiplier);
+            multiplier *= 10;
+        }   
+
+        real = num + decimal;
+        // printf("Real value: %f\n", real);
     }
-  }
+
+  
+
+	//The exponent part
+	if(c == 'e') {
+		eFlag = 1;
+		getchar();
+		c = peekchar();
+		if (c == '-') {
+			negFlag = 1;
+			getchar();
+		} else if (c == '+') {
+			getchar();
+		}
+
+		while ((c = peekchar()) != EOF 
+				&& CHARCLASS[c] == NUMERIC) {	
+			c = getchar();
+			charval = c - '0';
+
+			if (expValue > INT_MAX ){
+				continue;
+			}
+			expValue = expValue * 10 + charval;
+		}
+
+
+	}
+
+
+  //Putting it together
+	if (dFlag) {
+		if (eFlag) {
+			if (negFlag) {
+				real = real / pow (10, expValue);
+			} 
+      else {
+				real = real * pow (10, expValue);
+			}
+
+			return returnRealTok(real, tok);
+
+		} else {
+
+			return returnRealTok(real, tok);
+
+		}
+
+	}
+	
+	if (eFlag)  {
+		real = (double) num;
+		if (negFlag) {
+			real = real / pow(10, expValue);
+		} else {
+			real = real * pow(10, expValue);
+		}
+		return returnRealTok(real, tok);		
+	}
  
+
+	if (num > INT_MAX) {
+    printf("Integer number out of range\n");
+  }
+  tok->tokentype = NUMBERTOK;
+	tok->basicdt = INTEGER;
+	tok->intval = shortenInteger(num);
+	return tok;
+  
+
 }
