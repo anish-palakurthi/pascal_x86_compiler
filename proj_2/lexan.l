@@ -61,8 +61,9 @@ ws        {delim}+
 letter    [A-Za-z]
 digit     [0-9]
 id        {letter}({letter}|{digit})*
-intnumber {digit}+
 fnumber   {digit}+(\.{digit}+)?([eE][+\-]?{digit}+)?
+
+intnumber {digit}+
 string    '(.*?)'
 
 %%
