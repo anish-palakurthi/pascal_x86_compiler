@@ -1,12 +1,8 @@
-%{    /* lex2.l -- partial lex specification for Pascal    22 Jul 13 */
+%{    /* lex2.l -- partial lex specification for Pascal   06 Oct 21 */
 
-/*
-Student name: S. Ram Janarthana Raja
-UT EID: rs53992
-*/
-
-
-/* Copyright (c) 2013 Gordon S. Novak Jr. and The University of Texas at Austin
+/* Copyright (c) 2021 Gordon S. Novak Jr. and The University of Texas at Austin
+   */
+/* 22 Jul 13; 20 Feb 19; 16 Sep 20
    */
 
 /* This program is free software; you can redistribute it and/or modify
@@ -37,6 +33,7 @@ UT EID: rs53992
    */
 
 #include <ctype.h>
+#include <string.h>
 #include "token.h"
 #include "lexan.h"
 
@@ -51,7 +48,9 @@ int yywrap();
  #define YYLMAX 256
  */
 
-TOKEN yylval;     /* This is the type of the lexical analyzer result */
+TOKEN talloc();
+
+extern TOKEN yylval;    /* This is the type of the lexical analyzer result */
 
 %}
 
