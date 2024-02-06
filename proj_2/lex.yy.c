@@ -1194,27 +1194,22 @@ YY_RULE_SETUP
 case 63:
 YY_RULE_SETUP
 #line 144 "lexan.l"
-{
-            bool commentEndFound = false;
-            while (!commentEndFound) {
-                char nextChar = input();
-                if (nextChar == '*') {
-                    char potentialEndChar = input();
-                    if (potentialEndChar == ')') {
-                        commentEndFound = true;
-                    } else {
-                        unput(potentialEndChar);
-                    }
-                }
-            }
-          }
+{       loop:
+                                  while (input() != '*');
+                                  switch (input())
+                                          {
+                                          case ')': break;
+                                          case '*': unput('*');
+                                          default: goto loop;
+                                          }
+                                  }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 161 "lexan.l"
+#line 156 "lexan.l"
 ECHO;
 	YY_BREAK
-#line 1218 "lex.yy.c"
+#line 1213 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2219,7 +2214,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 161 "lexan.l"
+#line 156 "lexan.l"
 
 
 /* Note that lex always returns two values:

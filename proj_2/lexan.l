@@ -141,20 +141,14 @@ in           {return(maketoken(OPERATOR, IN));}
               while ( input() != '}');
                }
 
-"(*"      {
-            bool commentEndFound = false;
-            while (!commentEndFound) {
-                char nextChar = input();
-                if (nextChar == '*') {
-                    char potentialEndChar = input();
-                    if (potentialEndChar == ')') {
-                        commentEndFound = true;
-                    } else {
-                        unput(potentialEndChar);
-                    }
-                }
-            }
-          }
+"(*"    {       loop:
+                  while (input() != '*');
+                  switch (input()){
+                        case ')': break;
+                        case '*': unput('*');
+                        default: goto loop;
+                        }
+         }
 
 
 
