@@ -166,7 +166,7 @@ in        {return(maketoken(OPERATOR, IN));}
 /* Make simple tokens. */
 int maketoken(int type, int which)
   {
-  yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
+  yylval = talloc();  /* Make new token, set yylval to point to it */
   yylval->tokentype = type;
   if (type == RESERVED)
      yylval->whichval = which - RESERVED_BIAS;
@@ -180,7 +180,7 @@ int maketoken(int type, int which)
 
 int install_id()
  { int i, c, n;
-  yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
+  yylval = talloc();  /* Make new token, set yylval to point to it */
   yylval->tokentype = IDENTIFIERTOK;
   n = yyleng;            /* number of characters */
   if ( n > 15 ) n = 15;
@@ -194,43 +194,50 @@ int install_id()
   return(IDENTIFIER);
  }
 
- int install_string()
- { int i, c, n, s = 0;
-  yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
-  yylval->tokentype = STRINGTOK;
-  n = yyleng;            /* number of characters */
-  char mystring[n];
-  for (i = 0; i < n ; i++)
-   { 
-     c = yytext[i];       /* to ignore the first quote mark */
-     if (i == 0 || i == (n - 1)) {
-      } else {
-        mystring[s] = c;
-        s++;
-        if (c == '\'') i++;
-     } 
-  }
 
-  if (s > 15) s = 15;
-  mystring[s] = '\0';
-  strcpy(yylval->stringval, mystring);
-  return(STRING);
- }
 
- int install_int() {  
-  int num;
-  yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
-  yylval->tokentype = NUMBERTOK;
-  yylval->basicdt = INTEGER;
-       /* printf("num %10s   n = %4d\n",yytext,yyleng); */
-  sscanf(yytext, "%d", &num);
-  yylval->intval = num;
-  return(NUMBER);
+int install_string(){
+
+   yylval = talloc();   /* Make new token, set yylval to point to it */
+   yylval->tokentype = STRINGTOK;
+
+   char word[16];
+   int letterIndex = 0;
+
+   for(int i = 0; i < yyleng; i++){
+
+      if (i == 0 || i == yyleng - 1 || letterIndex > 14){
+         continue;
+      }
+      word[letterIndex] = yytext[i];
+      letterIndex++;
+      if (yytext[i] == '\''){
+         i++;
+      }
+
+   }
+
+   word[letterIndex] = '\0';
+   strcpy(yylval->stringval, word);
+   return(STRING);
+}
+
+ int install_int(){
+
+   int integer;
+   yylval = talloc();   /* Make new token, set yylval to point to it */
+   yylval->tokentype = NUMBERTOK;
+   yylval->basicdt = INTEGER;
+
+   sscanf(yytext, "%d", &integer);
+   yylval->intval = integer;
+   return(NUMBER);
+
  }
 
 int install_fnum() {  /* Note -- you may use sscanf for this assignment. */
   float fnum;
-  yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
+  yylval = talloc();   /* Make new token, set yylval to point to it */
   yylval->tokentype = NUMBERTOK;
   yylval->basicdt = REAL;
        /* printf("num %10s   n = %4d\n",yytext,yyleng); */
@@ -239,4 +246,4 @@ int install_fnum() {  /* Note -- you may use sscanf for this assignment. */
   return(NUMBER);
  }
 
-int yywrap() {  return(1);  }       /* lex may need this. */
+int yywrap() {  return(1);  }         /* lex may need this. */
