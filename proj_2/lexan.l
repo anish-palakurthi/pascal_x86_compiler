@@ -36,6 +36,7 @@
 #include <string.h>
 #include "token.h"
 #include "lexan.h"
+#include "stdbool.h"
 
 int maketoken(int type, int which);
 int install_id();
@@ -134,16 +135,25 @@ in        {return(maketoken(OPERATOR, IN));}
 ".."      {return(maketoken(DELIMITER, DOTDOT));} 
 
 
-"{"       { while (input() != '}'); }
+"{"       { 
+         while (input() != '}'); 
+      }
 
-"(*"      { jum:
-            while (input() != '*');
-            int c = input();
-            if (c != ')'){
-              unput(c);
-              goto jum;
+"(*"      {
+            bool commentEndFound = false;
+            while (!commentEndFound) {
+                char nextChar = input();
+                if (nextChar == '*') {
+                    char potentialEndChar = input();
+                    if (potentialEndChar == ')') {
+                        commentEndFound = true;
+                    } else {
+                        unput(potentialEndChar);
+                    }
+                }
             }
           }
+
 
 
 %%
