@@ -362,24 +362,24 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[168] =
     {   0,
-        0,    0,   65,   64,    1,   64,   26,   27,    6,    4,
-       23,    5,   16,    7,   62,   25,   24,   11,    9,   14,
-       60,   28,   29,   15,   60,   60,   60,   60,   60,   60,
-       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
-       60,   60,   60,    2,    1,    0,   61,    3,   30,    0,
-       62,    0,    8,   12,   10,   13,   60,   60,   60,   60,
-       60,   60,   60,   35,   60,   60,   60,   60,   60,   60,
-       43,   22,   60,   60,   60,   60,   46,   18,   60,   60,
-       60,   60,   60,   54,   60,   60,   60,   60,   60,   63,
-        0,   63,   17,   60,   60,   60,   60,   20,   60,   60,
+        0,    0,   65,   64,    1,   64,   57,   58,   43,   41,
+       54,   42,   53,   44,   33,   56,   55,   48,   46,   51,
+       31,   59,   60,   52,   31,   31,   31,   31,   31,   31,
+       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
+       31,   31,   31,   62,    1,    0,   32,   63,   61,    0,
+       33,    0,   45,   49,   47,   50,   31,   31,   31,   31,
+       31,   31,   31,    6,   31,   31,   31,   31,   31,   31,
+       14,   31,   31,   31,   31,   31,   17,   31,   31,   31,
+       31,   31,   31,   25,   31,   31,   31,   31,   31,   34,
+        0,   34,   31,   31,   31,   31,   31,   31,   31,   31,
 
-       38,   60,   40,   60,   60,   60,   21,   45,   19,   60,
-       60,   60,   60,   52,   60,   60,   60,   57,   60,   60,
-       60,   60,   33,   60,   60,   37,   39,   60,   42,   60,
-       60,   60,   60,   60,   60,   53,   55,   60,   60,   59,
-       31,   32,   34,   60,   60,   44,   60,   60,   60,   60,
-       60,   56,   58,   36,   60,   47,   60,   60,   50,   51,
-       60,   60,   49,   41,   60,   48,    0
+        9,   31,   11,   31,   31,   31,   31,   16,   31,   31,
+       31,   31,   31,   23,   31,   31,   31,   28,   31,   31,
+       31,   31,    4,   31,   31,    8,   10,   31,   13,   31,
+       31,   31,   31,   31,   31,   24,   26,   31,   31,   30,
+        2,    3,    5,   31,   31,   15,   31,   31,   31,   31,
+       31,   27,   29,    7,   31,   18,   31,   31,   21,   22,
+       31,   31,   20,   12,   31,   19,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -815,7 +815,7 @@ YY_DECL
 		}
 
 	{
-#line 70 "lexan.l"
+#line 69 "lexan.l"
 
 
 #line 822 "lex.yy.c"
@@ -878,17 +878,317 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 72 "lexan.l"
+#line 71 "lexan.l"
 { /* no action and no return */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 74 "lexan.l"
-{ while (input() != '}'); }
+#line 72 "lexan.l"
+{return(maketoken(RESERVED, ARRAY));}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
+#line 73 "lexan.l"
+{return(maketoken(RESERVED, BEGINBEGIN));}
+	YY_BREAK
+case 4:
+YY_RULE_SETUP
+#line 74 "lexan.l"
+{return(maketoken(RESERVED, CASE));}
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
+#line 75 "lexan.l"
+{return(maketoken(RESERVED, CONST));}
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
 #line 76 "lexan.l"
+{return(maketoken(RESERVED, DO));}
+	YY_BREAK
+case 7:
+YY_RULE_SETUP
+#line 77 "lexan.l"
+{return(maketoken(RESERVED, DOWNTO));}
+	YY_BREAK
+case 8:
+YY_RULE_SETUP
+#line 78 "lexan.l"
+{return(maketoken(RESERVED, ELSE));}
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 79 "lexan.l"
+{return(maketoken(RESERVED, END));}
+	YY_BREAK
+case 10:
+YY_RULE_SETUP
+#line 80 "lexan.l"
+{return(maketoken(RESERVED, FILEFILE));}
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 81 "lexan.l"
+{return(maketoken(RESERVED, FOR));}
+	YY_BREAK
+case 12:
+YY_RULE_SETUP
+#line 82 "lexan.l"
+{return(maketoken(RESERVED, FUNCTION));}
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 83 "lexan.l"
+{return(maketoken(RESERVED, GOTO));}
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 84 "lexan.l"
+{return(maketoken(RESERVED, IF));}
+	YY_BREAK
+case 15:
+YY_RULE_SETUP
+#line 85 "lexan.l"
+{return(maketoken(RESERVED, LABEL));}
+	YY_BREAK
+case 16:
+YY_RULE_SETUP
+#line 86 "lexan.l"
+{return(maketoken(RESERVED, NIL));}
+	YY_BREAK
+case 17:
+YY_RULE_SETUP
+#line 87 "lexan.l"
+{return(maketoken(RESERVED, OF));}
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 88 "lexan.l"
+{return(maketoken(RESERVED, PACKED));}
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 89 "lexan.l"
+{return(maketoken(RESERVED, PROCEDURE));}
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 90 "lexan.l"
+{return(maketoken(RESERVED, PROGRAM));}
+	YY_BREAK
+case 21:
+YY_RULE_SETUP
+#line 91 "lexan.l"
+{return(maketoken(RESERVED, RECORD));}
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 92 "lexan.l"
+{return(maketoken(RESERVED, REPEAT));}
+	YY_BREAK
+case 23:
+YY_RULE_SETUP
+#line 93 "lexan.l"
+{return(maketoken(RESERVED, SET));}
+	YY_BREAK
+case 24:
+YY_RULE_SETUP
+#line 94 "lexan.l"
+{return(maketoken(RESERVED, THEN));}
+	YY_BREAK
+case 25:
+YY_RULE_SETUP
+#line 95 "lexan.l"
+{return(maketoken(RESERVED, TO));}
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 96 "lexan.l"
+{return(maketoken(RESERVED, TYPE));}
+	YY_BREAK
+case 27:
+YY_RULE_SETUP
+#line 97 "lexan.l"
+{return(maketoken(RESERVED, UNTIL));}
+	YY_BREAK
+case 28:
+YY_RULE_SETUP
+#line 98 "lexan.l"
+{return(maketoken(RESERVED, VAR));}
+	YY_BREAK
+case 29:
+YY_RULE_SETUP
+#line 99 "lexan.l"
+{return(maketoken(RESERVED, WHILE));}
+	YY_BREAK
+case 30:
+YY_RULE_SETUP
+#line 100 "lexan.l"
+{return(maketoken(RESERVED, WITH));}
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
+#line 101 "lexan.l"
+{return(install_id());}
+	YY_BREAK
+case 32:
+YY_RULE_SETUP
+#line 102 "lexan.l"
+{return(install_string());}
+	YY_BREAK
+case 33:
+YY_RULE_SETUP
+#line 103 "lexan.l"
+{return(install_int());}
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 104 "lexan.l"
+{return(install_fnum());}
+	YY_BREAK
+case 35:
+YY_RULE_SETUP
+#line 106 "lexan.l"
+{return(maketoken(OPERATOR, AND));}
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 107 "lexan.l"
+{return(maketoken(OPERATOR, OR));}
+	YY_BREAK
+case 37:
+YY_RULE_SETUP
+#line 108 "lexan.l"
+{return(maketoken(OPERATOR, NOT));}
+	YY_BREAK
+case 38:
+YY_RULE_SETUP
+#line 109 "lexan.l"
+{return(maketoken(OPERATOR, DIV));}
+	YY_BREAK
+case 39:
+YY_RULE_SETUP
+#line 110 "lexan.l"
+{return(maketoken(OPERATOR, MOD));}
+	YY_BREAK
+case 40:
+YY_RULE_SETUP
+#line 111 "lexan.l"
+{return(maketoken(OPERATOR, IN));}
+	YY_BREAK
+case 41:
+YY_RULE_SETUP
+#line 113 "lexan.l"
+{return(maketoken(OPERATOR, PLUS));}
+	YY_BREAK
+case 42:
+YY_RULE_SETUP
+#line 114 "lexan.l"
+{return(maketoken(OPERATOR, MINUS));}
+	YY_BREAK
+case 43:
+YY_RULE_SETUP
+#line 115 "lexan.l"
+{return(maketoken(OPERATOR, TIMES));}
+	YY_BREAK
+case 44:
+YY_RULE_SETUP
+#line 116 "lexan.l"
+{return(maketoken(OPERATOR, DIVIDE));}
+	YY_BREAK
+case 45:
+YY_RULE_SETUP
+#line 117 "lexan.l"
+{return(maketoken(OPERATOR, ASSIGN));}
+	YY_BREAK
+case 46:
+YY_RULE_SETUP
+#line 118 "lexan.l"
+{return(maketoken(OPERATOR, EQ));}
+	YY_BREAK
+case 47:
+YY_RULE_SETUP
+#line 119 "lexan.l"
+{return(maketoken(OPERATOR, NE));}
+	YY_BREAK
+case 48:
+YY_RULE_SETUP
+#line 120 "lexan.l"
+{return(maketoken(OPERATOR, LT));}
+	YY_BREAK
+case 49:
+YY_RULE_SETUP
+#line 121 "lexan.l"
+{return(maketoken(OPERATOR, LE));}
+	YY_BREAK
+case 50:
+YY_RULE_SETUP
+#line 122 "lexan.l"
+{return(maketoken(OPERATOR, GE));}
+	YY_BREAK
+case 51:
+YY_RULE_SETUP
+#line 123 "lexan.l"
+{return(maketoken(OPERATOR, GT));}
+	YY_BREAK
+case 52:
+YY_RULE_SETUP
+#line 124 "lexan.l"
+{return(maketoken(OPERATOR, POINT));}
+	YY_BREAK
+case 53:
+YY_RULE_SETUP
+#line 125 "lexan.l"
+{return(maketoken(OPERATOR, DOT));}
+	YY_BREAK
+case 54:
+YY_RULE_SETUP
+#line 127 "lexan.l"
+{return(maketoken(DELIMITER, COMMA));}
+	YY_BREAK
+case 55:
+YY_RULE_SETUP
+#line 128 "lexan.l"
+{return(maketoken(DELIMITER, SEMICOLON));}
+	YY_BREAK
+case 56:
+YY_RULE_SETUP
+#line 129 "lexan.l"
+{return(maketoken(DELIMITER, COLON));}
+	YY_BREAK
+case 57:
+YY_RULE_SETUP
+#line 130 "lexan.l"
+{return(maketoken(DELIMITER, LPAREN));}
+	YY_BREAK
+case 58:
+YY_RULE_SETUP
+#line 131 "lexan.l"
+{return(maketoken(DELIMITER, RPAREN));}
+	YY_BREAK
+case 59:
+YY_RULE_SETUP
+#line 132 "lexan.l"
+{return(maketoken(DELIMITER, LBRACKET));}
+	YY_BREAK
+case 60:
+YY_RULE_SETUP
+#line 133 "lexan.l"
+{return(maketoken(DELIMITER, RBRACKET));}
+	YY_BREAK
+case 61:
+YY_RULE_SETUP
+#line 134 "lexan.l"
+{return(maketoken(DELIMITER, DOTDOT));} 
+	YY_BREAK
+case 62:
+YY_RULE_SETUP
+#line 137 "lexan.l"
+{ while (input() != '}'); }
+	YY_BREAK
+case 63:
+YY_RULE_SETUP
+#line 139 "lexan.l"
 { jum:
             while (input() != '*');
             int c = input();
@@ -898,309 +1198,9 @@ YY_RULE_SETUP
             }
           }
 	YY_BREAK
-case 4:
-YY_RULE_SETUP
-#line 85 "lexan.l"
-{return(maketoken(OPERATOR, PLUS));}
-	YY_BREAK
-case 5:
-YY_RULE_SETUP
-#line 86 "lexan.l"
-{return(maketoken(OPERATOR, MINUS));}
-	YY_BREAK
-case 6:
-YY_RULE_SETUP
-#line 87 "lexan.l"
-{return(maketoken(OPERATOR, TIMES));}
-	YY_BREAK
-case 7:
-YY_RULE_SETUP
-#line 88 "lexan.l"
-{return(maketoken(OPERATOR, DIVIDE));}
-	YY_BREAK
-case 8:
-YY_RULE_SETUP
-#line 89 "lexan.l"
-{return(maketoken(OPERATOR, ASSIGN));}
-	YY_BREAK
-case 9:
-YY_RULE_SETUP
-#line 90 "lexan.l"
-{return(maketoken(OPERATOR, EQ));}
-	YY_BREAK
-case 10:
-YY_RULE_SETUP
-#line 91 "lexan.l"
-{return(maketoken(OPERATOR, NE));}
-	YY_BREAK
-case 11:
-YY_RULE_SETUP
-#line 92 "lexan.l"
-{return(maketoken(OPERATOR, LT));}
-	YY_BREAK
-case 12:
-YY_RULE_SETUP
-#line 93 "lexan.l"
-{return(maketoken(OPERATOR, LE));}
-	YY_BREAK
-case 13:
-YY_RULE_SETUP
-#line 94 "lexan.l"
-{return(maketoken(OPERATOR, GE));}
-	YY_BREAK
-case 14:
-YY_RULE_SETUP
-#line 95 "lexan.l"
-{return(maketoken(OPERATOR, GT));}
-	YY_BREAK
-case 15:
-YY_RULE_SETUP
-#line 96 "lexan.l"
-{return(maketoken(OPERATOR, POINT));}
-	YY_BREAK
-case 16:
-YY_RULE_SETUP
-#line 97 "lexan.l"
-{return(maketoken(OPERATOR, DOT));}
-	YY_BREAK
-case 17:
-YY_RULE_SETUP
-#line 98 "lexan.l"
-{return(maketoken(OPERATOR, AND));}
-	YY_BREAK
-case 18:
-YY_RULE_SETUP
-#line 99 "lexan.l"
-{return(maketoken(OPERATOR, OR));}
-	YY_BREAK
-case 19:
-YY_RULE_SETUP
-#line 100 "lexan.l"
-{return(maketoken(OPERATOR, NOT));}
-	YY_BREAK
-case 20:
-YY_RULE_SETUP
-#line 101 "lexan.l"
-{return(maketoken(OPERATOR, DIV));}
-	YY_BREAK
-case 21:
-YY_RULE_SETUP
-#line 102 "lexan.l"
-{return(maketoken(OPERATOR, MOD));}
-	YY_BREAK
-case 22:
-YY_RULE_SETUP
-#line 103 "lexan.l"
-{return(maketoken(OPERATOR, IN));}
-	YY_BREAK
-case 23:
-YY_RULE_SETUP
-#line 105 "lexan.l"
-{return(maketoken(DELIMITER, COMMA));}
-	YY_BREAK
-case 24:
-YY_RULE_SETUP
-#line 106 "lexan.l"
-{return(maketoken(DELIMITER, SEMICOLON));}
-	YY_BREAK
-case 25:
-YY_RULE_SETUP
-#line 107 "lexan.l"
-{return(maketoken(DELIMITER, COLON));}
-	YY_BREAK
-case 26:
-YY_RULE_SETUP
-#line 108 "lexan.l"
-{return(maketoken(DELIMITER, LPAREN));}
-	YY_BREAK
-case 27:
-YY_RULE_SETUP
-#line 109 "lexan.l"
-{return(maketoken(DELIMITER, RPAREN));}
-	YY_BREAK
-case 28:
-YY_RULE_SETUP
-#line 110 "lexan.l"
-{return(maketoken(DELIMITER, LBRACKET));}
-	YY_BREAK
-case 29:
-YY_RULE_SETUP
-#line 111 "lexan.l"
-{return(maketoken(DELIMITER, RBRACKET));}
-	YY_BREAK
-case 30:
-YY_RULE_SETUP
-#line 112 "lexan.l"
-{return(maketoken(DELIMITER, DOTDOT));}  
-	YY_BREAK
-case 31:
-YY_RULE_SETUP
-#line 114 "lexan.l"
-{return(maketoken(RESERVED, ARRAY));}
-	YY_BREAK
-case 32:
-YY_RULE_SETUP
-#line 115 "lexan.l"
-{return(maketoken(RESERVED, BEGINBEGIN));}
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
-#line 116 "lexan.l"
-{return(maketoken(RESERVED, CASE));}
-	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 117 "lexan.l"
-{return(maketoken(RESERVED, CONST));}
-	YY_BREAK
-case 35:
-YY_RULE_SETUP
-#line 118 "lexan.l"
-{return(maketoken(RESERVED, DO));}
-	YY_BREAK
-case 36:
-YY_RULE_SETUP
-#line 119 "lexan.l"
-{return(maketoken(RESERVED, DOWNTO));}
-	YY_BREAK
-case 37:
-YY_RULE_SETUP
-#line 120 "lexan.l"
-{return(maketoken(RESERVED, ELSE));}
-	YY_BREAK
-case 38:
-YY_RULE_SETUP
-#line 121 "lexan.l"
-{return(maketoken(RESERVED, END));}
-	YY_BREAK
-case 39:
-YY_RULE_SETUP
-#line 122 "lexan.l"
-{return(maketoken(RESERVED, FILEFILE));}
-	YY_BREAK
-case 40:
-YY_RULE_SETUP
-#line 123 "lexan.l"
-{return(maketoken(RESERVED, FOR));}
-	YY_BREAK
-case 41:
-YY_RULE_SETUP
-#line 124 "lexan.l"
-{return(maketoken(RESERVED, FUNCTION));}
-	YY_BREAK
-case 42:
-YY_RULE_SETUP
-#line 125 "lexan.l"
-{return(maketoken(RESERVED, GOTO));}
-	YY_BREAK
-case 43:
-YY_RULE_SETUP
-#line 126 "lexan.l"
-{return(maketoken(RESERVED, IF));}
-	YY_BREAK
-case 44:
-YY_RULE_SETUP
-#line 127 "lexan.l"
-{return(maketoken(RESERVED, LABEL));}
-	YY_BREAK
-case 45:
-YY_RULE_SETUP
-#line 128 "lexan.l"
-{return(maketoken(RESERVED, NIL));}
-	YY_BREAK
-case 46:
-YY_RULE_SETUP
-#line 129 "lexan.l"
-{return(maketoken(RESERVED, OF));}
-	YY_BREAK
-case 47:
-YY_RULE_SETUP
-#line 130 "lexan.l"
-{return(maketoken(RESERVED, PACKED));}
-	YY_BREAK
-case 48:
-YY_RULE_SETUP
-#line 131 "lexan.l"
-{return(maketoken(RESERVED, PROCEDURE));}
-	YY_BREAK
-case 49:
-YY_RULE_SETUP
-#line 132 "lexan.l"
-{return(maketoken(RESERVED, PROGRAM));}
-	YY_BREAK
-case 50:
-YY_RULE_SETUP
-#line 133 "lexan.l"
-{return(maketoken(RESERVED, RECORD));}
-	YY_BREAK
-case 51:
-YY_RULE_SETUP
-#line 134 "lexan.l"
-{return(maketoken(RESERVED, REPEAT));}
-	YY_BREAK
-case 52:
-YY_RULE_SETUP
-#line 135 "lexan.l"
-{return(maketoken(RESERVED, SET));}
-	YY_BREAK
-case 53:
-YY_RULE_SETUP
-#line 136 "lexan.l"
-{return(maketoken(RESERVED, THEN));}
-	YY_BREAK
-case 54:
-YY_RULE_SETUP
-#line 137 "lexan.l"
-{return(maketoken(RESERVED, TO));}
-	YY_BREAK
-case 55:
-YY_RULE_SETUP
-#line 138 "lexan.l"
-{return(maketoken(RESERVED, TYPE));}
-	YY_BREAK
-case 56:
-YY_RULE_SETUP
-#line 139 "lexan.l"
-{return(maketoken(RESERVED, UNTIL));}
-	YY_BREAK
-case 57:
-YY_RULE_SETUP
-#line 140 "lexan.l"
-{return(maketoken(RESERVED, VAR));}
-	YY_BREAK
-case 58:
-YY_RULE_SETUP
-#line 141 "lexan.l"
-{return(maketoken(RESERVED, WHILE));}
-	YY_BREAK
-case 59:
-YY_RULE_SETUP
-#line 142 "lexan.l"
-{return(maketoken(RESERVED, WITH));}
-	YY_BREAK
-case 60:
-YY_RULE_SETUP
-#line 144 "lexan.l"
-{return(install_id());}
-	YY_BREAK
-case 61:
-YY_RULE_SETUP
-#line 146 "lexan.l"
-{return(install_string());}
-	YY_BREAK
-case 62:
-YY_RULE_SETUP
-#line 148 "lexan.l"
-{return(install_int());}
-	YY_BREAK
-case 63:
-YY_RULE_SETUP
-#line 149 "lexan.l"
-{return(install_fnum());}
-	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 154 "lexan.l"
+#line 149 "lexan.l"
 ECHO;
 	YY_BREAK
 #line 1207 "lex.yy.c"
@@ -2208,7 +2208,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 154 "lexan.l"
+#line 149 "lexan.l"
 
 
 /* Note that lex always returns two values:

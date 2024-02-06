@@ -62,7 +62,6 @@ letter    [A-Za-z]
 digit     [0-9]
 id        {letter}({letter}|{digit})*
 integer {digit}+
-
 fnumber   {digit}+(\.{digit}+)?([eE][+\-]?{digit}+)?
 
 string    '(.*?)'
@@ -70,47 +69,6 @@ string    '(.*?)'
 %%
 
 {ws}      { /* no action and no return */ }
-
-"{"       { while (input() != '}'); }
-
-"(*"      { jum:
-            while (input() != '*');
-            int c = input();
-            if (c != ')'){
-              unput(c);
-              goto jum;
-            }
-          }
-
-"+"       {return(maketoken(OPERATOR, PLUS));}
-"-"       {return(maketoken(OPERATOR, MINUS));}
-"*"       {return(maketoken(OPERATOR, TIMES));}
-"/"       {return(maketoken(OPERATOR, DIVIDE));}
-":="      {return(maketoken(OPERATOR, ASSIGN));}
-"="       {return(maketoken(OPERATOR, EQ));}
-"<>"      {return(maketoken(OPERATOR, NE));}
-"<"       {return(maketoken(OPERATOR, LT));}
-"<="      {return(maketoken(OPERATOR, LE));}
-">="      {return(maketoken(OPERATOR, GE));}
-">"       {return(maketoken(OPERATOR, GT));}
-"^"       {return(maketoken(OPERATOR, POINT));}
-"."       {return(maketoken(OPERATOR, DOT));}
-and       {return(maketoken(OPERATOR, AND));}
-or        {return(maketoken(OPERATOR, OR));}
-not       {return(maketoken(OPERATOR, NOT));}
-div       {return(maketoken(OPERATOR, DIV));}
-mod       {return(maketoken(OPERATOR, MOD));}
-in        {return(maketoken(OPERATOR, IN));}
-
-","       {return(maketoken(DELIMITER, COMMA));}
-";"       {return(maketoken(DELIMITER, SEMICOLON));}
-":"       {return(maketoken(DELIMITER, COLON));}
-"("       {return(maketoken(DELIMITER, LPAREN));}
-")"       {return(maketoken(DELIMITER, RPAREN));}
-"["       {return(maketoken(DELIMITER, LBRACKET));}
-"]"       {return(maketoken(DELIMITER, RBRACKET));}
-".."      {return(maketoken(DELIMITER, DOTDOT));}  
-
 array        {return(maketoken(RESERVED, ARRAY));}
 begin        {return(maketoken(RESERVED, BEGINBEGIN));}
 case         {return(maketoken(RESERVED, CASE));}
@@ -140,15 +98,52 @@ until        {return(maketoken(RESERVED, UNTIL));}
 var          {return(maketoken(RESERVED, VAR));}
 while        {return(maketoken(RESERVED, WHILE));}
 with         {return(maketoken(RESERVED, WITH));}
-
 {id}      {return(install_id());}
-
 {string}     {return(install_string());}
-
 {integer}  {return(install_int());}
 {fnumber}    {return(install_fnum());}
 
+and       {return(maketoken(OPERATOR, AND));}
+or        {return(maketoken(OPERATOR, OR));}
+not       {return(maketoken(OPERATOR, NOT));}
+div       {return(maketoken(OPERATOR, DIV));}
+mod       {return(maketoken(OPERATOR, MOD));}
+in        {return(maketoken(OPERATOR, IN));}
 
+"+"       {return(maketoken(OPERATOR, PLUS));}
+"-"       {return(maketoken(OPERATOR, MINUS));}
+"*"       {return(maketoken(OPERATOR, TIMES));}
+"/"       {return(maketoken(OPERATOR, DIVIDE));}
+":="      {return(maketoken(OPERATOR, ASSIGN));}
+"="       {return(maketoken(OPERATOR, EQ));}
+"<>"      {return(maketoken(OPERATOR, NE));}
+"<"       {return(maketoken(OPERATOR, LT));}
+"<="      {return(maketoken(OPERATOR, LE));}
+">="      {return(maketoken(OPERATOR, GE));}
+">"       {return(maketoken(OPERATOR, GT));}
+"^"       {return(maketoken(OPERATOR, POINT));}
+"."       {return(maketoken(OPERATOR, DOT));}
+
+","       {return(maketoken(DELIMITER, COMMA));}
+";"       {return(maketoken(DELIMITER, SEMICOLON));}
+":"       {return(maketoken(DELIMITER, COLON));}
+"("       {return(maketoken(DELIMITER, LPAREN));}
+")"       {return(maketoken(DELIMITER, RPAREN));}
+"["       {return(maketoken(DELIMITER, LBRACKET));}
+"]"       {return(maketoken(DELIMITER, RBRACKET));}
+".."      {return(maketoken(DELIMITER, DOTDOT));} 
+
+
+"{"       { while (input() != '}'); }
+
+"(*"      { jum:
+            while (input() != '*');
+            int c = input();
+            if (c != ')'){
+              unput(c);
+              goto jum;
+            }
+          }
 
 
 %%
