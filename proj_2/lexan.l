@@ -61,9 +61,10 @@ ws        {delim}+
 letter    [A-Za-z]
 digit     [0-9]
 id        {letter}({letter}|{digit})*
+integer {digit}+
+
 fnumber   {digit}+(\.{digit}+)?([eE][+\-]?{digit}+)?
 
-intnumber {digit}+
 string    '(.*?)'
 
 %%
@@ -144,7 +145,7 @@ with         {return(maketoken(RESERVED, WITH));}
 
 {string}     {return(install_string());}
 
-{intnumber}  {return(install_int());}
+{integer}  {return(install_int());}
 {fnumber}    {return(install_fnum());}
 
 
