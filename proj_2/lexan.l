@@ -42,6 +42,8 @@ int maketoken(int type, int which);
 int install_id();
 int install_fnum();
 int yywrap();
+int install_string();
+int install_int();
 
 /* If the lex yytext buffer turns out to be too small to hold comments,
    add the following lines:
@@ -62,7 +64,7 @@ ws        {delim}+
 letter    [A-Za-z]
 digit     [0-9]
 id        {letter}({letter}|{digit})*
-integer {digit}+
+integer   {digit}+
 fnumber   {digit}+(\.{digit}+)?([eE][+\-]?{digit}+)?
 
 string    '(.*?)'
@@ -99,45 +101,45 @@ until        {return(maketoken(RESERVED, UNTIL));}
 var          {return(maketoken(RESERVED, VAR));}
 while        {return(maketoken(RESERVED, WHILE));}
 with         {return(maketoken(RESERVED, WITH));}
-{id}      {return(install_id());}
+{id}         {return(install_id());}
 {string}     {return(install_string());}
-{integer}  {return(install_int());}
+{integer}    {return(install_int());}
 {fnumber}    {return(install_fnum());}
 
-and       {return(maketoken(OPERATOR, AND));}
-or        {return(maketoken(OPERATOR, OR));}
-not       {return(maketoken(OPERATOR, NOT));}
-div       {return(maketoken(OPERATOR, DIV));}
-mod       {return(maketoken(OPERATOR, MOD));}
-in        {return(maketoken(OPERATOR, IN));}
+or           {return(maketoken(OPERATOR, OR));}
+not          {return(maketoken(OPERATOR, NOT));}
+div          {return(maketoken(OPERATOR, DIV));}
+and          {return(maketoken(OPERATOR, AND));}
+mod          {return(maketoken(OPERATOR, MOD));}
+in           {return(maketoken(OPERATOR, IN));}
 
-"+"       {return(maketoken(OPERATOR, PLUS));}
-"-"       {return(maketoken(OPERATOR, MINUS));}
-"*"       {return(maketoken(OPERATOR, TIMES));}
-"/"       {return(maketoken(OPERATOR, DIVIDE));}
-":="      {return(maketoken(OPERATOR, ASSIGN));}
-"="       {return(maketoken(OPERATOR, EQ));}
-"<>"      {return(maketoken(OPERATOR, NE));}
-"<"       {return(maketoken(OPERATOR, LT));}
-"<="      {return(maketoken(OPERATOR, LE));}
-">="      {return(maketoken(OPERATOR, GE));}
-">"       {return(maketoken(OPERATOR, GT));}
-"^"       {return(maketoken(OPERATOR, POINT));}
-"."       {return(maketoken(OPERATOR, DOT));}
+"+"          {return(maketoken(OPERATOR, PLUS));}
+"-"          {return(maketoken(OPERATOR, MINUS));}
+"*"          {return(maketoken(OPERATOR, TIMES));}
+"/"          {return(maketoken(OPERATOR, DIVIDE));}
+":="         {return(maketoken(OPERATOR, ASSIGN));}
+"="          {return(maketoken(OPERATOR, EQ));}
+"<>"         {return(maketoken(OPERATOR, NE));}
+"<"          {return(maketoken(OPERATOR, LT));}
+"<="         {return(maketoken(OPERATOR, LE));}
+">="         {return(maketoken(OPERATOR, GE));}
+">"          {return(maketoken(OPERATOR, GT));}
+"^"          {return(maketoken(OPERATOR, POINT));}
+"."          {return(maketoken(OPERATOR, DOT));}
 
-","       {return(maketoken(DELIMITER, COMMA));}
-";"       {return(maketoken(DELIMITER, SEMICOLON));}
-":"       {return(maketoken(DELIMITER, COLON));}
-"("       {return(maketoken(DELIMITER, LPAREN));}
-")"       {return(maketoken(DELIMITER, RPAREN));}
-"["       {return(maketoken(DELIMITER, LBRACKET));}
-"]"       {return(maketoken(DELIMITER, RBRACKET));}
-".."      {return(maketoken(DELIMITER, DOTDOT));} 
+","          {return(maketoken(DELIMITER, COMMA));}
+";"          {return(maketoken(DELIMITER, SEMICOLON));}
+":"          {return(maketoken(DELIMITER, COLON));}
+"("          {return(maketoken(DELIMITER, LPAREN));}
+")"          {return(maketoken(DELIMITER, RPAREN));}
+"["          {return(maketoken(DELIMITER, LBRACKET));}
+"]"          {return(maketoken(DELIMITER, RBRACKET));}
+".."         {return(maketoken(DELIMITER, DOTDOT));} 
 
 
-"{"       { 
-         while (input() != '}'); 
-      }
+"{"          { 
+              while ( input() != '}');
+               }
 
 "(*"      {
             bool commentEndFound = false;
@@ -194,34 +196,7 @@ int install_id()
   return(IDENTIFIER);
  }
 
-
-
-int install_string(){
-
-   yylval = talloc();   /* Make new token, set yylval to point to it */
-   yylval->tokentype = STRINGTOK;
-
-   char word[16];
-   int letterIndex = 0;
-
-   for(int i = 0; i < yyleng; i++){
-
-      if (i == 0 || i == yyleng - 1 || letterIndex > 14){
-         continue;
-      }
-      word[letterIndex] = yytext[i];
-      letterIndex++;
-      if (yytext[i] == '\''){
-         i++;
-      }
-
-   }
-
-   word[letterIndex] = '\0';
-   strcpy(yylval->stringval, word);
-   return(STRING);
-}
-
+//Helper function to install integer token
  int install_int(){
 
    int integer;
@@ -247,3 +222,33 @@ int install_fnum() {  /* Note -- you may use sscanf for this assignment. */
  }
 
 int yywrap() {  return(1);  }         /* lex may need this. */
+
+
+//Helper function to install string token
+int install_string(){
+
+   yylval = talloc();   /* Make new token, set yylval to point to it */
+   yylval->tokentype = STRINGTOK;
+
+   //Extract the string from the yytext
+   char word[16];
+   int letterIndex = 0;
+
+   for(int i = 0; i < yyleng; i++){
+
+      if (i == 0 || i == yyleng - 1 || letterIndex > 14){
+         continue;
+      }
+      word[letterIndex] = yytext[i];
+      letterIndex++;
+      if (yytext[i] == '\''){
+         i++;
+      }
+
+   }
+
+   //Truncate and assign the string to the token
+   word[letterIndex] = '\0';
+   strcpy(yylval->stringval, word);
+   return(STRING);
+}
