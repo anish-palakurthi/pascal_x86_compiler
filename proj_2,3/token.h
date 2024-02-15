@@ -156,4 +156,4 @@ typedef struct tokn {
 #define WHILE 315
 #define WITH 316
 
-#define YYTOKENTYPE 0
+// #define YYTOKENTYPE 0
