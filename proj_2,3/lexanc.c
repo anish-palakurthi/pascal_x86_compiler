@@ -34,7 +34,7 @@
 extern int CHARCLASS[];
 
 //Reserved words, operators, delimiters
-char *reserved[] = { "array", "begin", "case", "const", "do", "downto", "else", "end", "file", "for",  "function", "goto", "if", "label", "nil", "of", "packed", "procedure", "program", "record", "repeat", "set", "then", "to", "type", "until", "var", "while", "with"};
+char *reservedWords[] = { "array", "begin", "case", "const", "do", "downto", "else", "end", "file", "for",  "function", "goto", "if", "label", "nil", "of", "packed", "procedure", "program", "record", "repeat", "set", "then", "to", "type", "until", "var", "while", "with"};
 
 char *operators[] = { "+", "-", "*", "/", ":=", "=", "<>", "<", "<=", ">=", ">", "^", ".", "and", "or", "not", "div", "mod", "in" };  
 
@@ -139,7 +139,7 @@ TOKEN identifier (TOKEN tok)
   }
 
   //checks if the word is a reserved word
-  res = isInArray(reserved, 29, word);
+  res = isInArray(reservedWords, 29, word);
   if (res != -1) {
     return populateToken(tok, res + 1, RESERVED);
   }
