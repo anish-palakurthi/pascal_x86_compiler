@@ -54,6 +54,7 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
+#include "codegen.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -112,7 +113,7 @@ TOKEN parseresult;
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
              |  functionCall
-             |  FOR assignment TO expr DO statement { $$ = makefor($1, $2, $3, $4, $5, $6); }
+             |  FOR assignment TO expr DO statement { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
              ;
   
   expressionList : expr COMMA expressionList { $$ = cons($1, $3); }
@@ -193,6 +194,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
          dbugprinttok(lhs);
          dbugprinttok(rhs);
        };
+
+    
     return op;
   }
 
@@ -209,16 +212,16 @@ TOKEN makeop(int op){
     return tok;
 }
 
-TOKEN copyToken(TOKEN tok) {
+TOKEN copytok(TOKEN origtok) {
   TOKEN copy = talloc();
-  copy->tokentype = tok->tokentype;
-  copy->basicdt = tok->basicdt;
-  copy->symtype = tok->symtype;
-  copy->symentry = tok->symentry;
-  copy->link = tok->link;
-  copy->whichval = tok->whichval;
-  copy->intval = tok->intval;
-  copy->realval = tok->realval;
+  copy->tokentype = origtok->tokentype;
+  copy->basicdt = origtok->basicdt;
+  copy->symtype = origtok->symtype;
+  copy->symentry = origtok->symentry;
+  copy->link = origtok->link;
+  copy->whichval = origtok->whichval;
+  copy->intval = origtok->intval;
+  copy->realval = origtok->realval;
   if (DEBUG & DB_MAKECOPY) {
     printf("copytok\n");
     dbugprinttok(copy);
@@ -255,11 +258,11 @@ TOKEN makelabel() {
 
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
-TOKEN makegoto(int num){
+TOKEN makegoto(int label){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
   tok->whichval = GOTOOP;
-  tok->operands = makenum(num);
+  tok->operands = makenum(label);
   if (DEBUG && DB_MAKEGOTO) {
       printf("makegoto\n");
       dbugprinttok(tok);
@@ -268,39 +271,39 @@ TOKEN makegoto(int num){
 }
 
 
-TOKEN makefor(TOKEN tok, TOKEN initialAssign, TOKEN expressionTok, TOKEN bodyStatements) {
-    tok = makeprogn(tok, initialAssign);
+TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    tok = makeprogn(tok, assign);
     TOKEN label = makelabel();
     int current = labelnumber - 1;
-    initialAssign->link = label;
+    assign->link = label;
 
-    TOKEN ifTerminate = talloc();
+    TOKEN ifs = talloc();
     TOKEN body = talloc();
-    body = makeprogn(body, bodyStatements);
+    body = makeprogn(body, statements);
 
-    TOKEN loopComp = makeop(LEOP);
-    ifTerminate = makeif(ifTerminate, loopComp, body, NULL);
-    TOKEN loopVar = copytok(initialAssign->operands);
-    TOKEN incrTok = copytok(loopVar);
-    TOKEN rightHand = copytok(loopVar);
-    loopVar->link = expressionTok;
-    loopComp->operands = loopVar;
+    TOKEN leoper = makeop(LEOP);
+    ifs = makeif(ifs, leoper, body, NULL);
+    TOKEN iden = copytok(assign->operands);
+    TOKEN iden2 = copytok(iden);
+    TOKEN iden3 = copytok(iden);
+    iden->link = expr;
+    leoper->operands = iden;
 
-    TOKEN assignment = makeop(ASSIGNOP);
+    TOKEN assgn = makeop(ASSIGNOP);
     TOKEN increment = makeop(PLUSOP);
 
-    rightHand->link=makenum(1);
-    increment->operands=rightHand;
-    incrTok->link=increment;
-    assignment->operands=incrTok;
+    iden3->link=makenum(1);
+    increment->operands=iden3;
+    iden2->link=increment;
+    assgn->operands=iden2;
 
     TOKEN gototok = makegoto(current);
-    assignment->link = gototok;
-    bodyStatements->link = assignment;
+    assgn->link = gototok;
+    statements->link = assgn;
 
-    loopComp->link = body;
-    ifTerminate->operands = loopComp;
-    label->link = ifTerminate;
+    leoper->link = body;
+    ifs->operands = leoper;
+    label->link = ifs;
     if (DEBUG && DB_MAKEFOR) {
          printf("makefor\n");
          dbugprinttok(tok);
@@ -308,29 +311,28 @@ TOKEN makefor(TOKEN tok, TOKEN initialAssign, TOKEN expressionTok, TOKEN bodySta
     return tok;
 }
 
-TOKEN makefuncall(TOKEN tok, TOKEN id, TOKEN args)
+TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
      tok->whichval = FUNCALLOP;
-     tok->operands = id;
-     id->link = args;
+     tok->operands = fn;
+     fn->link = args;
      if (DEBUG & DB_MAKEFUNCALL)
         { printf("makefuncall\n");
           dbugprinttok(tok);
-          dbugprinttok(id);
+          dbugprinttok(fn);
           dbugprinttok(args);
         };
      return tok;
    }
 
-
-TOKEN makeif(TOKEN tok, TOKEN expressionTok, TOKEN thenTok, TOKEN elseTok){
+TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart){
   tok->tokentype = OPERATOR;
   tok->whichval = IFOP;
-  expressionTok->link = thenTok;
-  thenTok->link = elseTok;
-  tok->operands = expressionTok;
-  if (elseTok != NULL) {
-    elseTok->link = NULL;
+  exp->link = thenpart;
+  thenpart->link = elsepart;
+  tok->operands = exp;
+  if (elsepart != NULL) {
+    elsepart->link = NULL;
     }
   if (DEBUG & DB_MAKEIF) {
     printf("makeif\n");
@@ -354,15 +356,16 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
    }
 
 
-TOKEN makeprogram(TOKEN id, TOKEN vars, TOKEN block)
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   {
     TOKEN tok = talloc();
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
-    tok->operands = id;
-    TOKEN args = talloc();
-    id->link = args;
-    args->link = block;
+    tok->operands = name;
+    TOKEN nameArgs = talloc();
+    nameArgs = makeprogn(nameArgs, args);
+    name->link = args;
+    nameArgs->link = statements;
 
     if(DEBUG & DB_MAKEPROGRAM){
       printf("makeprogram\n");
@@ -423,12 +426,12 @@ int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
-    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     printf("yyparse result = %8d\n", res);
+    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);
     ppexpr(parseresult);           /* Pretty-print the result tree */
     /* uncomment following to call code generator. */
-     /* 
+     
     gencode(parseresult, blockoffs[blocknumber], labelnumber);
- */
+ 
   }

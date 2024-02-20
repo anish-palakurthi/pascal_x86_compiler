@@ -123,6 +123,7 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
+#include "codegen.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -131,7 +132,7 @@
 TOKEN parseresult;
 
 
-#line 135 "y.tab.c"
+#line 136 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -680,10 +681,10 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    85,    85,    88,    90,    92,    93,    95,    96,    98,
-     101,   103,   106,   110,   112,   113,   114,   115,   118,   119,
-     121,   123,   124,   126,   127,   129,   131,   132,   134,   135,
-     137,   138,   139,   140,   142
+       0,    86,    86,    89,    91,    93,    94,    96,    97,    99,
+     102,   104,   107,   111,   113,   114,   115,   116,   119,   120,
+     122,   124,   125,   127,   128,   130,   132,   133,   135,   136,
+     138,   139,   140,   141,   143
 };
 #endif
 
@@ -1526,127 +1527,127 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 85 "parse.y"
+#line 86 "parse.y"
                                                                              { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1532 "y.tab.c"
+#line 1533 "y.tab.c"
     break;
 
   case 3:
-#line 89 "parse.y"
+#line 90 "parse.y"
                           { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1538 "y.tab.c"
+#line 1539 "y.tab.c"
     break;
 
   case 4:
-#line 90 "parse.y"
+#line 91 "parse.y"
                           { yyval = cons(yyvsp[0], NULL); }
-#line 1544 "y.tab.c"
+#line 1545 "y.tab.c"
     break;
 
   case 5:
-#line 92 "parse.y"
+#line 93 "parse.y"
                                        { yyval = yyvsp[0]; }
-#line 1550 "y.tab.c"
+#line 1551 "y.tab.c"
     break;
 
   case 9:
-#line 99 "parse.y"
+#line 100 "parse.y"
                       { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1556 "y.tab.c"
+#line 1557 "y.tab.c"
     break;
 
   case 11:
-#line 103 "parse.y"
+#line 104 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1562 "y.tab.c"
+#line 1563 "y.tab.c"
     break;
 
   case 12:
-#line 107 "parse.y"
+#line 108 "parse.y"
               { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1568 "y.tab.c"
+#line 1569 "y.tab.c"
     break;
 
   case 13:
-#line 111 "parse.y"
+#line 112 "parse.y"
                                        { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1574 "y.tab.c"
+#line 1575 "y.tab.c"
     break;
 
   case 14:
-#line 112 "parse.y"
+#line 113 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1580 "y.tab.c"
+#line 1581 "y.tab.c"
     break;
 
   case 17:
-#line 115 "parse.y"
-                                                    { yyval = makefor(yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1586 "y.tab.c"
+#line 116 "parse.y"
+                                                    { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+#line 1587 "y.tab.c"
     break;
 
   case 18:
-#line 118 "parse.y"
+#line 119 "parse.y"
                                              { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1592 "y.tab.c"
+#line 1593 "y.tab.c"
     break;
 
   case 20:
-#line 121 "parse.y"
+#line 122 "parse.y"
                                                          { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1598 "y.tab.c"
+#line 1599 "y.tab.c"
     break;
 
   case 21:
-#line 123 "parse.y"
+#line 124 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1604 "y.tab.c"
+#line 1605 "y.tab.c"
     break;
 
   case 22:
-#line 124 "parse.y"
+#line 125 "parse.y"
                                                { yyval = NULL; }
-#line 1610 "y.tab.c"
+#line 1611 "y.tab.c"
     break;
 
   case 23:
-#line 126 "parse.y"
+#line 127 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1616 "y.tab.c"
+#line 1617 "y.tab.c"
     break;
 
   case 24:
-#line 127 "parse.y"
+#line 128 "parse.y"
                                                { yyval = NULL; }
-#line 1622 "y.tab.c"
+#line 1623 "y.tab.c"
     break;
 
   case 25:
-#line 129 "parse.y"
+#line 130 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1628 "y.tab.c"
+#line 1629 "y.tab.c"
     break;
 
   case 26:
-#line 131 "parse.y"
+#line 132 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1634 "y.tab.c"
+#line 1635 "y.tab.c"
     break;
 
   case 28:
-#line 134 "parse.y"
+#line 135 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1640 "y.tab.c"
+#line 1641 "y.tab.c"
     break;
 
   case 30:
-#line 137 "parse.y"
+#line 138 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1646 "y.tab.c"
+#line 1647 "y.tab.c"
     break;
 
 
-#line 1650 "y.tab.c"
+#line 1651 "y.tab.c"
 
       default: break;
     }
@@ -1878,7 +1879,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 144 "parse.y"
+#line 145 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -1931,6 +1932,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
          dbugprinttok(lhs);
          dbugprinttok(rhs);
        };
+
+    
     return op;
   }
 
@@ -1947,16 +1950,16 @@ TOKEN makeop(int op){
     return tok;
 }
 
-TOKEN copyToken(TOKEN tok) {
+TOKEN copytok(TOKEN origtok) {
   TOKEN copy = talloc();
-  copy->tokentype = tok->tokentype;
-  copy->basicdt = tok->basicdt;
-  copy->symtype = tok->symtype;
-  copy->symentry = tok->symentry;
-  copy->link = tok->link;
-  copy->whichval = tok->whichval;
-  copy->intval = tok->intval;
-  copy->realval = tok->realval;
+  copy->tokentype = origtok->tokentype;
+  copy->basicdt = origtok->basicdt;
+  copy->symtype = origtok->symtype;
+  copy->symentry = origtok->symentry;
+  copy->link = origtok->link;
+  copy->whichval = origtok->whichval;
+  copy->intval = origtok->intval;
+  copy->realval = origtok->realval;
   if (DEBUG & DB_MAKECOPY) {
     printf("copytok\n");
     dbugprinttok(copy);
@@ -1993,11 +1996,11 @@ TOKEN makelabel() {
 
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
-TOKEN makegoto(int num){
+TOKEN makegoto(int label){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
   tok->whichval = GOTOOP;
-  tok->operands = makenum(num);
+  tok->operands = makenum(label);
   if (DEBUG && DB_MAKEGOTO) {
       printf("makegoto\n");
       dbugprinttok(tok);
@@ -2006,39 +2009,39 @@ TOKEN makegoto(int num){
 }
 
 
-TOKEN makefor(TOKEN tok, TOKEN initialAssign, TOKEN expressionTok, TOKEN bodyStatements) {
-    tok = makeprogn(tok, initialAssign);
+TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    tok = makeprogn(tok, assign);
     TOKEN label = makelabel();
     int current = labelnumber - 1;
-    initialAssign->link = label;
+    assign->link = label;
 
-    TOKEN ifTerminate = talloc();
+    TOKEN ifs = talloc();
     TOKEN body = talloc();
-    body = makeprogn(body, bodyStatements);
+    body = makeprogn(body, statements);
 
-    TOKEN loopComp = makeop(LEOP);
-    ifTerminate = makeif(ifTerminate, loopComp, body, NULL);
-    TOKEN loopVar = copytok(initialAssign->operands);
-    TOKEN incrTok = copytok(loopVar);
-    TOKEN rightHand = copytok(loopVar);
-    loopVar->link = expressionTok;
-    loopComp->operands = loopVar;
+    TOKEN leoper = makeop(LEOP);
+    ifs = makeif(ifs, leoper, body, NULL);
+    TOKEN iden = copytok(assign->operands);
+    TOKEN iden2 = copytok(iden);
+    TOKEN iden3 = copytok(iden);
+    iden->link = expr;
+    leoper->operands = iden;
 
-    TOKEN assignment = makeop(ASSIGNOP);
+    TOKEN assgn = makeop(ASSIGNOP);
     TOKEN increment = makeop(PLUSOP);
 
-    rightHand->link=makenum(1);
-    increment->operands=rightHand;
-    incrTok->link=increment;
-    assignment->operands=incrTok;
+    iden3->link=makenum(1);
+    increment->operands=iden3;
+    iden2->link=increment;
+    assgn->operands=iden2;
 
     TOKEN gototok = makegoto(current);
-    assignment->link = gototok;
-    bodyStatements->link = assignment;
+    assgn->link = gototok;
+    statements->link = assgn;
 
-    loopComp->link = body;
-    ifTerminate->operands = loopComp;
-    label->link = ifTerminate;
+    leoper->link = body;
+    ifs->operands = leoper;
+    label->link = ifs;
     if (DEBUG && DB_MAKEFOR) {
          printf("makefor\n");
          dbugprinttok(tok);
@@ -2046,29 +2049,28 @@ TOKEN makefor(TOKEN tok, TOKEN initialAssign, TOKEN expressionTok, TOKEN bodySta
     return tok;
 }
 
-TOKEN makefuncall(TOKEN tok, TOKEN id, TOKEN args)
+TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
      tok->whichval = FUNCALLOP;
-     tok->operands = id;
-     id->link = args;
+     tok->operands = fn;
+     fn->link = args;
      if (DEBUG & DB_MAKEFUNCALL)
         { printf("makefuncall\n");
           dbugprinttok(tok);
-          dbugprinttok(id);
+          dbugprinttok(fn);
           dbugprinttok(args);
         };
      return tok;
    }
 
-
-TOKEN makeif(TOKEN tok, TOKEN expressionTok, TOKEN thenTok, TOKEN elseTok){
+TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart){
   tok->tokentype = OPERATOR;
   tok->whichval = IFOP;
-  expressionTok->link = thenTok;
-  thenTok->link = elseTok;
-  tok->operands = expressionTok;
-  if (elseTok != NULL) {
-    elseTok->link = NULL;
+  exp->link = thenpart;
+  thenpart->link = elsepart;
+  tok->operands = exp;
+  if (elsepart != NULL) {
+    elsepart->link = NULL;
     }
   if (DEBUG & DB_MAKEIF) {
     printf("makeif\n");
@@ -2092,15 +2094,16 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
    }
 
 
-TOKEN makeprogram(TOKEN id, TOKEN vars, TOKEN block)
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   {
     TOKEN tok = talloc();
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
-    tok->operands = id;
-    TOKEN args = talloc();
-    id->link = args;
-    args->link = block;
+    tok->operands = name;
+    TOKEN nameArgs = talloc();
+    nameArgs = makeprogn(nameArgs, args);
+    name->link = args;
+    nameArgs->link = statements;
 
     if(DEBUG & DB_MAKEPROGRAM){
       printf("makeprogram\n");
@@ -2161,12 +2164,12 @@ int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
-    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     printf("yyparse result = %8d\n", res);
+    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);
     ppexpr(parseresult);           /* Pretty-print the result tree */
     /* uncomment following to call code generator. */
-     /* 
+     
     gencode(parseresult, blockoffs[blocknumber], labelnumber);
- */
+ 
   }
