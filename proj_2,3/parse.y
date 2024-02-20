@@ -428,8 +428,13 @@ int main(void)          /*  */
     res = yyparse();
     printf("yyparse result = %8d\n", res);
     printstlevel(1);    /* to see level 0 too, change to:   printst();  */
-    if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);
+    if (DEBUG & DB_PARSERES){ 
+      dbugprinttok(parseresult);
+    }
     ppexpr(parseresult);           /* Pretty-print the result tree */
+
+
+
     /* uncomment following to call code generator. */
      
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
