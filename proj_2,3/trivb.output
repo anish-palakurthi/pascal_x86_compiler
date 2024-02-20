@@ -1,0 +1,5 @@
+yyparse result =        0
+Symbol table level 1
+ 94567909461552           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94567909461648         lim  VAR    0 typ integer  lvl  1  siz     4  off     4
+(program graph1 output)

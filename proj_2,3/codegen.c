@@ -1,4 +1,3 @@
-/* codgen.c       Generate Assembly Code for x86         07 May 18   */
 
 /* Copyright (c) 2018 Gordon S. Novak Jr. and The University of Texas at Austin
     */
@@ -23,7 +22,6 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "token.h"
 #include "symtab.h"
 #include "lexan.h"
 #include "genasm.h"

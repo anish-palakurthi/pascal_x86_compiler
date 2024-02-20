@@ -45,16 +45,16 @@
         /* Yacc reports 1 shift/reduce conflict, due to the ELSE part of
            the IF statement, but Yacc's default resolves it in the right way.*/
 
+#include "codegen.h"
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
-#include "token.h"
+// #include "token.h"
 #include "lexan.h"
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
-#include "codegen.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -154,7 +154,7 @@ TOKEN parseresult;
    To turn on all flags, set DEBUG to the next power of 2, minus 1.
   */
 
-#define DEBUG        31             /* set bits here for debugging, 0 = off  */
+#define DEBUG        0             /* set bits here for debugging, 0 = off  */
 #define DB_CONS       1             /* bit to trace cons */
 #define DB_BINOP      2             /* bit to trace binop */
 #define DB_MAKEIF     4             /* bit to trace makeif */
@@ -432,6 +432,6 @@ int main(void)          /*  */
     ppexpr(parseresult);           /* Pretty-print the result tree */
     /* uncomment following to call code generator. */
      
-    gencode(parseresult, blockoffs[blocknumber], labelnumber);
+    // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
