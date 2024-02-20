@@ -54,7 +54,6 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
-#include "codegen.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -100,10 +99,8 @@ program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { par
                       { instvars($1, $3); }
            ;
   type     :  simpletype
-           | ... 
            ;
   simpletype :  IDENTIFIER   { $$ = findtype($1); }
-          | ... 
           ;  /* $1->symtype returns type */
 
   block    : BEGINBEGIN statement endpart
