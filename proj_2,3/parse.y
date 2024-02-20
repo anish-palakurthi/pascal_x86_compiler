@@ -208,6 +208,13 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
    }
 
 
+TOKEN makeprogram(TOKEN id, TOKEN vars, TOKEN block)
+  {  TOKEN tok = newtoken();
+     tok->tokentype = PROGRAMNODE;
+     tok->operands = cons(id, cons(vars, block));
+     return tok;
+  }
+
 TOKEN findid(TOKEN tok) { /* the ID token */
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
@@ -217,6 +224,13 @@ TOKEN findid(TOKEN tok) { /* the ID token */
       typ->kind == POINTERSYM)
       tok->basicdt = typ->basicdt;
   return tok; 
+}
+
+TOKEN findtype(TOKEN tok){
+  SYMBOL sym = searchst(tok->stringval);
+  tok->symentry = sym;
+  tok->symtype = sym;
+  return tok;
 }
 
 void instvars(TOKEN idlist, TOKEN typetok)
