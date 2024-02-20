@@ -82,9 +82,33 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
+// flagged line
+program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+            ;
+  
+  idlist   :  IDENTIFIER COMMA idlist
+                          { $$ = cons($1, $3); }
+           |  IDENTIFIER  { $$ = cons($1, NULL); }
+           ;
+  vblock   :  VAR varspecs block       { $$ = $3; }
+           |  block
+           ;
+  varspecs :  vargroup SEMICOLON varspecs
+           |  vargroup SEMICOLON
+           ;
+  vargroup :  idlist COLON type
+                      { instvars($1, $3); }
+           ;
+  type     :  simpletype
+           | ... 
+           ;
+  simpletype :  IDENTIFIER   { $$ = findtype($1); }
+          | ... 
+          ;  /* $1->symtype returns type */
 
-program    :  statement DOT  /* change this! */       { parseresult = $1; }
-             ;
+  block    : BEGINBEGIN statement endpart
+              { $$ = makeprogn($1,cons($2, $3)); }
+  
   statement  :  BEGINBEGIN statement endpart
                                        { $$ = makeprogn($1,cons($2, $3)); }
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
@@ -185,6 +209,39 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
        };
      return tok;
    }
+
+
+TOKEN findid(TOKEN tok) { /* the ID token */
+  SYMBOL sym = searchst(tok->stringval);
+  tok->symentry = sym;
+  SYMBOL typ = sym->datatype;
+  tok->symtype = typ;
+  if ( typ->kind == BASICTYPE ||
+      typ->kind == POINTERSYM)
+      tok->basicdt = typ->basicdt;
+  return tok; 
+}
+
+void instvars(TOKEN idlist, TOKEN typetok)
+  {  
+    SYMBOL sym, typesym; int align;
+    typesym = typetok->symtype;
+    align = alignsize(typesym);
+    while ( idlist != NULL )   /* for each id */
+      {  sym = insertsym(idlist->stringval);
+        sym->kind = VARSYM;
+        sym->offset =     /* "next" */
+            wordaddress(blockoffs[blocknumber],
+                        align);
+        sym->size = typesym->size;
+        blockoffs[blocknumber] =   /* "next" */
+                        sym->offset + sym->size;
+        sym->datatype = typesym;
+        sym->basicdt = typesym->basicdt;
+        idlist = idlist->link;
+      };
+  }
+
 
 int wordaddress(int n, int wordsize)
   { return ((n + wordsize - 1) / wordsize) * wordsize; }
