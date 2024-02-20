@@ -155,5 +155,5 @@ typedef struct tokn {
 #define VAR 314
 #define WHILE 315
 #define WITH 316
-
-// #define YYTOKENTYPE 0
+#define thenthen 317                 /* then */
+#define YYTOKENTYPE 0

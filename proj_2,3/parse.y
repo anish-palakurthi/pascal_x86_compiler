@@ -82,7 +82,7 @@ TOKEN parseresult;
 
 %%
 // flagged line
-program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+  program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
             ;
   
   idlist   :  IDENTIFIER COMMA idlist
@@ -106,10 +106,19 @@ program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { par
   block    : BEGINBEGIN statement endpart
               { $$ = makeprogn($1,cons($2, $3)); }
   
+  //flagged line
   statement  :  BEGINBEGIN statement endpart
                                        { $$ = makeprogn($1,cons($2, $3)); }
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
+             |  functionCall
+             |  FOR assignment TO expr DO statement //add make for call here
+             ;
+  
+  expressionList : expr COMMA expressionList { $$ = cons($1, $3); }
+             |  expr
+             ;
+  functionCall : IDENTIFIER LPAREN expressionList RPAREN { $$ = makefuncall($2, $1, $3); }
              ;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
@@ -128,6 +137,7 @@ program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { par
   factor     :  LPAREN expr RPAREN             { $$ = $2; }
              |  variable
              |  NUMBER
+             |  STRING
              ;
   variable   : IDENTIFIER
              ;
@@ -149,6 +159,16 @@ program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { par
 #define DB_MAKEIF     4             /* bit to trace makeif */
 #define DB_MAKEPROGN  8             /* bit to trace makeprogn */
 #define DB_PARSERES  16             /* bit to trace parseresult */
+#define DB_MAKEPROGRAM 5           /* bit to trace makeprogram */
+#define DB_MAKENUM      3
+#define DB_MAKELABEL    3
+#define DB_MAKEOP       3
+#define DB_MAKECOPY     3
+#define DB_MAKEGOTO     3
+#define DB_MAKEFOR      1
+#define DB_MAKEFUNCALL  1
+
+
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
 
@@ -177,6 +197,138 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
        };
     return op;
   }
+
+
+/* makeop makes a new operator token with operator number opnum.
+   Example:  makeop(FLOATOP)  */
+TOKEN makeop(int op){
+    TOKEN tok = talloc();
+    tok->tokentype = OPERATOR;
+    tok->whichval = op;
+    if (DEBUG & DB_MAKEOP) {
+      printf("makeop\n");
+      dbugprinttok(tok);
+    }
+    return tok;
+}
+
+/* copytok makes a new token that is a copy of origtok */
+TOKEN copytok(TOKEN target) {
+  TOKEN copy = talloc();
+  copy->tokentype = target->tokentype;
+  copy->basicdt = target->basicdt;
+  copy->symtype = target->symtype;
+  copy->symentry = target->symentry;
+  copy->link = target->link;
+  copy->whichval = target->whichval;
+  copy->intval = target->intval;
+  copy->realval = target->realval;
+  if (DEBUG & DB_MAKECOPY) {
+    printf("copytok\n");
+    dbugprinttok(copy);
+  }
+  return copy;
+}
+
+
+
+TOKEN makenum(int number) {
+  TOKEN tok = talloc();
+  tok->tokentype = NUMBERTOK;
+  tok->basicdt = INTEGER;
+  tok->intval = number;
+  if (DEBUG & DB_MAKENUM) {
+      printf("makenum\n");
+      dbugprinttok(tok);
+  }
+  return tok;
+}
+
+/* makelabel makes a new label, using labelnumber++ */
+TOKEN makelabel() {
+  TOKEN tok = talloc();
+  tok->tokentype = OPERATOR;
+  tok->whichval = LABELOP;
+  tok->operands = makenum(labelnumber++);
+  if (DEBUG & DB_MAKELABEL) {
+      printf("makelabel\n");
+      dbugprinttok(tok);
+  }
+  return tok;
+}
+
+/* makegoto makes a GOTO operator to go to the specified label.
+   The label number is put into a number token. */
+TOKEN makegoto(int num){
+  TOKEN tok = talloc();
+  tok->tokentype = OPERATOR;
+  tok->whichval = GOTOOP;
+  tok->operands = makenum(num);
+  if (DEBUG && DB_MAKEGOTO) {
+      printf("makegoto\n");
+      dbugprinttok(tok);
+  }
+  return tok;
+}
+
+/* makefor makes structures for a for statement.
+   sign is 1 for normal loop, -1 for downto.
+   asg is an assignment statement, e.g. (:= i 1)
+   endexpr is the end expression
+   tok, tokb and tokc are (now) unused tokens that are recycled. */
+TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    tok = makeprogn(tok, assign);
+    TOKEN label = makelabel();
+    int current = labelnumber - 1;
+    assign->link = label;
+
+    TOKEN ifs = talloc();
+    TOKEN body = talloc();
+    body = makeprogn(body, statements);
+
+    TOKEN leoper = makeop(LEOP);
+    ifs = makeif(ifs, leoper, body, NULL);
+    TOKEN iden = copytok(assign->operands);
+    TOKEN iden2 = copytok(iden);
+    TOKEN iden3 = copytok(iden);
+    iden->link = expr;
+    leoper->operands = iden;
+
+    TOKEN assgn = makeop(ASSIGNOP);
+    TOKEN increment = makeop(PLUSOP);
+
+    iden3->link=makenum(1);
+    increment->operands=iden3;
+    iden2->link=increment;
+    assgn->operands=iden2;
+
+    TOKEN gototok = makegoto(current);
+    assgn->link = gototok;
+    statements->link = assgn;
+
+    leoper->link = body;
+    ifs->operands = leoper;
+    label->link = ifs;
+    if (DEBUG && DB_MAKEFOR) {
+         printf("makefor\n");
+         dbugprinttok(tok);
+    }
+    return tok;
+}
+
+TOKEN makefuncall(TOKEN tok, TOKEN id, TOKEN args)
+  {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
+     tok->whichval = FUNCALLOP;
+     tok->operands = id;
+     id->link = args;
+     if (DEBUG & DB_MAKEFUNCALL)
+        { printf("makefuncall\n");
+          dbugprinttok(tok);
+          dbugprinttok(id);
+          dbugprinttok(args);
+        };
+     return tok;
+   }
 
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
   {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
@@ -209,11 +361,21 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
 
 
 TOKEN makeprogram(TOKEN id, TOKEN vars, TOKEN block)
-  {//   TOKEN tok = talloc();
-  //    tok->tokentype = PROGRAMNODE;
-  //    tok->operands = cons(id, cons(vars, block));
-  //    return tok;
-     return NULL;
+  {
+    TOKEN tok = talloc();
+    tok->tokentype = OPERATOR;
+    tok->whichval = PROGRAMOP;
+    tok->operands = id;
+    TOKEN args = talloc();
+    id->link = args;
+    args->link = block;
+
+    if(DEBUG & DB_MAKEPROGRAM){
+      printf("makeprogram\n");
+      dbugprinttok(tok);
+      dbugprinttok(args);
+    }
+    return tok;
   }
 
 TOKEN findid(TOKEN tok) { /* the ID token */
