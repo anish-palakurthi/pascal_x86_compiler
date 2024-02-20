@@ -44,14 +44,8 @@ int opsize[] = {1, 1, 1, 1, 1, 2, 1, 2, 1, 2,
                   2, 2, 4, 5, 5, 7,
                   4, 7, 5, 3 };
 
-void debugprinttok(TOKEN tok)           /* print a token for debugging */
-  { if (tok == NULL)
-       printf(" token NULL%ld\n", (long)tok);
-     else printf(
-      " token %ld  typ %2d  whic %3d  dty %3d  sty %ld lnk %ld  opnds %ld\n",
-      (long)tok, tok->tokentype, tok->whichval, tok->basicdt,
-      (long)tok->symtype, (long)tok->link, (long)tok->operands);
-  }
+
+
 
 int strlength(char str[])           /* find length of a string */
   {  int i, n;
