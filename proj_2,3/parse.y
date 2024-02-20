@@ -112,7 +112,7 @@ TOKEN parseresult;
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
              |  functionCall
-             |  FOR assignment TO expr DO statement //add make for call here
+             |  FOR assignment TO expr DO statement { $$ = makefor($1, $2, $3, $4, $5, $6); }
              ;
   
   expressionList : expr COMMA expressionList { $$ = cons($1, $3); }
@@ -168,8 +168,6 @@ TOKEN parseresult;
 #define DB_MAKEFOR      1
 #define DB_MAKEFUNCALL  1
 
-
-
  int labelnumber = 0;  /* sequential counter for internal label numbers */
 
    /*  Note: you should add to the above values and insert debugging
@@ -199,8 +197,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   }
 
 
-/* makeop makes a new operator token with operator number opnum.
-   Example:  makeop(FLOATOP)  */
+
 TOKEN makeop(int op){
     TOKEN tok = talloc();
     tok->tokentype = OPERATOR;
@@ -212,17 +209,16 @@ TOKEN makeop(int op){
     return tok;
 }
 
-/* copytok makes a new token that is a copy of origtok */
-TOKEN copytok(TOKEN target) {
+TOKEN copyToken(TOKEN tok) {
   TOKEN copy = talloc();
-  copy->tokentype = target->tokentype;
-  copy->basicdt = target->basicdt;
-  copy->symtype = target->symtype;
-  copy->symentry = target->symentry;
-  copy->link = target->link;
-  copy->whichval = target->whichval;
-  copy->intval = target->intval;
-  copy->realval = target->realval;
+  copy->tokentype = tok->tokentype;
+  copy->basicdt = tok->basicdt;
+  copy->symtype = tok->symtype;
+  copy->symentry = tok->symentry;
+  copy->link = tok->link;
+  copy->whichval = tok->whichval;
+  copy->intval = tok->intval;
+  copy->realval = tok->realval;
   if (DEBUG & DB_MAKECOPY) {
     printf("copytok\n");
     dbugprinttok(copy);
@@ -232,11 +228,11 @@ TOKEN copytok(TOKEN target) {
 
 
 
-TOKEN makenum(int number) {
+TOKEN makenum(int num) {
   TOKEN tok = talloc();
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
-  tok->intval = number;
+  tok->intval = num;
   if (DEBUG & DB_MAKENUM) {
       printf("makenum\n");
       dbugprinttok(tok);
@@ -271,44 +267,40 @@ TOKEN makegoto(int num){
   return tok;
 }
 
-/* makefor makes structures for a for statement.
-   sign is 1 for normal loop, -1 for downto.
-   asg is an assignment statement, e.g. (:= i 1)
-   endexpr is the end expression
-   tok, tokb and tokc are (now) unused tokens that are recycled. */
-TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
-    tok = makeprogn(tok, assign);
+
+TOKEN makefor(TOKEN tok, TOKEN initialAssign, TOKEN expressionTok, TOKEN bodyStatements) {
+    tok = makeprogn(tok, initialAssign);
     TOKEN label = makelabel();
     int current = labelnumber - 1;
-    assign->link = label;
+    initialAssign->link = label;
 
-    TOKEN ifs = talloc();
+    TOKEN ifTerminate = talloc();
     TOKEN body = talloc();
-    body = makeprogn(body, statements);
+    body = makeprogn(body, bodyStatements);
 
-    TOKEN leoper = makeop(LEOP);
-    ifs = makeif(ifs, leoper, body, NULL);
-    TOKEN iden = copytok(assign->operands);
-    TOKEN iden2 = copytok(iden);
-    TOKEN iden3 = copytok(iden);
-    iden->link = expr;
-    leoper->operands = iden;
+    TOKEN loopComp = makeop(LEOP);
+    ifTerminate = makeif(ifTerminate, loopComp, body, NULL);
+    TOKEN loopVar = copytok(initialAssign->operands);
+    TOKEN incrTok = copytok(loopVar);
+    TOKEN rightHand = copytok(loopVar);
+    loopVar->link = expressionTok;
+    loopComp->operands = loopVar;
 
-    TOKEN assgn = makeop(ASSIGNOP);
+    TOKEN assignment = makeop(ASSIGNOP);
     TOKEN increment = makeop(PLUSOP);
 
-    iden3->link=makenum(1);
-    increment->operands=iden3;
-    iden2->link=increment;
-    assgn->operands=iden2;
+    rightHand->link=makenum(1);
+    increment->operands=rightHand;
+    incrTok->link=increment;
+    assignment->operands=incrTok;
 
     TOKEN gototok = makegoto(current);
-    assgn->link = gototok;
-    statements->link = assgn;
+    assignment->link = gototok;
+    bodyStatements->link = assignment;
 
-    leoper->link = body;
-    ifs->operands = leoper;
-    label->link = ifs;
+    loopComp->link = body;
+    ifTerminate->operands = loopComp;
+    label->link = ifTerminate;
     if (DEBUG && DB_MAKEFOR) {
          printf("makefor\n");
          dbugprinttok(tok);
@@ -330,22 +322,24 @@ TOKEN makefuncall(TOKEN tok, TOKEN id, TOKEN args)
      return tok;
    }
 
-TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
-  {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
-     tok->whichval = IFOP;
-     if (elsepart != NULL) elsepart->link = NULL;
-     thenpart->link = elsepart;
-     exp->link = thenpart;
-     tok->operands = exp;
-     if (DEBUG & DB_MAKEIF)
-        { printf("makeif\n");
-          dbugprinttok(tok);
-          dbugprinttok(exp);
-          dbugprinttok(thenpart);
-          dbugprinttok(elsepart);
-        };
-     return tok;
-   }
+
+TOKEN makeif(TOKEN tok, TOKEN expressionTok, TOKEN thenTok, TOKEN elseTok){
+  tok->tokentype = OPERATOR;
+  tok->whichval = IFOP;
+  expressionTok->link = thenTok;
+  thenTok->link = elseTok;
+  tok->operands = expressionTok;
+  if (elseTok != NULL) {
+    elseTok->link = NULL;
+    }
+  if (DEBUG & DB_MAKEIF) {
+    printf("makeif\n");
+    dbugprinttok(tok);
+
+  }
+  return tok;
+
+}
 
 TOKEN makeprogn(TOKEN tok, TOKEN statements)
   {  tok->tokentype = OPERATOR;
