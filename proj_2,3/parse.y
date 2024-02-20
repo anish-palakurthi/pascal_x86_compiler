@@ -11,7 +11,7 @@
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation; either version 2 of the License, or
 ; (at your option) any later version.
-
+ 
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -209,10 +209,11 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
 
 
 TOKEN makeprogram(TOKEN id, TOKEN vars, TOKEN block)
-  {  TOKEN tok = newtoken();
-     tok->tokentype = PROGRAMNODE;
-     tok->operands = cons(id, cons(vars, block));
-     return tok;
+  {//   TOKEN tok = talloc();
+  //    tok->tokentype = PROGRAMNODE;
+  //    tok->operands = cons(id, cons(vars, block));
+  //    return tok;
+     return NULL;
   }
 
 TOKEN findid(TOKEN tok) { /* the ID token */
