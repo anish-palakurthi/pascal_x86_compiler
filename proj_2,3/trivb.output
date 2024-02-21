@@ -1,5 +1,74 @@
-yyparse result =        0
+cons
+ token 94293189389296  ID        output  dtype  0  link 0
+ token 0  NULL
+cons
+ token 94293189397888  ID           lim  dtype  0  link 0
+ token 0  NULL
+cons
+ token 94293189397760  ID             i  dtype  0  link 94293189397888
+ token 94293189397888  ID           lim  dtype  0  link 0
+binop
+ token 94293189398464  OP            :=  dtype  0  link 0  operands 94293189398400
+ token 94293189398400  ID           lim  dtype  0  link 94293189398528
+ token 94293189398528  NUM            7  dtype  0  link 0
+binop
+ token 94293189398784  OP            :=  dtype  0  link 0  operands 94293189398720
+ token 94293189398720  ID             i  dtype  0  link 94293189398848
+ token 94293189398848  NUM            0  dtype  0  link 0
+makefuncall
+ token 94293189399168  OP       funcall  dtype  0  link 0  operands 94293189399104
+ token 94293189399104  ID       writeln  dtype  0  link 94293189399232
+ token 94293189399232  STR            *  dtype  0  link 0
+makeprogn
+ token 94293189398656  OP         progn  dtype  0  link 0  operands 94293189398784
+ token 94293189398784  OP            :=  dtype  0  link 0  operands 94293189398720
+makenum
+ token 94293189399424  NUM            0  dtype  0  link 0
+makelabel
+ token 94293189399360  OP         label  dtype  0  link 0  operands 94293189399424
+makeprogn
+ token 94293189399552  OP         progn  dtype  0  link 0  operands 94293189399168
+ token 94293189399168  OP       funcall  dtype  0  link 0  operands 94293189399104
+makeop
+ token 94293189399616  OP            <=  dtype  0  link 0  operands 0
+makeif
+ token 94293189399488  OP            if  dtype  0  link 0  operands 94293189399616
+copytok
+ token 94293189399680  ID             i  dtype  0  link 94293189398848
+copytok
+ token 94293189399744  ID             i  dtype  0  link 94293189398848
+copytok
+ token 94293189399808  ID             i  dtype  0  link 94293189398848
+makeop
+ token 94293189399872  OP            :=  dtype  0  link 0  operands 0
+makeop
+ token 94293189399936  OP             +  dtype  0  link 0  operands 0
+makenum
+ token 94293189400000  NUM            1  dtype  0  link 0
+makenum
+ token 94293189400128  NUM            0  dtype  0  link 0
+makegoto
+ token 94293189400064  OP          goto  dtype  0  link 0  operands 94293189400128
+makefor
+ token 94293189398656  OP         progn  dtype  0  link 0  operands 94293189398784
+cons
+ token 94293189398656  OP         progn  dtype  0  link 0  operands 94293189398784
+ token 0  NULL
+cons
+ token 94293189398464  OP            :=  dtype  0  link 94293189398656  operands 94293189398400
+ token 94293189398656  OP         progn  dtype  0  link 0  operands 94293189398784
+makeprogn
+ token 94293189398336  OP         progn  dtype  0  link 0  operands 94293189398464
+ token 94293189398464  OP            :=  dtype  0  link 94293189398656  operands 94293189398400
+makeprogn
+ token 94293189400384  OP         progn  dtype  0  link 0  operands 94293189389296
+ token 94293189389296  ID        output  dtype  0  link 0
+makeprogram
+ token 94293189400320  OP       program  dtype  0  link 0  operands 94293189389168
+ token 94293189389296  ID        output  dtype  0  link 0
 Symbol table level 1
- 93836264431152           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 93836264431248         lim  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94293189398080           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94293189398176         lim  VAR    0 typ integer  lvl  1  siz     4  off     4
+yyparse result =        0
+ token 94293189400320  OP       program  dtype  0  link 0  operands 94293189389168
 (program graph1 output)

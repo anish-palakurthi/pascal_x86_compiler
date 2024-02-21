@@ -1892,18 +1892,18 @@ yyreturn:
    To turn on all flags, set DEBUG to the next power of 2, minus 1.
   */
 
-#define DEBUG        0             /* set bits here for debugging, 0 = off  */
+#define DEBUG        1            /* set bits here for debugging, 0 = off  */
 #define DB_CONS       1             /* bit to trace cons */
-#define DB_BINOP      2             /* bit to trace binop */
-#define DB_MAKEIF     4             /* bit to trace makeif */
-#define DB_MAKEPROGN  8             /* bit to trace makeprogn */
-#define DB_PARSERES  16             /* bit to trace parseresult */
-#define DB_MAKEPROGRAM 5           /* bit to trace makeprogram */
-#define DB_MAKENUM      3
-#define DB_MAKELABEL    3
-#define DB_MAKEOP       3
-#define DB_MAKECOPY     3
-#define DB_MAKEGOTO     3
+#define DB_BINOP      1             /* bit to trace binop */
+#define DB_MAKEIF     1             /* bit to trace makeif */
+#define DB_MAKEPROGN  1             /* bit to trace makeprogn */
+#define DB_PARSERES  1             /* bit to trace parseresult */
+#define DB_MAKEPROGRAM 1           /* bit to trace makeprogram */
+#define DB_MAKENUM      1
+#define DB_MAKELABEL    1
+#define DB_MAKEOP       1
+#define DB_MAKECOPY     1
+#define DB_MAKEGOTO     1
 #define DB_MAKEFOR      1
 #define DB_MAKEFUNCALL  1
 
@@ -2085,6 +2085,7 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
   {  tok->tokentype = OPERATOR;
      tok->whichval = PROGNOP;
      tok->operands = statements;
+
      if (DEBUG & DB_MAKEPROGN)
        { printf("makeprogn\n");
          dbugprinttok(tok);
@@ -2164,8 +2165,9 @@ int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
-    printf("yyparse result = %8d\n", res);
     printstlevel(1);    /* to see level 0 too, change to:   printst();  */
+    printf("yyparse result = %8d\n", res);
+
     if (DEBUG & DB_PARSERES){ 
       dbugprinttok(parseresult);
     }
