@@ -195,7 +195,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     return op;
   }
 
-
+//method to duplicate an input token
 TOKEN copytok(TOKEN origtok) {
   TOKEN copy = talloc();
   copy->tokentype = origtok->tokentype;
@@ -213,7 +213,7 @@ TOKEN copytok(TOKEN origtok) {
   return copy;
 }
 
-
+//helper to create an operator token of specific op type
 TOKEN makeOperatorTok(int op){
     TOKEN tok = talloc();
     tok->whichval = op;
@@ -225,7 +225,7 @@ TOKEN makeOperatorTok(int op){
     return tok;
 }
 
-
+//helper method to create a number token
 TOKEN makeNumTok(int num) {
   TOKEN tok = talloc();
   tok->intval = num;
@@ -240,8 +240,7 @@ TOKEN makeNumTok(int num) {
 
 
 
-//!!!
-
+//method for handling for loop logic
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
     // Initial assignment and progn creation for the loop
     tok = makeprogn(tok, assign);
@@ -303,7 +302,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     return tok;
 }
 
-
+//method to create a function call token
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  
      fn->link = args;
@@ -320,6 +319,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      return tok;
    }
 
+//method to create an if token
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
   {  tok->tokentype = OPERATOR;  
      tok->whichval = IFOP;
@@ -339,6 +339,7 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
      return tok;
    }
 
+//method to create a progn token
 TOKEN makeprogn(TOKEN tok, TOKEN statements)
   {  tok->tokentype = OPERATOR;
      tok->whichval = PROGNOP;
@@ -351,7 +352,7 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
      return tok;
    }
 
-
+//method to create a program token
 TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   {
     TOKEN tok = talloc();
@@ -371,6 +372,7 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     return tok;
   }
 
+//method to find the symbol entry of specified toke
 TOKEN findid(TOKEN tok) { /* the ID token */
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
@@ -382,6 +384,7 @@ TOKEN findid(TOKEN tok) { /* the ID token */
   return tok; 
 }
 
+//method to find the type of a token in symbol table
 TOKEN findtype(TOKEN tok){
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
@@ -389,6 +392,7 @@ TOKEN findtype(TOKEN tok){
   return tok;
 }
 
+//method to insert symbols into symbol table
 void instvars(TOKEN idlist, TOKEN typetok)
   {  
     SYMBOL sym, typesym; int align;
@@ -426,16 +430,12 @@ int main(void)          /*  */
 
     printstlevel(1);    /* to see level 0 too, change to:   printst();  */
 
-
     if (DEBUG & DB_PARSERES){ 
 
       dbugprinttok(parseresult);
     }
 
-    
     ppexpr(parseresult);           /* Pretty-print the result tree */
-
-
 
     /* uncomment following to call code generator. */
      
