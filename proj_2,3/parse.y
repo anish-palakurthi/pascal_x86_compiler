@@ -50,7 +50,6 @@
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
-// #include "token.h"
 #include "lexan.h"
 #include "symtab.h"
 #include "pprint.h"
@@ -83,7 +82,7 @@ TOKEN parseresult;
 
 %%
 // flagged line
-  program    :  PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+  program   : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
             ;
   
   idlist   :  IDENTIFIER COMMA idlist
@@ -232,6 +231,7 @@ TOKEN copytok(TOKEN origtok) {
 
 
 TOKEN makenum(int num) {
+  
   TOKEN tok = talloc();
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
@@ -365,7 +365,7 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     tok->operands = name;
     TOKEN nameArgs = talloc();
     nameArgs = makeprogn(nameArgs, args);
-    name->link = args;
+    name->link = nameArgs;
     nameArgs->link = statements;
 
     if(DEBUG & DB_MAKEPROGRAM){
@@ -430,10 +430,17 @@ int main(void)          /*  */
     printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     printf("yyparse result = %8d\n", res);
 
-    if (DEBUG & DB_PARSERES){ 
+
+    if (DEBUG & DB_PARSERES & (long)parseresult != 0){ 
+      printf("parseresult is NOT NULL\n");
+
       dbugprinttok(parseresult);
     }
-    parseresult->
+    else{
+      printf("parseresult is NULL\n");
+    
+    }
+    
     ppexpr(parseresult);           /* Pretty-print the result tree */
 
 

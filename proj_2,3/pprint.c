@@ -156,9 +156,11 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 void ppexpr(TOKEN tok)       /* pretty-print an expression in prefix form */
   { if ( (long) tok <= 0 )
       { printf("ppexpr called with bad pointer %ld\n", (long)tok);
+      dbugprinttok(tok);
 	return; };
     printexpr(tok, 0);
-    printf("\n");
+
+    printf("ppexpr not null passed\n");
   }
 
 TOKEN debugtoken = NULL;    /* dummy op for printing a list */

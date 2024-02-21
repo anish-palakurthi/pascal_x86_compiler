@@ -119,7 +119,6 @@
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
-// #include "token.h"
 #include "lexan.h"
 #include "symtab.h"
 #include "pprint.h"
@@ -132,7 +131,7 @@
 TOKEN parseresult;
 
 
-#line 136 "y.tab.c"
+#line 135 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -681,10 +680,10 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    86,    86,    89,    91,    93,    94,    96,    97,    99,
-     102,   104,   107,   111,   113,   114,   115,   116,   119,   120,
-     122,   124,   125,   127,   128,   130,   132,   133,   135,   136,
-     138,   139,   140,   141,   143
+       0,    85,    85,    88,    90,    92,    93,    95,    96,    98,
+     101,   103,   106,   110,   112,   113,   114,   115,   118,   119,
+     121,   123,   124,   126,   127,   129,   131,   132,   134,   135,
+     137,   138,   139,   140,   142
 };
 #endif
 
@@ -1527,127 +1526,127 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 86 "parse.y"
-                                                                             { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1533 "y.tab.c"
+#line 85 "parse.y"
+                                                                           { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
+#line 1532 "y.tab.c"
     break;
 
   case 3:
-#line 90 "parse.y"
+#line 89 "parse.y"
                           { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1539 "y.tab.c"
+#line 1538 "y.tab.c"
     break;
 
   case 4:
-#line 91 "parse.y"
+#line 90 "parse.y"
                           { yyval = cons(yyvsp[0], NULL); }
-#line 1545 "y.tab.c"
+#line 1544 "y.tab.c"
     break;
 
   case 5:
-#line 93 "parse.y"
+#line 92 "parse.y"
                                        { yyval = yyvsp[0]; }
-#line 1551 "y.tab.c"
+#line 1550 "y.tab.c"
     break;
 
   case 9:
-#line 100 "parse.y"
+#line 99 "parse.y"
                       { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1557 "y.tab.c"
+#line 1556 "y.tab.c"
     break;
 
   case 11:
-#line 104 "parse.y"
+#line 103 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1563 "y.tab.c"
+#line 1562 "y.tab.c"
     break;
 
   case 12:
-#line 108 "parse.y"
+#line 107 "parse.y"
               { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1569 "y.tab.c"
+#line 1568 "y.tab.c"
     break;
 
   case 13:
-#line 112 "parse.y"
+#line 111 "parse.y"
                                        { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1575 "y.tab.c"
+#line 1574 "y.tab.c"
     break;
 
   case 14:
-#line 113 "parse.y"
+#line 112 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1581 "y.tab.c"
+#line 1580 "y.tab.c"
     break;
 
   case 17:
-#line 116 "parse.y"
+#line 115 "parse.y"
                                                     { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1587 "y.tab.c"
+#line 1586 "y.tab.c"
     break;
 
   case 18:
-#line 119 "parse.y"
+#line 118 "parse.y"
                                              { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1593 "y.tab.c"
+#line 1592 "y.tab.c"
     break;
 
   case 20:
-#line 122 "parse.y"
+#line 121 "parse.y"
                                                          { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1599 "y.tab.c"
+#line 1598 "y.tab.c"
     break;
 
   case 21:
-#line 124 "parse.y"
+#line 123 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1605 "y.tab.c"
+#line 1604 "y.tab.c"
     break;
 
   case 22:
-#line 125 "parse.y"
+#line 124 "parse.y"
                                                { yyval = NULL; }
-#line 1611 "y.tab.c"
+#line 1610 "y.tab.c"
     break;
 
   case 23:
-#line 127 "parse.y"
+#line 126 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1617 "y.tab.c"
+#line 1616 "y.tab.c"
     break;
 
   case 24:
-#line 128 "parse.y"
+#line 127 "parse.y"
                                                { yyval = NULL; }
-#line 1623 "y.tab.c"
+#line 1622 "y.tab.c"
     break;
 
   case 25:
-#line 130 "parse.y"
+#line 129 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1629 "y.tab.c"
+#line 1628 "y.tab.c"
     break;
 
   case 26:
-#line 132 "parse.y"
+#line 131 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1635 "y.tab.c"
+#line 1634 "y.tab.c"
     break;
 
   case 28:
-#line 135 "parse.y"
+#line 134 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1641 "y.tab.c"
+#line 1640 "y.tab.c"
     break;
 
   case 30:
-#line 138 "parse.y"
+#line 137 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1647 "y.tab.c"
+#line 1646 "y.tab.c"
     break;
 
 
-#line 1651 "y.tab.c"
+#line 1650 "y.tab.c"
 
       default: break;
     }
@@ -1879,7 +1878,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 145 "parse.y"
+#line 144 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -1970,6 +1969,7 @@ TOKEN copytok(TOKEN origtok) {
 
 
 TOKEN makenum(int num) {
+  
   TOKEN tok = talloc();
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
@@ -2103,7 +2103,7 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     tok->operands = name;
     TOKEN nameArgs = talloc();
     nameArgs = makeprogn(nameArgs, args);
-    name->link = args;
+    name->link = nameArgs;
     nameArgs->link = statements;
 
     if(DEBUG & DB_MAKEPROGRAM){
@@ -2168,9 +2168,17 @@ int main(void)          /*  */
     printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     printf("yyparse result = %8d\n", res);
 
-    if (DEBUG & DB_PARSERES){ 
+
+    if (DEBUG & DB_PARSERES & (long)parseresult != 0){ 
+      printf("parseresult is NOT NULL\n");
+
       dbugprinttok(parseresult);
     }
+    else{
+      printf("parseresult is NULL\n");
+    
+    }
+    
     ppexpr(parseresult);           /* Pretty-print the result tree */
 
 
