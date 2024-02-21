@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94771150863920           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94771150864016         lim  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94297352244784           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94297352244880         lim  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (:= lim 7)
                        (progn (:= i 0)

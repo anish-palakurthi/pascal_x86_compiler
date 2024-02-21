@@ -1983,19 +1983,6 @@ TOKEN makeNumTok(int num) {
 
 
 //!!!
-TOKEN makegoto(int label){
-  TOKEN tok = talloc();
-  tok->tokentype = OPERATOR;
-  tok->whichval = GOTOOP;
-  tok->operands = makeNumTok(label);
-  if (DEBUG && DB_MAKEGOTO) {
-      printf("makegoto\n");
-      dbugprinttok(tok);
-  }
-  return tok;
-}
-
-//!!!
 
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
     tok = makeprogn(tok, assign);
@@ -2026,7 +2013,11 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     iden2->link=increment;
     assgn->operands=iden2;
 
-    TOKEN gototok = makegoto(current);
+    TOKEN gototok = talloc();
+    gototok->tokentype = OPERATOR;
+    gototok->whichval = GOTOOP;
+    gototok->operands = makeNumTok(current);
+
     assgn->link = gototok;
     statements->link = assgn;
 
