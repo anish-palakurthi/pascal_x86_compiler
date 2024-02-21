@@ -1936,8 +1936,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   }
 
 
-
-
 TOKEN copytok(TOKEN origtok) {
   TOKEN copy = talloc();
   copy->tokentype = origtok->tokentype;
@@ -1985,51 +1983,66 @@ TOKEN makeNumTok(int num) {
 //!!!
 
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    // Initial assignment and progn creation for the loop
     tok = makeprogn(tok, assign);
-    TOKEN label = talloc();
-    label->tokentype = OPERATOR;
-    label->whichval = LABELOP;
-    label->operands = makeNumTok(labelnumber++);
-    int current = labelnumber - 1;
-    assign->link = label;
 
-    TOKEN ifs = talloc();
-    TOKEN body = talloc();
-    body = makeprogn(body, statements);
+    // Setting up the loop label for iteration control
+    TOKEN loopLabel = talloc();
+    loopLabel->tokentype = OPERATOR;
+    loopLabel->whichval = LABELOP;
+    loopLabel->operands = makeNumTok(labelnumber++);
 
-    TOKEN leoper = makeOperatorTok(LEOP);
-    ifs = makeif(ifs, leoper, body, NULL);
-    TOKEN iden = copytok(assign->operands);
-    TOKEN iden2 = copytok(iden);
-    TOKEN iden3 = copytok(iden);
-    iden->link = expr;
-    leoper->operands = iden;
+    // Linking the loop initialization to the label
+    assign->link = loopLabel;
 
-    TOKEN assgn = makeOperatorTok(ASSIGNOP);
-    TOKEN increment = makeOperatorTok(PLUSOP);
+    // Preparing the loop body
+    TOKEN loopBody = talloc();
+    loopBody = makeprogn(loopBody, statements);
 
-    iden3->link=makeNumTok(1);
-    increment->operands=iden3;
-    iden2->link=increment;
-    assgn->operands=iden2;
+    // Creating the conditional check for the loop
+    TOKEN conditional = talloc();
+    TOKEN leOperator = makeOperatorTok(LEOP);
+    conditional = makeif(conditional, leOperator, loopBody, NULL);
 
-    TOKEN gototok = talloc();
-    gototok->tokentype = OPERATOR;
-    gototok->whichval = GOTOOP;
-    gototok->operands = makeNumTok(current);
+    // Handling the loop variable and its increment
+    TOKEN varCopy = copytok(assign->operands);
+    TOKEN incrementVar = copytok(varCopy);
+    TOKEN incrementStep = copytok(varCopy);
+    varCopy->link = expr;
+    leOperator->operands = varCopy;
 
-    assgn->link = gototok;
-    statements->link = assgn;
+    TOKEN incrementAssign = makeOperatorTok(ASSIGNOP);
+    TOKEN incrementOp = makeOperatorTok(PLUSOP);
 
-    leoper->link = body;
-    ifs->operands = leoper;
-    label->link = ifs;
+    incrementStep->link = makeNumTok(1);
+    incrementOp->operands = incrementStep;
+    incrementVar->link = incrementOp;
+    incrementAssign->operands = incrementVar;
+
+    // Setting up the goto operation for loop continuation
+    TOKEN gotoOperation = talloc();
+    gotoOperation->tokentype = OPERATOR;
+    gotoOperation->whichval = GOTOOP;
+    gotoOperation->operands = makeNumTok(labelnumber - 1);
+
+    // Linking the increment operation and the goto for the loop's next iteration
+    incrementAssign->link = gotoOperation;
+    statements->link = incrementAssign;
+
+    // Final assembly of the loop's conditional and body components
+    leOperator->link = loopBody;
+    conditional->operands = leOperator;
+    loopLabel->link = conditional;
+
+    // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
-         printf("makefor\n");
-         dbugprinttok(tok);
+        printf("Refactored makefor\n");
+        dbugprinttok(tok);
     }
+
     return tok;
 }
+
 
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  
