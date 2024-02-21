@@ -181,6 +181,7 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
     return item;
   }
 
+
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   { op->operands = lhs;          /* link operands to operator       */
     lhs->link = rhs;             /* link second operand to first    */
@@ -239,7 +240,6 @@ TOKEN makeNumTok(int num) {
 }
 
 
-
 //method for handling for loop logic
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
     // Initial assignment and progn creation for the loop
@@ -247,9 +247,9 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
 
     // Setting up the loop label for iteration control
     TOKEN loopLabel = talloc();
+    loopLabel->operands = makeNumTok(labelnumber++);
     loopLabel->tokentype = OPERATOR;
     loopLabel->whichval = LABELOP;
-    loopLabel->operands = makeNumTok(labelnumber++);
 
     // Linking the loop initialization to the label
     assign->link = loopLabel;
@@ -259,39 +259,40 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     loopBody = makeprogn(loopBody, statements);
 
     // Creating the conditional check for the loop
-    TOKEN conditional = talloc();
     TOKEN leOperator = makeOperatorTok(LEOP);
+    TOKEN conditional = talloc();
     conditional = makeif(conditional, leOperator, loopBody, NULL);
 
     // Handling the loop variable and its increment
     TOKEN varCopy = copytok(assign->operands);
-    TOKEN incrementVar = copytok(varCopy);
-    TOKEN incrementStep = copytok(varCopy);
     varCopy->link = expr;
     leOperator->operands = varCopy;
 
-    TOKEN incrementAssign = makeOperatorTok(ASSIGNOP);
-    TOKEN incrementOp = makeOperatorTok(PLUSOP);
+    TOKEN incrementStep = copytok(varCopy);
+    TOKEN incrementVar = copytok(varCopy);
 
-    incrementStep->link = makeNumTok(1);
+    TOKEN incrementOp = makeOperatorTok(PLUSOP);
+    TOKEN incrementAssign = makeOperatorTok(ASSIGNOP);
+
     incrementOp->operands = incrementStep;
     incrementVar->link = incrementOp;
+    incrementStep->link = makeNumTok(1);
     incrementAssign->operands = incrementVar;
 
     // Setting up the goto operation for loop continuation
     TOKEN gotoOperation = talloc();
-    gotoOperation->tokentype = OPERATOR;
-    gotoOperation->whichval = GOTOOP;
     gotoOperation->operands = makeNumTok(labelnumber - 1);
+    gotoOperation->whichval = GOTOOP;
+    gotoOperation->tokentype = OPERATOR;
 
     // Linking the increment operation and the goto for the loop's next iteration
-    incrementAssign->link = gotoOperation;
     statements->link = incrementAssign;
+    incrementAssign->link = gotoOperation;
 
     // Final assembly of the loop's conditional and body components
+    loopLabel->link = conditional;
     leOperator->link = loopBody;
     conditional->operands = leOperator;
-    loopLabel->link = conditional;
 
     // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
