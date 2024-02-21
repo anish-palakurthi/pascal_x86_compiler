@@ -160,7 +160,6 @@ void ppexpr(TOKEN tok)       /* pretty-print an expression in prefix form */
 	return; };
     printexpr(tok, 0);
 
-    printf("ppexpr not null passed\n");
   }
 
 TOKEN debugtoken = NULL;    /* dummy op for printing a list */

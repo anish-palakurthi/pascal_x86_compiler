@@ -153,7 +153,7 @@ TOKEN parseresult;
    To turn on all flags, set DEBUG to the next power of 2, minus 1.
   */
 
-#define DEBUG        1            /* set bits here for debugging, 0 = off  */
+#define DEBUG        0            /* set bits here for debugging, 0 = off  */
 #define DB_CONS       1             /* bit to trace cons */
 #define DB_BINOP      1             /* bit to trace binop */
 #define DB_MAKEIF     1             /* bit to trace makeif */
@@ -427,19 +427,16 @@ int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
-    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
     printf("yyparse result = %8d\n", res);
 
+    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
 
-    if (DEBUG & DB_PARSERES & (long)parseresult != 0){ 
-      printf("parseresult is NOT NULL\n");
+
+    if (DEBUG & DB_PARSERES){ 
 
       dbugprinttok(parseresult);
     }
-    else{
-      printf("parseresult is NULL\n");
-    
-    }
+
     
     ppexpr(parseresult);           /* Pretty-print the result tree */
 
