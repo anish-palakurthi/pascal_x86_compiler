@@ -133,19 +133,42 @@ TOKEN parseresult;
              ;
   assignment :  variable ASSIGN expr           { $$ = binop($2, $1, $3); }
              ;
-  expr       :  expr PLUS term                 { $$ = binop($2, $1, $3); }
-             |  expr MINUS term                { $$ = binop($2, $1, $3); }
-             |  expr TIMES term                { $$ = binop($2, $1, $3); }
-             |  expr DIVIDE term               { $$ = binop($2, $1, $3); }
-             |  term 
+
+  expr       :  basicExpr EQ basicExpr                 { $$ = binop($2, $1, $3); }
+             |  basicExpr LT basicExpr                { $$ = binop($2, $1, $3); }
+             |  basicExpr GT basicExpr                { $$ = binop($2, $1, $3); }
+             |  basicExpr NE basicExpr             { $$ = binop($2, $1, $3); }
+             |  basicExpr LE basicExpr             { $$ = binop($2, $1, $3); }
+             |  basicExpr GE basicExpr             { $$ = binop($2, $1, $3); }
+             |  basicExpr IN basicExpr             { $$ = binop($2, $1, $3); }
+             |  basicExpr                          { $$ = $1;} 
              ;
-  term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
+
+  term       :  factor TIMES factor              { $$ = binop($2, $1, $3); }
+             |  factor DIVIDE factor             { $$ = binop($2, $1, $3); }
+             |  factor MOD factor                { $$ = binop($2, $1, $3); }
+             |  factor DIV factor                { $$ = binop($2, $1, $3); }
+             |  factor AND factor                { $$ = binop($2, $1, $3); }
              |  factor
              ;
+             
+  basicExpr  :  sign PLUS term              { $$ = binop($2, $1, $3); }
+             |  sign MINUS term             { $$ = binop($2, $1, $3); }
+             |  sign OR term                { $$ = binop($2, $1, $3); }
+             |  sign
+             ;
+             
+  sign       :  PLUS term							{ $$ = unaryop($1, $2); }
+              | MINUS term						{ $$ = unaryop($1, $2); }
+              | term								{ $$ = $1; }
+             ;
+
   factor     :  LPAREN expr RPAREN             { $$ = $2; }
              |  variable
              |  NUMBER
              |  STRING
+             |  NIL 
+             |  NOT factor                    { $$ = unaryop($1, $2); }
              ;
   variable   : IDENTIFIER
              ;
@@ -203,6 +226,19 @@ TOKEN makeFloatToken(TOKEN tok){
     return floatToken;
   }
 }
+
+TOKEN unaryop(TOKEN op, TOKEN lhs){
+  op->operands = lhs;
+  lhs->link = NULL;
+  if (DEBUG & DB_BINOP)
+       { printf("unaryop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+       };
+  return op;
+
+}
+
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   { op->operands = lhs;          /* link operands to operator       */
