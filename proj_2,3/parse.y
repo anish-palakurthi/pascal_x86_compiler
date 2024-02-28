@@ -89,6 +89,29 @@ TOKEN parseresult;
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
            ;
+
+  constant   : 
+              STRING
+             | IDENTIFIER
+             | sign IDENTIFIER      { $$ = unaryop($1, $2); }
+             |  NUMBER
+             |  sign NUMBER         { $$ = unaryop($1, $2); }
+            ;
+
+  cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
+             ;
+  clist      :  cdef SEMICOLON clist    
+             |  cdef SEMICOLON          
+             ;  
+  tlist      :  IDENTIFIER EQ TYPE tlist
+             |  IDENTIFIER EQ TYPE
+             ;
+  cblock     :  CONST clist tblock              { $$ = $3; }
+             |  tblock
+             ;
+  tblock     :  TYPE tlist vblock       { $$ = $3; }
+             |  vblock
+             ;         
   vblock   :  VAR varspecs block       { $$ = $3; }
            |  block
            ;
@@ -164,9 +187,10 @@ TOKEN parseresult;
              |  sign OR term                { $$ = binop($2, $1, $3); }
              |  sign
              ;
-             
-  sign       : PLUS term							{ $$ = unaryop($1, $2); }
-             | MINUS term						{ $$ = unaryop($1, $2); }
+  sign       :  PLUS
+             |  MINUS
+             ;
+  signTerm   : sign term							{ $$ = unaryop($1, $2); }
              | term								{ $$ = $1; }
              ;
 
@@ -206,6 +230,7 @@ TOKEN parseresult;
 #define DB_MAKEFOR      1
 #define DB_MAKEFUNCALL  1
 #define DB_MAKEREPEAT   1
+#define DB_INSTCONST  1
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
 
@@ -536,11 +561,27 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr){
 TOKEN findid(TOKEN tok) { /* the ID token */
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
-  SYMBOL typ = sym->datatype;
-  tok->symtype = typ;
-  if ( typ->kind == BASICTYPE ||
-      typ->kind == POINTERSYM)
-      tok->basicdt = typ->basicdt;
+
+  if (sym->kind == VARSYM){
+
+    SYMBOL typ = sym->datatype;
+    tok->symtype = typ;
+    if ( typ->kind == BASICTYPE ||
+        typ->kind == POINTERSYM)
+        tok->basicdt = typ->basicdt;
+  }
+  else{
+    tok->tokentype = NUMBERTOK;
+    if (sym->basicdt == INTEGER){
+      tok->basicdt = INTEGER;
+      tok->intval = sym->intval;
+    }
+    else if (sym->basicdt == REAL){
+      tok->basicdt = REAL;
+      tok->realval = sym->realval;
+    }
+  }
+
   return tok; 
 }
 
@@ -551,6 +592,30 @@ TOKEN findtype(TOKEN tok){
   tok->symtype = sym;
   return tok;
 }
+
+void instconst(TOKEN idtok, TOKEN consttok){
+  SYMBOL sym = insertsym(idtok->stringval);
+  sym->kind = CONSTSYM;
+  sym->basicdt = consttok->basicdt;
+  int type = consttok->basicdt;
+  
+  if (type == INTEGER){
+    sym->intval = consttok->intval;
+  }
+  else if (type == REAL){
+    sym->realval = consttok->realval;
+  }
+
+
+  if (DEBUG & DB_INSTCONST) {
+    printf("install const\n");
+    dbugprinttok(sym);
+  }
+
+
+}
+
+
 
 //method to insert symbols into symbol table
 void instvars(TOKEN idlist, TOKEN typetok)
