@@ -54,6 +54,7 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
+#include "token.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -110,8 +111,14 @@ TOKEN parseresult;
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
              |  functionCall
-             |  FOR assignment TO expr DO statement { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
+             |  FOR assignment TO expr DO statement { $$ = makefor(1, $1, $2,
+             $3, $4, $5, $6); }
+             | REPEAT repeat_body UNTIL expr { $$ = makerepeat($1, $2, $3, $4); }
              ;
+
+  repeat_body : statement SEMICOLON repeat_body { $$ = cons($1, $3); }
+              | statement { $$ = cons($1, NULL); }
+              ;
   
   expressionList : expr COMMA expressionList { $$ = cons($1, $3); }
              |  expr
@@ -127,6 +134,9 @@ TOKEN parseresult;
   assignment :  variable ASSIGN expr           { $$ = binop($2, $1, $3); }
              ;
   expr       :  expr PLUS term                 { $$ = binop($2, $1, $3); }
+             |  expr MINUS term                { $$ = binop($2, $1, $3); }
+             |  expr TIMES term                { $$ = binop($2, $1, $3); }
+             |  expr DIVIDE term               { $$ = binop($2, $1, $3); }
              |  term 
              ;
   term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
@@ -159,12 +169,11 @@ TOKEN parseresult;
 #define DB_PARSERES  1             /* bit to trace parseresult */
 #define DB_MAKEPROGRAM 1           /* bit to trace makeprogram */
 #define DB_MAKENUMTOK     1
-#define DB_MAKELABEL    1
 #define DB_MAKEOPTOK     1
 #define DB_MAKECOPY     1
-#define DB_MAKEGOTO     1
 #define DB_MAKEFOR      1
 #define DB_MAKEFUNCALL  1
+#define DB_MAKEREPEAT   1
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
 
@@ -182,10 +191,75 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   }
 
 
+TOKEN makeFloatToken(TOKEN tok){
+  if (tok->tokentype == NUMBERTOK){
+    tok->datatype = REAL;
+    tok->realval = (double) tok->intval;
+    return tok;
+  }
+  else{
+    TOKEN floatToken = makeOperatorTok(FLOATOP);
+    floatToken->operands = tok;
+    return floatToken;
+  }
+}
+
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   { op->operands = lhs;          /* link operands to operator       */
     lhs->link = rhs;             /* link second operand to first    */
     rhs->link = NULL;            /* terminate operand list          */
+
+    int lhType;
+    int rhType;
+
+    if (lhs->datatype == INTEGER) {
+      lhType = 1;
+    } else {
+      //REAL
+      lhType = 0;
+    }
+    if (rhs->datatype == INTEGER) {
+      rhType = 1;
+    } else {
+      //REAL
+      rhType = 0;
+    }
+
+    if (lhType == 1 && rhType == 0) {
+
+      TOKEN temptoken = talloc();
+      if (op->whichval == ASSIGNOP){
+        op->datatype = INTEGER;
+        TOKEN temptoken = talloc();
+        if (rhs->tokentype == NUMBERTOK) {
+          temptoken->intval = (int) rhs->realval;
+          temptoken->datatype = INTEGER;
+        }
+        else{
+          temptoken = makeOperatorTok(FIXOP);
+          temptoken->operands = rhs;
+        }
+        lhs->link = temptoken;
+      }
+      else{
+        op->datatype = REAL;
+        TOKEN temptoken = makeFloatToken(lhs);
+        temptoken->link = rhs;
+      }
+    }
+
+
+    else if (lhType == 0 && rhType == 0) {
+      op->datatype = REAL;
+    }
+
+    else if (lhType == 0 && rhType == 1) {
+      op->datatype = REAL;
+      TOKEN floatToken = makeFloatToken(rhs);
+      lhs->link = floatToken;
+    }
+
+    //deciding what to set op datatype to
     if (DEBUG & DB_BINOP)
        { printf("binop\n");
          dbugprinttok(op);
@@ -194,6 +268,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
        };
     
     return op;
+
+    
   }
 
 //method to duplicate an input token
@@ -372,6 +448,44 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     }
     return tok;
   }
+
+
+TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr){
+
+  TOKEN repeatStart = talloc();
+  repeatStart->tokentype = OPERATOR;
+  repeatStart->whichval = LABELOP;
+  repeatStart->operands = makeNumTok(labelnumber++);
+
+  tok = makeprogn(tok, repeatStart);
+
+  TOKEN shellBody = makeprogn(tokb,statements );
+  repeatStart->link = shellBody;
+
+  TOKEN repeatStartGoTo = talloc();
+  repeatStartGoTo->tokentype = OPERATOR;
+  repeatStartGoTo->whichval = GOTOOP;
+  repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
+
+  TOKEN repeatConditional = makeif(talloc(), expr, repeatStartGoTo, NULL);
+
+  while(statements->link != NULL){
+    statements = statements->link;
+  }
+  statements->link = repeatConditional;
+
+
+  if (DEBUG && DB_MAKEREPEAT) { 
+        printf("make repeat\n");
+        dbugprinttok(tok);
+  }
+
+    return tok;
+
+
+  return tok;
+}
+
 
 //method to find the symbol entry of specified toke
 TOKEN findid(TOKEN tok) { /* the ID token */
