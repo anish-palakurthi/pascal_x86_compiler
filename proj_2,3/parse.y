@@ -134,21 +134,28 @@ TOKEN parseresult;
   assignment :  variable ASSIGN expr           { $$ = binop($2, $1, $3); }
              ;
 
-  expr       :  basicExpr EQ basicExpr                 { $$ = binop($2, $1, $3); }
-             |  basicExpr LT basicExpr                { $$ = binop($2, $1, $3); }
-             |  basicExpr GT basicExpr                { $$ = binop($2, $1, $3); }
-             |  basicExpr NE basicExpr             { $$ = binop($2, $1, $3); }
-             |  basicExpr LE basicExpr             { $$ = binop($2, $1, $3); }
-             |  basicExpr GE basicExpr             { $$ = binop($2, $1, $3); }
-             |  basicExpr IN basicExpr             { $$ = binop($2, $1, $3); }
+  expr       :  basicExpr equivalenceOp basicExpr                 { $$ = binop($2, $1, $3); }
              |  basicExpr                          { $$ = $1;} 
              ;
 
-  term       :  factor TIMES factor              { $$ = binop($2, $1, $3); }
-             |  factor DIVIDE factor             { $$ = binop($2, $1, $3); }
-             |  factor MOD factor                { $$ = binop($2, $1, $3); }
-             |  factor DIV factor                { $$ = binop($2, $1, $3); }
-             |  factor AND factor                { $$ = binop($2, $1, $3); }
+  equivalenceOp: EQ
+               | NE
+               | LT
+               | LE
+               | GT
+               | GE
+               | IN
+               ;
+
+  scalarOp : TIMES 
+            | DIVIDE 
+            | MOD 
+            | DIV 
+            | AND 
+            | OR
+             ;
+             
+  term       :  factor scalarOp factor              { $$ = binop($2, $1, $3); }
              |  factor
              ;
              
@@ -158,9 +165,9 @@ TOKEN parseresult;
              |  sign
              ;
              
-  sign       :  PLUS term							{ $$ = unaryop($1, $2); }
-              | MINUS term						{ $$ = unaryop($1, $2); }
-              | term								{ $$ = $1; }
+  sign       : PLUS term							{ $$ = unaryop($1, $2); }
+             | MINUS term						{ $$ = unaryop($1, $2); }
+             | term								{ $$ = $1; }
              ;
 
   factor     :  LPAREN expr RPAREN             { $$ = $2; }
@@ -168,8 +175,10 @@ TOKEN parseresult;
              |  NUMBER
              |  STRING
              |  NIL 
+             |  funcall
              |  NOT factor                    { $$ = unaryop($1, $2); }
              ;
+
   variable   : IDENTIFIER
              ;
 %%
