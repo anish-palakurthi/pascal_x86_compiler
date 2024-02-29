@@ -123,6 +123,7 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
+// #include "token.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -131,7 +132,7 @@
 TOKEN parseresult;
 
 
-#line 135 "y.tab.c"
+#line 136 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -618,16 +619,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   70
+#define YYLAST   93
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  63
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  19
+#define YYNNTS  24
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  34
+#define YYNRULES  59
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  74
+#define YYNSTATES  107
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   317
@@ -680,10 +681,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    84,    84,    87,    89,    91,    92,    94,    95,    97,
-     100,   102,   105,   108,   110,   111,   112,   113,   116,   117,
-     119,   121,   122,   124,   125,   127,   129,   130,   132,   133,
-     135,   136,   137,   138,   140
+       0,    85,    85,    88,    90,   115,   116,   118,   119,   121,
+     124,   126,   129,   132,   134,   135,   136,   137,   139,   142,
+     143,   146,   147,   149,   151,   152,   154,   155,   157,   160,
+     161,   164,   165,   166,   167,   168,   169,   170,   173,   174,
+     175,   176,   177,   178,   181,   182,   185,   186,   187,   188,
+     190,   191,   197,   198,   199,   200,   201,   202,   203,   206
 };
 #endif
 
@@ -701,8 +704,10 @@ static const char *const yytname[] =
   "PACKED", "PROCEDURE", "PROGRAM", "RECORD", "REPEAT", "SET", "THEN",
   "TO", "TYPE", "UNTIL", "VAR", "WHILE", "WITH", "thenthen", "$accept",
   "program", "idlist", "vblock", "varspecs", "vargroup", "type",
-  "simpletype", "block", "statement", "expressionList", "functionCall",
-  "endpart", "endif", "assignment", "expr", "term", "factor", "variable", YY_NULLPTR
+  "simpletype", "block", "statement", "repeat_body", "expressionList",
+  "functionCall", "endpart", "endif", "assignment", "expr",
+  "equivalenceOp", "scalarOp", "term", "basicExpr", "sign", "factor",
+  "variable", YY_NULLPTR
 };
 #endif
 
@@ -721,7 +726,7 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-35)
+#define YYPACT_NINF (-63)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -735,14 +740,17 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -34,    16,    20,    -7,   -35,    19,     3,    -3,    19,     5,
-     -35,   -26,     0,    19,    25,   -35,    18,     0,    35,     9,
-     -15,   -35,   -35,    34,    21,    13,    23,   -35,     9,   -15,
-     -35,    -6,   -35,   -35,     9,    -4,    44,   -35,   -35,     0,
-     -35,   -35,     9,    52,   -35,    19,    27,     4,   -35,     9,
-       1,     9,     0,     9,   -15,    53,   -35,   -35,   -35,   -35,
-     -35,     9,    -2,   -35,    44,    22,   -35,   -35,   -35,     0,
-       0,   -35,   -35,   -35
+     -34,    16,    23,    -2,   -63,    32,    12,    18,    32,    19,
+     -63,   -30,    -1,    32,    35,   -63,    29,    -1,    55,    36,
+      -1,    -4,   -63,   -63,    60,    44,    38,    47,   -63,    36,
+      -4,   -63,    20,   -63,   -63,    26,    53,    14,    48,    17,
+      -1,   -63,   -63,    36,    75,   -63,    32,    54,    57,   -63,
+      36,    -1,   -63,   -63,   -63,   -63,   -63,   -63,   -63,    36,
+       3,     3,     3,    -1,    36,    -4,   -63,   -63,   -63,   -63,
+     -63,   -63,    36,    49,    45,   -63,   -63,   -63,     3,    36,
+     -63,   -63,   -63,    40,   -63,   -63,   -63,   -63,   -63,   -63,
+     -63,    -1,    -1,   -63,   -63,    56,   -63,   -63,   -63,   -63,
+     -63,   -63,     3,   -63,   -63,   -63,   -63
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -751,27 +759,32 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     1,     0,     4,     0,     0,     0,
-       3,     0,     0,     0,     0,     6,    34,     0,     0,     0,
-       0,    16,    15,     0,     0,     0,     0,     2,     0,     0,
-      34,     0,    33,    32,     0,     0,    27,    29,    31,     0,
-      22,    12,     0,     0,     5,     8,     0,    19,    13,     0,
-       0,     0,     0,     0,     0,    25,    11,     9,    10,     7,
-      20,     0,     0,    30,    26,    24,    28,    21,    18,     0,
-       0,    14,    17,    23
+       3,     0,     0,     0,     0,     6,    59,     0,     0,     0,
+       0,     0,    16,    15,     0,     0,     0,     0,     2,     0,
+       0,    59,     0,    50,    51,     0,    30,    49,    20,     0,
+       0,    25,    12,     0,     0,     5,     8,     0,    22,    13,
+       0,     0,    31,    32,    33,    34,    36,    35,    37,     0,
+       0,     0,     0,     0,     0,     0,    28,    11,     9,    10,
+       7,    23,     0,     0,    27,    29,    55,    54,     0,     0,
+      56,    57,    46,    45,    53,    47,    48,    19,    18,    24,
+      21,     0,     0,    14,    58,     0,    38,    39,    42,    43,
+      41,    40,     0,    17,    26,    52,    44
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -35,   -35,    10,   -35,    15,   -35,   -35,   -35,    37,   -16,
-       2,   -35,   -13,   -35,    46,   -10,    14,    17,   -12
+     -63,   -63,    10,   -63,    41,   -63,   -63,   -63,    62,   -12,
+      27,    21,   -51,   -27,   -63,    71,   -18,   -63,   -63,    -6,
+      33,   -63,   -62,   -48
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,    24,    14,    25,    26,    57,    58,    15,    20,
-      46,    21,    41,    71,    22,    47,    36,    37,    38
+      -1,     2,    25,    14,    26,    27,    68,    69,    15,    38,
+      39,    47,    22,    42,    93,    23,    48,    59,   102,    82,
+      36,    37,    83,    24
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -779,26 +792,30 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      23,    29,    51,    16,    51,    23,    23,    51,    12,    35,
-      51,    39,    30,    32,    33,     7,    48,     1,    10,     3,
-       4,     5,     6,    54,    50,    40,     9,    23,     8,    61,
-      63,    11,    55,    13,    17,    69,    65,    34,    30,    62,
-      23,    67,    18,    27,    42,    19,    28,    12,    43,    45,
-      49,    52,    53,    72,    73,    56,    60,    23,    23,    51,
-      59,    70,    44,    68,    31,    64,     0,     0,     0,     0,
-      66
+      21,    35,    16,    49,    12,    30,    16,    76,    77,    81,
+      81,    81,    84,    84,    84,     7,    94,     1,    10,     3,
+      60,    61,    40,     4,    78,    66,     5,    81,    65,    13,
+      84,    79,    73,    17,    62,     6,    41,     8,    89,    74,
+     106,    18,    33,    34,    19,    11,    88,     9,    96,    97,
+      80,    81,    20,    28,    84,    85,    86,    29,    31,    98,
+      99,    95,   100,   101,    52,    53,    54,    55,    56,    57,
+      43,    44,    12,    46,    63,    64,    50,    58,    67,   103,
+     104,    51,    72,    71,    92,   105,    91,    70,    45,    32,
+      87,     0,    75,    90
 };
 
 static const yytype_int8 yycheck[] =
 {
-      12,    17,     6,     3,     6,    17,    18,     6,    34,    19,
-       6,    26,     3,     4,     5,     5,    29,    51,     8,     3,
-       0,    28,     3,    39,    34,    40,    29,    39,    25,    25,
-      29,    26,    42,    59,    34,    37,    52,    28,     3,    49,
-      52,    54,    42,    18,    10,    45,    28,    34,    27,    26,
-      56,    55,     8,    69,    70,     3,    29,    69,    70,     6,
-      45,    39,    25,    61,    18,    51,    -1,    -1,    -1,    -1,
-      53
+      12,    19,     3,    30,    34,    17,     3,     4,     5,    60,
+      61,    62,    60,    61,    62,     5,    78,    51,     8,     3,
+       6,     7,    26,     0,    21,    43,    28,    78,    40,    59,
+      78,    28,    50,    34,    20,     3,    40,    25,    65,    51,
+     102,    42,     6,     7,    45,    26,    64,    29,     8,     9,
+      47,   102,    53,    18,   102,    61,    62,    28,     3,    19,
+      20,    79,    22,    23,    11,    12,    13,    14,    15,    16,
+      10,    27,    34,    26,    26,    58,    56,    24,     3,    91,
+      92,    55,    25,    29,    39,    29,    37,    46,    26,    18,
+      63,    -1,    59,    72
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -807,30 +824,37 @@ static const yytype_int8 yystos[] =
 {
        0,    51,    64,     3,     0,    28,     3,    65,    25,    29,
       65,    26,    34,    59,    66,    71,     3,    34,    42,    45,
-      72,    74,    77,    81,    65,    67,    68,    18,    28,    72,
-       3,    77,     4,     5,    28,    78,    79,    80,    81,    26,
-      40,    75,    10,    27,    71,    26,    73,    78,    75,    56,
-      78,     6,    55,     8,    72,    78,     3,    69,    70,    67,
-      29,    25,    78,    29,    79,    72,    80,    75,    73,    37,
-      39,    76,    72,    72
+      53,    72,    75,    78,    86,    65,    67,    68,    18,    28,
+      72,     3,    78,     6,     7,    79,    83,    84,    72,    73,
+      26,    40,    76,    10,    27,    71,    26,    74,    79,    76,
+      56,    55,    11,    12,    13,    14,    15,    16,    24,    80,
+       6,     7,    20,    26,    58,    72,    79,     3,    69,    70,
+      67,    29,    25,    79,    72,    83,     4,     5,    21,    28,
+      47,    75,    82,    85,    86,    82,    82,    73,    79,    76,
+      74,    37,    39,    77,    85,    79,     8,     9,    19,    20,
+      22,    23,    81,    72,    72,    29,    85
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    63,    64,    65,    65,    66,    66,    67,    67,    68,
-      69,    70,    71,    72,    72,    72,    72,    72,    73,    73,
-      74,    75,    75,    76,    76,    77,    78,    78,    79,    79,
-      80,    80,    80,    80,    81
+      69,    70,    71,    72,    72,    72,    72,    72,    72,    73,
+      73,    74,    74,    75,    76,    76,    77,    77,    78,    79,
+      79,    80,    80,    80,    80,    80,    80,    80,    81,    81,
+      81,    81,    81,    81,    82,    82,    83,    83,    83,    83,
+      84,    84,    85,    85,    85,    85,    85,    85,    85,    86
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     8,     3,     1,     3,     1,     3,     2,     3,
-       1,     1,     3,     3,     5,     1,     1,     6,     3,     1,
-       4,     3,     1,     2,     0,     3,     3,     1,     3,     1,
-       3,     1,     1,     1,     1
+       1,     1,     3,     3,     5,     1,     1,     6,     4,     3,
+       1,     3,     1,     4,     3,     1,     2,     0,     3,     3,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     3,     1,     3,     3,     3,     1,
+       1,     1,     3,     1,     1,     1,     1,     1,     2,     1
 };
 
 
@@ -1526,127 +1550,176 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 84 "parse.y"
+#line 85 "parse.y"
                                                                            { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1532 "y.tab.c"
-    break;
-
-  case 3:
-#line 88 "parse.y"
-                          { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1538 "y.tab.c"
-    break;
-
-  case 4:
-#line 89 "parse.y"
-                          { yyval = cons(yyvsp[0], NULL); }
-#line 1544 "y.tab.c"
-    break;
-
-  case 5:
-#line 91 "parse.y"
-                                       { yyval = yyvsp[0]; }
-#line 1550 "y.tab.c"
-    break;
-
-  case 9:
-#line 98 "parse.y"
-                      { instvars(yyvsp[-2], yyvsp[0]); }
 #line 1556 "y.tab.c"
     break;
 
-  case 11:
-#line 102 "parse.y"
-                             { yyval = findtype(yyvsp[0]); }
+  case 3:
+#line 89 "parse.y"
+                          { yyval = cons(yyvsp[-2], yyvsp[0]); }
 #line 1562 "y.tab.c"
     break;
 
-  case 12:
-#line 106 "parse.y"
-              { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
+  case 4:
+#line 90 "parse.y"
+                          { yyval = cons(yyvsp[0], NULL); }
 #line 1568 "y.tab.c"
     break;
 
-  case 13:
-#line 109 "parse.y"
-                                       { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
+  case 5:
+#line 115 "parse.y"
+                                       { yyval = yyvsp[0]; }
 #line 1574 "y.tab.c"
     break;
 
-  case 14:
-#line 110 "parse.y"
-                                               { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
+  case 9:
+#line 122 "parse.y"
+                      { instvars(yyvsp[-2], yyvsp[0]); }
 #line 1580 "y.tab.c"
     break;
 
-  case 17:
-#line 113 "parse.y"
-                                                    { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+  case 11:
+#line 126 "parse.y"
+                             { yyval = findtype(yyvsp[0]); }
 #line 1586 "y.tab.c"
     break;
 
-  case 18:
-#line 116 "parse.y"
-                                             { yyval = cons(yyvsp[-2], yyvsp[0]); }
+  case 12:
+#line 130 "parse.y"
+              { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
 #line 1592 "y.tab.c"
     break;
 
-  case 20:
-#line 119 "parse.y"
-                                                         { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
+  case 13:
+#line 133 "parse.y"
+                                       { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
 #line 1598 "y.tab.c"
     break;
 
-  case 21:
-#line 121 "parse.y"
-                                               { yyval = cons(yyvsp[-1], yyvsp[0]); }
+  case 14:
+#line 134 "parse.y"
+                                               { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
 #line 1604 "y.tab.c"
     break;
 
-  case 22:
-#line 122 "parse.y"
-                                               { yyval = NULL; }
-#line 1610 "y.tab.c"
+  case 17:
+#line 137 "parse.y"
+                                                    { yyval = makefor(1, yyvsp[-5], yyvsp[-4],
+             yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+#line 1611 "y.tab.c"
+    break;
+
+  case 18:
+#line 139 "parse.y"
+                                             { yyval = makerepeat(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+#line 1617 "y.tab.c"
+    break;
+
+  case 19:
+#line 142 "parse.y"
+                                                { yyval = cons(yyvsp[-2], yyvsp[0]); }
+#line 1623 "y.tab.c"
+    break;
+
+  case 20:
+#line 143 "parse.y"
+                          { yyval = cons(yyvsp[0], NULL); }
+#line 1629 "y.tab.c"
+    break;
+
+  case 21:
+#line 146 "parse.y"
+                                             { yyval = cons(yyvsp[-2], yyvsp[0]); }
+#line 1635 "y.tab.c"
     break;
 
   case 23:
-#line 124 "parse.y"
-                                               { yyval = yyvsp[0]; }
-#line 1616 "y.tab.c"
+#line 149 "parse.y"
+                                                         { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
+#line 1641 "y.tab.c"
     break;
 
   case 24:
-#line 125 "parse.y"
-                                               { yyval = NULL; }
-#line 1622 "y.tab.c"
+#line 151 "parse.y"
+                                               { yyval = cons(yyvsp[-1], yyvsp[0]); }
+#line 1647 "y.tab.c"
     break;
 
   case 25:
-#line 127 "parse.y"
-                                               { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1628 "y.tab.c"
+#line 152 "parse.y"
+                                               { yyval = NULL; }
+#line 1653 "y.tab.c"
     break;
 
   case 26:
-#line 129 "parse.y"
-                                               { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1634 "y.tab.c"
+#line 154 "parse.y"
+                                               { yyval = yyvsp[0]; }
+#line 1659 "y.tab.c"
+    break;
+
+  case 27:
+#line 155 "parse.y"
+                                               { yyval = NULL; }
+#line 1665 "y.tab.c"
     break;
 
   case 28:
-#line 132 "parse.y"
+#line 157 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1640 "y.tab.c"
+#line 1671 "y.tab.c"
+    break;
+
+  case 29:
+#line 160 "parse.y"
+                                                                  { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
+#line 1677 "y.tab.c"
     break;
 
   case 30:
-#line 135 "parse.y"
+#line 161 "parse.y"
+                                                   { yyval = yyvsp[0];}
+#line 1683 "y.tab.c"
+    break;
+
+  case 44:
+#line 181 "parse.y"
+                                                    { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
+#line 1689 "y.tab.c"
+    break;
+
+  case 46:
+#line 185 "parse.y"
+                                            { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
+#line 1695 "y.tab.c"
+    break;
+
+  case 47:
+#line 186 "parse.y"
+                                            { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
+#line 1701 "y.tab.c"
+    break;
+
+  case 48:
+#line 187 "parse.y"
+                                            { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
+#line 1707 "y.tab.c"
+    break;
+
+  case 52:
+#line 197 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1646 "y.tab.c"
+#line 1713 "y.tab.c"
+    break;
+
+  case 58:
+#line 203 "parse.y"
+                                              { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
+#line 1719 "y.tab.c"
     break;
 
 
-#line 1650 "y.tab.c"
+#line 1723 "y.tab.c"
 
       default: break;
     }
@@ -1878,7 +1951,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 142 "parse.y"
+#line 208 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -1899,12 +1972,12 @@ yyreturn:
 #define DB_PARSERES  1             /* bit to trace parseresult */
 #define DB_MAKEPROGRAM 1           /* bit to trace makeprogram */
 #define DB_MAKENUMTOK     1
-#define DB_MAKELABEL    1
 #define DB_MAKEOPTOK     1
 #define DB_MAKECOPY     1
-#define DB_MAKEGOTO     1
 #define DB_MAKEFOR      1
 #define DB_MAKEFUNCALL  1
+#define DB_MAKEREPEAT   1
+#define DB_INSTCONST  1
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
 
@@ -1921,11 +1994,100 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
     return item;
   }
 
+//helper to create an operator token of specific op type
+TOKEN makeOperatorTok(int op){
+    TOKEN tok = talloc();
+    tok->whichval = op;
+    tok->tokentype = OPERATOR;
+    if (DEBUG & DB_MAKEOPTOK) {
+      printf("makeoperatortok\n");
+      dbugprinttok(tok);
+    }
+    return tok;
+}
+
+TOKEN makeFloatToken(TOKEN tok){
+  if (tok->tokentype == NUMBERTOK){
+    tok->basicdt = REAL;
+    tok->realval = (double) tok->intval;
+    return tok;
+  }
+  else{
+    TOKEN floatToken = makeOperatorTok(FLOATOP);
+    floatToken->operands = tok;
+    return floatToken;
+  }
+}
+
+TOKEN unaryop(TOKEN op, TOKEN lhs){
+  op->operands = lhs;
+  lhs->link = NULL;
+  if (DEBUG & DB_BINOP)
+       { printf("unaryop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+       };
+  return op;
+
+}
+
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   { op->operands = lhs;          /* link operands to operator       */
     lhs->link = rhs;             /* link second operand to first    */
     rhs->link = NULL;            /* terminate operand list          */
+
+    int lhType;
+    int rhType;
+
+    if (lhs->basicdt == INTEGER) {
+      lhType = 1;
+    } else {
+      //REAL
+      lhType = 0;
+    }
+    if (rhs->basicdt == INTEGER) {
+      rhType = 1;
+    } else {
+      //REAL
+      rhType = 0;
+    }
+
+    if (lhType == 1 && rhType == 0) {
+
+      TOKEN temptoken = talloc();
+      if (op->whichval == ASSIGNOP){
+        op->basicdt = INTEGER;
+        TOKEN temptoken = talloc();
+        if (rhs->tokentype == NUMBERTOK) {
+          temptoken->intval = (int) rhs->realval;
+          temptoken->basicdt = INTEGER;
+        }
+        else{
+          temptoken = makeOperatorTok(FIXOP);
+          temptoken->operands = rhs;
+        }
+        lhs->link = temptoken;
+      }
+      else{
+        op->basicdt = REAL;
+        TOKEN temptoken = makeFloatToken(lhs);
+        temptoken->link = rhs;
+      }
+    }
+
+
+    else if (lhType == 0 && rhType == 0) {
+      op->basicdt = REAL;
+    }
+
+    else if (lhType == 0 && rhType == 1) {
+      op->basicdt = REAL;
+      TOKEN floatToken = makeFloatToken(rhs);
+      lhs->link = floatToken;
+    }
+
+    //deciding what to set op datatype to
     if (DEBUG & DB_BINOP)
        { printf("binop\n");
          dbugprinttok(op);
@@ -1934,6 +2096,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
        };
     
     return op;
+
+    
   }
 
 //method to duplicate an input token
@@ -1954,17 +2118,7 @@ TOKEN copytok(TOKEN origtok) {
   return copy;
 }
 
-//helper to create an operator token of specific op type
-TOKEN makeOperatorTok(int op){
-    TOKEN tok = talloc();
-    tok->whichval = op;
-    tok->tokentype = OPERATOR;
-    if (DEBUG & DB_MAKEOPTOK) {
-      printf("makeoperatortok\n");
-      dbugprinttok(tok);
-    }
-    return tok;
-}
+
 
 //helper method to create a number token
 TOKEN makeNumTok(int num) {
@@ -2113,15 +2267,69 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     return tok;
   }
 
+
+TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr){
+
+  TOKEN repeatStart = talloc();
+  repeatStart->tokentype = OPERATOR;
+  repeatStart->whichval = LABELOP;
+  repeatStart->operands = makeNumTok(labelnumber++);
+
+  tok = makeprogn(tok, repeatStart);
+
+  TOKEN shellBody = makeprogn(tokb,statements );
+  repeatStart->link = shellBody;
+
+  TOKEN repeatStartGoTo = talloc();
+  repeatStartGoTo->tokentype = OPERATOR;
+  repeatStartGoTo->whichval = GOTOOP;
+  repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
+
+  TOKEN repeatConditional = makeif(talloc(), expr, repeatStartGoTo, NULL);
+
+  while(statements->link != NULL){
+    statements = statements->link;
+  }
+  statements->link = repeatConditional;
+
+
+  if (DEBUG && DB_MAKEREPEAT) { 
+        printf("make repeat\n");
+        dbugprinttok(tok);
+  }
+
+    return tok;
+
+
+  return tok;
+}
+
+
 //method to find the symbol entry of specified toke
 TOKEN findid(TOKEN tok) { /* the ID token */
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
-  SYMBOL typ = sym->datatype;
-  tok->symtype = typ;
-  if ( typ->kind == BASICTYPE ||
-      typ->kind == POINTERSYM)
-      tok->basicdt = typ->basicdt;
+
+  if (sym->kind == VARSYM){
+
+    SYMBOL typ = sym->datatype;
+    tok->symtype = typ;
+    if ( typ->kind == BASICTYPE ||
+        typ->kind == POINTERSYM)
+        tok->basicdt = typ->basicdt;
+  }
+  else{
+    tok->tokentype = NUMBERTOK;
+    if (sym->basicdt == INTEGER){
+      tok->basicdt = INTEGER;
+      tok->intval = sym->constval.intnum;
+    }
+    else if (sym->basicdt == REAL){
+      tok->basicdt = REAL;
+      tok->realval = sym->constval.realnum;
+    }
+  }
+
   return tok; 
 }
 
@@ -2132,6 +2340,30 @@ TOKEN findtype(TOKEN tok){
   tok->symtype = sym;
   return tok;
 }
+
+void instconst(TOKEN idtok, TOKEN consttok){
+  SYMBOL sym = insertsym(idtok->stringval);
+  sym->kind = CONSTSYM;
+  sym->basicdt = consttok->basicdt;
+  int type = consttok->basicdt;
+  
+  if (type == INTEGER){
+    sym->constval.intnum = consttok->intval;
+  }
+  else if (type == REAL){
+    sym->constval.realnum = consttok->realval;
+  }
+
+
+  if (DEBUG & DB_INSTCONST) {
+    printf("install const\n");
+    // dbugprinttok(sym->);
+  }
+
+
+}
+
+
 
 //method to insert symbols into symbol table
 void instvars(TOKEN idlist, TOKEN typetok)

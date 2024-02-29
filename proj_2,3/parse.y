@@ -54,7 +54,7 @@
 #include "symtab.h"
 #include "pprint.h"
 #include "parse.h"
-#include "token.h"
+// #include "token.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -199,7 +199,7 @@ TOKEN parseresult;
              |  NUMBER
              |  STRING
              |  NIL 
-             |  funcall
+             |  functionCall
              |  NOT factor                    { $$ = unaryop($1, $2); }
              ;
 
@@ -247,10 +247,21 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
     return item;
   }
 
+//helper to create an operator token of specific op type
+TOKEN makeOperatorTok(int op){
+    TOKEN tok = talloc();
+    tok->whichval = op;
+    tok->tokentype = OPERATOR;
+    if (DEBUG & DB_MAKEOPTOK) {
+      printf("makeoperatortok\n");
+      dbugprinttok(tok);
+    }
+    return tok;
+}
 
 TOKEN makeFloatToken(TOKEN tok){
   if (tok->tokentype == NUMBERTOK){
-    tok->datatype = REAL;
+    tok->basicdt = REAL;
     tok->realval = (double) tok->intval;
     return tok;
   }
@@ -282,13 +293,13 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     int lhType;
     int rhType;
 
-    if (lhs->datatype == INTEGER) {
+    if (lhs->basicdt == INTEGER) {
       lhType = 1;
     } else {
       //REAL
       lhType = 0;
     }
-    if (rhs->datatype == INTEGER) {
+    if (rhs->basicdt == INTEGER) {
       rhType = 1;
     } else {
       //REAL
@@ -299,11 +310,11 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
 
       TOKEN temptoken = talloc();
       if (op->whichval == ASSIGNOP){
-        op->datatype = INTEGER;
+        op->basicdt = INTEGER;
         TOKEN temptoken = talloc();
         if (rhs->tokentype == NUMBERTOK) {
           temptoken->intval = (int) rhs->realval;
-          temptoken->datatype = INTEGER;
+          temptoken->basicdt = INTEGER;
         }
         else{
           temptoken = makeOperatorTok(FIXOP);
@@ -312,7 +323,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
         lhs->link = temptoken;
       }
       else{
-        op->datatype = REAL;
+        op->basicdt = REAL;
         TOKEN temptoken = makeFloatToken(lhs);
         temptoken->link = rhs;
       }
@@ -320,11 +331,11 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
 
 
     else if (lhType == 0 && rhType == 0) {
-      op->datatype = REAL;
+      op->basicdt = REAL;
     }
 
     else if (lhType == 0 && rhType == 1) {
-      op->datatype = REAL;
+      op->basicdt = REAL;
       TOKEN floatToken = makeFloatToken(rhs);
       lhs->link = floatToken;
     }
@@ -360,17 +371,7 @@ TOKEN copytok(TOKEN origtok) {
   return copy;
 }
 
-//helper to create an operator token of specific op type
-TOKEN makeOperatorTok(int op){
-    TOKEN tok = talloc();
-    tok->whichval = op;
-    tok->tokentype = OPERATOR;
-    if (DEBUG & DB_MAKEOPTOK) {
-      printf("makeoperatortok\n");
-      dbugprinttok(tok);
-    }
-    return tok;
-}
+
 
 //helper method to create a number token
 TOKEN makeNumTok(int num) {
@@ -574,11 +575,11 @@ TOKEN findid(TOKEN tok) { /* the ID token */
     tok->tokentype = NUMBERTOK;
     if (sym->basicdt == INTEGER){
       tok->basicdt = INTEGER;
-      tok->intval = sym->intval;
+      tok->intval = sym->constval.intnum;
     }
     else if (sym->basicdt == REAL){
       tok->basicdt = REAL;
-      tok->realval = sym->realval;
+      tok->realval = sym->constval.realnum;
     }
   }
 
@@ -600,16 +601,16 @@ void instconst(TOKEN idtok, TOKEN consttok){
   int type = consttok->basicdt;
   
   if (type == INTEGER){
-    sym->intval = consttok->intval;
+    sym->constval.intnum = consttok->intval;
   }
   else if (type == REAL){
-    sym->realval = consttok->realval;
+    sym->constval.realnum = consttok->realval;
   }
 
 
   if (DEBUG & DB_INSTCONST) {
     printf("install const\n");
-    dbugprinttok(sym);
+    // dbugprinttok(sym->);
   }
 
 
