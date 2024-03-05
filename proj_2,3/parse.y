@@ -82,22 +82,23 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
-  program   : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
-            ;
+  program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+             ;
+
+
+  signedNumber : sign NUMBER        { $$ = unaryop($1, $2); }
+             |  NUMBER
+             ;
+  constant   :  signedId
+             |  signedNumber
+             |  STRING
+             ;
   
   idlist   :  IDENTIFIER COMMA idlist
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
            ;
-
-  constant   : 
-              STRING
-             | IDENTIFIER
-             | sign IDENTIFIER      { $$ = unaryop($1, $2); }
-             |  NUMBER
-             |  sign NUMBER         { $$ = unaryop($1, $2); }
-            ;
-
+           
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
@@ -106,102 +107,93 @@ TOKEN parseresult;
   tlist      :  IDENTIFIER EQ TYPE tlist
              |  IDENTIFIER EQ TYPE
              ;
+  s_list     :  statement SEMICOLON s_list      { $$ = cons($1, $3); }
+             |  statement
+             ;
   cblock     :  CONST clist tblock              { $$ = $3; }
              |  tblock
              ;
   tblock     :  TYPE tlist vblock       { $$ = $3; }
              |  vblock
-             ;         
-  vblock   :  VAR varspecs block       { $$ = $3; }
-           |  block
-           ;
-  varspecs :  vargroup SEMICOLON varspecs
-           |  vargroup SEMICOLON
-           ;
-  vargroup :  idlist COLON simpletype
-                      { instvars($1, $3); }
-           ;
-  simpletype :  IDENTIFIER   { $$ = findtype($1); }
-          ;  /* $1->symtype returns type */
-
-  block    : BEGINBEGIN statement endpart
-              { $$ = makeprogn($1,cons($2, $3)); }
-  
-  statement  :  BEGINBEGIN statement endpart
-                                       { $$ = makeprogn($1,cons($2, $3)); }
+             ;
+  vblock     :  VAR varspecs block       { $$ = $3; }
+             |  block
+             ;
+  varspecs   :  vargroup SEMICOLON varspecs   
+             |  vargroup SEMICOLON            
+             ;
+  vargroup   :  idlist COLON type { instvars($1, $3); }
+             ;
+  type       :  IDENTIFIER   { $$ = findtype($1); }
+             ;
+  block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
+             ;
+  statement  :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
-             |  functionCall
-             |  FOR assignment TO expr DO statement { $$ = makefor(1, $1, $2,
-             $3, $4, $5, $6); }
-             | REPEAT repeat_body UNTIL expr { $$ = makerepeat($1, $2, $3, $4); }
+             |  funcall
+             |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
+             |  REPEAT s_list UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
              ;
-
-  repeat_body : statement SEMICOLON repeat_body { $$ = cons($1, $3); }
-              | statement { $$ = cons($1, NULL); }
-              ;
-  
-  expressionList : expr COMMA expressionList { $$ = cons($1, $3); }
+  funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
+             ;
+  expr_list  :  expr COMMA expr_list           { $$ = cons($1, $3); }
              |  expr
-             ;
-  functionCall : IDENTIFIER LPAREN expressionList RPAREN { $$ = makefuncall($2, $1, $3); }
              ;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
              ;
   endif      :  ELSE statement                 { $$ = $2; }
-             |  /* empty */                    { $$ = NULL; }  %prec thenthen
+             |  /* empty */                    { $$ = NULL; }
              ;
-  assignment :  variable ASSIGN expr           { $$ = binop($2, $1, $3); }
+  assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
-
-  expr       :  basicExpr equivalenceOp basicExpr                 { $$ = binop($2, $1, $3); }
-             |  basicExpr                          { $$ = $1;} 
+  variable   :  IDENTIFIER                            { $$ = findid($1); }
              ;
 
-  equivalenceOp: EQ
-               | NE
-               | LT
-               | LE
-               | GT
-               | GE
-               | IN
-               ;
-
-  scalarOp : TIMES 
-            | DIVIDE 
-            | MOD 
-            | DIV 
-            | AND 
-            | OR
+  s_expr     :  signedTerm
+             |  s_expr PLUS term                 { $$ = binop($2, $1, $3); }
+             |  s_expr MINUS term                 { $$ = binop($2, $1, $3); }
+             |  s_expr OR term                 { $$ = binop($2, $1, $3); }
              ;
-             
-  term       :  factor scalarOp factor              { $$ = binop($2, $1, $3); }
+
+  expr       :  expr EQ s_expr              { $$ = binop($2, $1, $3); }
+             |  expr LT s_expr              { $$ = binop($2, $1, $3); }
+             |  expr GT s_expr              { $$ = binop($2, $1, $3); }
+             |  expr NE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr LE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr GE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr IN s_expr              { $$ = binop($2, $1, $3); }
+             |  s_expr 
+             ;
+
+  term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
+             |  term DIVIDE factor              { $$ = binop($2, $1, $3); }
+             |  term DIV factor              { $$ = binop($2, $1, $3); }
+             |  term MOD factor              { $$ = binop($2, $1, $3); }
+             |  term AND factor              { $$ = binop($2, $1, $3); }
              |  factor
              ;
-             
-  basicExpr  :  sign PLUS term              { $$ = binop($2, $1, $3); }
-             |  sign MINUS term             { $$ = binop($2, $1, $3); }
-             |  sign OR term                { $$ = binop($2, $1, $3); }
-             |  sign
-             ;
-  sign       :  PLUS
+
+  sign       :  PLUS 
              |  MINUS
              ;
-  signTerm   : sign term							{ $$ = unaryop($1, $2); }
-             | term								{ $$ = $1; }
+
+  signedId   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
+             |  IDENTIFIER
+             ;              
+
+  signedTerm :  sign term           { $$ = unaryop($1, $2); }
+             |  term
              ;
 
-  factor     :  LPAREN expr RPAREN             { $$ = $2; }
-             |  variable
-             |  NUMBER
-             |  STRING
+  factor     :  NUMBER
              |  NIL 
-             |  functionCall
-             |  NOT factor                    { $$ = unaryop($1, $2); }
-             ;
-
-  variable   : IDENTIFIER
+             |  STRING
+             |  variable
+             |  LPAREN expr RPAREN             { $$ = $2; }       
+             |  funcall
+             |  NOT factor          { $$ = unaryop($1, $2); }
              ;
 %%
 
