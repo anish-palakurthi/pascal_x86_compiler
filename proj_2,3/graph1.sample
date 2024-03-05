@@ -1,5 +1,3 @@
-Example of result from parsing graph1.pas
-
 Note: your version may have more progn operators; that is okay.
 
 yyparse result =        0

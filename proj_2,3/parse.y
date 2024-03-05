@@ -82,7 +82,7 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
-  program   : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON vblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+  program   : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
             ;
   
   idlist   :  IDENTIFIER COMMA idlist
@@ -118,10 +118,8 @@ TOKEN parseresult;
   varspecs :  vargroup SEMICOLON varspecs
            |  vargroup SEMICOLON
            ;
-  vargroup :  idlist COLON type
+  vargroup :  idlist COLON simpletype
                       { instvars($1, $3); }
-           ;
-  type     :  simpletype
            ;
   simpletype :  IDENTIFIER   { $$ = findtype($1); }
           ;  /* $1->symtype returns type */
@@ -309,6 +307,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     if (lhType == 1 && rhType == 0) {
 
       TOKEN temptoken = talloc();
+
+      //assignment operation
       if (op->whichval == ASSIGNOP){
         op->basicdt = INTEGER;
         TOKEN temptoken = talloc();
@@ -322,6 +322,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
         }
         lhs->link = temptoken;
       }
+
+      //computation operation
       else{
         op->basicdt = REAL;
         TOKEN temptoken = makeFloatToken(lhs);
@@ -329,7 +331,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
       }
     }
 
-
+    //other casting cases
     else if (lhType == 0 && rhType == 0) {
       op->basicdt = REAL;
     }

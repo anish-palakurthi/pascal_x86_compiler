@@ -1,0 +1,13 @@
+yyparse result =        1
+Symbol table level 1
+ 94034049637808           d  CONST  typ    REAL  val  6.250000e-02
+ 94034049638160           s  CONST  typ INTEGER  val  32
+ 94034049638512           h  CONST  typ INTEGER  val  34
+ 94034049638864           c  CONST  typ    REAL  val  6.283180e+00
+ 94034049639216         lim  CONST  typ INTEGER  val  32
+ 94034049639760           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94034049639856           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94034049640336           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94034049640432           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ppexpr called with bad pointer 0
+ token 0  NULL
