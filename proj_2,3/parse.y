@@ -385,17 +385,17 @@ TOKEN makefloat(TOKEN tok) {
 /* makefix forces the item tok to be integer, by truncating a constant
    or by inserting a FIXOP operator */
 TOKEN makefix(TOKEN tok) {
-  // if(tok->tokentype == NUMBERTOK) {
-  //   tok->basicdt = INTEGER;
-  //   tok->intval = (int) tok->realval;
-  //   return tok;
-  // } else { 
+  if(tok->tokentype == NUMBERTOK) {
+    tok->basicdt = INTEGER;
+    tok->intval = (int) tok->realval;
+    return tok;
+  } else { 
     TOKEN fixop = makeop(FIXOP);
     fixop->operands = tok;
     return fixop;
   // }
 }
-
+}
 
 
 /* makeop makes a new operator token with operator number opnum.
@@ -448,7 +448,6 @@ void instconst(TOKEN idtok, TOKEN consttok){
     printf("install const\n");
     // dbugprinttok(sym->);
   }
-
 
 }
 
@@ -608,26 +607,28 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
 
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
-   TOKEN label = makelabel();
-   int current = labelnumber - 1;
-   tok = makeprogn(tok, label);
+   TOKEN repeatStart = talloc();
+  repeatStart->tokentype = OPERATOR;
+  repeatStart->whichval = LABELOP;
+  repeatStart->operands = makeNumTok(labelnumber++);
+   
+   
+   tok = makeprogn(tok, repeatStart);
 
-   TOKEN body = tokb;
-   body = makeprogn(body, statements);
-   label->link = body;
+   
+   TOKEN shellBody = makeprogn(tokb, statements);
+   repeatStart->link = shellBody;
 
-   TOKEN gototok = makegoto(current);
-   TOKEN emptytok = makeprogn((TOKEN) talloc(), NULL);
-   emptytok->link = gototok;
+   TOKEN repeatStartGoTo = talloc();
+   repeatStartGoTo->tokentype = OPERATOR;
+   repeatStartGoTo->whichval = GOTOOP;
+   repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
+   TOKEN filler = makeprogn((TOKEN) talloc(), NULL);
+   filler->link = repeatStartGoTo;
 
-   TOKEN ifs = talloc();
-   ifs = makeif(ifs, expr, emptytok, gototok);
-   body->link = ifs;
+   TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
+   shellBody->link = ifs;
 
-   if (DEBUG && DB_MAKEREPEAT) {
-         printf("make repeat\n");
-         dbugprinttok(tok);
-   }
 
    return tok;  
 }
