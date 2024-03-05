@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94619562962352           d  CONST  typ    REAL  val  6.250000e-02
- 94619562962704           s  CONST  typ INTEGER  val  32
- 94619562963056           h  CONST  typ INTEGER  val  34
- 94619562963408           c  CONST  typ    REAL  val  6.283180e+00
- 94619562963760         lim  CONST  typ INTEGER  val  32
- 94619562964304           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94619562964400           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94619562964880           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94619562964976           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94682091789744           d  CONST  typ    REAL  val  6.250000e-02
+ 94682091790096           s  CONST  typ INTEGER  val  32
+ 94682091790448           h  CONST  typ INTEGER  val  34
+ 94682091790800           c  CONST  typ    REAL  val  6.283180e+00
+ 94682091791152         lim  CONST  typ INTEGER  val  32
+ 94682091791696           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94682091791792           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94682091792272           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94682091792368           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -29,10 +29,11 @@ Symbol table level 1
                                                                        ' ')
                                                               (:= n
                                                                   (- n
-                                                                     1))
-                                                              (if (= n
-                                                                     0)
-                                                                  (goto 0))))
+                                                                     1)))
+                                                       (if (= n
+                                                              0)
+                                                           (progn)
+                                                           (goto 0)))
                                                 (funcall writeln '*'))
                                          (:= i (+ i 1))
                                          (goto 1))))))

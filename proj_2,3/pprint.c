@@ -139,7 +139,8 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 	while (opnds != NULL)
 	  { if (start == 0) 
 	       printf(" ");
-	       else { printf("\n");
+	       else { 
+          printf("\n");
 		      for (i = 0; i < nextcol; i++) printf(" ");
 		    }
 	    printexpr(opnds, nextcol);

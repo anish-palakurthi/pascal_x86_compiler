@@ -2044,14 +2044,14 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   }
 
 int isReal(TOKEN tok) {
-  if(tok->datatype == REAL)
+  if(tok->basicdt == REAL)
     return 1;
   else 
     return 0;
 }
 
 int isInt(TOKEN tok) {
-  if(tok->datatype == INTEGER)
+  if(tok->basicdt == INTEGER)
     return 1;
   else 
     return 0;
@@ -2075,18 +2075,18 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     rhs->link = NULL;            /* terminate operand list          */
 
     if (isReal(lhs) && isReal(rhs)) {
-      op->datatype = REAL;     
+      op->basicdt = REAL;     
     } else if (isReal(lhs) && isInt(rhs)) {
-      op->datatype = REAL;
+      op->basicdt = REAL;
       TOKEN ftok = makefloat(rhs);
       lhs->link = ftok;
     } else if (isInt(lhs) && isReal(rhs)) {
       if (op->whichval == ASSIGNOP) {
-        op->datatype = INTEGER;
+        op->basicdt = INTEGER;
         TOKEN fixtok = makefix(rhs);
         lhs->link = fixtok;
       } else {
-        op->datatype = REAL;
+        op->basicdt = REAL;
         TOKEN ftok = makefloat(lhs);
         ftok->link = rhs;
       }
@@ -2107,7 +2107,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
    or by inserting a FLOATOP operator */
 TOKEN makefloat(TOKEN tok) {
   if(tok->tokentype == NUMBERTOK) {
-    tok->datatype = REAL;
+    tok->basicdt = REAL;
     tok->realval = (double) tok->intval;
     return tok;
   } else {
@@ -2123,7 +2123,7 @@ TOKEN makefloat(TOKEN tok) {
    or by inserting a FIXOP operator */
 TOKEN makefix(TOKEN tok) {
   if(tok->tokentype == NUMBERTOK) {
-    tok->datatype = INTEGER;
+    tok->basicdt = INTEGER;
     tok->intval = (int) tok->realval;
     return tok;
   } else { 
@@ -2152,7 +2152,7 @@ TOKEN makeop(int op){
 TOKEN copytok(TOKEN target) {
   TOKEN copy = talloc();
   copy->tokentype = target->tokentype;
-  copy->datatype = target->datatype;
+  copy->basicdt = target->basicdt;
   copy->symtype = target->symtype;
   copy->symentry = target->symentry;
   copy->link = target->link;
@@ -2171,7 +2171,7 @@ void  instconst(TOKEN idtok, TOKEN consttok) {
   SYMBOL sym;
   sym = insertsym(idtok->stringval);
   sym->kind = CONSTSYM;
-  sym->basicdt = consttok->datatype;
+  sym->basicdt = consttok->basicdt;
   if(sym->basicdt == REAL) {
       sym->constval.realnum = consttok->realval;
   }
@@ -2207,7 +2207,7 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
 TOKEN makenum(int number) {
   TOKEN tok = talloc();
   tok->tokentype = NUMBERTOK;
-  tok->datatype = INTEGER;
+  tok->basicdt = INTEGER;
   tok->intval = number;
   if (DEBUG & DB_MAKENUM) {
       printf("makenum\n");
@@ -2372,12 +2372,12 @@ TOKEN findid(TOKEN tok) { /* the ID token */
     if (sym->kind == CONSTSYM) {
       if (sym->basicdt == REAL) {
         tok->tokentype = NUMBERTOK;
-        tok->datatype = REAL;
+        tok->basicdt = REAL;
         tok->realval = sym->constval.realnum;
       }
       else if (sym->basicdt == INTEGER) {
         tok->tokentype = NUMBERTOK;
-        tok->datatype = INTEGER;
+        tok->basicdt = INTEGER;
         tok->intval = sym->constval.intnum;
       }
 
@@ -2393,7 +2393,7 @@ TOKEN findid(TOKEN tok) { /* the ID token */
     tok->symtype = typ;
     if ( typ->kind == BASICTYPE ||
          typ->kind == POINTERSYM)
-        tok->datatype = typ->basicdt;
+        tok->basicdt = typ->basicdt;
 
     if (DEBUG & DB_FINDID) { 
       printf("hit identifier\n");
@@ -2446,8 +2446,14 @@ main()
   { int res;
     initsyms();
     res = yyparse();
-    printst();
     printf("yyparse result = %8d\n", res);
-    if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);
-    ppexpr(parseresult);           /* Pretty-print the result tree */
+
+    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
+
+    if (DEBUG & DB_PARSERES){ 
+
+      dbugprinttok(parseresult);
+    }
+
+    ppexpr(parseresult);              /* Pretty-print the result tree */
   }
