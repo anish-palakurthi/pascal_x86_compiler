@@ -1,13 +1,39 @@
-yyparse result =        1
+yyparse result =        0
 Symbol table level 1
- 94682614713776           d  CONST  typ    REAL  val  6.250000e-02
- 94682614714128           s  CONST  typ INTEGER  val  32
- 94682614714480           h  CONST  typ INTEGER  val  34
- 94682614714832           c  CONST  typ    REAL  val  6.283180e+00
- 94682614715184         lim  CONST  typ INTEGER  val  32
- 94682614715728           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94682614715824           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94682614716304           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94682614716400           n  VAR    0 typ integer  lvl  1  siz     4  off    20
-ppexpr called with bad pointer 0
- token 0  NULL
+ 94414257753520           d  CONST  typ    REAL  val  6.250000e-02
+ 94414257753872           s  CONST  typ INTEGER  val  32
+ 94414257754224           h  CONST  typ INTEGER  val  34
+ 94414257754576           c  CONST  typ    REAL  val  6.283180e+00
+ 94414257754928         lim  CONST  typ INTEGER  val  32
+ 94414257755472           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94414257755568           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94414257756048           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94414257756144           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+(program graph1 (progn output)
+                (progn (progn (:= i 0)
+                              (label 1)
+                              (if (<= i 32)
+                                  (progn (progn (:= x (* 6.250000e-02
+                                                         (float i)))
+                                                (:= y (float (* (funcall exp
+                                                                         (- x))
+                                                                (funcall sin
+                                                                         (* 6.283180e+00
+                                                                            x)))))
+                                                (:= n (+ (funcall round
+                                                                  (* 3.200000e+01
+                                                                     y))
+                                                         34))
+                                                (progn (label 0)
+                                                       (progn (funcall write
+                                                                       ' ')
+                                                              (:= n
+                                                                  (- n
+                                                                     1)))
+                                                       (if (= n
+                                                              0)
+                                                           (progn)
+                                                           (goto 0)))
+                                                (funcall writeln '*'))
+                                         (:= i (+ i 1))
+                                         (goto 1))))))

@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 93997887425968           d  CONST  typ    REAL  val  6.250000e-02
- 93997887426320           s  CONST  typ INTEGER  val  32
- 93997887426672           h  CONST  typ INTEGER  val  34
- 93997887427024           c  CONST  typ    REAL  val  6.283180e+00
- 93997887427376         lim  CONST  typ INTEGER  val  32
- 93997887427920           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93997887428016           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 93997887428496           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 93997887428592           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94417548770736           d  CONST  typ    REAL  val  6.250000e-02
+ 94417548771088           s  CONST  typ INTEGER  val  32
+ 94417548771440           h  CONST  typ INTEGER  val  34
+ 94417548771792           c  CONST  typ    REAL  val  6.283180e+00
+ 94417548772144         lim  CONST  typ INTEGER  val  32
+ 94417548772688           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94417548772784           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94417548773264           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94417548773360           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -20,7 +20,7 @@ Symbol table level 1
                                                                 (funcall sin
                                                                          (* 6.283180e+00
                                                                             x)))))
-                                                (:= n (+ (funcall iround
+                                                (:= n (+ (funcall round
                                                                   (* 3.200000e+01
                                                                      y))
                                                          34))
@@ -29,10 +29,11 @@ Symbol table level 1
                                                                        ' ')
                                                               (:= n
                                                                   (- n
-                                                                     1))
-                                                              (if (= n
-                                                                     0)
-                                                                  (goto 0))))
+                                                                     1)))
+                                                       (if (= n
+                                                              0)
+                                                           (progn)
+                                                           (goto 0)))
                                                 (funcall writeln '*'))
                                          (:= i (+ i 1))
                                          (goto 1))))))
