@@ -220,16 +220,11 @@ TOKEN parseresult;
 #define DB_PARSERES     0             /* bit to trace parseresult */
 #define DB_MAKEPROGRAM  0
 #define DB_MAKENUM      0
-#define DB_MAKELABEL    0
-#define DB_MAKEOP       0
 #define DB_MAKECOPY     0
-#define DB_MAKEGOTO     0
 #define DB_MAKEFOR      0
 #define DB_MAKEFUNCALL  0
-#define DB_UNOP         0
-#define DB_FINDID       0  
-#define DB_INSTCONST    0  
-#define DB_MAKEREPEAT   0
+
+
  
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
@@ -364,53 +359,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     
   }
 
-
-
-/* makefloat forces the item tok to be floating, by floating a constant
-   or by inserting a FLOATOP operator */
-TOKEN makefloat(TOKEN tok) {
-  if(tok->tokentype == NUMBERTOK) {
-    tok->basicdt = REAL;
-    tok->realval = (double) tok->intval;
-    return tok;
-  } else {
-    TOKEN floatop = makeop(FLOATOP);
-    floatop->operands = tok;
-    return floatop;
-  }
-  
-}
-
-
-/* makefix forces the item tok to be integer, by truncating a constant
-   or by inserting a FIXOP operator */
-TOKEN makefix(TOKEN tok) {
-  if(tok->tokentype == NUMBERTOK) {
-    tok->basicdt = INTEGER;
-    tok->intval = (int) tok->realval;
-    return tok;
-  } else { 
-    TOKEN fixop = makeop(FIXOP);
-    fixop->operands = tok;
-    return fixop;
-  // }
-}
-}
-
-
-/* makeop makes a new operator token with operator number opnum.
-   Example:  makeop(FLOATOP)  */
-TOKEN makeop(int op){
-    TOKEN tok = talloc();
-    tok->tokentype = OPERATOR;
-    tok->whichval = op;
-    if (DEBUG & DB_MAKEOP) {
-      printf("makeop\n");
-      dbugprinttok(tok);
-    }
-    return tok;
-}
-
 /* copytok makes a new token that is a copy of origtok */
 TOKEN copytok(TOKEN target) {
   TOKEN copy = talloc();
@@ -444,10 +392,6 @@ void instconst(TOKEN idtok, TOKEN consttok){
   }
 
 
-  if (DEBUG & DB_INSTCONST) {
-    printf("install const\n");
-    // dbugprinttok(sym->);
-  }
 
 }
 
@@ -471,17 +415,7 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
      return tok;
    }
 
-TOKEN makenum(int number) {
-  TOKEN tok = talloc();
-  tok->tokentype = NUMBERTOK;
-  tok->basicdt = INTEGER;
-  tok->intval = number;
-  if (DEBUG & DB_MAKENUM) {
-      printf("makenum\n");
-      dbugprinttok(tok);
-  }
-  return tok;
-}
+
 //helper method to create a number token
 TOKEN makeNumTok(int num) {
   TOKEN tok = talloc();
@@ -490,33 +424,6 @@ TOKEN makeNumTok(int num) {
   tok->basicdt = INTEGER;
   if (DEBUG & DB_MAKENUM) {
       printf("makeNumTok\n");
-      dbugprinttok(tok);
-  }
-  return tok;
-}
-
-/* makelabel makes a new label, using labelnumber++ */
-TOKEN makelabel() {
-  TOKEN tok = talloc();
-  tok->tokentype = OPERATOR;
-  tok->whichval = LABELOP;
-  tok->operands = makenum(labelnumber++);
-  if (DEBUG & DB_MAKELABEL) {
-      printf("makelabel\n");
-      dbugprinttok(tok);
-  }
-  return tok;
-}
-
-/* makegoto makes a GOTO operator to go to the specified label.
-   The label number is put into a number token. */
-TOKEN makegoto(int num){
-  TOKEN tok = talloc();
-  tok->tokentype = OPERATOR;
-  tok->whichval = GOTOOP;
-  tok->operands = makenum(num);
-  if (DEBUG && DB_MAKEGOTO) {
-      printf("makegoto\n");
       dbugprinttok(tok);
   }
   return tok;
