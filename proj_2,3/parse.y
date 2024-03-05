@@ -98,7 +98,7 @@ TOKEN parseresult;
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
            ;
-           
+
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
@@ -148,8 +148,7 @@ TOKEN parseresult;
              ;
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
-  variable   :  IDENTIFIER                            { $$ = findid($1); }
-             ;
+
 
   s_expr     :  signedTerm
              |  s_expr PLUS term                 { $$ = binop($2, $1, $3); }
@@ -195,6 +194,9 @@ TOKEN parseresult;
              |  funcall
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
+
+    variable   :  IDENTIFIER                            { $$ = findid($1); }
+             ; 
 %%
 
 /* You should add your own debugging flags below, and add debugging
@@ -531,6 +533,8 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr){
   repeatStartGoTo->tokentype = OPERATOR;
   repeatStartGoTo->whichval = GOTOOP;
   repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
+
+
 
   TOKEN repeatConditional = makeif(talloc(), expr, repeatStartGoTo, NULL);
 
