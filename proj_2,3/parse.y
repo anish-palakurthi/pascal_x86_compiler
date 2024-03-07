@@ -1,22 +1,17 @@
-%{     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 30 Jul 13   */
+%{     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 10 Jan 24   */
 
-/* Copyright (c) 2013 Gordon S. Novak Jr. and
+/* Copyright (c) 2023 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-/* 
- Student: S. Ram Janarthana Raja
- UTEID  : rs53992
- */ 
-
-
-/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
+/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12;
+   30 Jul 13; 25 Jul 19 ; 28 Feb 22; 08 Jul 22; 13 Nov 23 */
 
 /*
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation; either version 2 of the License, or
 ; (at your option) any later version.
-
+ 
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,6 +20,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
+
 
 
 /* NOTE:   Copy your lexan.l lexical analyzer to this directory.      */
@@ -53,9 +49,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "token.h"
+
 #include "lexan.h"
 #include "symtab.h"
+
 #include "parse.h"
+
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -82,49 +81,57 @@ TOKEN parseresult;
 
 
 %%
+//
   program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-
-  //
-  constant   :  signedId
-             |  signedNumber
-             |  STRING
-             ;
   
+  //
   idlist   :  IDENTIFIER COMMA idlist
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
            ;
-
-  
-  constantAssign       :  IDENTIFIER EQ constant { instconst($1, $3); }
+//
+  constantVal   :  STRING
+             | signedId
+             |  signedNumber
              ;
+//
+  constant :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+            ;
   
-  constantList     :  constantAssign SEMICOLON constantList    
-             |  constantAssign SEMICOLON          
-             ;  
-           
+  statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
+             |  statement
+             ;
+ 
   typeList      :  IDENTIFIER EQ TYPE typeList
              |  IDENTIFIER EQ TYPE
              ;
-             
-  statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
-             |  statement
-             ;
-  cblock     :  CONST constantList tblock              { $$ = $3; }
-             |  tblock
-             ;
+
   tblock     :  TYPE typeList vblock       { $$ = $3; }
              |  vblock
              ;
+
+  cblock     :  CONST constantList tblock              { $$ = $3; }
+             |  tblock
+             ;
+
+  constantList     :  constant SEMICOLON constantList    
+            |  constant SEMICOLON          
+            ;  
+  //
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
              ;
+  //
+
   varspecs   :  vargroup SEMICOLON varspecs   
              |  vargroup SEMICOLON            
              ;
+  //
+             
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
+  //
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
              ;
@@ -139,18 +146,21 @@ TOKEN parseresult;
 
   functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
-  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
-             |  expr
-             ;
+
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
              ;
+
   endif      :  ELSE statement                 { $$ = $2; }
              |  /* empty */                    { $$ = NULL; }
              ;
+
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
 
+  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
+             |  expr
+             ;
 
   expr       :  expr EQ signedExpression              { $$ = binop($2, $1, $3); }
              |  expr LT signedExpression              { $$ = binop($2, $1, $3); }
@@ -182,7 +192,8 @@ TOKEN parseresult;
 
   signedId   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
              |  IDENTIFIER
-             ;              
+             ;
+
   signedNumber : sign NUMBER        { $$ = unaryop($1, $2); }
              |  NUMBER
              ;
@@ -191,16 +202,20 @@ TOKEN parseresult;
              |  term
              ;
 
-  factor     :  NUMBER
-             |  NIL 
+  factor     : 
+              variable
              |  STRING
-             |  variable
-             |  LPAREN expr RPAREN             { $$ = $2; }       
+             | NUMBER
+             |  NIL 
              |  functionCall
+             |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
+  //
+
   type       :  IDENTIFIER   { $$ = findtype($1); }
              ;
+
   variable   :  IDENTIFIER                            { $$ = findid($1); }
             ;
 %%
@@ -225,9 +240,7 @@ TOKEN parseresult;
 #define DB_MAKEFUNCALL  0
 
 
- 
-
- int labelnumber = 0;  /* sequential counter for internal label numbers */
+int labelnumber = 0;  
 
    /*  Note: you should add to the above values and insert debugging
        printouts in your routines similar to those that are shown here.     */
@@ -242,13 +255,14 @@ TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
     return item;
   }
 
+
+//helper methods to check if a token is real or integer
 int isReal(TOKEN tok) {
   if(tok->basicdt == REAL)
     return 1;
   else 
     return 0;
 }
-
 int isInt(TOKEN tok) {
   if(tok->basicdt == INTEGER)
     return 1;
@@ -256,17 +270,18 @@ int isInt(TOKEN tok) {
     return 0;
 }
 
+//apply unary operator to token
 TOKEN unaryop(TOKEN op, TOKEN lhs){
-  op->operands = lhs;
   lhs->link = NULL;
+  op->operands = lhs;
   if (DEBUG & DB_BINOP)
        { printf("unaryop\n");
          dbugprinttok(op);
          dbugprinttok(lhs);
        };
   return op;
-
 }
+
 //helper to create an operator token of specific op type
 TOKEN makeOperatorTok(int op){
     TOKEN tok = talloc();
@@ -275,23 +290,28 @@ TOKEN makeOperatorTok(int op){
 
     return tok;
 }
+
+//makes float token if not a number already, othrewise just updates value 
 TOKEN makeFloatToken(TOKEN tok){
-  if (tok->tokentype == NUMBERTOK){
-    tok->basicdt = REAL;
-    tok->realval = (double) tok->intval;
-    return tok;
-  }
-  else{
+  if (tok->tokentype != NUMBERTOK){
     TOKEN floatToken = makeOperatorTok(FLOATOP);
     floatToken->operands = tok;
     return floatToken;
+    
+  }
+  else{
+    tok->realval = (double) tok->intval;
+    tok->basicdt = REAL;
+    return tok;
   }
 }
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
-  { op->operands = lhs;          /* link operands to operator       */
-    lhs->link = rhs;             /* link second operand to first    */
-    rhs->link = NULL;            /* terminate operand list          */
 
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       { 
+    lhs->link = rhs;             
+    rhs->link = NULL;           
+    op->operands = lhs; 
+
+    //handles type casting
     int lhType;
     int rhType;
 
@@ -312,26 +332,27 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
 
       TOKEN temptoken = talloc();
 
-      //assignment operation
-      if (op->whichval == ASSIGNOP){
-        op->basicdt = INTEGER;
-        TOKEN temptoken = talloc();
-        if (rhs->tokentype == NUMBERTOK) {
-          temptoken->intval = (int) rhs->realval;
-          temptoken->basicdt = INTEGER;
-        }
-        else{
-          temptoken = makeOperatorTok(FIXOP);
-          temptoken->operands = rhs;
-        }
-        lhs->link = temptoken;
-      }
-
-      //computation operation
-      else{
+      // computation operation
+      if (op->whichval != ASSIGNOP){
         op->basicdt = REAL;
         TOKEN temptoken = makeFloatToken(lhs);
         temptoken->link = rhs;
+
+      }
+
+      // assignment operation
+      else{
+        op->basicdt = INTEGER;
+        TOKEN temptoken = talloc();
+        if (rhs->tokentype != NUMBERTOK) {
+          temptoken = makeOperatorTok(FIXOP);
+          temptoken->operands = rhs;
+        }
+        else{
+          temptoken->intval = (int) rhs->realval;
+          temptoken->basicdt = INTEGER;
+        }
+        lhs->link = temptoken;
       }
     }
 
@@ -341,9 +362,10 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     }
 
     else if (lhType == 0 && rhType == 1) {
-      op->basicdt = REAL;
       TOKEN floatToken = makeFloatToken(rhs);
       lhs->link = floatToken;
+      op->basicdt = REAL;
+
     }
 
     //deciding what to set op datatype to
@@ -359,7 +381,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
     
   }
 
-/* copytok makes a new token that is a copy of origtok */
 TOKEN copytok(TOKEN target) {
   TOKEN copy = talloc();
   copy->tokentype = target->tokentype;
@@ -378,32 +399,30 @@ TOKEN copytok(TOKEN target) {
 }
 
 
+//install constant into table
 void instconst(TOKEN idtok, TOKEN consttok){
-  SYMBOL sym = insertsym(idtok->stringval);
-  sym->kind = CONSTSYM;
-  sym->basicdt = consttok->basicdt;
+  SYMBOL constSymbol = insertsym(idtok->stringval);
+  constSymbol->basicdt = consttok->basicdt;
+  constSymbol->kind = CONSTSYM;
+
   int type = consttok->basicdt;
-  
   if (type == INTEGER){
-    sym->constval.intnum = consttok->intval;
+    constSymbol->constval.intnum = consttok->intval;
   }
   else if (type == REAL){
-    sym->constval.realnum = consttok->realval;
+    constSymbol->constval.realnum = consttok->realval;
   }
-
-
-
+  else {
+    return;
+  }
 }
 
 //method to create an if token
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
   {  tok->tokentype = OPERATOR;  
-     tok->whichval = IFOP;
      tok->operands = exp;
+     tok->whichval = IFOP;
      thenpart->link = elsepart;
-     if (elsepart != NULL) {
-      elsepart->link = NULL;
-     }
      exp->link = thenpart;
      if (DEBUG & DB_MAKEIF)
         { printf("makeif\n");
@@ -499,8 +518,8 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  
      fn->link = args;
      tok->tokentype = OPERATOR;  
-     tok->whichval = FUNCALLOP;
      tok->operands = fn;
+     tok->whichval = FUNCALLOP;
      if (DEBUG & DB_MAKEFUNCALL)
         { 
           printf("makefuncall\n");
@@ -511,10 +530,11 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      return tok;
    }
 
-
+//method to create a repeat token
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
-   TOKEN repeatStart = talloc();
+  //set label token for the start
+  TOKEN repeatStart = talloc();
   repeatStart->tokentype = OPERATOR;
   repeatStart->whichval = LABELOP;
   repeatStart->operands = makeNumTok(labelnumber++);
@@ -522,17 +542,19 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
    
    tok = makeprogn(tok, repeatStart);
 
-   
+   //set up the repeat body token
    TOKEN shellBody = makeprogn(tokb, statements);
    repeatStart->link = shellBody;
 
+   //set up the go to token for looping
    TOKEN repeatStartGoTo = talloc();
+   repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
    repeatStartGoTo->tokentype = OPERATOR;
    repeatStartGoTo->whichval = GOTOOP;
-   repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
-   TOKEN filler = makeprogn((TOKEN) talloc(), NULL);
+   TOKEN filler = makeprogn(talloc(), NULL);
    filler->link = repeatStartGoTo;
 
+   //conditional token
    TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
    shellBody->link = ifs;
 
@@ -551,7 +573,7 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
          dbugprinttok(statements);
        };
      return tok;
-   }
+  }
 
 //method to create a program token
 TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
@@ -560,6 +582,7 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
     tok->operands = name;
+    
     TOKEN nameArgs = talloc();
     nameArgs = makeprogn(nameArgs, args);
     name->link = nameArgs;
@@ -571,8 +594,8 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
       dbugprinttok(args);
     }
     return tok;
+  
   }
-
 
 
 //method to find the symbol entry of specified toke
@@ -581,13 +604,13 @@ TOKEN findid(TOKEN tok) { /* the ID token */
   tok->symentry = sym;
 
   if (sym->kind == VARSYM){
-
     SYMBOL typ = sym->datatype;
     tok->symtype = typ;
     if ( typ->kind == BASICTYPE ||
         typ->kind == POINTERSYM)
         tok->basicdt = typ->basicdt;
   }
+  //if symbol isn't var
   else{
     tok->tokentype = NUMBERTOK;
     if (sym->basicdt == INTEGER){
@@ -599,11 +622,8 @@ TOKEN findid(TOKEN tok) { /* the ID token */
       tok->realval = sym->constval.realnum;
     }
   }
-
   return tok; 
 }
-
-
 
 //method to find the type of a token in symbol table
 TOKEN findtype(TOKEN tok){
@@ -612,6 +632,8 @@ TOKEN findtype(TOKEN tok){
   tok->symtype = sym;
   return tok;
 }
+
+  //
 
 //method to insert symbols into symbol table
 void instvars(TOKEN idlist, TOKEN typetok)
@@ -633,6 +655,9 @@ void instvars(TOKEN idlist, TOKEN typetok)
         idlist = idlist->link;
       };
   }
+
+
+
 int wordaddress(int n, int wordsize)
   { return ((n + wordsize - 1) / wordsize) * wordsize; }
  
