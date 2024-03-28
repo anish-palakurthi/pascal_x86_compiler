@@ -81,21 +81,21 @@ TOKEN parseresult;
 
 
 %%
-//
+
   program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
   
-  //
+  
   idlist   :  IDENTIFIER COMMA idlist
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
            ;
-//
+
   constantVal   :  STRING
              | signedId
              |  signedNumber
              ;
-//
+
   constant :  IDENTIFIER EQ constantVal { instconst($1, $3); }
             ;
   
@@ -118,20 +118,20 @@ TOKEN parseresult;
   constantList     :  constant SEMICOLON constantList    
             |  constant SEMICOLON          
             ;  
-  //
+  
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
              ;
-  //
+  
 
   varspecs   :  vargroup SEMICOLON varspecs   
              |  vargroup SEMICOLON            
              ;
-  //
+  
              
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
-  //
+  
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
              ;
@@ -211,7 +211,7 @@ TOKEN parseresult;
              |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
-  //
+  
 
   type       :  IDENTIFIER   { $$ = findtype($1); }
              ;
@@ -306,7 +306,7 @@ TOKEN makeFloatToken(TOKEN tok){
   }
 }
 
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       { 
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
     lhs->link = rhs;             
     rhs->link = NULL;           
     op->operands = lhs; 
@@ -315,6 +315,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       {
     int lhType;
     int rhType;
 
+    //define our variables for specifying type
     if (lhs->basicdt == INTEGER) {
       lhType = 1;
     } else {
@@ -328,25 +329,33 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       {
       rhType = 0;
     }
 
+    //left hand = integer; right hand = float
     if (lhType == 1 && rhType == 0) {
+
 
       TOKEN temptoken = talloc();
 
       // computation operation
       if (op->whichval != ASSIGNOP){
+
         op->basicdt = REAL;
         TOKEN temptoken = makeFloatToken(lhs);
         temptoken->link = rhs;
+        return temptoken;
 
       }
 
       // assignment operation
       else{
+        printf("hit assignment token\n");
         op->basicdt = INTEGER;
         TOKEN temptoken = talloc();
+
         if (rhs->tokentype != NUMBERTOK) {
           temptoken = makeOperatorTok(FIXOP);
           temptoken->operands = rhs;
+          temptoken->basicdt = INTEGER;
+          return temptoken;
         }
         else{
           temptoken->intval = (int) rhs->realval;
@@ -356,17 +365,20 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       {
       }
     }
 
-    //other casting cases
+    //both real
     else if (lhType == 0 && rhType == 0) {
       op->basicdt = REAL;
     }
 
+    //left hand = int; right hand = real
     else if (lhType == 0 && rhType == 1) {
       TOKEN floatToken = makeFloatToken(rhs);
       lhs->link = floatToken;
       op->basicdt = REAL;
 
     }
+
+    //nothing needed for both int
 
     //deciding what to set op datatype to
     if (DEBUG & DB_BINOP)
@@ -401,7 +413,11 @@ TOKEN copytok(TOKEN target) {
 
 //install constant into table
 void instconst(TOKEN idtok, TOKEN consttok){
+
+  //create and return the symbol table entry
   SYMBOL constSymbol = insertsym(idtok->stringval);
+
+  //update the symbol table entry to reflect the token's value and data type
   constSymbol->basicdt = consttok->basicdt;
   constSymbol->kind = CONSTSYM;
 
@@ -419,9 +435,14 @@ void instconst(TOKEN idtok, TOKEN consttok){
 
 //method to create an if token
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
-  {  tok->tokentype = OPERATOR;  
+  {  //decomposing if token
+     tok->tokentype = OPERATOR;  
+
+    //determining expression
      tok->operands = exp;
      tok->whichval = IFOP;
+
+     //exp->thenpart->elsepart
      thenpart->link = elsepart;
      exp->link = thenpart;
      if (DEBUG & DB_MAKEIF)
@@ -451,11 +472,12 @@ TOKEN makeNumTok(int num) {
 
 //method for handling for loop logic
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
-    // Initial assignment and progn creation for the loop
+    // Initial assignment
     tok = makeprogn(tok, assign);
 
-    // Setting up the loop label for iteration control
+    // Setting up the loop label token
     TOKEN loopLabel = talloc();
+    //keeps label number
     loopLabel->operands = makeNumTok(labelnumber++);
     loopLabel->tokentype = OPERATOR;
     loopLabel->whichval = LABELOP;
@@ -463,7 +485,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     // Linking the loop initialization to the label
     assign->link = loopLabel;
 
-    // Preparing the loop body
+    // build loop body's statements tree
     TOKEN loopBody = talloc();
     loopBody = makeprogn(loopBody, statements);
 
@@ -505,7 +527,6 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
 
     // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
-        printf("Refactored makefor\n");
         dbugprinttok(tok);
     }
 

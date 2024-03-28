@@ -2150,7 +2150,7 @@ TOKEN makeFloatToken(TOKEN tok){
   }
 }
 
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       { 
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
     lhs->link = rhs;             
     rhs->link = NULL;           
     op->operands = lhs; 
@@ -2172,25 +2172,33 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)       {
       rhType = 0;
     }
 
+    //left hand = integer; right hand = float
     if (lhType == 1 && rhType == 0) {
+
 
       TOKEN temptoken = talloc();
 
       // computation operation
       if (op->whichval != ASSIGNOP){
+
         op->basicdt = REAL;
         TOKEN temptoken = makeFloatToken(lhs);
         temptoken->link = rhs;
+        return temptoken;
 
       }
 
       // assignment operation
       else{
+        printf("hit assignment token\n");
         op->basicdt = INTEGER;
         TOKEN temptoken = talloc();
+
         if (rhs->tokentype != NUMBERTOK) {
           temptoken = makeOperatorTok(FIXOP);
           temptoken->operands = rhs;
+          temptoken->basicdt = INTEGER;
+          return temptoken;
         }
         else{
           temptoken->intval = (int) rhs->realval;
@@ -2349,7 +2357,6 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
 
     // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
-        printf("Refactored makefor\n");
         dbugprinttok(tok);
     }
 

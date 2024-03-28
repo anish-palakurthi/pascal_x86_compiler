@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94237878275504           d  CONST  typ    REAL  val  6.250000e-02
- 94237878275856           s  CONST  typ INTEGER  val  32
- 94237878276208           h  CONST  typ INTEGER  val  34
- 94237878276560           c  CONST  typ    REAL  val  6.283180e+00
- 94237878276912         lim  CONST  typ INTEGER  val  32
- 94237878277456           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94237878277552           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94237878278032           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94237878278128           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 93910123613616           d  CONST  typ    REAL  val  6.250000e-02
+ 93910123613968           s  CONST  typ INTEGER  val  32
+ 93910123614320           h  CONST  typ INTEGER  val  34
+ 93910123614672           c  CONST  typ    REAL  val  6.283180e+00
+ 93910123615024         lim  CONST  typ INTEGER  val  32
+ 93910123615568           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93910123615664           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 93910123616144           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 93910123616240           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -18,8 +18,8 @@ Symbol table level 1
                                                 (:= y (float (* (funcall exp (- x))
                                                                 (funcall sin (* 6.283180e+00
                                                                                 x)))))
-                                                (:= n (+ (funcall round (* 3.200000e+01
-                                                                           y))
+                                                (:= n (+ (funcall round 3.200000e+01
+                                                                        y)
                                                          34))
                                                 (progn (label 0)
                                                        (progn (funcall write ' ')
