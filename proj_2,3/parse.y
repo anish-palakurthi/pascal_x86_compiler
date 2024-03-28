@@ -112,7 +112,7 @@ TOKEN parseresult;
              ;
 
   cblock     :  CONST constantList tblock              { $$ = $3; }
-             |  tblock
+             |  block
              ;
 
   constantList     :  constant SEMICOLON constantList    
@@ -123,12 +123,20 @@ TOKEN parseresult;
              |  block
              ;
   
+  lblock     : LABEL labelValList SEMICOLON block       { $$ = $4; }
+             |  block
+             ;
 
+  labelValList: NUMBER COMMA labelValList
+             |  NUMBER
+             ;
+             
   varspecs   :  vargroup SEMICOLON varspecs   
              |  vargroup SEMICOLON            
              ;
   
-             
+  label      : NUMBER COLON statement
+             ;
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
   
@@ -142,6 +150,7 @@ TOKEN parseresult;
              |  functionCall
              |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
              |  REPEAT statementList UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
+             |  label
              ;
 
   functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
@@ -283,7 +292,7 @@ TOKEN unaryop(TOKEN op, TOKEN lhs){
 }
 
 //helper to create an operator token of specific op type
-TOKEN makeOperatorTok(int op){
+TOKEN makeop(int op){
     TOKEN tok = talloc();
     tok->whichval = op;
     tok->tokentype = OPERATOR;
@@ -292,20 +301,31 @@ TOKEN makeOperatorTok(int op){
 }
 
 //makes float token if not a number already, othrewise just updates value 
-TOKEN makeFloatToken(TOKEN tok){
-  if (tok->tokentype != NUMBERTOK){
-    TOKEN floatToken = makeOperatorTok(FLOATOP);
-    floatToken->operands = tok;
-    return floatToken;
-    
-  }
-  else{
+TOKEN makefloat(TOKEN tok){
+  if (tok->tokentype == NUMBERTOK){
     tok->realval = (double) tok->intval;
     tok->basicdt = REAL;
     return tok;
   }
+  TOKEN floatToken = makeop(FLOATOP);
+  floatToken->operands = tok;
+  return floatToken;
+    
+
 }
 
+
+TOKEN makefix(TOKEN tok){
+  if(tok->tokentype == NUMBERTOK){
+    tok->intval = (int) tok->realval;
+    tok->basicdt = INTEGER;
+    return tok;
+  } else{
+    TOKEN fixToken = makeop(FIXOP);
+    fixToken->operands = tok;
+    return fixToken;
+  }
+}
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
     lhs->link = rhs;             
     rhs->link = NULL;           
@@ -339,28 +359,14 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
       if (op->whichval != ASSIGNOP){
 
         op->basicdt = REAL;
-        TOKEN temptoken = makeFloatToken(lhs);
+        TOKEN temptoken = makefloat(lhs);
         temptoken->link = rhs;
-        return temptoken;
-
       }
 
       // assignment operation
       else{
-        printf("hit assignment token\n");
         op->basicdt = INTEGER;
-        TOKEN temptoken = talloc();
-
-        if (rhs->tokentype != NUMBERTOK) {
-          temptoken = makeOperatorTok(FIXOP);
-          temptoken->operands = rhs;
-          temptoken->basicdt = INTEGER;
-          return temptoken;
-        }
-        else{
-          temptoken->intval = (int) rhs->realval;
-          temptoken->basicdt = INTEGER;
-        }
+        TOKEN temptoken = makefix(rhs);
         lhs->link = temptoken;
       }
     }
@@ -372,7 +378,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
 
     //left hand = int; right hand = real
     else if (lhType == 0 && rhType == 1) {
-      TOKEN floatToken = makeFloatToken(rhs);
+      TOKEN floatToken = makefloat(rhs);
       lhs->link = floatToken;
       op->basicdt = REAL;
 
@@ -457,18 +463,35 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
 
 
 //helper method to create a number token
-TOKEN makeNumTok(int num) {
+TOKEN makeintc(int num) {
   TOKEN tok = talloc();
   tok->intval = num;
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
   if (DEBUG & DB_MAKENUM) {
-      printf("makeNumTok\n");
+      printf("makeintc\n");
       dbugprinttok(tok);
   }
   return tok;
 }
 
+TOKEN makelabel(){
+  TOKEN tok = talloc();
+  tok->tokentype = OPERATOR;
+  tok->whichval = LABELOP;
+  tok->operands = makeintc(labelnumber++);
+  return tok;
+
+}
+
+TOKEN makegoto(int label){
+  TOKEN tok = talloc();
+  tok->tokentype = OPERATOR;
+  tok->whichval = GOTOOP;
+  tok->operands = makeintc(label);
+  return tok;
+
+}
 
 //method for handling for loop logic
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
@@ -476,11 +499,8 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     tok = makeprogn(tok, assign);
 
     // Setting up the loop label token
-    TOKEN loopLabel = talloc();
-    //keeps label number
-    loopLabel->operands = makeNumTok(labelnumber++);
-    loopLabel->tokentype = OPERATOR;
-    loopLabel->whichval = LABELOP;
+    TOKEN loopLabel = makelabel();
+
 
     // Linking the loop initialization to the label
     assign->link = loopLabel;
@@ -490,7 +510,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     loopBody = makeprogn(loopBody, statements);
 
     // Creating the conditional check for the loop
-    TOKEN leOperator = makeOperatorTok(LEOP);
+    TOKEN leOperator = makeop(LEOP);
     TOKEN conditional = talloc();
     conditional = makeif(conditional, leOperator, loopBody, NULL);
 
@@ -502,19 +522,16 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     TOKEN incrementStep = copytok(varCopy);
     TOKEN incrementVar = copytok(varCopy);
 
-    TOKEN incrementOp = makeOperatorTok(PLUSOP);
-    TOKEN incrementAssign = makeOperatorTok(ASSIGNOP);
+    TOKEN incrementOp = makeop(PLUSOP);
+    TOKEN incrementAssign = makeop(ASSIGNOP);
 
     incrementOp->operands = incrementStep;
     incrementVar->link = incrementOp;
-    incrementStep->link = makeNumTok(1);
+    incrementStep->link = makeintc(1);
     incrementAssign->operands = incrementVar;
 
     // Setting up the goto operation for loop continuation
-    TOKEN gotoOperation = talloc();
-    gotoOperation->operands = makeNumTok(labelnumber - 1);
-    gotoOperation->whichval = GOTOOP;
-    gotoOperation->tokentype = OPERATOR;
+    TOKEN gotoOperation = makegoto(labelnumber - 1);
 
     // Linking the increment operation and the goto for the loop's next iteration
     statements->link = incrementAssign;
@@ -541,6 +558,16 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      tok->tokentype = OPERATOR;  
      tok->operands = fn;
      tok->whichval = FUNCALLOP;
+    //  printf("fn->stringval: %s\n", fn->stringval);
+    SYMBOL sym = searchst(fn->stringval);
+    if (sym->datatype->datatype){
+      tok->basicdt = sym->datatype->datatype->basicdt;
+    }
+    //  printf("searchst(fn->stringval)->namestring: %s\n", searchst(fn->stringval)->namestring);
+    //  printf("searchst(fn->stringval)->datatype: %s\n",
+    //  searchst(fn->stringval)->datatype);
+    //  printf("searchst(fn->stringval)->datatype->datatype: %s\n", searchst(fn->stringval)->datatype->datatype);
+
      if (DEBUG & DB_MAKEFUNCALL)
         { 
           printf("makefuncall\n");
@@ -555,10 +582,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
   //set label token for the start
-  TOKEN repeatStart = talloc();
-  repeatStart->tokentype = OPERATOR;
-  repeatStart->whichval = LABELOP;
-  repeatStart->operands = makeNumTok(labelnumber++);
+  TOKEN repeatStart = makelabel();
    
    
    tok = makeprogn(tok, repeatStart);
@@ -568,10 +592,7 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
    repeatStart->link = shellBody;
 
    //set up the go to token for looping
-   TOKEN repeatStartGoTo = talloc();
-   repeatStartGoTo->operands = makeNumTok(labelnumber - 1);
-   repeatStartGoTo->tokentype = OPERATOR;
-   repeatStartGoTo->whichval = GOTOOP;
+   TOKEN repeatStartGoTo = makegoto(labelnumber - 1);
    TOKEN filler = makeprogn(talloc(), NULL);
    filler->link = repeatStartGoTo;
 
@@ -654,7 +675,7 @@ TOKEN findtype(TOKEN tok){
   return tok;
 }
 
-  //
+
 
 //method to insert symbols into symbol table
 void instvars(TOKEN idlist, TOKEN typetok)

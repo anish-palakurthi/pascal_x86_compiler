@@ -1,26 +1,26 @@
 yyparse result =        0
 Symbol table level 1
- 93910123613616           d  CONST  typ    REAL  val  6.250000e-02
- 93910123613968           s  CONST  typ INTEGER  val  32
- 93910123614320           h  CONST  typ INTEGER  val  34
- 93910123614672           c  CONST  typ    REAL  val  6.283180e+00
- 93910123615024         lim  CONST  typ INTEGER  val  32
- 93910123615568           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93910123615664           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 93910123616144           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 93910123616240           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94180479888816           d  CONST  typ    REAL  val  6.250000e-02
+ 94180479889168           s  CONST  typ INTEGER  val  32
+ 94180479889520           h  CONST  typ INTEGER  val  34
+ 94180479889872           c  CONST  typ    REAL  val  6.283180e+00
+ 94180479890224         lim  CONST  typ INTEGER  val  32
+ 94180479890768           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94180479890864           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94180479891344           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94180479891440           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
                               (if (<= i 32)
                                   (progn (progn (:= x (* 6.250000e-02
                                                          (float i)))
-                                                (:= y (float (* (funcall exp (- x))
-                                                                (funcall sin (* 6.283180e+00
-                                                                                x)))))
-                                                (:= n (+ (funcall round 3.200000e+01
-                                                                        y)
-                                                         34))
+                                                (:= y (* (funcall exp (- x))
+                                                         (funcall sin (* 6.283180e+00
+                                                                         x))))
+                                                (:= n (fix (+ (funcall round (* 3.200000e+01
+                                                                                y))
+                                                              3.400000e+01)))
                                                 (progn (label 0)
                                                        (progn (funcall write ' ')
                                                               (:= n (- n 1)))
