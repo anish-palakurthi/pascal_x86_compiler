@@ -2600,6 +2600,27 @@ void  instlabel (TOKEN num){
 
 }
 
+/* nconc concatenates two token lists, destructively, by making the last link
+   of lista point to listb.
+   (nconc '(a b) '(c d e))  =  (a b c d e)  */
+/* nconc is useful for putting together two fieldlist groups to
+   make them into a single list in a record declaration. */
+/* nconc should return lista, or listb if lista is NULL. */
+TOKEN nconc(TOKEN lista, TOKEN listb){
+
+  if (lista == NULL){
+    return listb;
+  }
+  
+  TOKEN mover = lista;
+  while(mover->link != NULL){
+    mover = mover->link;
+  }
+  mover->link = listb;
+
+  return lista;
+
+}
 
 
 /* wordaddress pads the offset n to be a multiple of wordsize.
@@ -2634,13 +2655,7 @@ int main(void)          /*  */
   }
 
 
-/* nconc concatenates two token lists, destructively, by making the last link
-   of lista point to listb.
-   (nconc '(a b) '(c d e))  =  (a b c d e)  */
-/* nconc is useful for putting together two fieldlist groups to
-   make them into a single list in a record declaration. */
-/* nconc should return lista, or listb if lista is NULL. */
-TOKEN nconc(TOKEN lista, TOKEN listb);
+
 
 /* instrec will install a record definition.  Each token in the linked list
    argstok has a pointer its type.  rectok is just a trash token to be
