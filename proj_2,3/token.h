@@ -26,8 +26,8 @@
 typedef struct tokn {
   int    tokentype;  /* OPERATOR, DELIMITER, RESERVED, etc */
   int    basicdt;   /* INTEGER, REAL, STRINGTYPE, BOOLETYPE, or POINTER */
-  struct symtbr * symtype;
-  struct symtbr * symentry;
+  struct symtbr * symtype; //entry of this symbol's TYPE in the symbol table
+  struct symtbr * symentry; //entry of this symbol in the symbol table
   struct tokn * operands;
   struct tokn * link;
   union { char  tokenstring[16];   /* values of different types, overlapped */

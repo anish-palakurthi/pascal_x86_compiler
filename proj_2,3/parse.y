@@ -253,9 +253,8 @@ int labelnumber = 0;
 int labels[100];
 
 
-   /*  Note: you should add to the above values and insert debugging
-       printouts in your routines similar to those that are shown here.     */
-
+/* cons links a new item onto the front of a list.  Equivalent to a push.
+   (cons 'a '(b c))  =  (a b c)    */
 TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
@@ -281,7 +280,7 @@ int isInt(TOKEN tok) {
     return 0;
 }
 
-//apply unary operator to token
+/* unaryop links a unary operator op to one operand, lhs */
 TOKEN unaryop(TOKEN op, TOKEN lhs){
   lhs->link = NULL;
   op->operands = lhs;
@@ -293,7 +292,8 @@ TOKEN unaryop(TOKEN op, TOKEN lhs){
   return op;
 }
 
-//helper to create an operator token of specific op type
+/* makeop makes a new operator token with operator number opnum.
+   Example:  makeop(FLOATOP)  */
 TOKEN makeop(int op){
     TOKEN tok = talloc();
     tok->whichval = op;
@@ -302,7 +302,8 @@ TOKEN makeop(int op){
     return tok;
 }
 
-//makes float token if not a number already, othrewise just updates value 
+/* makefloat forces the item tok to be floating, by floating a constant
+   or by inserting a FLOATOP operator */
 TOKEN makefloat(TOKEN tok){
   if (tok->tokentype == NUMBERTOK){
     tok->realval = (double) tok->intval;
@@ -316,7 +317,8 @@ TOKEN makefloat(TOKEN tok){
 
 }
 
-
+/* makefix forces the item tok to be integer, by truncating a constant
+   or by inserting a FIXOP operator */
 TOKEN makefix(TOKEN tok){
   if(tok->tokentype == NUMBERTOK){
     tok->intval = (int) tok->realval;
@@ -328,6 +330,8 @@ TOKEN makefix(TOKEN tok){
     return fixToken;
   }
 }
+
+/* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
     lhs->link = rhs;             
     rhs->link = NULL;           
@@ -401,6 +405,7 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
     
   }
 
+/* copytok makes a new token that is a copy of origtok */
 TOKEN copytok(TOKEN target) {
   TOKEN copy = talloc();
   copy->tokentype = target->tokentype;
@@ -419,7 +424,7 @@ TOKEN copytok(TOKEN target) {
 }
 
 
-//install constant into table
+/* instconst installs a constant in the symbol table */
 void instconst(TOKEN idtok, TOKEN consttok){
 
   //create and return the symbol table entry
@@ -441,7 +446,8 @@ void instconst(TOKEN idtok, TOKEN consttok){
   }
 }
 
-//method to create an if token
+/* makeif makes an IF operator and links it to its arguments.
+   tok is a (now) unused token that is recycled to become an IFOP operator */
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
   {  //decomposing if token
      tok->tokentype = OPERATOR;  
@@ -464,7 +470,7 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
    }
 
 
-//helper method to create a number token
+/* makeintc makes a new integer number token with num as its value */
 TOKEN makeintc(int num) {
   TOKEN tok = talloc();
   tok->intval = num;
@@ -477,6 +483,7 @@ TOKEN makeintc(int num) {
   return tok;
 }
 
+/* makelabel makes a new label, using labelnumber++ */
 TOKEN makelabel(){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
@@ -486,6 +493,8 @@ TOKEN makelabel(){
 
 }
 
+/* makegoto makes a GOTO operator to go to the specified label.
+   The label number is put into a number token. */
 TOKEN makegoto(int label){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
@@ -495,7 +504,11 @@ TOKEN makegoto(int label){
 
 }
 
-//method for handling for loop logic
+/* makefor makes structures for a for statement.
+   sign is 1 for normal loop, -1 for downto.
+   asg is an assignment statement, e.g. (:= i 1)
+   endexpr is the end expression
+   tok, tokb and tokc are (now) unused tokens that are recycled. */
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
     // Initial assignment
     tok = makeprogn(tok, assign);
@@ -524,7 +537,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     TOKEN incrementStep = copytok(varCopy);
     TOKEN incrementVar = copytok(varCopy);
 
-    TOKEN incrementOp = makeop(PLUSOP);
+    TOKEN incrementOp = makeplus(NULL, NULL, NULL);
     TOKEN incrementAssign = makeop(ASSIGNOP);
 
     incrementOp->operands = incrementStep;
@@ -553,7 +566,8 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
 }
 
 
-//method to create a function call token
+/* makefuncall makes a FUNCALL operator and links it to the fn and args.
+   tok is a (now) unused token that is recycled. */
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
   {  
      fn->link = args;
@@ -574,7 +588,8 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      return tok;
    }
 
-//method to create a repeat token
+/* makewhile makes structures for a while statement.
+   tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
   //set label token for the start
@@ -600,7 +615,8 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
    return tok;  
 }
 
-//method to create a progn token
+/* makeprogn makes a PROGN operator and links it to the list of statements.
+   tok is a (now) unused token that is recycled. */
 TOKEN makeprogn(TOKEN tok, TOKEN statements)
   {  tok->tokentype = OPERATOR;
      tok->whichval = PROGNOP;
@@ -613,7 +629,7 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
      return tok;
   }
 
-//method to create a program token
+/* makeprogram makes the tree structures for the top-level program */
 TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   {
     TOKEN tok = talloc();
@@ -636,7 +652,8 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   }
 
 
-//method to find the symbol entry of specified toke
+/* findid finds an identifier in the symbol table, sets up symbol table
+   pointers, changes a constant to its number equivalent */
 TOKEN findid(TOKEN tok) { /* the ID token */
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
@@ -663,7 +680,9 @@ TOKEN findid(TOKEN tok) { /* the ID token */
   return tok; 
 }
 
-//method to find the type of a token in symbol table
+
+/* findtype looks up a type name in the symbol table, puts the pointer
+   to its type into tok->symtype, returns tok. */
 TOKEN findtype(TOKEN tok){
   SYMBOL sym = searchst(tok->stringval);
   tok->symentry = sym;
@@ -673,7 +692,8 @@ TOKEN findtype(TOKEN tok){
 
 
 
-//method to insert symbols into symbol table
+/* instvars will install variables in symbol table.
+   typetok is a token containing symbol table pointer for type. */
 void instvars(TOKEN idlist, TOKEN typetok)
   {  
     SYMBOL sym, typesym; int align;
@@ -733,7 +753,9 @@ void  instlabel (TOKEN num){
 
 
 
-
+/* wordaddress pads the offset n to be a multiple of wordsize.
+   wordsize should be 4 for integer, 8 for real and pointers,
+   16 for records and arrays */
 int wordaddress(int n, int wordsize)
   { return ((n + wordsize - 1) / wordsize) * wordsize; }
  
@@ -761,3 +783,120 @@ int main(void)          /*  */
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
+
+
+/* nconc concatenates two token lists, destructively, by making the last link
+   of lista point to listb.
+   (nconc '(a b) '(c d e))  =  (a b c d e)  */
+/* nconc is useful for putting together two fieldlist groups to
+   make them into a single list in a record declaration. */
+/* nconc should return lista, or listb if lista is NULL. */
+TOKEN nconc(TOKEN lista, TOKEN listb);
+
+/* instrec will install a record definition.  Each token in the linked list
+   argstok has a pointer its type.  rectok is just a trash token to be
+   used to return the result in its symtype */
+TOKEN instrec(TOKEN rectok, TOKEN argstok);
+
+/* instfields will install type in a list idlist of field name tokens:
+   re, im: real    put the pointer to REAL in the RE, IM tokens.
+   typetok is a token whose symtype is a symbol table pointer.
+   Note that nconc() can be used to combine these lists after instrec() */
+TOKEN instfields(TOKEN idlist, TOKEN typetok);
+
+/* fillintc smashes tok, making it into an INTEGER constant with value num */
+TOKEN fillintc(TOKEN tok, int num);
+
+
+/* makepnb is like makeprogn, except that if statements is already a progn,
+   it just returns statements.  This is optional. */
+TOKEN makepnb(TOKEN tok, TOKEN statements);
+
+/* appendst makes a progn containing statements followed by more */
+TOKEN appendst(TOKEN statements, TOKEN more);
+
+/* dogoto is the action for a goto statement.
+   tok is a (now) unused token that is recycled. */
+TOKEN dogoto(TOKEN tok, TOKEN labeltok);
+
+/* settoktype sets up the type fields of token tok.
+   typ = type pointer, ent = symbol table entry of the variable  */
+void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
+
+
+/* makewhile makes structures for a while statement.
+   tok and tokb are (now) unused tokens that are recycled. */
+TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement);
+
+
+
+
+/* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
+   into tok, and returns tok. */
+TOKEN makesubrange(TOKEN tok, int low, int high);
+
+/* instenum installs an enumerated subrange in the symbol table,
+   e.g., type color = (red, white, blue)
+   by calling makesubrange and returning the token it returns. */
+TOKEN instenum(TOKEN idlist);
+
+/* instdotdot installs a .. subrange in the symbol table.
+   dottok is a (now) unused token that is recycled. */
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok);
+
+
+/* searchins will search for symbol, inserting it if not present. */
+SYMBOL searchins(char name[]);
+
+/* insttype will install a type name in symbol table.
+   typetok is a token containing symbol table pointers. */
+void  insttype(TOKEN typename, TOKEN typetok);
+
+/* instpoint will install a pointer type in symbol table */
+TOKEN instpoint(TOKEN tok, TOKEN typename);
+
+
+
+/* makeplus makes a + operator.
+   tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok){
+  tok = makeop(PLUSOP);
+  return tok;
+}
+
+/* addint adds integer off to expression exp, possibly using tok */
+TOKEN addint(TOKEN exp, TOKEN off, TOKEN tok);
+
+/* addoffs adds offset, off, to an aref expression, exp */
+TOKEN addoffs(TOKEN exp, TOKEN off);
+
+/* mulint multiplies expression exp by integer n */
+TOKEN mulint(TOKEN exp, int n);
+
+/* makearef makes an array reference operation.
+   off is be an integer constant token
+   tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok);
+
+/* reducedot handles a record reference.
+   dot is a (now) unused token that is recycled. */
+TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field);
+// assert( var->symtype->kind == RECORDSYM );
+
+/* arrayref processes an array reference a[i]
+   subs is a list of subscript expressions.
+   tok and tokb are (now) unused tokens that are recycled. */
+TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb);
+// assert( arr->symtype->kind == ARRAYSYM );
+
+/* dopoint handles a ^ operator.  john^ becomes (^ john) with type record
+   tok is a (now) unused token that is recycled. */
+TOKEN dopoint(TOKEN var, TOKEN tok);
+//     assert( var->symtype->kind == POINTERSYM );
+//     assert( var->symtype->datatype->kind == TYPESYM );
+
+/* instarray installs an array declaration into the symbol table.
+   bounds points to a SUBRANGE symbol table entry.
+   The symbol table pointer is returned in token typetok. */
+TOKEN instarray(TOKEN bounds, TOKEN typetok);
+//     assert(bounds->symtype->kind == SUBRANGE );
