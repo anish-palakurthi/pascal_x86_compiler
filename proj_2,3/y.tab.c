@@ -1632,212 +1632,218 @@ yyreduce:
 #line 1633 "y.tab.c"
     break;
 
+  case 23:
+#line 138 "parse.y"
+                                            { yyval = dolabel(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+#line 1639 "y.tab.c"
+    break;
+
   case 24:
 #line 140 "parse.y"
                                   { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1639 "y.tab.c"
+#line 1645 "y.tab.c"
     break;
 
   case 25:
 #line 144 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1645 "y.tab.c"
+#line 1651 "y.tab.c"
     break;
 
   case 27:
 #line 148 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1651 "y.tab.c"
+#line 1657 "y.tab.c"
     break;
 
   case 30:
 #line 151 "parse.y"
                                                       { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1657 "y.tab.c"
+#line 1663 "y.tab.c"
     break;
 
   case 31:
 #line 152 "parse.y"
                                                              { yyval = makerepeat(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1663 "y.tab.c"
+#line 1669 "y.tab.c"
     break;
 
   case 33:
 #line 156 "parse.y"
                                                                 { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1669 "y.tab.c"
+#line 1675 "y.tab.c"
     break;
 
   case 34:
 #line 159 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1675 "y.tab.c"
+#line 1681 "y.tab.c"
     break;
 
   case 35:
 #line 160 "parse.y"
                                                { yyval = NULL; }
-#line 1681 "y.tab.c"
+#line 1687 "y.tab.c"
     break;
 
   case 36:
 #line 163 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1687 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 37:
 #line 164 "parse.y"
                                                { yyval = NULL; }
-#line 1693 "y.tab.c"
+#line 1699 "y.tab.c"
     break;
 
   case 38:
 #line 167 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1699 "y.tab.c"
+#line 1705 "y.tab.c"
     break;
 
   case 39:
 #line 170 "parse.y"
                                                          { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1705 "y.tab.c"
+#line 1711 "y.tab.c"
     break;
 
   case 41:
 #line 174 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1711 "y.tab.c"
+#line 1717 "y.tab.c"
     break;
 
   case 42:
 #line 175 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1717 "y.tab.c"
+#line 1723 "y.tab.c"
     break;
 
   case 43:
 #line 176 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1723 "y.tab.c"
+#line 1729 "y.tab.c"
     break;
 
   case 44:
 #line 177 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1729 "y.tab.c"
+#line 1735 "y.tab.c"
     break;
 
   case 45:
 #line 178 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1735 "y.tab.c"
+#line 1741 "y.tab.c"
     break;
 
   case 46:
 #line 179 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1741 "y.tab.c"
+#line 1747 "y.tab.c"
     break;
 
   case 47:
 #line 180 "parse.y"
                                                       { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1747 "y.tab.c"
+#line 1753 "y.tab.c"
     break;
 
   case 50:
 #line 185 "parse.y"
                                                            { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1753 "y.tab.c"
+#line 1759 "y.tab.c"
     break;
 
   case 51:
 #line 186 "parse.y"
                                                             { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1759 "y.tab.c"
+#line 1765 "y.tab.c"
     break;
 
   case 52:
 #line 187 "parse.y"
                                                          { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1765 "y.tab.c"
+#line 1771 "y.tab.c"
     break;
 
   case 53:
 #line 190 "parse.y"
                                                { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1771 "y.tab.c"
+#line 1777 "y.tab.c"
     break;
 
   case 54:
 #line 191 "parse.y"
                                                 { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1777 "y.tab.c"
+#line 1783 "y.tab.c"
     break;
 
   case 55:
 #line 192 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1783 "y.tab.c"
+#line 1789 "y.tab.c"
     break;
 
   case 56:
 #line 193 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1789 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 57:
 #line 194 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1795 "y.tab.c"
+#line 1801 "y.tab.c"
     break;
 
   case 61:
 #line 202 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1801 "y.tab.c"
+#line 1807 "y.tab.c"
     break;
 
   case 63:
 #line 206 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1807 "y.tab.c"
+#line 1813 "y.tab.c"
     break;
 
   case 65:
 #line 210 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1813 "y.tab.c"
+#line 1819 "y.tab.c"
     break;
 
   case 72:
 #line 220 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1819 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 73:
 #line 221 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1825 "y.tab.c"
+#line 1831 "y.tab.c"
     break;
 
   case 74:
 #line 225 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1831 "y.tab.c"
+#line 1837 "y.tab.c"
     break;
 
   case 75:
 #line 228 "parse.y"
                                                       { yyval = findid(yyvsp[0]); }
-#line 1837 "y.tab.c"
+#line 1843 "y.tab.c"
     break;
 
 
-#line 1841 "y.tab.c"
+#line 1847 "y.tab.c"
 
       default: break;
     }
@@ -2093,6 +2099,8 @@ yyreturn:
 
 
 int labelnumber = 0;  
+int labels[100];
+
 
    /*  Note: you should add to the above values and insert debugging
        printouts in your routines similar to those that are shown here.     */
@@ -2401,16 +2409,10 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      tok->tokentype = OPERATOR;  
      tok->operands = fn;
      tok->whichval = FUNCALLOP;
-    //  printf("fn->stringval: %s\n", fn->stringval);
     SYMBOL sym = searchst(fn->stringval);
     if (sym->datatype->datatype){
       tok->basicdt = sym->datatype->datatype->basicdt;
     }
-    //  printf("searchst(fn->stringval)->namestring: %s\n", searchst(fn->stringval)->namestring);
-    //  printf("searchst(fn->stringval)->datatype: %s\n",
-    //  searchst(fn->stringval)->datatype);
-    //  printf("searchst(fn->stringval)->datatype->datatype: %s\n", searchst(fn->stringval)->datatype->datatype);
-
      if (DEBUG & DB_MAKEFUNCALL)
         { 
           printf("makefuncall\n");
@@ -2540,6 +2542,46 @@ void instvars(TOKEN idlist, TOKEN typetok)
         idlist = idlist->link;
       };
   }
+
+/* dolabel is the action for a label of the form   <number>: <statement>
+   tok is a (now) unused token that is recycled. */
+TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement){
+
+  int labelValue = labeltok->intval;
+  int labelIndex = -1;
+
+  for(int i = 0; i < sizeof(labels) / sizeof(labels[0]); i++) {
+    if (labels[i] == labelValue) {
+      labelIndex = i;
+      break;
+    }
+  }
+
+  if (labelIndex == -1){
+    fprintf(stderr, "Label not found\n");
+    return NULL;
+  }
+
+  TOKEN indexToken = makeintc(labelIndex);
+  labeltok = makeop(LABELOP);
+
+  labeltok->operands = indexToken;
+  labeltok->link = statement;
+
+  tok = makeprogn(tok, labeltok);
+
+  return tok;
+  
+
+
+}
+
+/* instlabel installs a user label into the label table */
+void  instlabel (TOKEN num){
+  labels[labelnumber++] = num->intval;  
+
+}
+
 
 
 

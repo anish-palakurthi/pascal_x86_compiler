@@ -123,19 +123,19 @@ TOKEN parseresult;
              |  block
              ;
   
-  lblock     : LABEL labelValList SEMICOLON block       { $$ = $4; }
+  lblock     :  LABEL labelValList SEMICOLON block       { $$ = $4; }
              |  block
              ;
 
-  labelValList: NUMBER COMMA labelValList
-             |  NUMBER
+  labelValList: NUMBER COMMA labelValList   {instlabel($1);}
+             |  NUMBER                      {instlabel($1);}
              ;
              
   varspecs   :  vargroup SEMICOLON varspecs   
              |  vargroup SEMICOLON            
              ;
   
-  label      : NUMBER COLON statement
+  label      : NUMBER COLON statement       { $$ = dolabel($1, $2, $3); }
              ;
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
@@ -250,6 +250,8 @@ TOKEN parseresult;
 
 
 int labelnumber = 0;  
+int labels[100];
+
 
    /*  Note: you should add to the above values and insert debugging
        printouts in your routines similar to those that are shown here.     */
@@ -558,16 +560,10 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args)
      tok->tokentype = OPERATOR;  
      tok->operands = fn;
      tok->whichval = FUNCALLOP;
-    //  printf("fn->stringval: %s\n", fn->stringval);
     SYMBOL sym = searchst(fn->stringval);
     if (sym->datatype->datatype){
       tok->basicdt = sym->datatype->datatype->basicdt;
     }
-    //  printf("searchst(fn->stringval)->namestring: %s\n", searchst(fn->stringval)->namestring);
-    //  printf("searchst(fn->stringval)->datatype: %s\n",
-    //  searchst(fn->stringval)->datatype);
-    //  printf("searchst(fn->stringval)->datatype->datatype: %s\n", searchst(fn->stringval)->datatype->datatype);
-
      if (DEBUG & DB_MAKEFUNCALL)
         { 
           printf("makefuncall\n");
@@ -697,6 +693,44 @@ void instvars(TOKEN idlist, TOKEN typetok)
         idlist = idlist->link;
       };
   }
+
+/* dolabel is the action for a label of the form   <number>: <statement>
+   tok is a (now) unused token that is recycled. */
+TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement){
+  tok = makeprogn(tok, labeltok);
+
+  int labelValue = labeltok->intval;
+  int labelIndex = -1;
+
+  for(int i = 0; i < sizeof(labels) / sizeof(labels[0]); i++) {
+    if (labels[i] == labelValue) {
+      labelIndex = i;
+      break;
+    }
+  }
+
+  if (labelIndex == -1){
+    fprintf(stderr, "Label not found\n");
+    return NULL;
+  }
+
+  TOKEN indexToken = makeintc(labelIndex);
+  labeltok->operands = indexToken;
+  labeltok->link = statement;
+
+
+  return tok;
+  
+
+
+}
+
+/* instlabel installs a user label into the label table */
+void  instlabel (TOKEN num){
+  labels[labelnumber++] = num->intval;  
+
+}
+
 
 
 
