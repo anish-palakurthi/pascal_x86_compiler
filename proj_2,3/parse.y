@@ -762,7 +762,7 @@ TOKEN nconc(TOKEN lista, TOKEN listb){
   if (lista == NULL){
     return listb;
   }
-  
+
   TOKEN mover = lista;
   while(mover->link != NULL){
     mover = mover->link;
@@ -771,6 +771,23 @@ TOKEN nconc(TOKEN lista, TOKEN listb){
 
   return lista;
 
+}
+
+/* instfields will install type in a list idlist of field name tokens:
+   re, im: real    put the pointer to REAL in the RE, IM tokens.
+   typetok is a token whose symtype is a symbol table pointer.
+   Note that nconc() can be used to combine these lists after instrec() */
+TOKEN instfields(TOKEN idlist, TOKEN typetok){
+
+  TOKEN mover = idlist;
+
+  while(mover != NULL){
+    mover->symtype = typetok->symtype;
+    mover = mover->link;
+  }
+
+  return idlist;
+  
 }
 
 
@@ -813,11 +830,7 @@ int main(void)          /*  */
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok);
 
-/* instfields will install type in a list idlist of field name tokens:
-   re, im: real    put the pointer to REAL in the RE, IM tokens.
-   typetok is a token whose symtype is a symbol table pointer.
-   Note that nconc() can be used to combine these lists after instrec() */
-TOKEN instfields(TOKEN idlist, TOKEN typetok);
+
 
 /* fillintc smashes tok, making it into an INTEGER constant with value num */
 TOKEN fillintc(TOKEN tok, int num);
