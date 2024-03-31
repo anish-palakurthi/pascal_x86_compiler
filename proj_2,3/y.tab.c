@@ -2273,55 +2273,68 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
   return op;  
 }
 
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
-  {     
+TOKEN getFinalFieldType(TOKEN aref) {
+    // This function assumes 'aref' is an AREFOP token.
+    // It traverses the AREF chain to find the final field's type.
+    while (aref != NULL && aref->whichval == AREFOP) {
+        SYMBOL symentry = aref->operands->symentry; // Assuming the first operand points to the array/record.
+        if (symentry && symentry->datatype) {
+            // Move to the next level if it's another record/array.
+            aref = aref->operands->link;
+        } else {
+            // Found the final field, return its basic type.
+            return symentry->basicdt;
+        }
+    }
+    // Default to INTEGER if we can't resolve the type for some reason.
+    return INTEGER;
+}
+
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     printf("binop\n");
     dbugprinttok(lhs);
     dbugprinttok(rhs);
 
+    // Handle NIL as zero.
     if (rhs->whichval == (NIL - RESERVED_BIAS)) {
-      rhs = makeintc(0);
+        rhs = makeintc(0);
     }
 
-    op->operands = lhs;          /* link operands to operator       */
-    lhs->link = rhs;             /* link second operand to first    */
-    rhs->link = NULL;            /* terminate operand list          */
+    op->operands = lhs; // Link operands to operator.
+    lhs->link = rhs; // Link second operand to first.
+    rhs->link = NULL; // Terminate operand list.
 
+    // Check if lhs is an AREFOP, indicating potential nested field access.
+    if (lhs->whichval == AREFOP) {
+        int finalFieldType = getFinalFieldType(lhs);
+        // Adjust op->basicdt based on the final field's type.
+        op->basicdt = finalFieldType;
+    } else {
+        // Existing logic to handle other cases.
+        if (isReal(lhs) && isReal(rhs)) {
+            op->basicdt = REAL;
+        } else if (isReal(lhs) && isInt(rhs)) {
+            op->basicdt = REAL;
+            TOKEN ftok = makefloat(rhs);
+            lhs->link = ftok;
+        } else if (isInt(lhs) && isReal(rhs)) {
+            if (op->whichval == ASSIGNOP) {
+                op->basicdt = INTEGER;
+            } else {
+                op->basicdt = REAL;
+            }
+        }
+    }
 
+    if (DEBUG & DB_BINOP) {
+        printf("binop - final type handling\n");
+        dbugprinttok(op);
+    }
 
-    if (isReal(lhs) && isReal(rhs)) {
-      op->basicdt = REAL;     
-    } else if (isReal(lhs) && isInt(rhs)) {
-      op->basicdt = REAL;
-      TOKEN ftok = makefloat(rhs);
-      lhs->link = ftok;
-    } else if (isInt(lhs) && isReal(rhs)) {
-      printf("int and real\n");
-      if (op->whichval == ASSIGNOP) {
-        op->basicdt = INTEGER;
-        TOKEN fixtok = makefix(rhs);
-        lhs->link = fixtok;
-        dbugprinttok(lhs);
-        dbugprinttok(rhs);
-        printf("made fix token\n");
-
-      } else {
-        op->basicdt = REAL;
-        TOKEN ftok = makefloat(lhs);
-        ftok->link = rhs;
-        printf("made float token\n");
-      }
-    } 
-
-
-    if (DEBUG & DB_BINOP)
-       { printf("binop\n"); 
-         dbugprinttok(op);
-         dbugprinttok(lhs);
-         dbugprinttok(rhs); 
-       };
     return op;
-  }
+}
+
+
 
 
 /* makefloat forces the item tok to be floating, by floating a constant
@@ -2457,9 +2470,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
       int sumOffsets = off1->intval + off->intval;
       finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
     }
-    if (var->symentry && var->symentry->datatype) {
-      areftok->basicdt = var->symentry->datatype->basicdt;
-    }
   }
 
   // Now, we create the AREF operation using the possibly updated finalOffset
@@ -2467,12 +2477,19 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
     var = var->operands; // Assume var->operands is the array being indexed
   }
+
+
   var->link = finalOffset; // Link the final offset
   areftok->operands = var;
   areftok->symentry = var->symentry;
+  
+  
   if (var->symentry && var->symentry->datatype) {
     areftok->basicdt = var->symentry->datatype->basicdt;
   }
+
+
+
 
   if (DEBUG && DB_MAKEAREF) {
       printf("makearef - possibly merged\n");
@@ -2745,7 +2762,10 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
-
+  printf("reducedot\n");
+  dbugprinttok(var);
+  dbugprinttok(dot);
+  dbugprinttok(field);
   SYMBOL recsym = var->symentry;
   SYMBOL curfield = recsym->datatype->datatype;
 
@@ -2765,6 +2785,9 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
   dot = makearef(var, makeintc(offset), dot);
+
+  printf("return from reducedot\n");
+  dbugprinttok(dot);
 
   if (DEBUG & DB_REDUCEDOT) {
     printf("reducedot\n");
