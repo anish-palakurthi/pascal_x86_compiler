@@ -1,17 +1,22 @@
-%{     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 10 Jan 24   */
+%{     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 30 Jul 13   */
 
-/* Copyright (c) 2023 Gordon S. Novak Jr. and
+/* Copyright (c) 2013 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12;
-   30 Jul 13; 25 Jul 19 ; 28 Feb 22; 08 Jul 22; 13 Nov 23 */
+/* 
+ Student: S. Ram Janarthana Raja
+ UTEID  : rs53992
+ */ 
+
+
+/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
 
 /*
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation; either version 2 of the License, or
 ; (at your option) any later version.
- 
+
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +25,6 @@
 ; You should have received a copy of the GNU General Public License
 ; along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
-
 
 
 /* NOTE:   Copy your lexan.l lexical analyzer to this directory.      */
@@ -50,12 +54,9 @@
 #include <ctype.h>
 #include <string.h>
 #include "token.h"
-
 #include "lexan.h"
 #include "symtab.h"
-
 #include "parse.h"
-
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -217,6 +218,7 @@ TOKEN parseresult;
              |  funcall
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
+
 %%
 
 /* You should add your own debugging flags below, and add debugging
@@ -226,7 +228,7 @@ TOKEN parseresult;
    are working.
   */
 
-#define DEBUG           0            /* set bits here for debugging, 0 = off  */
+#define DEBUG           0             /* set bits here for debugging, 0 = off  */
 #define DB_CONS         0             /* bit to trace cons */
 #define DB_BINOP        0             /* bit to trace binop */
 #define DB_MAKEIF       0             /* bit to trace makeif */
@@ -487,72 +489,37 @@ TOKEN makegoto(int num){
 }
 
 
-/* makearef makes an array reference operation.
-   off is be an integer constant token
-   tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
+  TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
+  if (var->whichval == AREFOP && off->basicdt == INTEGER) {
+    printf("found double aref\n");
+    
+    TOKEN off1 = var->operands->link;
+    if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
+      // Directly sum the integer values of the offsets
+      int sumOffsets = off1->intval + off->intval;
+      finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
+    }
+  }
+
+  // Now, we create the AREF operation using the possibly updated finalOffset
   TOKEN areftok = makeop(AREFOP);
-  var->link = off;
+  if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
+    var = var->operands; // Assume var->operands is the array being indexed
+  }
+  var->link = finalOffset; // Link the final offset
   areftok->operands = var;
-  areftok->symentry = var->symentry;   
+  areftok->symentry = var->symentry;
 
   if (DEBUG && DB_MAKEAREF) {
-      printf("makearef\n");
-      printf("symentry: %s", var->symentry->namestring);
+      printf("makearef - possibly merged\n");
       dbugprinttok(areftok);
-      dbugprinttok(var);
   }
 
   return areftok;
 }
 
-
-TOKEN addint(TOKEN exp, TOKEN off, TOKEN tok) {
-	if (!exp || !off) {
-		return NULL;
-	}
-
-	int a = exp->intval;
-	int b = off->intval;
-	
-	if (DEBUG & DB_ADDINT) {
-		printf("In addint()\n Adding %d to %d\n", b, a);
-		dbugprint3args(exp, off, tok);
-	}
-
-	if ((b > 0) && (a > INT_MAX - b)) { // if ((INT_MAX / exp->intval) > off->intval)
-		printf(" Error: integer overflow detected, addint()\n");
-		printf(" Cannot add %d to %d\n", b, a);
-	}
-	else {
-		exp->intval = a + b;
-	}
-
-	if (DEBUG & DB_ADDINT) {
-		printf(" New value of exp: %d\n", exp->intval);
-		dbugprint1tok(exp);
-	}
-	
-	return exp;
-}
-
-
-/* makeplus makes a + operator.
-   tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
-
-
-
-	TOKEN out = makeop(PLUSOP);
-	if (lhs && rhs) {
-		out->operands = lhs;
-		lhs->link = rhs;
-		rhs->link = NULL;
-	}
-
-	return out;
-}
 
 
 /* makefor makes structures for a for statement.
@@ -845,110 +812,55 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
- 	if (DEBUG & DB_ARRAYREF) {
-		printf("In arrayref()\n");
-		dbugprint4args(arr, tok, subs, tokb);
-	}
+  if (subs->link) {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
 
-	TOKEN array_ref = NULL;
-	SYMBOL arr_varsym, typesym, temp;
-	SYMBOL arrsyms[10];
+    TOKEN s = copytok(subs);
+    s->link = NULL;
+    TOKEN elesize = makeintc(size);
+    elesize->link = s;
+    timesop->operands = elesize;
 
-	arr_varsym = searchst(arr->stringval);
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
 
-	if (!arr_varsym) {
-		printf(" Error: array \"%s\" not found in symbol table, arrayref().\n", arr->stringval);
-		return NULL;
-	}
+    TOKEN subarref = makearef(arr, plusop, tokb);
+    
+    subarref->symtype = arr->symtype->datatype;
 
-	temp = arr_varsym->datatype;
+    return arrayref(subarref, tok, subs->link, tokb);
 
-	int counter = 0;
-	int num_arr_dims = 0;	// not being used for anything
 
-	while (temp && temp->kind != TYPESYM) {
-		arrsyms[counter] = temp;
-		num_arr_dims++;
-		counter++;
-		temp = temp->datatype;
-	}
+  } else {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
 
-	typesym = temp;
+    TOKEN elesize = makeintc(size);
+    elesize->link = subs;
+    timesop->operands = elesize;
 
-	if (subs->link == NULL && subs->tokentype == NUMBERTOK) {
-		int total_size = (subs->whichval - 1) * typesym->size;
-		array_ref = makearef(arr, makeintc(total_size), NULL);
-		array_ref->basicdt = arr_varsym->basicdt;
-		return array_ref;
-	}
-	// else if tokentype is IDENTIFIER?
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
 
-	counter = 0;
-	TOKEN curr_sub = subs;
 
-	while (curr_sub) {
-
-		if (counter == 0) {
-			SYMBOL curr_sym = arrsyms[counter];
-			int curr_size = curr_sym->size / (curr_sym->highbound - curr_sym->lowbound + 1);
-
-			// TOKEN mul_op = maketimes(makeintc(curr_size), curr_sub, NULL);
-
-			TOKEN mul_op = makeop(TIMESOP);
-			TOKEN pos_typesym_size = makeintc(curr_size);
-			TOKEN neg_typesym_size = makeintc(curr_size * -1);
-
-			mul_op->operands = pos_typesym_size;
-			pos_typesym_size->link = curr_sub;
-
-			neg_typesym_size->link = mul_op;
-
-			TOKEN plus_op = makeplus(neg_typesym_size, mul_op, NULL);
-
-			array_ref = makearef(arr, plus_op, NULL);
-			array_ref->basicdt = arr_varsym->basicdt;
-
-		}
-		else {
-
-			if (curr_sub->tokentype == NUMBERTOK) {		// only integers for now
-				array_ref->operands->link->operands = addint(array_ref->operands->link->operands, 
-					makeintc(curr_sub->whichval * typesym->size), NULL);
-			}
-			else {
-
-				SYMBOL curr_sym = arrsyms[counter];
-				int curr_size = curr_sym->size / (curr_sym->highbound - curr_sym->lowbound + 1);
-
-				TOKEN mul_op = makeop(TIMESOP);
-				TOKEN pos_typesym_size = makeintc(curr_size);
-				TOKEN neg_typesym_size = makeintc(curr_size * -1);
-
-				mul_op->operands = pos_typesym_size;
-				pos_typesym_size->link = curr_sub;
-
-				array_ref->operands->link->operands = addint(array_ref->operands->link->operands,
-					neg_typesym_size, NULL);
-
-				TOKEN add_to = array_ref->operands->link->operands->link;
-				TOKEN plus_op = makeplus(add_to, mul_op, NULL);
-				array_ref->operands->link->operands->link = plus_op;
-
-			}
-		}
-
-		TOKEN unlink = curr_sub;
-		curr_sub = curr_sub->link;
-		unlink->link = NULL;
-		counter++;
-	}
-
-	if (DEBUG & DB_ARRAYREF) {
-		printf(" Finished arrayref().\n");
-		dbugprint1tok(array_ref);
-	}	
-	
-	return array_ref;
+    if (DEBUG & DB_ARRAYREF) {
+        printf("arrayref\n");
+        //printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
+        dbugprinttok(arr);
+        dbugprinttok(subs);
+        dbugprinttok(plusop);
+    }
+    return makearef(arr, plusop, tokb);
+  }
 
   
 }
@@ -1196,7 +1108,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     argstok = argstok->link;
   }
 
-  recsym->size = wordaddress(next, 16); 
+  recsym->size = wordaddress(next, 8); 
   rectok->symtype = recsym;
 
   if (DEBUG & DB_INSTREC) {
@@ -1256,7 +1168,7 @@ yyerror(s)
   fputs(s,stderr); putc('\n',stderr);
   }
 
-main()
+int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
@@ -1271,5 +1183,8 @@ main()
 
     ppexpr(parseresult);           /* Pretty-print the result tree */
 
-     /* Pretty-print the result tree */
+    /* uncomment following to call code generator. */
+     
+    // gencode(parseresult, blockoffs[blocknumber], labelnumber);
+ 
   }

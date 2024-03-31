@@ -67,20 +67,25 @@
 
 /* First part of user prologue.  */
 #line 1 "parse.y"
-     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 10 Jan 24   */
+     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 30 Jul 13   */
 
-/* Copyright (c) 2023 Gordon S. Novak Jr. and
+/* Copyright (c) 2013 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12;
-   30 Jul 13; 25 Jul 19 ; 28 Feb 22; 08 Jul 22; 13 Nov 23 */
+/* 
+ Student: S. Ram Janarthana Raja
+ UTEID  : rs53992
+ */ 
+
+
+/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
 
 /*
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation; either version 2 of the License, or
 ; (at your option) any later version.
- 
+
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -89,7 +94,6 @@
 ; You should have received a copy of the GNU General Public License
 ; along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
-
 
 
 /* NOTE:   Copy your lexan.l lexical analyzer to this directory.      */
@@ -119,12 +123,9 @@
 #include <ctype.h>
 #include <string.h>
 #include "token.h"
-
 #include "lexan.h"
 #include "symtab.h"
-
 #include "parse.h"
-
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -133,7 +134,7 @@
 TOKEN parseresult;
 
 
-#line 137 "y.tab.c"
+#line 138 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -680,16 +681,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    86,    86,    88,    89,    90,    92,    93,    95,    96,
-      97,    98,    99,   101,   102,   104,   105,   107,   109,   110,
-     112,   114,   115,   117,   118,   120,   122,   123,   125,   127,
-     128,   130,   131,   133,   134,   136,   137,   139,   140,   142,
-     144,   145,   146,   147,   149,   150,   152,   153,   154,   156,
-     158,   159,   160,   161,   162,   163,   164,   165,   166,   168,
-     170,   171,   173,   174,   176,   178,   179,   180,   181,   183,
-     184,   185,   187,   188,   189,   190,   191,   192,   193,   195,
-     196,   197,   198,   199,   201,   202,   203,   205,   206,   208,
-     209,   211,   212,   214,   215,   216,   217,   218
+       0,    87,    87,    89,    90,    91,    93,    94,    96,    97,
+      98,    99,   100,   102,   103,   105,   106,   108,   110,   111,
+     113,   115,   116,   118,   119,   121,   123,   124,   126,   128,
+     129,   131,   132,   134,   135,   137,   138,   140,   141,   143,
+     145,   146,   147,   148,   150,   151,   153,   154,   155,   157,
+     159,   160,   161,   162,   163,   164,   165,   166,   167,   169,
+     171,   172,   174,   175,   177,   179,   180,   181,   182,   184,
+     185,   186,   188,   189,   190,   191,   192,   193,   194,   196,
+     197,   198,   199,   200,   202,   203,   204,   206,   207,   209,
+     210,   212,   213,   215,   216,   217,   218,   219
 };
 #endif
 
@@ -1618,319 +1619,319 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 86 "parse.y"
+#line 87 "parse.y"
                                                                             { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1624 "y.tab.c"
+#line 1625 "y.tab.c"
     break;
 
   case 8:
-#line 95 "parse.y"
+#line 96 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1630 "y.tab.c"
+#line 1631 "y.tab.c"
     break;
 
   case 10:
-#line 97 "parse.y"
+#line 98 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1636 "y.tab.c"
+#line 1637 "y.tab.c"
     break;
 
   case 13:
-#line 101 "parse.y"
+#line 102 "parse.y"
                                         { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1642 "y.tab.c"
+#line 1643 "y.tab.c"
     break;
 
   case 14:
-#line 102 "parse.y"
+#line 103 "parse.y"
                               { yyval = cons(yyvsp[0], NULL); }
-#line 1648 "y.tab.c"
+#line 1649 "y.tab.c"
     break;
 
   case 15:
-#line 104 "parse.y"
+#line 105 "parse.y"
                                       { instlabel(yyvsp[-2]); }
-#line 1654 "y.tab.c"
+#line 1655 "y.tab.c"
     break;
 
   case 16:
-#line 105 "parse.y"
+#line 106 "parse.y"
                                       { instlabel(yyvsp[0]); }
-#line 1660 "y.tab.c"
+#line 1661 "y.tab.c"
     break;
 
   case 17:
-#line 107 "parse.y"
+#line 108 "parse.y"
                                        { instconst(yyvsp[-2], yyvsp[0]); }
-#line 1666 "y.tab.c"
+#line 1667 "y.tab.c"
     break;
 
   case 20:
-#line 112 "parse.y"
+#line 113 "parse.y"
                                        { insttype(yyvsp[-2], yyvsp[0]); }
-#line 1672 "y.tab.c"
+#line 1673 "y.tab.c"
     break;
 
   case 23:
-#line 117 "parse.y"
+#line 118 "parse.y"
                                                 { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1678 "y.tab.c"
+#line 1679 "y.tab.c"
     break;
 
   case 24:
-#line 118 "parse.y"
+#line 119 "parse.y"
                                            { yyval = cons(yyvsp[0], NULL); }
-#line 1684 "y.tab.c"
+#line 1685 "y.tab.c"
     break;
 
   case 25:
-#line 120 "parse.y"
+#line 121 "parse.y"
                                               { yyval = instfields(yyvsp[-2], yyvsp[0]); }
-#line 1690 "y.tab.c"
+#line 1691 "y.tab.c"
     break;
 
   case 26:
-#line 122 "parse.y"
+#line 123 "parse.y"
                                               { yyval = nconc(yyvsp[-2], yyvsp[0]); }
-#line 1696 "y.tab.c"
+#line 1697 "y.tab.c"
     break;
 
   case 28:
-#line 125 "parse.y"
+#line 126 "parse.y"
                                                 { yyval = dolabel(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1702 "y.tab.c"
+#line 1703 "y.tab.c"
     break;
 
   case 29:
-#line 127 "parse.y"
+#line 128 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1708 "y.tab.c"
+#line 1709 "y.tab.c"
     break;
 
   case 31:
-#line 130 "parse.y"
+#line 131 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1714 "y.tab.c"
+#line 1715 "y.tab.c"
     break;
 
   case 33:
-#line 133 "parse.y"
+#line 134 "parse.y"
                                         { yyval = yyvsp[0]; }
-#line 1720 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 35:
-#line 136 "parse.y"
+#line 137 "parse.y"
                                          { yyval = yyvsp[0]; }
-#line 1726 "y.tab.c"
+#line 1727 "y.tab.c"
     break;
 
   case 39:
-#line 142 "parse.y"
+#line 143 "parse.y"
                                   { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1732 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 41:
-#line 145 "parse.y"
+#line 146 "parse.y"
                                                              { yyval = instarray(yyvsp[-3], yyvsp[0]); }
-#line 1738 "y.tab.c"
+#line 1739 "y.tab.c"
     break;
 
   case 42:
-#line 146 "parse.y"
+#line 147 "parse.y"
                                                                { yyval = instrec(yyvsp[-2], yyvsp[-1]); }
-#line 1744 "y.tab.c"
+#line 1745 "y.tab.c"
     break;
 
   case 43:
-#line 147 "parse.y"
+#line 148 "parse.y"
                                                               { yyval = instpoint(yyvsp[-1], yyvsp[0]); }
-#line 1750 "y.tab.c"
+#line 1751 "y.tab.c"
     break;
 
   case 44:
-#line 149 "parse.y"
+#line 150 "parse.y"
                                              { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1756 "y.tab.c"
+#line 1757 "y.tab.c"
     break;
 
   case 45:
-#line 150 "parse.y"
+#line 151 "parse.y"
                                           { yyval = cons(yyvsp[0], NULL); }
-#line 1762 "y.tab.c"
+#line 1763 "y.tab.c"
     break;
 
   case 46:
-#line 152 "parse.y"
+#line 153 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1768 "y.tab.c"
+#line 1769 "y.tab.c"
     break;
 
   case 47:
-#line 153 "parse.y"
+#line 154 "parse.y"
                                              { yyval = instenum(yyvsp[-1]); }
-#line 1774 "y.tab.c"
+#line 1775 "y.tab.c"
     break;
 
   case 48:
-#line 154 "parse.y"
+#line 155 "parse.y"
                                              { yyval = instdotdot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1780 "y.tab.c"
+#line 1781 "y.tab.c"
     break;
 
   case 49:
-#line 156 "parse.y"
+#line 157 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1786 "y.tab.c"
+#line 1787 "y.tab.c"
     break;
 
   case 50:
-#line 158 "parse.y"
+#line 159 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1792 "y.tab.c"
+#line 1793 "y.tab.c"
     break;
 
   case 51:
-#line 159 "parse.y"
+#line 160 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1798 "y.tab.c"
+#line 1799 "y.tab.c"
     break;
 
   case 54:
-#line 162 "parse.y"
+#line 163 "parse.y"
                                               { yyval = makewhile(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1804 "y.tab.c"
+#line 1805 "y.tab.c"
     break;
 
   case 55:
-#line 163 "parse.y"
+#line 164 "parse.y"
                                                       { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1810 "y.tab.c"
+#line 1811 "y.tab.c"
     break;
 
   case 56:
-#line 164 "parse.y"
+#line 165 "parse.y"
                                                       { yyval = makerepeat(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1816 "y.tab.c"
+#line 1817 "y.tab.c"
     break;
 
   case 57:
-#line 165 "parse.y"
+#line 166 "parse.y"
                                              { yyval = dogoto(yyvsp[-1], yyvsp[0]); }
-#line 1822 "y.tab.c"
+#line 1823 "y.tab.c"
     break;
 
   case 59:
-#line 168 "parse.y"
+#line 169 "parse.y"
                                                       { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1828 "y.tab.c"
+#line 1829 "y.tab.c"
     break;
 
   case 60:
-#line 170 "parse.y"
+#line 171 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1834 "y.tab.c"
+#line 1835 "y.tab.c"
     break;
 
   case 61:
-#line 171 "parse.y"
+#line 172 "parse.y"
                                                { yyval = NULL; }
-#line 1840 "y.tab.c"
+#line 1841 "y.tab.c"
     break;
 
   case 62:
-#line 173 "parse.y"
+#line 174 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1846 "y.tab.c"
+#line 1847 "y.tab.c"
     break;
 
   case 63:
-#line 174 "parse.y"
+#line 175 "parse.y"
                                                { yyval = NULL; }
-#line 1852 "y.tab.c"
+#line 1853 "y.tab.c"
     break;
 
   case 64:
-#line 176 "parse.y"
+#line 177 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1858 "y.tab.c"
+#line 1859 "y.tab.c"
     break;
 
   case 65:
-#line 178 "parse.y"
+#line 179 "parse.y"
                                                       { yyval = findid(yyvsp[0]); }
-#line 1864 "y.tab.c"
+#line 1865 "y.tab.c"
     break;
 
   case 66:
-#line 179 "parse.y"
+#line 180 "parse.y"
                                                        { yyval = arrayref(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1870 "y.tab.c"
+#line 1871 "y.tab.c"
     break;
 
   case 67:
-#line 180 "parse.y"
+#line 181 "parse.y"
                                                        { yyval = reducedot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1876 "y.tab.c"
+#line 1877 "y.tab.c"
     break;
 
   case 68:
-#line 181 "parse.y"
+#line 182 "parse.y"
                                                        { yyval = dopoint(yyvsp[-1], yyvsp[0]); }
-#line 1882 "y.tab.c"
+#line 1883 "y.tab.c"
     break;
 
   case 84:
-#line 201 "parse.y"
+#line 202 "parse.y"
                                                 { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1888 "y.tab.c"
+#line 1889 "y.tab.c"
     break;
 
   case 86:
-#line 203 "parse.y"
+#line 204 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1894 "y.tab.c"
+#line 1895 "y.tab.c"
     break;
 
   case 87:
-#line 205 "parse.y"
+#line 206 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1900 "y.tab.c"
+#line 1901 "y.tab.c"
     break;
 
   case 89:
-#line 208 "parse.y"
+#line 209 "parse.y"
                                                { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1906 "y.tab.c"
+#line 1907 "y.tab.c"
     break;
 
   case 90:
-#line 209 "parse.y"
+#line 210 "parse.y"
                                             { yyval = cons(yyvsp[0], NULL); }
-#line 1912 "y.tab.c"
+#line 1913 "y.tab.c"
     break;
 
   case 91:
-#line 211 "parse.y"
+#line 212 "parse.y"
                                                   { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1918 "y.tab.c"
+#line 1919 "y.tab.c"
     break;
 
   case 95:
-#line 216 "parse.y"
+#line 217 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1924 "y.tab.c"
+#line 1925 "y.tab.c"
     break;
 
   case 97:
-#line 218 "parse.y"
+#line 219 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1930 "y.tab.c"
+#line 1931 "y.tab.c"
     break;
 
 
-#line 1934 "y.tab.c"
+#line 1935 "y.tab.c"
 
       default: break;
     }
@@ -2162,7 +2163,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 220 "parse.y"
+#line 222 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -2172,7 +2173,7 @@ yyreturn:
    are working.
   */
 
-#define DEBUG           0            /* set bits here for debugging, 0 = off  */
+#define DEBUG           0             /* set bits here for debugging, 0 = off  */
 #define DB_CONS         0             /* bit to trace cons */
 #define DB_BINOP        0             /* bit to trace binop */
 #define DB_MAKEIF       0             /* bit to trace makeif */
@@ -2433,72 +2434,37 @@ TOKEN makegoto(int num){
 }
 
 
-/* makearef makes an array reference operation.
-   off is be an integer constant token
-   tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
+  TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
+  if (var->whichval == AREFOP && off->basicdt == INTEGER) {
+    printf("found double aref\n");
+    
+    TOKEN off1 = var->operands->link;
+    if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
+      // Directly sum the integer values of the offsets
+      int sumOffsets = off1->intval + off->intval;
+      finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
+    }
+  }
+
+  // Now, we create the AREF operation using the possibly updated finalOffset
   TOKEN areftok = makeop(AREFOP);
-  var->link = off;
+  if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
+    var = var->operands; // Assume var->operands is the array being indexed
+  }
+  var->link = finalOffset; // Link the final offset
   areftok->operands = var;
-  areftok->symentry = var->symentry;   
+  areftok->symentry = var->symentry;
 
   if (DEBUG && DB_MAKEAREF) {
-      printf("makearef\n");
-      printf("symentry: %s", var->symentry->namestring);
+      printf("makearef - possibly merged\n");
       dbugprinttok(areftok);
-      dbugprinttok(var);
   }
 
   return areftok;
 }
 
-
-TOKEN addint(TOKEN exp, TOKEN off, TOKEN tok) {
-	if (!exp || !off) {
-		return NULL;
-	}
-
-	int a = exp->intval;
-	int b = off->intval;
-	
-	if (DEBUG & DB_ADDINT) {
-		printf("In addint()\n Adding %d to %d\n", b, a);
-		dbugprint3args(exp, off, tok);
-	}
-
-	if ((b > 0) && (a > INT_MAX - b)) { // if ((INT_MAX / exp->intval) > off->intval)
-		printf(" Error: integer overflow detected, addint()\n");
-		printf(" Cannot add %d to %d\n", b, a);
-	}
-	else {
-		exp->intval = a + b;
-	}
-
-	if (DEBUG & DB_ADDINT) {
-		printf(" New value of exp: %d\n", exp->intval);
-		dbugprint1tok(exp);
-	}
-	
-	return exp;
-}
-
-
-/* makeplus makes a + operator.
-   tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
-
-
-
-	TOKEN out = makeop(PLUSOP);
-	if (lhs && rhs) {
-		out->operands = lhs;
-		lhs->link = rhs;
-		rhs->link = NULL;
-	}
-
-	return out;
-}
 
 
 /* makefor makes structures for a for statement.
@@ -2791,110 +2757,55 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
- 	if (DEBUG & DB_ARRAYREF) {
-		printf("In arrayref()\n");
-		dbugprint4args(arr, tok, subs, tokb);
-	}
+  if (subs->link) {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
 
-	TOKEN array_ref = NULL;
-	SYMBOL arr_varsym, typesym, temp;
-	SYMBOL arrsyms[10];
+    TOKEN s = copytok(subs);
+    s->link = NULL;
+    TOKEN elesize = makeintc(size);
+    elesize->link = s;
+    timesop->operands = elesize;
 
-	arr_varsym = searchst(arr->stringval);
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
 
-	if (!arr_varsym) {
-		printf(" Error: array \"%s\" not found in symbol table, arrayref().\n", arr->stringval);
-		return NULL;
-	}
+    TOKEN subarref = makearef(arr, plusop, tokb);
+    
+    subarref->symtype = arr->symtype->datatype;
 
-	temp = arr_varsym->datatype;
+    return arrayref(subarref, tok, subs->link, tokb);
 
-	int counter = 0;
-	int num_arr_dims = 0;	// not being used for anything
 
-	while (temp && temp->kind != TYPESYM) {
-		arrsyms[counter] = temp;
-		num_arr_dims++;
-		counter++;
-		temp = temp->datatype;
-	}
+  } else {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
 
-	typesym = temp;
+    TOKEN elesize = makeintc(size);
+    elesize->link = subs;
+    timesop->operands = elesize;
 
-	if (subs->link == NULL && subs->tokentype == NUMBERTOK) {
-		int total_size = (subs->whichval - 1) * typesym->size;
-		array_ref = makearef(arr, makeintc(total_size), NULL);
-		array_ref->basicdt = arr_varsym->basicdt;
-		return array_ref;
-	}
-	// else if tokentype is IDENTIFIER?
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
 
-	counter = 0;
-	TOKEN curr_sub = subs;
 
-	while (curr_sub) {
-
-		if (counter == 0) {
-			SYMBOL curr_sym = arrsyms[counter];
-			int curr_size = curr_sym->size / (curr_sym->highbound - curr_sym->lowbound + 1);
-
-			// TOKEN mul_op = maketimes(makeintc(curr_size), curr_sub, NULL);
-
-			TOKEN mul_op = makeop(TIMESOP);
-			TOKEN pos_typesym_size = makeintc(curr_size);
-			TOKEN neg_typesym_size = makeintc(curr_size * -1);
-
-			mul_op->operands = pos_typesym_size;
-			pos_typesym_size->link = curr_sub;
-
-			neg_typesym_size->link = mul_op;
-
-			TOKEN plus_op = makeplus(neg_typesym_size, mul_op, NULL);
-
-			array_ref = makearef(arr, plus_op, NULL);
-			array_ref->basicdt = arr_varsym->basicdt;
-
-		}
-		else {
-
-			if (curr_sub->tokentype == NUMBERTOK) {		// only integers for now
-				array_ref->operands->link->operands = addint(array_ref->operands->link->operands, 
-					makeintc(curr_sub->whichval * typesym->size), NULL);
-			}
-			else {
-
-				SYMBOL curr_sym = arrsyms[counter];
-				int curr_size = curr_sym->size / (curr_sym->highbound - curr_sym->lowbound + 1);
-
-				TOKEN mul_op = makeop(TIMESOP);
-				TOKEN pos_typesym_size = makeintc(curr_size);
-				TOKEN neg_typesym_size = makeintc(curr_size * -1);
-
-				mul_op->operands = pos_typesym_size;
-				pos_typesym_size->link = curr_sub;
-
-				array_ref->operands->link->operands = addint(array_ref->operands->link->operands,
-					neg_typesym_size, NULL);
-
-				TOKEN add_to = array_ref->operands->link->operands->link;
-				TOKEN plus_op = makeplus(add_to, mul_op, NULL);
-				array_ref->operands->link->operands->link = plus_op;
-
-			}
-		}
-
-		TOKEN unlink = curr_sub;
-		curr_sub = curr_sub->link;
-		unlink->link = NULL;
-		counter++;
-	}
-
-	if (DEBUG & DB_ARRAYREF) {
-		printf(" Finished arrayref().\n");
-		dbugprint1tok(array_ref);
-	}	
-	
-	return array_ref;
+    if (DEBUG & DB_ARRAYREF) {
+        printf("arrayref\n");
+        //printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
+        dbugprinttok(arr);
+        dbugprinttok(subs);
+        dbugprinttok(plusop);
+    }
+    return makearef(arr, plusop, tokb);
+  }
 
   
 }
@@ -3142,7 +3053,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     argstok = argstok->link;
   }
 
-  recsym->size = wordaddress(next, 16); 
+  recsym->size = wordaddress(next, 8); 
   rectok->symtype = recsym;
 
   if (DEBUG & DB_INSTREC) {
@@ -3202,7 +3113,7 @@ yyerror(s)
   fputs(s,stderr); putc('\n',stderr);
   }
 
-main()
+int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
@@ -3217,5 +3128,8 @@ main()
 
     ppexpr(parseresult);           /* Pretty-print the result tree */
 
-     /* Pretty-print the result tree */
+    /* uncomment following to call code generator. */
+     
+    // gencode(parseresult, blockoffs[blocknumber], labelnumber);
+ 
   }
