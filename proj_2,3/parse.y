@@ -85,7 +85,8 @@ TOKEN parseresult;
   program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON cblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
   
-  
+
+
   idlist   :  IDENTIFIER COMMA idlist
                           { $$ = cons($1, $3); }
            |  IDENTIFIER  { $$ = cons($1, NULL); }
@@ -222,10 +223,9 @@ TOKEN parseresult;
              |  term
              ;
 
-  factor     : 
-              variable
+  factor     :  variable
              |  STRING
-             | NUMBER
+             |  NUMBER
              |  NIL 
              |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
