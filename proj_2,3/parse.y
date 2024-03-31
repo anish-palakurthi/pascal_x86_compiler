@@ -115,7 +115,7 @@ TOKEN parseresult;
              |  block
              ;
 
-  constantList     :  constant SEMICOLON constantList    
+  constantList  :  constant SEMICOLON constantList    
             |  constant SEMICOLON          
             ;  
   
@@ -140,6 +140,12 @@ TOKEN parseresult;
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
   
+  fields     : idlist COLON type    { $$ = instfields($1, $3); }
+             ;
+  
+  fieldsList : fields SEMICOLON fieldsList { $$ = nconc($1, $3); }
+             | fields SEMICOLON
+             ;
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
              ;
@@ -223,9 +229,11 @@ TOKEN parseresult;
   
 
   type       :  IDENTIFIER   { $$ = findtype($1); }
+             |  RECORD fieldsList END { $$ = instrec($1, $3); }
              ;
 
   variable   :  IDENTIFIER                            { $$ = findid($1); }
+            | variable DOT IDENTIFIER { $$ = reducedot($1, $2, $3); }
             ;
 %%
 
@@ -831,6 +839,55 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok){
   return rectok;
 }
 
+/* reducedot handles a record reference.
+   dot is a (now) unused token that is recycled. */
+TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field){
+
+  SYMBOL recordSymbol = var->symentry;
+  SYMBOL moverField = recordSymbol->datatype->datatype;
+
+  int fieldOffset = 0;
+  while (moverField != NULL){
+    if (strcmp(moverField->namestring, field->stringval) == 0){
+      var->symentry = moverField;
+
+      fieldOffset = moverField->offset;
+      break;
+    }
+    moverField = moverField->link;
+  }
+
+
+  return makearef(var, makeintc(fieldOffset), NULL);
+
+}
+
+/* makearef makes an array reference operation.
+   off is be an integer constant token
+   tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
+  // if (var->whichval == AREFOP && off->datatype == INTEGER) {
+    
+  //   TOKEN off1 = var->operands->link;
+  //   if (off1->whichval == PLUSOP) {
+  //     int num = off1->operands->intval;  
+  //     int num2 = off->intval;
+  //     TOKEN newoff = makeintc(num + num2);
+  //     newoff->link = off1->operands->link;
+  //     off1->operands = newoff;
+  //   }
+  // }
+
+  TOKEN areftok = makeop(AREFOP);
+  var->link = off;
+  areftok->operands = var;
+  // areftok->symentry = var->symentry;   
+
+
+  return areftok;
+}
+
+
 
 /* wordaddress pads the offset n to be a multiple of wordsize.
    wordsize should be 4 for integer, 8 for real and pointers,
@@ -889,8 +946,6 @@ void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
 TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement);
 
 
-
-
 /* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
    into tok, and returns tok. */
 TOKEN makesubrange(TOKEN tok, int low, int high);
@@ -916,7 +971,6 @@ void  insttype(TOKEN typename, TOKEN typetok);
 TOKEN instpoint(TOKEN tok, TOKEN typename);
 
 
-
 /* makeplus makes a + operator.
    tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok){
@@ -933,15 +987,7 @@ TOKEN addoffs(TOKEN exp, TOKEN off);
 /* mulint multiplies expression exp by integer n */
 TOKEN mulint(TOKEN exp, int n);
 
-/* makearef makes an array reference operation.
-   off is be an integer constant token
-   tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok);
 
-/* reducedot handles a record reference.
-   dot is a (now) unused token that is recycled. */
-TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field);
-// assert( var->symtype->kind == RECORDSYM );
 
 /* arrayref processes an array reference a[i]
    subs is a list of subscript expressions.
