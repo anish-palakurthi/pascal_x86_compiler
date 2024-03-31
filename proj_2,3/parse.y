@@ -228,12 +228,40 @@ TOKEN parseresult;
              ;
   
 
-  type       :  IDENTIFIER   { $$ = findtype($1); }
-             |  RECORD fieldsList END { $$ = instrec($1, $3); }
-             ;
+  type
+      : basic_type
+      | array_type
+      | record_type
+      // | point_type
+      ;
+
+  array_type
+      : ARRAY LBRACKET basic_list RBRACKET OF type { $$ = instarray($3, $6); }
+      ;
+
+  record_type
+      : RECORD fieldsList END { $$ = instrec($1, $2); }
+      ;
+
+  // point_type
+  //     : POINT IDENTIFIER { $$ = instpoint($2); }
+  //     ;
+
+  basic_list
+      : basic_list COMMA basic_list  { $$ = cons($3, $1); } 
+      | basic_type { $$ = cons($1, NULL); }
+      ;
+
+  basic_type
+      : IDENTIFIER  { $$ = findtype($1); }
+      // | LPAREN idlist RPAREN  { $$ = instenum($2); }
+      // | constant DOTDOT constant { $$ = instdotdot($1, $3); }
+      ;
+
 
   variable   :  IDENTIFIER                            { $$ = findid($1); }
             | variable DOT IDENTIFIER { $$ = reducedot($1, $2, $3); }
+            | variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2, $3, $4); }
             ;
 %%
 
@@ -886,6 +914,110 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
 
   return areftok;
 }
+/* instarray installs an array declaration into the symbol table.
+   bounds points to a SUBRANGE symbol table entry.
+   The symbol table pointer is returned in token typetok. */
+TOKEN instarray(TOKEN bounds, TOKEN typetok){
+  if (bounds->link) {
+    typetok = instarray(bounds->link, typetok);
+
+    SYMBOL subrange = bounds->symtype;
+    SYMBOL typesym = typetok->symtype;
+    SYMBOL arraysym = symalloc();
+
+    arraysym->kind = ARRAYSYM;
+    arraysym->datatype = typesym;
+    arraysym->lowbound = subrange->lowbound;
+    arraysym->highbound = subrange->highbound;
+    arraysym->size = (arraysym->lowbound + arraysym->highbound - 1) * (typesym->size);
+    typetok->symtype = arraysym;
+
+
+  return typetok;
+
+
+  } else {
+
+    SYMBOL subrange = bounds->symtype;
+    SYMBOL typesym = typetok->symtype;
+    SYMBOL arraysym = symalloc();
+    arraysym->kind = ARRAYSYM;
+    arraysym->datatype = typesym;
+    arraysym->lowbound = subrange->lowbound;
+    arraysym->highbound = subrange->highbound;
+    arraysym->size = (arraysym->highbound - arraysym->lowbound +  1) * (typesym->size);
+    typetok->symtype = arraysym;
+
+
+    return typetok;
+  }
+}
+
+
+
+/* arrayref processes an array reference a[i]
+   subs is a list of subscript expressions.
+   tok and tokb are (now) unused tokens that are recycled. */
+TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
+  if (subs->link) {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
+
+    TOKEN s = copytok(subs);
+    s->link = NULL;
+    TOKEN elesize = makeintc(size);
+    elesize->link = s;
+    timesop->operands = elesize;
+
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
+
+    TOKEN subarref = makearef(arr, plusop, tokb);
+    
+    subarref->symtype = arr->symtype->datatype;
+
+    return arrayref(subarref, tok, subs->link, tokb);
+
+
+  } else {
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size = (arr->symtype->size / (high + low - 1));
+
+    TOKEN elesize = makeintc(size);
+    elesize->link = subs;
+    timesop->operands = elesize;
+
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
+
+
+    return makearef(arr, plusop, tokb);
+  }
+
+  
+}
+
+/* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
+   into tok, and returns tok. */
+TOKEN makesubrange(TOKEN tok, int low, int high);
+
+/* instenum installs an enumerated subrange in the symbol table,
+   e.g., type color = (red, white, blue)
+   by calling makesubrange and returning the token it returns. */
+TOKEN instenum(TOKEN idlist);
+
+/* instdotdot installs a .. subrange in the symbol table.
+   dottok is a (now) unused token that is recycled. */
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok);
+
 
 
 
@@ -946,19 +1078,6 @@ void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
 TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement);
 
 
-/* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
-   into tok, and returns tok. */
-TOKEN makesubrange(TOKEN tok, int low, int high);
-
-/* instenum installs an enumerated subrange in the symbol table,
-   e.g., type color = (red, white, blue)
-   by calling makesubrange and returning the token it returns. */
-TOKEN instenum(TOKEN idlist);
-
-/* instdotdot installs a .. subrange in the symbol table.
-   dottok is a (now) unused token that is recycled. */
-TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok);
-
 
 /* searchins will search for symbol, inserting it if not present. */
 SYMBOL searchins(char name[]);
@@ -989,20 +1108,9 @@ TOKEN mulint(TOKEN exp, int n);
 
 
 
-/* arrayref processes an array reference a[i]
-   subs is a list of subscript expressions.
-   tok and tokb are (now) unused tokens that are recycled. */
-TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb);
-// assert( arr->symtype->kind == ARRAYSYM );
-
 /* dopoint handles a ^ operator.  john^ becomes (^ john) with type record
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok);
 //     assert( var->symtype->kind == POINTERSYM );
 //     assert( var->symtype->datatype->kind == TYPESYM );
 
-/* instarray installs an array declaration into the symbol table.
-   bounds points to a SUBRANGE symbol table entry.
-   The symbol table pointer is returned in token typetok. */
-TOKEN instarray(TOKEN bounds, TOKEN typetok);
-//     assert(bounds->symtype->kind == SUBRANGE );
