@@ -2273,22 +2273,7 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
   return op;  
 }
 
-TOKEN getFinalFieldType(TOKEN aref) {
-    // This function assumes 'aref' is an AREFOP token.
-    // It traverses the AREF chain to find the final field's type.
-    while (aref != NULL && aref->whichval == AREFOP) {
-        SYMBOL symentry = aref->operands->symentry; // Assuming the first operand points to the array/record.
-        if (symentry && symentry->datatype) {
-            // Move to the next level if it's another record/array.
-            aref = aref->operands->link;
-        } else {
-            // Found the final field, return its basic type.
-            return symentry->basicdt;
-        }
-    }
-    // Default to INTEGER if we can't resolve the type for some reason.
-    return INTEGER;
-}
+
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     printf("binop\n");
@@ -2304,27 +2289,24 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     lhs->link = rhs; // Link second operand to first.
     rhs->link = NULL; // Terminate operand list.
 
-    // Check if lhs is an AREFOP, indicating potential nested field access.
-    if (lhs->whichval == AREFOP) {
-        int finalFieldType = getFinalFieldType(lhs);
-        // Adjust op->basicdt based on the final field's type.
-        op->basicdt = finalFieldType;
-    } else {
-        // Existing logic to handle other cases.
-        if (isReal(lhs) && isReal(rhs)) {
-            op->basicdt = REAL;
-        } else if (isReal(lhs) && isInt(rhs)) {
-            op->basicdt = REAL;
-            TOKEN ftok = makefloat(rhs);
-            lhs->link = ftok;
-        } else if (isInt(lhs) && isReal(rhs)) {
-            if (op->whichval == ASSIGNOP) {
-                op->basicdt = INTEGER;
-            } else {
-                op->basicdt = REAL;
-            }
-        }
-    }
+
+
+      // Existing logic
+      if (isReal(lhs) && isReal(rhs)) {
+          op->basicdt = REAL;
+      } else if (isReal(lhs) && isInt(rhs)) {
+          op->basicdt = REAL;
+          TOKEN ftok = makefloat(rhs);
+          lhs->link = ftok;
+          printf("made int rhs into a float\n");
+      } else if (isInt(lhs) && isReal(rhs)) {
+          if (op->whichval == ASSIGNOP) {
+              op->basicdt = INTEGER;
+          } else {
+              op->basicdt = REAL;
+          }
+      }
+    
 
     if (DEBUG & DB_BINOP) {
         printf("binop - final type handling\n");
@@ -2487,6 +2469,9 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   if (var->symentry && var->symentry->datatype) {
     areftok->basicdt = var->symentry->datatype->basicdt;
   }
+
+  printf("var->namestring: %s\n", var->symentry->namestring);
+  printf("areftok->basicdt: %d\n", areftok->basicdt);
 
 
 
@@ -2763,9 +2748,9 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
   printf("reducedot\n");
-  dbugprinttok(var);
+  dbugprinttok(var); //location
   dbugprinttok(dot);
-  dbugprinttok(field);
+  dbugprinttok(field); //re
   SYMBOL recsym = var->symentry;
   SYMBOL curfield = recsym->datatype->datatype;
 
@@ -2777,7 +2762,8 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
       var->symentry = curfield;
 
       break;
-    } else {
+    } 
+    else {
       curfield = curfield->link;
     }
   }
@@ -2785,7 +2771,12 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
   dot = makearef(var, makeintc(offset), dot);
-
+  if (curfield) {
+    printf("curfield->namestring: %s\n", curfield->namestring);
+    printf(" curfield->datatype->basicdt: %d\n", curfield->datatype->basicdt);
+    dot->basicdt = curfield->datatype->basicdt;
+    printf("dot->basicdt: %d\n", dot->basicdt);
+  }
   printf("return from reducedot\n");
   dbugprinttok(dot);
 
@@ -3064,6 +3055,8 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   while(temp) {
     // printf("temp name %s\n", temp->stringval);
     temp->symtype = typesym;     
+
+    // printf("temp type %s\n", temp->symtype->namestring);
     temp = temp->link;
   }
 

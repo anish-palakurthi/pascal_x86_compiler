@@ -1,251 +1,369 @@
 reducedot
- token 94585870826992  OP             ^  dtype  0  link 0  operands 94585870826928
- token 94585870827056  OP             .  dtype  0  link 0  operands 0
- token 94585870827120  ID      favorite  dtype  0  link 0
+ token 94876481924592  OP             ^  dtype  0  link 0  operands 94876481924528
+ token 94876481924656  OP             .  dtype  0  link 0  operands 0
+ token 94876481924720  ID      favorite  dtype  0  link 0
+var->namestring: favorite
+areftok->basicdt: 0
+curfield->namestring: favorite
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870835456  OP          aref  dtype  0  link 0  operands 94585870826992
+ token 94876481933056  OP          aref  dtype  0  link 0  operands 94876481924592
 binop
- token 94585870835456  OP          aref  dtype  0  link 0  operands 94585870826992
- token 94585870835584  NUM            2  dtype  0  link 0
+ token 94876481933056  OP          aref  dtype  0  link 0  operands 94876481924592
+ token 94876481933184  NUM            2  dtype  0  link 0
 reducedot
- token 94585870835776  OP             ^  dtype  0  link 0  operands 94585870835712
- token 94585870835840  OP             .  dtype  0  link 0  operands 0
- token 94585870835904  ID           age  dtype  0  link 0
+ token 94876481933376  OP             ^  dtype  0  link 0  operands 94876481933312
+ token 94876481933440  OP             .  dtype  0  link 0  operands 0
+ token 94876481933504  ID           age  dtype  0  link 0
+var->namestring: age
+areftok->basicdt: 0
+curfield->namestring: age
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870836032  OP          aref  dtype  0  link 0  operands 94585870835776
+ token 94876481933632  OP          aref  dtype  0  link 0  operands 94876481933376
 binop
- token 94585870836032  OP          aref  dtype  0  link 0  operands 94585870835776
- token 94585870836160  NUM           19  dtype  0  link 0
+ token 94876481933632  OP          aref  dtype  0  link 0  operands 94876481933376
+ token 94876481933760  NUM           19  dtype  0  link 0
 reducedot
- token 94585870836480  OP             ^  dtype  0  link 0  operands 94585870836416
- token 94585870836544  OP             .  dtype  0  link 0  operands 0
- token 94585870836608  ID        friend  dtype  0  link 0
+ token 94876481934080  OP             ^  dtype  0  link 0  operands 94876481934016
+ token 94876481934144  OP             .  dtype  0  link 0  operands 0
+ token 94876481934208  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870836736  OP          aref  dtype  4  link 0  operands 94585870836480
+ token 94876481934336  OP          aref  dtype  4  link 0  operands 94876481934080
 binop
- token 94585870836736  OP          aref  dtype  4  link 0  operands 94585870836480
- token 94585870836864  ID          mary  dtype  4  link 0
+ token 94876481934336  OP          aref  dtype  4  link 0  operands 94876481934080
+ token 94876481934464  ID          mary  dtype  4  link 0
 reducedot
- token 94585870837184  OP             ^  dtype  0  link 0  operands 94585870837120
- token 94585870837248  OP             .  dtype  0  link 0  operands 0
- token 94585870837312  ID        salary  dtype  0  link 0
+ token 94876481934784  OP             ^  dtype  0  link 0  operands 94876481934720
+ token 94876481934848  OP             .  dtype  0  link 0  operands 0
+ token 94876481934912  ID        salary  dtype  0  link 0
+var->namestring: salary
+areftok->basicdt: 1
+curfield->namestring: salary
+ curfield->datatype->basicdt: 1
+dot->basicdt: 1
 return from reducedot
- token 94585870837440  OP          aref  dtype  1  link 0  operands 94585870837184
+ token 94876481935040  OP          aref  dtype  1  link 0  operands 94876481934784
 binop
- token 94585870837440  OP          aref  dtype  1  link 0  operands 94585870837184
- token 94585870837568  NUM 4.000000e+04  dtype  1  link 0
+ token 94876481935040  OP          aref  dtype  1  link 0  operands 94876481934784
+ token 94876481935168  NUM 4.000000e+04  dtype  1  link 0
 reducedot
- token 94585870837760  OP             ^  dtype  0  link 0  operands 94585870837696
- token 94585870837824  OP             .  dtype  0  link 0  operands 0
- token 94585870837888  ID      location  dtype  0  link 0
+ token 94876481935360  OP             ^  dtype  0  link 0  operands 94876481935296
+ token 94876481935424  OP             .  dtype  0  link 0  operands 0
+ token 94876481935488  ID      location  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: location
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870838016  OP          aref  dtype  0  link 0  operands 94585870837760
+ token 94876481935616  OP          aref  dtype  0  link 0  operands 94876481935360
 reducedot
- token 94585870838016  OP          aref  dtype  0  link 0  operands 94585870837760
- token 94585870838080  OP             .  dtype  0  link 0  operands 0
- token 94585870838144  ID            re  dtype  0  link 0
+ token 94876481935616  OP          aref  dtype  0  link 0  operands 94876481935360
+ token 94876481935680  OP             .  dtype  0  link 0  operands 0
+ token 94876481935744  ID            re  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: re
+ curfield->datatype->basicdt: 1
+dot->basicdt: 1
 return from reducedot
- token 94585870838336  OP          aref  dtype  0  link 0  operands 94585870837760
+ token 94876481935936  OP          aref  dtype  1  link 0  operands 94876481935360
 binop
- token 94585870838336  OP          aref  dtype  0  link 0  operands 94585870837760
- token 94585870838464  NUM            3  dtype  0  link 0
+ token 94876481935936  OP          aref  dtype  1  link 0  operands 94876481935360
+ token 94876481936064  NUM            3  dtype  0  link 0
+made int rhs into a float
 reducedot
- token 94585870838656  OP             ^  dtype  0  link 0  operands 94585870838592
- token 94585870838720  OP             .  dtype  0  link 0  operands 0
- token 94585870838784  ID           age  dtype  0  link 0
+ token 94876481936256  OP             ^  dtype  0  link 0  operands 94876481936192
+ token 94876481936320  OP             .  dtype  0  link 0  operands 0
+ token 94876481936384  ID           age  dtype  0  link 0
+var->namestring: age
+areftok->basicdt: 0
+curfield->namestring: age
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870838912  OP          aref  dtype  0  link 0  operands 94585870838656
+ token 94876481936512  OP          aref  dtype  0  link 0  operands 94876481936256
 binop
- token 94585870838912  OP          aref  dtype  0  link 0  operands 94585870838656
- token 94585870839040  NUM           21  dtype  0  link 0
+ token 94876481936512  OP          aref  dtype  0  link 0  operands 94876481936256
+ token 94876481936640  NUM           21  dtype  0  link 0
 reducedot
- token 94585870839232  OP             ^  dtype  0  link 0  operands 94585870839168
- token 94585870839296  OP             .  dtype  0  link 0  operands 0
- token 94585870839360  ID        friend  dtype  0  link 0
+ token 94876481936832  OP             ^  dtype  0  link 0  operands 94876481936768
+ token 94876481936896  OP             .  dtype  0  link 0  operands 0
+ token 94876481936960  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870839488  OP          aref  dtype  4  link 0  operands 94585870839232
+ token 94876481937088  OP          aref  dtype  4  link 0  operands 94876481936832
 binop
- token 94585870839488  OP          aref  dtype  4  link 0  operands 94585870839232
- token 94585870839616  ID          fred  dtype  4  link 0
+ token 94876481937088  OP          aref  dtype  4  link 0  operands 94876481936832
+ token 94876481937216  ID          fred  dtype  4  link 0
 reducedot
- token 94585870839936  OP             ^  dtype  0  link 0  operands 94585870839872
- token 94585870840000  OP             .  dtype  0  link 0  operands 0
- token 94585870840064  ID           age  dtype  0  link 0
+ token 94876481937536  OP             ^  dtype  0  link 0  operands 94876481937472
+ token 94876481937600  OP             .  dtype  0  link 0  operands 0
+ token 94876481937664  ID           age  dtype  0  link 0
+var->namestring: age
+areftok->basicdt: 0
+curfield->namestring: age
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870840192  OP          aref  dtype  0  link 0  operands 94585870839936
+ token 94876481937792  OP          aref  dtype  0  link 0  operands 94876481937536
 binop
- token 94585870840192  OP          aref  dtype  0  link 0  operands 94585870839936
- token 94585870840320  NUM           20  dtype  0  link 0
+ token 94876481937792  OP          aref  dtype  0  link 0  operands 94876481937536
+ token 94876481937920  NUM           20  dtype  0  link 0
 reducedot
- token 94585870840640  OP             ^  dtype  0  link 0  operands 94585870840576
- token 94585870840704  OP             .  dtype  0  link 0  operands 0
- token 94585870840768  ID        friend  dtype  0  link 0
+ token 94876481938240  OP             ^  dtype  0  link 0  operands 94876481938176
+ token 94876481938304  OP             .  dtype  0  link 0  operands 0
+ token 94876481938368  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870840896  OP          aref  dtype  4  link 0  operands 94585870840640
+ token 94876481938496  OP          aref  dtype  4  link 0  operands 94876481938240
 binop
- token 94585870840896  OP          aref  dtype  4  link 0  operands 94585870840640
- token 94585870841024  typ  2  whic  15  dty   0  sty 0 lnk 0  opnds 0
+ token 94876481938496  OP          aref  dtype  4  link 0  operands 94876481938240
+ token 94876481938624  typ  2  whic  15  dty   0  sty 0 lnk 0  opnds 0
 reducedot
- token 94585870841280  OP             ^  dtype  0  link 0  operands 94585870841216
- token 94585870841344  OP             .  dtype  0  link 0  operands 0
- token 94585870841408  ID        friend  dtype  0  link 0
+ token 94876481938880  OP             ^  dtype  0  link 0  operands 94876481938816
+ token 94876481938944  OP             .  dtype  0  link 0  operands 0
+ token 94876481939008  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870841536  OP          aref  dtype  4  link 0  operands 94585870841280
+ token 94876481939136  OP          aref  dtype  4  link 0  operands 94876481938880
 reducedot
- token 94585870841600  OP             ^  dtype  0  link 0  operands 94585870841536
- token 94585870841664  OP             .  dtype  0  link 0  operands 0
- token 94585870841728  ID        friend  dtype  0  link 0
+ token 94876481939200  OP             ^  dtype  0  link 0  operands 94876481939136
+ token 94876481939264  OP             .  dtype  0  link 0  operands 0
+ token 94876481939328  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870841856  OP          aref  dtype  4  link 0  operands 94585870841600
+ token 94876481939456  OP          aref  dtype  4  link 0  operands 94876481939200
 reducedot
- token 94585870841920  OP             ^  dtype  0  link 0  operands 94585870841856
- token 94585870841984  OP             .  dtype  0  link 0  operands 0
- token 94585870842048  ID      location  dtype  0  link 0
+ token 94876481939520  OP             ^  dtype  0  link 0  operands 94876481939456
+ token 94876481939584  OP             .  dtype  0  link 0  operands 0
+ token 94876481939648  ID      location  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: location
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870842176  OP          aref  dtype  0  link 0  operands 94585870841920
+ token 94876481939776  OP          aref  dtype  0  link 0  operands 94876481939520
 reducedot
- token 94585870842176  OP          aref  dtype  0  link 0  operands 94585870841920
- token 94585870842240  OP             .  dtype  0  link 0  operands 0
- token 94585870842304  ID            im  dtype  0  link 0
+ token 94876481939776  OP          aref  dtype  0  link 0  operands 94876481939520
+ token 94876481939840  OP             .  dtype  0  link 0  operands 0
+ token 94876481939904  ID            im  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: im
+ curfield->datatype->basicdt: 1
+dot->basicdt: 1
 return from reducedot
- token 94585870842496  OP          aref  dtype  0  link 0  operands 94585870841920
+ token 94876481940096  OP          aref  dtype  1  link 0  operands 94876481939520
 binop
- token 94585870842496  OP          aref  dtype  0  link 0  operands 94585870841920
- token 94585870842624  NUM 4.500000e+00  dtype  1  link 0
+ token 94876481940096  OP          aref  dtype  1  link 0  operands 94876481939520
+ token 94876481940224  NUM 4.500000e+00  dtype  1  link 0
+var->namestring: ac
+areftok->basicdt: 0
 reducedot
- token 94585870843264  OP          aref  dtype  0  link 0  operands 94585870842752
- token 94585870843328  OP             .  dtype  0  link 0  operands 0
- token 94585870843392  ID            re  dtype  0  link 0
+ token 94876481940864  OP          aref  dtype  0  link 0  operands 94876481940352
+ token 94876481940928  OP             .  dtype  0  link 0  operands 0
+ token 94876481940992  ID            re  dtype  0  link 0
+var->namestring: ac
+areftok->basicdt: 0
 return from reducedot
- token 94585870843520  OP          aref  dtype  0  link 0  operands 94585870842752
+ token 94876481941120  OP          aref  dtype  0  link 0  operands 94876481940352
 reducedot
- token 94585870843712  OP             ^  dtype  0  link 0  operands 94585870843648
- token 94585870843776  OP             .  dtype  0  link 0  operands 0
- token 94585870843840  ID        salary  dtype  0  link 0
+ token 94876481941312  OP             ^  dtype  0  link 0  operands 94876481941248
+ token 94876481941376  OP             .  dtype  0  link 0  operands 0
+ token 94876481941440  ID        salary  dtype  0  link 0
+var->namestring: salary
+areftok->basicdt: 1
+curfield->namestring: salary
+ curfield->datatype->basicdt: 1
+dot->basicdt: 1
 return from reducedot
- token 94585870843968  OP          aref  dtype  1  link 0  operands 94585870843712
+ token 94876481941568  OP          aref  dtype  1  link 0  operands 94876481941312
 binop
- token 94585870843520  OP          aref  dtype  0  link 0  operands 94585870842752
- token 94585870843968  OP          aref  dtype  1  link 0  operands 94585870843712
+ token 94876481941120  OP          aref  dtype  0  link 0  operands 94876481940352
+ token 94876481941568  OP          aref  dtype  1  link 0  operands 94876481941312
 binop
- token 94585870844096  ID           ptr  dtype  4  link 0
- token 94585870844224  ID          john  dtype  4  link 0
+ token 94876481941696  ID           ptr  dtype  4  link 0
+ token 94876481941824  ID          john  dtype  4  link 0
 binop
- token 94585870844352  ID           sum  dtype  0  link 0
- token 94585870844480  NUM            0  dtype  0  link 0
+ token 94876481941952  ID           sum  dtype  0  link 0
+ token 94876481942080  NUM            0  dtype  0  link 0
 binop
- token 94585870844608  ID             i  dtype  0  link 0
- token 94585870844736  NUM            1  dtype  0  link 0
+ token 94876481942208  ID             i  dtype  0  link 0
+ token 94876481942336  NUM            1  dtype  0  link 0
 binop
- token 94585870844928  ID           ptr  dtype  4  link 0
- token 94585870845056  typ  2  whic  15  dty   0  sty 0 lnk 0  opnds 0
+ token 94876481942528  ID           ptr  dtype  4  link 0
+ token 94876481942656  typ  2  whic  15  dty   0  sty 0 lnk 0  opnds 0
 reducedot
- token 94585870845632  OP             ^  dtype  0  link 0  operands 94585870845568
- token 94585870845696  OP             .  dtype  0  link 0  operands 0
- token 94585870845760  ID           age  dtype  0  link 0
+ token 94876481943232  OP             ^  dtype  0  link 0  operands 94876481943168
+ token 94876481943296  OP             .  dtype  0  link 0  operands 0
+ token 94876481943360  ID           age  dtype  0  link 0
+var->namestring: age
+areftok->basicdt: 0
+curfield->namestring: age
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870845888  OP          aref  dtype  0  link 0  operands 94585870845632
+ token 94876481943488  OP          aref  dtype  0  link 0  operands 94876481943232
 binop
- token 94585870845440  ID           sum  dtype  0  link 0
- token 94585870845888  OP          aref  dtype  0  link 0  operands 94585870845632
+ token 94876481943040  ID           sum  dtype  0  link 0
+ token 94876481943488  OP          aref  dtype  0  link 0  operands 94876481943232
 binop
- token 94585870845312  ID           sum  dtype  0  link 0
- token 94585870845504  OP             +  dtype  0  link 0  operands 94585870845440
+ token 94876481942912  ID           sum  dtype  0  link 0
+ token 94876481943104  OP             +  dtype  0  link 0  operands 94876481943040
+var->namestring: people
+areftok->basicdt: 0
 reducedot
- token 94585870846528  OP          aref  dtype  0  link 0  operands 94585870846016
- token 94585870846592  OP             .  dtype  0  link 0  operands 0
- token 94585870846656  ID           age  dtype  0  link 0
+ token 94876481944128  OP          aref  dtype  0  link 0  operands 94876481943616
+ token 94876481944192  OP             .  dtype  0  link 0  operands 0
+ token 94876481944256  ID           age  dtype  0  link 0
+var->namestring: people
+areftok->basicdt: 0
 return from reducedot
- token 94585870846784  OP          aref  dtype  0  link 0  operands 94585870846016
+ token 94876481944384  OP          aref  dtype  0  link 0  operands 94876481943616
 reducedot
- token 94585870846976  OP             ^  dtype  0  link 0  operands 94585870846912
- token 94585870847040  OP             .  dtype  0  link 0  operands 0
- token 94585870847104  ID           age  dtype  0  link 0
+ token 94876481944576  OP             ^  dtype  0  link 0  operands 94876481944512
+ token 94876481944640  OP             .  dtype  0  link 0  operands 0
+ token 94876481944704  ID           age  dtype  0  link 0
+var->namestring: age
+areftok->basicdt: 0
+curfield->namestring: age
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870847232  OP          aref  dtype  0  link 0  operands 94585870846976
+ token 94876481944832  OP          aref  dtype  0  link 0  operands 94876481944576
 binop
- token 94585870846784  OP          aref  dtype  0  link 0  operands 94585870846016
- token 94585870847232  OP          aref  dtype  0  link 0  operands 94585870846976
+ token 94876481944384  OP          aref  dtype  0  link 0  operands 94876481943616
+ token 94876481944832  OP          aref  dtype  0  link 0  operands 94876481944576
+var->namestring: aco
+areftok->basicdt: 0
+var->namestring: aco
+areftok->basicdt: 0
 reducedot
- token 94585870848576  OP             ^  dtype  0  link 0  operands 94585870848512
- token 94585870848640  OP             .  dtype  0  link 0  operands 0
- token 94585870848704  ID      favorite  dtype  0  link 0
+ token 94876481946176  OP             ^  dtype  0  link 0  operands 94876481946112
+ token 94876481946240  OP             .  dtype  0  link 0  operands 0
+ token 94876481946304  ID      favorite  dtype  0  link 0
+var->namestring: favorite
+areftok->basicdt: 0
+curfield->namestring: favorite
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870848832  OP          aref  dtype  0  link 0  operands 94585870848576
+ token 94876481946432  OP          aref  dtype  0  link 0  operands 94876481946176
 binop
- token 94585870848384  OP          aref  dtype  0  link 0  operands 94585870847360
- token 94585870848832  OP          aref  dtype  0  link 0  operands 94585870848576
+ token 94876481945984  OP          aref  dtype  0  link 0  operands 94876481944960
+ token 94876481946432  OP          aref  dtype  0  link 0  operands 94876481946176
 reducedot
- token 94585870849152  OP             ^  dtype  0  link 0  operands 94585870849088
- token 94585870849216  OP             .  dtype  0  link 0  operands 0
- token 94585870849280  ID        friend  dtype  0  link 0
+ token 94876481946752  OP             ^  dtype  0  link 0  operands 94876481946688
+ token 94876481946816  OP             .  dtype  0  link 0  operands 0
+ token 94876481946880  ID        friend  dtype  0  link 0
+var->namestring: friend
+areftok->basicdt: 4
+curfield->namestring: friend
+ curfield->datatype->basicdt: 4
+dot->basicdt: 4
 return from reducedot
- token 94585870849408  OP          aref  dtype  4  link 0  operands 94585870849152
+ token 94876481947008  OP          aref  dtype  4  link 0  operands 94876481946752
 binop
- token 94585870848960  ID           ptr  dtype  4  link 0
- token 94585870849408  OP          aref  dtype  4  link 0  operands 94585870849152
+ token 94876481946560  ID           ptr  dtype  4  link 0
+ token 94876481947008  OP          aref  dtype  4  link 0  operands 94876481946752
 binop
- token 94585870849664  ID             i  dtype  0  link 0
- token 94585870849792  NUM            1  dtype  0  link 0
+ token 94876481947264  ID             i  dtype  0  link 0
+ token 94876481947392  NUM            1  dtype  0  link 0
 binop
- token 94585870849536  ID             i  dtype  0  link 0
- token 94585870849728  OP             +  dtype  0  link 0  operands 94585870849664
+ token 94876481947136  ID             i  dtype  0  link 0
+ token 94876481947328  OP             +  dtype  0  link 0  operands 94876481947264
 reducedot
- token 94585870852096  OP             ^  dtype  0  link 0  operands 94585870852032
- token 94585870852160  OP             .  dtype  0  link 0  operands 0
- token 94585870852224  ID      location  dtype  0  link 0
+ token 94876481949696  OP             ^  dtype  0  link 0  operands 94876481949632
+ token 94876481949760  OP             .  dtype  0  link 0  operands 0
+ token 94876481949824  ID      location  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: location
+ curfield->datatype->basicdt: 0
+dot->basicdt: 0
 return from reducedot
- token 94585870852352  OP          aref  dtype  0  link 0  operands 94585870852096
+ token 94876481949952  OP          aref  dtype  0  link 0  operands 94876481949696
 reducedot
- token 94585870852352  OP          aref  dtype  0  link 0  operands 94585870852096
- token 94585870852416  OP             .  dtype  0  link 0  operands 0
- token 94585870852480  ID            im  dtype  0  link 0
+ token 94876481949952  OP          aref  dtype  0  link 0  operands 94876481949696
+ token 94876481950016  OP             .  dtype  0  link 0  operands 0
+ token 94876481950080  ID            im  dtype  0  link 0
+var->namestring: location
+areftok->basicdt: 0
+curfield->namestring: im
+ curfield->datatype->basicdt: 1
+dot->basicdt: 1
 return from reducedot
- token 94585870852672  OP          aref  dtype  0  link 0  operands 94585870852096
+ token 94876481950272  OP          aref  dtype  1  link 0  operands 94876481949696
 binop
- token 94585870852928  ID           sum  dtype  0  link 0
- token 94585870853056  NUM            3  dtype  0  link 0
+ token 94876481950528  ID           sum  dtype  0  link 0
+ token 94876481950656  NUM            3  dtype  0  link 0
 yyparse result =        0
 Symbol table level 1
- 94585870815632     complex  TYPE   typ 94585870815344  lvl  1  siz    16  off     0
+ 94876481913232     complex  TYPE   typ 94876481912944  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94585870816496         red  CONST  typ INTEGER  val  0
- 94585870816656       white  CONST  typ INTEGER  val  1
- 94585870816816        blue  CONST  typ INTEGER  val  2
- 94585870817008       color  TYPE   typ 94585870816912  lvl  1  siz     4  off     0
+ 94876481914096         red  CONST  typ INTEGER  val  0
+ 94876481914256       white  CONST  typ INTEGER  val  1
+ 94876481914416        blue  CONST  typ INTEGER  val  2
+ 94876481914608       color  TYPE   typ 94876481914512  lvl  1  siz     4  off     0
   0 ..   2
- 94585870817424      person  TYPE   typ 94585870819248  lvl  1  siz    48  off     0
+ 94876481915024      person  TYPE   typ 94876481916848  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94585870817616          pp  TYPE   typ 94585870817520  lvl  1  siz     8  off     0
+ 94876481915216          pp  TYPE   typ 94876481915120  lvl  1  siz     8  off     0
 (^ person)
- 94585870820336           c  VAR    0 typ 94585870815344  lvl  1  siz    16  off     0
+ 94876481917936           c  VAR    0 typ 94876481912944  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94585870820432           d  VAR    0 typ 94585870815344  lvl  1  siz    16  off    16
+ 94876481918032           d  VAR    0 typ 94876481912944  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94585870820912           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94585870821008         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94585870822000          ac  VAR    0 typ 94585870821904  lvl  1  siz   160  off    48
+ 94876481918512           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94876481918608         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94876481919600          ac  VAR    0 typ 94876481919504  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94585870823216         aco  VAR    0 typ 94585870823120  lvl  1  siz   120  off   208
+ 94876481920816         aco  VAR    0 typ 94876481920720  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94585870823952        john  VAR    4 typ 94585870817520  lvl  1  siz     8  off   328
+ 94876481921552        john  VAR    4 typ 94876481915120  lvl  1  siz     8  off   328
 (^ person)
- 94585870824048        mary  VAR    4 typ 94585870817520  lvl  1  siz     8  off   336
+ 94876481921648        mary  VAR    4 typ 94876481915120  lvl  1  siz     8  off   336
 (^ person)
- 94585870824144        fred  VAR    4 typ 94585870817520  lvl  1  siz     8  off   344
+ 94876481921744        fred  VAR    4 typ 94876481915120  lvl  1  siz     8  off   344
 (^ person)
- 94585870824240         ptr  VAR    4 typ 94585870817520  lvl  1  siz     8  off   352
+ 94876481921840         ptr  VAR    4 typ 94876481915120  lvl  1  siz     8  off   352
 (^ person)
- 94585870825232      people  VAR    0 typ 94585870825136  lvl  1  siz   960  off   368
+ 94876481922832      people  VAR    0 typ 94876481922736  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -271,7 +389,7 @@ Symbol table level 1
                            4.000000e+04)
                        (:= (aref (^ john)
                                  16)
-                           3)
+                           3.000000e+00)
                        (:= (aref (^ mary)
                                  0)
                            21)
