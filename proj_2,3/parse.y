@@ -791,6 +791,47 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok){
 }
 
 
+/* instrec will install a record definition.  Each token in the linked list
+   argstok has a pointer its type.  rectok is just a trash token to be
+   used to return the result in its symtype */
+TOKEN instrec(TOKEN rectok, TOKEN argstok){
+
+  SYMBOL recordSymbol = symalloc();
+  recordSymbol->kind = RECORDSYM;
+
+  int offset = 0;
+  int alignedSize = 0;
+
+  TOKEN mover = argstok;
+
+  SYMBOL prev = NULL;
+  while (mover) {
+    SYMBOL fieldSym = makesym(mover->stringval);
+    fieldSym->datatype = mover->symtype;
+    fieldSym->size = mover->symtype->size;
+    fieldSym->link = NULL;
+
+    alignedSize = alignsize(mover->symtype);
+    fieldSym->offset = wordaddress(offset, alignedSize);
+    offset = fieldSym->offset + fieldSym->size;
+
+    if (prev == NULL){
+      recordSymbol->datatype = fieldSym;
+    } else {
+      prev->link = fieldSym;
+    }
+    prev = fieldSym;
+
+    mover = mover->link;
+  }
+
+  recordSymbol->size = wordaddress(offset, 16); //****
+  rectok->symtype = recordSymbol;
+
+  return rectok;
+}
+
+
 /* wordaddress pads the offset n to be a multiple of wordsize.
    wordsize should be 4 for integer, 8 for real and pointers,
    16 for records and arrays */
@@ -821,15 +862,6 @@ int main(void)          /*  */
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
-
-
-
-
-/* instrec will install a record definition.  Each token in the linked list
-   argstok has a pointer its type.  rectok is just a trash token to be
-   used to return the result in its symtype */
-TOKEN instrec(TOKEN rectok, TOKEN argstok);
-
 
 
 /* fillintc smashes tok, making it into an INTEGER constant with value num */
