@@ -177,9 +177,11 @@ TOKEN parseresult;
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
   variable   :  IDENTIFIER                            { $$ = findid($1); }
-             |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2, $3, $4); }
-             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
+             |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2,
+             $3, $4); }
              |  variable POINT                         { $$ = dopoint($1, $2); }
+             
+             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
   plus_op    :  PLUS 
              |  MINUS  
@@ -329,6 +331,10 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   {     
+    printf("binop\n");
+    dbugprinttok(lhs);
+    dbugprinttok(rhs);
+
     if (rhs->whichval == (NIL - RESERVED_BIAS)) {
       rhs = makeintc(0);
     }
@@ -346,14 +352,20 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
       TOKEN ftok = makefloat(rhs);
       lhs->link = ftok;
     } else if (isInt(lhs) && isReal(rhs)) {
+      printf("int and real\n");
       if (op->whichval == ASSIGNOP) {
         op->basicdt = INTEGER;
         TOKEN fixtok = makefix(rhs);
         lhs->link = fixtok;
+        dbugprinttok(lhs);
+        dbugprinttok(rhs);
+        printf("made fix token\n");
+
       } else {
         op->basicdt = REAL;
         TOKEN ftok = makefloat(lhs);
         ftok->link = rhs;
+        printf("made float token\n");
       }
     } 
 
@@ -390,6 +402,7 @@ TOKEN makefix(TOKEN tok) {
   if(tok->tokentype == NUMBERTOK) {
     tok->basicdt = INTEGER;
     tok->intval = (int) tok->realval;
+    printf("was numbertoken so truncated\n");
     return tok;
   } else { 
     TOKEN fixop = makeop(FIXOP);
@@ -493,7 +506,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
-    printf("found double aref\n");
     
     TOKEN off1 = var->operands->link;
     if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
@@ -501,6 +513,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
       int sumOffsets = off1->intval + off->intval;
       finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
     }
+    
   }
 
   // Now, we create the AREF operation using the possibly updated finalOffset
@@ -511,6 +524,9 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   var->link = finalOffset; // Link the final offset
   areftok->operands = var;
   areftok->symentry = var->symentry;
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
+  }
 
   if (DEBUG && DB_MAKEAREF) {
       printf("makearef - possibly merged\n");
@@ -605,6 +621,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     funcal->tokentype = OPERATOR;
     funcal->whichval = FUNCALLOP;
     funcal->operands = fn;
+    funcal->basicdt = typsym->basicdt;
     fn->link = makeintc(typsym->size);
     args->link = funcal;
 
@@ -613,6 +630,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     tok->whichval = FUNCALLOP;
     tok->operands = fn;
     fn->link=args;
+
   }
   if (DEBUG && DB_MAKEFUNCALL) {
          printf("makefuncall\n");
@@ -781,18 +799,24 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
+
   SYMBOL recsym = var->symentry;
   SYMBOL curfield = recsym->datatype->datatype;
+
+
   int offset = 0;
   while(curfield) {
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
       var->symentry = curfield;
+
       break;
     } else {
       curfield = curfield->link;
     }
   }
+
+
 
   dot = makearef(var, makeintc(offset), dot);
 
@@ -911,6 +935,8 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
+  
+
 
   if (DEBUG & DB_DOPOINT) {
     printf("dopoint\n");
@@ -941,7 +967,7 @@ void instvars(TOKEN idlist, TOKEN typetok)
   }
 
 /* instconst installs a constant in the symbol table */
-void  instconst(TOKEN idtok, TOKEN consttok) {
+void instconst(TOKEN idtok, TOKEN consttok) {
   SYMBOL sym;
   sym = insertsym(idtok->stringval);
   sym->kind = CONSTSYM;
@@ -1064,8 +1090,10 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   SYMBOL typesym = typetok->symtype;
+  // printf("typesym name %s\n", typesym->namestring);
   TOKEN temp = idlist;
   while(temp) {
+    // printf("temp name %s\n", temp->stringval);
     temp->symtype = typesym;     
     temp = temp->link;
   }
@@ -1093,6 +1121,8 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     align = alignsize(argstok->symtype);
     SYMBOL recfield = makesym(argstok->stringval);
     recfield->datatype = argstok->symtype;
+    // printf("recfield name %s", recfield->namestring);
+    // printf("recfield type %s\n", recfield->datatype->namestring);
     recfield->offset = wordaddress(next, align);
     recfield->size = argstok->symtype->size;
     next = recfield->offset + recfield->size;

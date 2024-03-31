@@ -687,10 +687,10 @@ static const yytype_uint8 yyrline[] =
      129,   131,   132,   134,   135,   137,   138,   140,   141,   143,
      145,   146,   147,   148,   150,   151,   153,   154,   155,   157,
      159,   160,   161,   162,   163,   164,   165,   166,   167,   169,
-     171,   172,   174,   175,   177,   179,   180,   181,   182,   184,
-     185,   186,   188,   189,   190,   191,   192,   193,   194,   196,
-     197,   198,   199,   200,   202,   203,   204,   206,   207,   209,
-     210,   212,   213,   215,   216,   217,   218,   219
+     171,   172,   174,   175,   177,   179,   180,   182,   184,   186,
+     187,   188,   190,   191,   192,   193,   194,   195,   196,   198,
+     199,   200,   201,   202,   204,   205,   206,   208,   209,   211,
+     212,   214,   215,   217,   218,   219,   220,   221
 };
 #endif
 
@@ -778,12 +778,12 @@ static const yytype_int8 yydefact[] =
        0,     0,     0,     0,     0,     0,     2,     0,     0,     0,
       65,     0,    57,     5,     3,     6,     7,     0,     0,     4,
       93,     0,    96,    94,    88,     0,    85,    92,     0,    24,
-       0,     0,    61,    49,     0,    68,     0,     0,     0,    19,
+       0,     0,    61,    49,     0,    67,     0,     0,     0,    19,
       31,     0,     0,     0,    22,    33,     0,    35,    38,    90,
        0,    28,    50,     0,    97,     0,    84,    69,    70,    71,
        0,    72,    75,    73,    76,    77,    74,    78,     0,     0,
       79,    80,    83,    81,    82,     0,     0,     0,     0,     0,
-      64,    67,     0,     9,    12,    11,     0,    17,    18,    15,
+      64,    68,     0,     9,    12,    11,     0,    17,    18,    15,
       29,    46,     0,     0,     0,     0,     0,    20,    40,    21,
       39,    37,     0,    59,     0,    95,    86,    63,    87,    91,
       56,    23,    54,    60,    66,     8,    10,    43,     0,     0,
@@ -920,7 +920,7 @@ static const yytype_int8 yyr2[] =
        1,     3,     1,     3,     1,     3,     1,     3,     2,     3,
        1,     6,     3,     2,     3,     1,     1,     3,     3,     3,
        3,     5,     1,     1,     4,     6,     4,     2,     1,     4,
-       3,     1,     2,     0,     3,     1,     4,     3,     2,     1,
+       3,     1,     2,     0,     3,     1,     4,     2,     3,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     2,     1,     3,     3,     1,     3,
        1,     3,     1,     1,     1,     3,     1,     2
@@ -1866,72 +1866,73 @@ yyreduce:
 
   case 66:
 #line 180 "parse.y"
-                                                       { yyval = arrayref(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1871 "y.tab.c"
+                                                       { yyval = arrayref(yyvsp[-3], yyvsp[-2],
+             yyvsp[-1], yyvsp[0]); }
+#line 1872 "y.tab.c"
     break;
 
   case 67:
-#line 181 "parse.y"
-                                                       { yyval = reducedot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1877 "y.tab.c"
+#line 182 "parse.y"
+                                                       { yyval = dopoint(yyvsp[-1], yyvsp[0]); }
+#line 1878 "y.tab.c"
     break;
 
   case 68:
-#line 182 "parse.y"
-                                                       { yyval = dopoint(yyvsp[-1], yyvsp[0]); }
-#line 1883 "y.tab.c"
+#line 184 "parse.y"
+                                                       { yyval = reducedot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
+#line 1884 "y.tab.c"
     break;
 
   case 84:
-#line 202 "parse.y"
+#line 204 "parse.y"
                                                 { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1889 "y.tab.c"
+#line 1890 "y.tab.c"
     break;
 
   case 86:
-#line 204 "parse.y"
+#line 206 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1895 "y.tab.c"
+#line 1896 "y.tab.c"
     break;
 
   case 87:
-#line 206 "parse.y"
+#line 208 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1901 "y.tab.c"
+#line 1902 "y.tab.c"
     break;
 
   case 89:
-#line 209 "parse.y"
+#line 211 "parse.y"
                                                { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1907 "y.tab.c"
+#line 1908 "y.tab.c"
     break;
 
   case 90:
-#line 210 "parse.y"
+#line 212 "parse.y"
                                             { yyval = cons(yyvsp[0], NULL); }
-#line 1913 "y.tab.c"
+#line 1914 "y.tab.c"
     break;
 
   case 91:
-#line 212 "parse.y"
+#line 214 "parse.y"
                                                   { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1919 "y.tab.c"
+#line 1920 "y.tab.c"
     break;
 
   case 95:
-#line 217 "parse.y"
+#line 219 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1925 "y.tab.c"
+#line 1926 "y.tab.c"
     break;
 
   case 97:
-#line 219 "parse.y"
+#line 221 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1931 "y.tab.c"
+#line 1932 "y.tab.c"
     break;
 
 
-#line 1935 "y.tab.c"
+#line 1936 "y.tab.c"
 
       default: break;
     }
@@ -2163,7 +2164,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 222 "parse.y"
+#line 224 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -2274,6 +2275,10 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
   {     
+    printf("binop\n");
+    dbugprinttok(lhs);
+    dbugprinttok(rhs);
+
     if (rhs->whichval == (NIL - RESERVED_BIAS)) {
       rhs = makeintc(0);
     }
@@ -2291,14 +2296,20 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs)        /* reduce binary operator */
       TOKEN ftok = makefloat(rhs);
       lhs->link = ftok;
     } else if (isInt(lhs) && isReal(rhs)) {
+      printf("int and real\n");
       if (op->whichval == ASSIGNOP) {
         op->basicdt = INTEGER;
         TOKEN fixtok = makefix(rhs);
         lhs->link = fixtok;
+        dbugprinttok(lhs);
+        dbugprinttok(rhs);
+        printf("made fix token\n");
+
       } else {
         op->basicdt = REAL;
         TOKEN ftok = makefloat(lhs);
         ftok->link = rhs;
+        printf("made float token\n");
       }
     } 
 
@@ -2335,6 +2346,7 @@ TOKEN makefix(TOKEN tok) {
   if(tok->tokentype == NUMBERTOK) {
     tok->basicdt = INTEGER;
     tok->intval = (int) tok->realval;
+    printf("was numbertoken so truncated\n");
     return tok;
   } else { 
     TOKEN fixop = makeop(FIXOP);
@@ -2438,13 +2450,15 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
-    printf("found double aref\n");
     
     TOKEN off1 = var->operands->link;
     if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
       // Directly sum the integer values of the offsets
       int sumOffsets = off1->intval + off->intval;
       finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
+    }
+    if (var->symentry && var->symentry->datatype) {
+      areftok->basicdt = var->symentry->datatype->basicdt;
     }
   }
 
@@ -2456,6 +2470,9 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   var->link = finalOffset; // Link the final offset
   areftok->operands = var;
   areftok->symentry = var->symentry;
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
+  }
 
   if (DEBUG && DB_MAKEAREF) {
       printf("makearef - possibly merged\n");
@@ -2550,6 +2567,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     funcal->tokentype = OPERATOR;
     funcal->whichval = FUNCALLOP;
     funcal->operands = fn;
+    funcal->basicdt = typsym->basicdt;
     fn->link = makeintc(typsym->size);
     args->link = funcal;
 
@@ -2558,6 +2576,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     tok->whichval = FUNCALLOP;
     tok->operands = fn;
     fn->link=args;
+
   }
   if (DEBUG && DB_MAKEFUNCALL) {
          printf("makefuncall\n");
@@ -2726,18 +2745,24 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
+
   SYMBOL recsym = var->symentry;
   SYMBOL curfield = recsym->datatype->datatype;
+
+
   int offset = 0;
   while(curfield) {
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
       var->symentry = curfield;
+
       break;
     } else {
       curfield = curfield->link;
     }
   }
+
+
 
   dot = makearef(var, makeintc(offset), dot);
 
@@ -2856,6 +2881,8 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
+  
+
 
   if (DEBUG & DB_DOPOINT) {
     printf("dopoint\n");
@@ -2886,7 +2913,7 @@ void instvars(TOKEN idlist, TOKEN typetok)
   }
 
 /* instconst installs a constant in the symbol table */
-void  instconst(TOKEN idtok, TOKEN consttok) {
+void instconst(TOKEN idtok, TOKEN consttok) {
   SYMBOL sym;
   sym = insertsym(idtok->stringval);
   sym->kind = CONSTSYM;
@@ -3009,8 +3036,10 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   SYMBOL typesym = typetok->symtype;
+  // printf("typesym name %s\n", typesym->namestring);
   TOKEN temp = idlist;
   while(temp) {
+    // printf("temp name %s\n", temp->stringval);
     temp->symtype = typesym;     
     temp = temp->link;
   }
@@ -3038,6 +3067,8 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     align = alignsize(argstok->symtype);
     SYMBOL recfield = makesym(argstok->stringval);
     recfield->datatype = argstok->symtype;
+    // printf("recfield name %s", recfield->namestring);
+    // printf("recfield type %s\n", recfield->datatype->namestring);
     recfield->offset = wordaddress(next, align);
     recfield->size = argstok->symtype->size;
     next = recfield->offset + recfield->size;
