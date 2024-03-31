@@ -102,9 +102,12 @@ TOKEN parseresult;
   statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
              |  statement
              ;
- 
-  typeList      :  IDENTIFIER EQ TYPE typeList
-             |  IDENTIFIER EQ TYPE
+
+  typeSet : IDENTIFIER EQ type { insttype($1, $3); }
+          ;
+
+  typeList      :  typeSet SEMICOLON typeList
+             |  typeSet SEMICOLON
              ;
 
   tblock     :  TYPE typeList vblock       { $$ = $3; }
@@ -154,8 +157,10 @@ TOKEN parseresult;
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
              |  functionCall
+             |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
              |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
              |  REPEAT statementList UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
+             |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
              |  label
              ;
 
@@ -232,7 +237,7 @@ TOKEN parseresult;
       : basic_type
       | array_type
       | record_type
-      // | point_type
+      | point_type
       ;
 
   array_type
@@ -243,25 +248,27 @@ TOKEN parseresult;
       : RECORD fieldsList END { $$ = instrec($1, $2); }
       ;
 
-  // point_type
-  //     : POINT IDENTIFIER { $$ = instpoint($2); }
-  //     ;
+  point_type
+      : POINT IDENTIFIER { $$ = instpoint($1, $2); }
+      ;
 
   basic_list
-      : basic_list COMMA basic_list  { $$ = cons($3, $1); } 
+      : basic_type COMMA basic_list  { $$ = cons($1, $3); } 
       | basic_type { $$ = cons($1, NULL); }
       ;
 
   basic_type
       : IDENTIFIER  { $$ = findtype($1); }
-      // | LPAREN idlist RPAREN  { $$ = instenum($2); }
-      // | constant DOTDOT constant { $$ = instdotdot($1, $3); }
+      | LPAREN idlist RPAREN  { $$ = instenum($2); }
+      | constant DOTDOT constant { $$ = instdotdot($1, $2, $3); }
       ;
 
 
   variable   :  IDENTIFIER                            { $$ = findid($1); }
             | variable DOT IDENTIFIER { $$ = reducedot($1, $2, $3); }
-            | variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2, $3, $4); }
+            | variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1,
+            $2, $3, $4); }
+            |  variable POINT                         { $$ = dopoint($1, $2); }
             ;
 %%
 
@@ -894,22 +901,22 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field){
    off is be an integer constant token
    tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
-  // if (var->whichval == AREFOP && off->datatype == INTEGER) {
+  if (var->whichval == AREFOP && off->basicdt == INTEGER) {
     
-  //   TOKEN off1 = var->operands->link;
-  //   if (off1->whichval == PLUSOP) {
-  //     int num = off1->operands->intval;  
-  //     int num2 = off->intval;
-  //     TOKEN newoff = makeintc(num + num2);
-  //     newoff->link = off1->operands->link;
-  //     off1->operands = newoff;
-  //   }
-  // }
+    TOKEN off1 = var->operands->link;
+    if (off1->whichval == PLUSOP) {
+      int num = off1->operands->intval;  
+      int num2 = off->intval;
+      TOKEN newoff = makeintc(num + num2);
+      newoff->link = off1->operands->link;
+      off1->operands = newoff;
+    }
+  }
 
   TOKEN areftok = makeop(AREFOP);
   var->link = off;
   areftok->operands = var;
-  // areftok->symentry = var->symentry;   
+  areftok->symentry = var->symentry;   
 
 
   return areftok;
@@ -1007,16 +1014,48 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
 /* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
    into tok, and returns tok. */
-TOKEN makesubrange(TOKEN tok, int low, int high);
+TOKEN makesubrange(TOKEN tok, int low, int high){
+
+  SYMBOL subrange = symalloc();
+  subrange->kind = SUBRANGE;
+  subrange->basicdt = INTEGER;
+  subrange->lowbound = low;
+  subrange->highbound = high;
+  subrange->size = basicsizes[INTEGER];
+  tok->symtype = subrange;
+
+
+  return tok;
+}
 
 /* instenum installs an enumerated subrange in the symbol table,
    e.g., type color = (red, white, blue)
    by calling makesubrange and returning the token it returns. */
-TOKEN instenum(TOKEN idlist);
+TOKEN instenum(TOKEN idlist) {
+  int count = 0;
+
+  TOKEN list = copytok(idlist);
+  while (list) {
+    instconst(list, makeintc(count));
+    count ++;
+    list = list->link;
+  }
+
+  TOKEN tok = makesubrange(idlist, 0, count - 1);
+
+  return tok;
+}
+
 
 /* instdotdot installs a .. subrange in the symbol table.
    dottok is a (now) unused token that is recycled. */
-TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok);
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
+  int low = lowtok->intval;
+  int high = hightok->intval;
+
+
+  return makesubrange(dottok, low, high);
+}
 
 
 
@@ -1064,9 +1103,31 @@ TOKEN makepnb(TOKEN tok, TOKEN statements);
 /* appendst makes a progn containing statements followed by more */
 TOKEN appendst(TOKEN statements, TOKEN more);
 
+/* finds label number in label table for user defined labels */
+int findlabelnumber(int label) {
+
+  for(int i = 0; i < labelnumber; i ++) {
+    if (labels[i] == label) {
+
+      return i;
+    }
+  }
+  return -1;
+}
+
 /* dogoto is the action for a goto statement.
    tok is a (now) unused token that is recycled. */
-TOKEN dogoto(TOKEN tok, TOKEN labeltok);
+TOKEN dogoto(TOKEN tok, TOKEN labeltok){
+    int real_label = findlabelnumber(labeltok->intval);
+    if (real_label == -1) {
+      printf("Error: user defined label not found");
+    }  
+
+    tok = makegoto(real_label);
+
+    return tok;
+}
+
 
 /* settoktype sets up the type fields of token tok.
    typ = type pointer, ent = symbol table entry of the variable  */
@@ -1075,7 +1136,24 @@ void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
 
 /* makewhile makes structures for a while statement.
    tok and tokb are (now) unused tokens that are recycled. */
-TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement);
+TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
+  
+  TOKEN label = makelabel();
+  int current = labelnumber - 1;
+  tok = makeprogn(tok, label);
+
+  TOKEN gototok = makegoto(current);
+  statement->link = gototok;
+  TOKEN body = makeprogn(tokb, statement);
+
+  TOKEN ifs = talloc();
+  ifs = makeif(ifs, expr, body, NULL);
+  label->link = ifs;
+
+
+  return tok;
+  
+}
 
 
 
@@ -1084,10 +1162,35 @@ SYMBOL searchins(char name[]);
 
 /* insttype will install a type name in symbol table.
    typetok is a token containing symbol table pointers. */
-void  insttype(TOKEN typename, TOKEN typetok);
+/* insttype will install a type name in symbol table.
+   typetok is a token containing symbol table pointers. */
+void insttype(TOKEN typename, TOKEN typetok) {
+  SYMBOL typesym = searchins(typename->stringval);
+  typesym->kind = TYPESYM;
+  typesym->datatype = typetok->symtype;
+  typesym->size = typetok->symtype->size;
+
+
+}
 
 /* instpoint will install a pointer type in symbol table */
-TOKEN instpoint(TOKEN tok, TOKEN typename);
+TOKEN instpoint(TOKEN tok, TOKEN typename) {
+
+  SYMBOL typesym = searchins(typename->stringval);
+
+
+  SYMBOL pointsym = symalloc();
+  pointsym->datatype = typesym;
+  pointsym->kind = POINTERSYM;
+  pointsym->size = basicsizes[POINTER];
+  pointsym->basicdt = POINTER;
+
+  tok->symtype = pointsym;
+
+
+
+  return tok;
+}
 
 
 /* makeplus makes a + operator.
@@ -1110,7 +1213,12 @@ TOKEN mulint(TOKEN exp, int n);
 
 /* dopoint handles a ^ operator.  john^ becomes (^ john) with type record
    tok is a (now) unused token that is recycled. */
-TOKEN dopoint(TOKEN var, TOKEN tok);
-//     assert( var->symtype->kind == POINTERSYM );
-//     assert( var->symtype->datatype->kind == TYPESYM );
+TOKEN dopoint(TOKEN var, TOKEN tok){
+  tok->symentry = var->symentry->datatype->datatype;
+  tok->operands = var;
+
+
+
+  return tok;
+}
 
