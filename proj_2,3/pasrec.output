@@ -1,153 +1,258 @@
+
 reducedot
-(^ john) token 93875011784304  ID      favorite  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      32)
 reducedot
-(^ john) token 93875011793088  ID           age  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      0)
 reducedot
-(^ john) token 93875011793792  ID        friend  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      8)
 reducedot
-(^ john) token 93875011794496  ID        salary  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      40)
 reducedot
-(^ john) token 93875011795072  ID      location  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      16)
 reducedot
 (aref (^ john)
-      16) token 93875011795328  ID            re  dtype  0  link 0
+      16)didnt print link
+post-RD var
+(aref (^ john)
+      16)post-RD dot
+(aref (^ john)
+      16)
 reducedot
-(^ mary) token 93875011795968  ID           age  dtype  0  link 0
+(^ mary)didnt print link
+post-RD var
+(^ mary)post-RD dot
+(aref (^ mary)
+      0)
 reducedot
-(^ mary) token 93875011796544  ID        friend  dtype  0  link 0
+(^ mary)didnt print link
+post-RD var
+(^ mary)post-RD dot
+(aref (^ mary)
+      8)
 reducedot
-(^ fred) token 93875011797248  ID           age  dtype  0  link 0
+(^ fred)didnt print link
+post-RD var
+(^ fred)post-RD dot
+(aref (^ fred)
+      0)
 reducedot
-(^ fred) token 93875011797952  ID        friend  dtype  0  link 0
+(^ fred)didnt print link
+post-RD var
+(^ fred)post-RD dot
+(aref (^ fred)
+      8)
 reducedot
-(^ john) token 93875011798592  ID        friend  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      8)
 reducedot
 (^ (aref (^ john)
-         8)) token 93875011798912  ID        friend  dtype  0  link 0
+         8))didnt print link
+post-RD var
+(^ (aref (^ john)
+         8))post-RD dot
+(aref (^ (aref (^ john)
+               8))
+      8)
 reducedot
 (^ (aref (^ (aref (^ john)
                   8))
-         8)) token 93875011799232  ID      location  dtype  0  link 0
+         8))didnt print link
+post-RD var
+(^ (aref (^ (aref (^ john)
+                  8))
+         8))post-RD dot
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      16)
 reducedot
 (aref (^ (aref (^ (aref (^ john)
                         8))
                8))
-      16) token 93875011799488  ID            im  dtype  0  link 0
-arrayref
- token 93875011799936  ID            ac  dtype  0  link 0
- token 93875011800064  NUM            7  dtype  0  link 0
-timesop
- token 93875011800192  OP             *  dtype  0  link 0  operands 93875011800256
-elesize
- token 93875011800256  NUM           16  dtype  0  link 93875011800320
-indexTok
- token 93875011800320  NUM            7  dtype  0  link 0
-nsize
- token 93875011800384  NUM          -16  dtype  0  link 93875011800192
-plusop
-(+ -16
-   (* 16
-      7))arr already has a linked offset
+      16)didnt print link
+post-RD var
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      24)post-RD dot
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      24)arrayref
+ token 94389529025408  ID            ac  dtype  0  link 0
+ token 94389529025536  NUM            7  dtype  0  link 0
+Subs
+ 7subs->intval: 7
+arr already has a linked offset
+return from arrayref
+(aref ac (+ -16
+            (* 16
+               7)))
+retTok->link->tokenType: 5
+
+
 reducedot
 (aref ac (+ -16
             (* 16
-               7))) token 93875011800704  ID            re  dtype  0  link 0
+               7)))
+var->link->tokenType: 5
+
+didnt print link
 var already has a linked offset
-var already has a linked offset
+var->link->tokentype: 5
+numerical offset
+post-RD var
+(aref ac 96)post-RD dot
+(aref ac 96)
 reducedot
-(^ john) token 93875011801152  ID        salary  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      40)
 reducedot
-(^ ptr) token 93875011803072  ID           age  dtype  0  link 0
-arrayref
- token 93875011803328  ID        people  dtype  0  link 0
- token 93875011803456  ID             i  dtype  0  link 0
-timesop
- token 93875011803584  OP             *  dtype  0  link 0  operands 93875011803648
-elesize
- token 93875011803648  NUM           48  dtype  0  link 93875011803712
-indexTok
- token 93875011803712  NUM          105  dtype  0  link 0
-nsize
- token 93875011803776  NUM          -48  dtype  0  link 93875011803584
-plusop
-(+ -48
-   (* 48
-      105))arr already has a linked offset
+(^ ptr)didnt print link
+post-RD var
+(^ ptr)post-RD dot
+(aref (^ ptr)
+      0)arrayref
+ token 94389529028800  ID        people  dtype  0  link 0
+ token 94389529028928  ID             i  dtype  0  link 0
+Subs
+ iarr already has a linked offset
+identifier case
+i
+return from arrayref
+(aref people (+ -48
+                (* 48
+                   i)))
+retTok->link->tokenType: 3
+
+
 reducedot
 (aref people (+ -48
                 (* 48
-                   105))) token 93875011804096  ID           age  dtype  0  link 0
+                   i)))
+var->link->tokenType: 3
+
+didnt print link
 var already has a linked offset
-var already has a linked offset
+var->link->tokentype: 3
+identifier offset
+post-RD var
+(aref people (+ i)
+             0)post-RD dot
+(aref people (+ i)
+             0)
 reducedot
-(^ ptr) token 93875011804544  ID           age  dtype  0  link 0
+(^ ptr)didnt print link
+post-RD var
+(^ ptr)post-RD dot
+(aref (^ ptr)
+      0)arrayref
+ token 94389529030272  ID           aco  dtype  0  link 0
+ token 94389529030400  ID             i  dtype  0  link 94389529030528
 arrayref
- token 93875011804800  ID           aco  dtype  0  link 0
- token 93875011804928  ID             i  dtype  0  link 93875011805056
-arrayref
- token 93875011805504  OP          aref  dtype  0  link 0  operands 93875011804800
- token 93875011805056  NUM            1  dtype  0  link 0
-timesop
- token 93875011805568  OP             *  dtype  0  link 0  operands 93875011805632
-elesize
- token 93875011805632  NUM           12  dtype  0  link 93875011805696
-indexTok
- token 93875011805696  NUM            1  dtype  0  link 0
-nsize
- token 93875011805760  NUM          -12  dtype  0  link 93875011805568
-plusop
-(+ -12
-   (* 12
-      1))reducedot
-(^ john) token 93875011806272  ID      favorite  dtype  0  link 0
+ token 94389529030976  OP          aref  dtype  0  link 0  operands 94389529030272
+ token 94389529030528  NUM            1  dtype  0  link 0
+Subs
+ 1subs->intval: 1
+return from arrayref
+(aref aco (+ -12
+             (* 12
+                1)))
+retTok->link->tokenType: 5
+
+
 reducedot
-(^ ptr) token 93875011806848  ID        friend  dtype  0  link 0
+(^ john)didnt print link
+post-RD var
+(^ john)post-RD dot
+(aref (^ john)
+      32)
 reducedot
-(^ fred) token 93875011809792  ID      location  dtype  0  link 0
+(^ ptr)didnt print link
+post-RD var
+(^ ptr)post-RD dot
+(aref (^ ptr)
+      8)
+reducedot
+(^ fred)didnt print link
+post-RD var
+(^ fred)post-RD dot
+(aref (^ fred)
+      16)
 reducedot
 (aref (^ fred)
-      16) token 93875011810048  ID            im  dtype  0  link 0
-yyparse result =        0
+      16)didnt print link
+post-RD var
+(aref (^ fred)
+      24)post-RD dot
+(aref (^ fred)
+      24)yyparse result =        0
 Symbol table level 1
- 93875011772816     complex  TYPE   typ 93875011772528  lvl  1  siz    16  off     0
+ 94389528998288     complex  TYPE   typ 94389528998000  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93875011773680         red  CONST  typ INTEGER  val  0
- 93875011773840       white  CONST  typ INTEGER  val  1
- 93875011774000        blue  CONST  typ INTEGER  val  2
- 93875011774192       color  TYPE   typ 93875011774096  lvl  1  siz     4  off     0
+ 94389528999152         red  CONST  typ INTEGER  val  0
+ 94389528999312       white  CONST  typ INTEGER  val  1
+ 94389528999472        blue  CONST  typ INTEGER  val  2
+ 94389528999664       color  TYPE   typ 94389528999568  lvl  1  siz     4  off     0
   0 ..   2
- 93875011774608      person  TYPE   typ 93875011776432  lvl  1  siz    48  off     0
+ 94389529000080      person  TYPE   typ 94389529001904  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 93875011774800          pp  TYPE   typ 93875011774704  lvl  1  siz     8  off     0
+ 94389529000272          pp  TYPE   typ 94389529000176  lvl  1  siz     8  off     0
 (^ person)
- 93875011777520           c  VAR    0 typ 93875011772528  lvl  1  siz    16  off     0
+ 94389529002992           c  VAR    0 typ 94389528998000  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93875011777616           d  VAR    0 typ 93875011772528  lvl  1  siz    16  off    16
+ 94389529003088           d  VAR    0 typ 94389528998000  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 93875011778096           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 93875011778192         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 93875011779184          ac  VAR    0 typ 93875011779088  lvl  1  siz   160  off    48
+ 94389529003568           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94389529003664         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94389529004656          ac  VAR    0 typ 94389529004560  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 93875011780400         aco  VAR    0 typ 93875011780304  lvl  1  siz   120  off   208
+ 94389529005872         aco  VAR    0 typ 94389529005776  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 93875011781136        john  VAR    4 typ 93875011774704  lvl  1  siz     8  off   328
+ 94389529006608        john  VAR    4 typ 94389529000176  lvl  1  siz     8  off   328
 (^ person)
- 93875011781232        mary  VAR    4 typ 93875011774704  lvl  1  siz     8  off   336
+ 94389529006704        mary  VAR    4 typ 94389529000176  lvl  1  siz     8  off   336
 (^ person)
- 93875011781328        fred  VAR    4 typ 93875011774704  lvl  1  siz     8  off   344
+ 94389529006800        fred  VAR    4 typ 94389529000176  lvl  1  siz     8  off   344
 (^ person)
- 93875011781424         ptr  VAR    4 typ 93875011774704  lvl  1  siz     8  off   352
+ 94389529006896         ptr  VAR    4 typ 94389529000176  lvl  1  siz     8  off   352
 (^ person)
- 93875011782416      people  VAR    0 typ 93875011782320  lvl  1  siz   960  off   368
+ 94389529007888      people  VAR    0 typ 94389529007792  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -202,7 +307,8 @@ Symbol table level 1
                               (if (<> ptr 0)
                                   (progn (progn (:= sum (+ sum (aref (^ ptr)
                                                                      0)))
-                                                (:= (aref people 4992)
+                                                (:= (aref people (+ i)
+                                                                 0)
                                                     (aref (^ ptr)
                                                           0))
                                                 (:= (aref aco (+ -12

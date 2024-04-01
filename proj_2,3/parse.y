@@ -501,8 +501,19 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
 
   if (var->link){
     printf("var already has a linked offset\n");
+    printf("var->link->tokentype: %d\n", var->link->tokentype);
 
+    if (var->link->tokentype == NUMBERTOK){
+      printf("numerical offset\n");
     finalOffset->intval = var->link->intval + off->intval;
+    }
+    else if(var->link->tokentype == IDENTIFIERTOK){
+      printf("identifier offset\n");
+      TOKEN plusop = makeop(PLUSOP);
+      plusop->operands = var->link;
+      plusop->link = off;
+      finalOffset = plusop;
+    }
   }
 
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
@@ -531,14 +542,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
-  // printf("var->namestring: %s\n", var->symentry->namestring);
-  // printf("areftok->basicdt: %d\n", areftok->basicdt);
-
-  // printf("areftok:\n");
-  // dbugprinttok(areftok);
-  // printf("midmakearef\n");
-  // printf("var\n");
-  // dbugprinttok(var);
 
   if (DEBUG && DB_MAKEAREF) {
       printf("makearef - possibly merged\n");
@@ -813,10 +816,10 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
-  printf("reducedot\n");
-  ppexpr(var); //location
-  // dbugprinttok(dot);
-  dbugprinttok(field); //re
+
+
+  // // dbugprinttok(dot);
+  // dbugprinttok(field); //re
   SYMBOL recsym = var->symentry;
   SYMBOL curfield = recsym->datatype->datatype;
 
@@ -834,24 +837,24 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     }
   }
 
-  
 
+  printf("\nreducedot\n");
+  ppexpr(var); //location
   if (var->link){
-    printf("var already has a linked offset\n");
-    // TOKEN plusop = makeop(PLUSOP);
-    // plusop->operands = var->link;
-    // plusop->link = makeintc(offset);
-    // var->link = plusop;
-  } 
+    printf("\nvar->link->tokenType: %d\n", var->link->tokentype);
+    printf("\n");
+  }
+  printf("didnt print link\n");
+
   dot = makearef(var, makeintc(offset), dot);
   if (curfield) {
-    // printf("curfield->namestring: %s\n", curfield->namestring);
-    // printf(" curfield->datatype->basicdt: %d\n", curfield->datatype->basicdt);
     dot->basicdt = curfield->datatype->basicdt;
-    // printf("dot->basicdt: %d\n", dot->basicdt);
   }
-  // printf("return from reducedot\n");
-  // dbugprinttok(dot);
+
+  printf("post-RD var\n");
+  ppexpr(var);
+  printf("post-RD dot\n");
+  ppexpr(dot);
 
   if (DEBUG & DB_REDUCEDOT) {
     printf("reducedot\n");
@@ -906,15 +909,26 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
     // printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
     TOKEN elesize = makeintc(size);
-    TOKEN indexTok = makeintc(subs->intval);
+    printf("Subs\n ");
+    ppexpr(subs);
+    TOKEN indexTok;
+    if (subs->tokentype == NUMBERTOK) {
+      printf("subs->intval: %d\n", subs->intval);
+    
+    // printf("subs->operands->basicdt: %d\n", subs->operands->basicdt); 
+    
+      indexTok = makeintc(subs->intval);
+    }
+    else if (subs->tokentype == IDENTIFIERTOK){
+      indexTok = talloc();
+      indexTok->tokentype = IDENTIFIERTOK;
+      strcpy(indexTok->stringval, subs->stringval);
+      // indexTok->stringval = subs->stringval;
+      indexTok->basicdt = STRINGTYPE;
+    }
+
     elesize->link = indexTok;
     timesop->operands = elesize;
-    printf("timesop\n");
-    dbugprinttok(timesop);
-    printf("elesize\n");
-    dbugprinttok(elesize);
-    printf("indexTok\n");
-    dbugprinttok(indexTok);
     TOKEN nsize = makeintc(-1 * size); ///
     nsize->link = timesop;
     TOKEN plusop = makeop(PLUSOP);
@@ -923,11 +937,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     int offset = size * subs->intval - size * low;
    
 
-    printf("nsize\n");
-    dbugprinttok(nsize);
 
-    printf("plusop\n");
-    // dbugprinttok(plusop);
 
     if (DEBUG & DB_ARRAYREF) {
         printf("arrayref\n");
@@ -937,12 +947,28 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
         dbugprinttok(plusop);
     }
 
-    ppexpr(plusop);
     TOKEN retTok = makearef(arr, plusop, tokb);
     if (arr->link){
       printf("arr already has a linked offset\n");
     }
-    retTok->link = makeintc(offset);
+    if (subs->tokentype == NUMBERTOK) {
+      retTok->link = makeintc(offset);
+      retTok->link->tokentype = NUMBERTOK;
+    }
+    else if (subs->tokentype == IDENTIFIERTOK){
+      printf("identifier case\n");
+      ppexpr(indexTok);
+      printf("\n");
+      retTok->link = indexTok;
+      retTok->link->tokentype = IDENTIFIERTOK;
+
+    }
+
+    printf("return from arrayref\n");
+    ppexpr(retTok);
+    printf("\nretTok->link->tokenType: %d\n", retTok->link->tokentype);
+    printf("\n");
+    
     return retTok;
   }
 
