@@ -2444,8 +2444,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
   if (var->link){
-    printf("var already has a linked offset\n");
-    printf("var->link->tokentype: %d\n", var->link->tokentype);
 
     if (var->link->tokentype == NUMBERTOK){
       printf("numerical offset\n");
@@ -2470,14 +2468,28 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     }
   }
 
+
+
+
   // Now, we create the AREF operation using the possibly updated finalOffset
   TOKEN areftok = makeop(AREFOP);
   if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
-    var = var->operands; // Assume var->operands is the array being indexed
+    if (var->operands->link->tokentype == NUMBERTOK) {
+      var = var->operands; // Assume var->operands is the array being indexed
+    }
+    else if (var->operands->link->tokentype == IDENTIFIERTOK) {
+    }
+  }
+  printf("makearef\n");
+  ppexpr(var); //location
+  if (var->link){
+    printf("\nvar->link->tokenType: %d\n", var->link->tokentype);
+    printf("\n");
   }
 
-
   var->link = finalOffset; // Link the final offset
+
+
   areftok->operands = var;
   areftok->symentry = var->symentry;
   
@@ -2782,27 +2794,16 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
 
-
-  // if (var->link){
-  //   printf("var already has a linked offset RDRD\n");
-  //   ppexpr(var);
-  //   printf("\n");
-  //   TOKEN plusop = makeop(PLUSOP);
-  //   plusop->operands = var->link;
-  //   plusop->link = makeintc(offset);
-  //   // plusop->link = makeintc(979);
-  //   var->link = plusop;
-  // } 
-
   printf("\nreducedot\n");
   ppexpr(var); //location
+  printf("\n");
   if (var->link){
     printf("\nvar->link->tokenType: %d\n", var->link->tokentype);
     printf("\n");
   }
-  printf("didnt print link\n");
 
   dot = makearef(var, makeintc(offset), dot);
+
   if (curfield) {
     dot->basicdt = curfield->datatype->basicdt;
   }

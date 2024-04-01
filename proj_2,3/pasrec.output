@@ -1,76 +1,92 @@
 
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       32)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       0)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       8)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       40)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       16)
 reducedot
 (aref (^ john)
-      16)didnt print link
+      16)
+makearef
+(^ john)
+var->link->tokenType: 5
+
 post-RD var
 (aref (^ john)
       16)post-RD dot
 (aref (^ john)
       16)
 reducedot
-(^ mary)didnt print link
-post-RD var
+(^ mary)
+makearef
+(^ mary)post-RD var
 (^ mary)post-RD dot
 (aref (^ mary)
       0)
 reducedot
-(^ mary)didnt print link
-post-RD var
+(^ mary)
+makearef
+(^ mary)post-RD var
 (^ mary)post-RD dot
 (aref (^ mary)
       8)
 reducedot
-(^ fred)didnt print link
-post-RD var
+(^ fred)
+makearef
+(^ fred)post-RD var
 (^ fred)post-RD dot
 (aref (^ fred)
       0)
 reducedot
-(^ fred)didnt print link
-post-RD var
+(^ fred)
+makearef
+(^ fred)post-RD var
 (^ fred)post-RD dot
 (aref (^ fred)
       8)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       8)
 reducedot
 (^ (aref (^ john)
-         8))didnt print link
-post-RD var
+         8))
+makearef
+(^ (aref (^ john)
+         8))post-RD var
 (^ (aref (^ john)
          8))post-RD dot
 (aref (^ (aref (^ john)
@@ -79,8 +95,11 @@ post-RD var
 reducedot
 (^ (aref (^ (aref (^ john)
                   8))
-         8))didnt print link
-post-RD var
+         8))
+makearef
+(^ (aref (^ (aref (^ john)
+                  8))
+         8))post-RD var
 (^ (aref (^ (aref (^ john)
                   8))
          8))post-RD dot
@@ -92,7 +111,13 @@ reducedot
 (aref (^ (aref (^ (aref (^ john)
                         8))
                8))
-      16)didnt print link
+      16)
+makearef
+(^ (aref (^ (aref (^ john)
+                  8))
+         8))
+var->link->tokenType: 5
+
 post-RD var
 (aref (^ (aref (^ (aref (^ john)
                         8))
@@ -102,11 +127,12 @@ post-RD var
                         8))
                8))
       24)arrayref
- token 94389529025408  ID            ac  dtype  0  link 0
- token 94389529025536  NUM            7  dtype  0  link 0
+ token 94444634446720  ID            ac  dtype  0  link 0
+ token 94444634446848  NUM            7  dtype  0  link 0
 Subs
  7subs->intval: 7
-arr already has a linked offset
+makearef
+acarr already has a linked offset
 return from arrayref
 (aref ac (+ -16
             (* 16
@@ -118,31 +144,43 @@ reducedot
 (aref ac (+ -16
             (* 16
                7)))
+
 var->link->tokenType: 5
 
-didnt print link
-var already has a linked offset
-var->link->tokentype: 5
 numerical offset
+makearef
+(aref ac (+ -16
+            (* 16
+               7)))
+var->link->tokenType: 5
+
 post-RD var
-(aref ac 96)post-RD dot
-(aref ac 96)
+(aref ac (+ -16
+            (* 16
+               7)))post-RD dot
+(aref (aref ac (+ -16
+                  (* 16
+                     7)))
+      96)
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       40)
 reducedot
-(^ ptr)didnt print link
-post-RD var
+(^ ptr)
+makearef
+(^ ptr)post-RD var
 (^ ptr)post-RD dot
 (aref (^ ptr)
       0)arrayref
- token 94389529028800  ID        people  dtype  0  link 0
- token 94389529028928  ID             i  dtype  0  link 0
+ token 94444634450112  ID        people  dtype  0  link 0
+ token 94444634450240  ID             i  dtype  0  link 0
 Subs
- iarr already has a linked offset
+ imakearef
+peoplearr already has a linked offset
 identifier case
 i
 return from arrayref
@@ -156,103 +194,127 @@ reducedot
 (aref people (+ -48
                 (* 48
                    i)))
+
 var->link->tokenType: 3
 
-didnt print link
-var already has a linked offset
-var->link->tokentype: 3
 identifier offset
+makearef
+(aref people (+ -48
+                (* 48
+                   i)))
+var->link->tokenType: 3
+
 post-RD var
-(aref people (+ i)
-             0)post-RD dot
-(aref people (+ i)
-             0)
+(aref people (+ -48
+                (* 48
+                   i)))post-RD dot
+(aref (aref people (+ -48
+                      (* 48
+                         i)))
+      (+ i)
+      0)
 reducedot
-(^ ptr)didnt print link
-post-RD var
+(^ ptr)
+makearef
+(^ ptr)post-RD var
 (^ ptr)post-RD dot
 (aref (^ ptr)
       0)arrayref
- token 94389529030272  ID           aco  dtype  0  link 0
- token 94389529030400  ID             i  dtype  0  link 94389529030528
-arrayref
- token 94389529030976  OP          aref  dtype  0  link 0  operands 94389529030272
- token 94389529030528  NUM            1  dtype  0  link 0
+ token 94444634451584  ID           aco  dtype  0  link 0
+ token 94444634451712  ID             i  dtype  0  link 94444634451840
+makearef
+acoarrayref
+ token 94444634452288  OP          aref  dtype  0  link 0  operands 94444634451584
+ token 94444634451840  NUM            1  dtype  0  link 0
 Subs
  1subs->intval: 1
-return from arrayref
+makearef
 (aref aco (+ -12
              (* 12
-                1)))
+                i)))arr already has a linked offset
+return from arrayref
+(aref (aref aco (+ -12
+                   (* 12
+                      i)))
+      (+ -12
+         (* 12
+            1)))
 retTok->link->tokenType: 5
 
 
 reducedot
-(^ john)didnt print link
-post-RD var
+(^ john)
+makearef
+(^ john)post-RD var
 (^ john)post-RD dot
 (aref (^ john)
       32)
 reducedot
-(^ ptr)didnt print link
-post-RD var
+(^ ptr)
+makearef
+(^ ptr)post-RD var
 (^ ptr)post-RD dot
 (aref (^ ptr)
       8)
 reducedot
-(^ fred)didnt print link
-post-RD var
+(^ fred)
+makearef
+(^ fred)post-RD var
 (^ fred)post-RD dot
 (aref (^ fred)
       16)
 reducedot
 (aref (^ fred)
-      16)didnt print link
+      16)
+makearef
+(^ fred)
+var->link->tokenType: 5
+
 post-RD var
 (aref (^ fred)
       24)post-RD dot
 (aref (^ fred)
       24)yyparse result =        0
 Symbol table level 1
- 94389528998288     complex  TYPE   typ 94389528998000  lvl  1  siz    16  off     0
+ 94444634419600     complex  TYPE   typ 94444634419312  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94389528999152         red  CONST  typ INTEGER  val  0
- 94389528999312       white  CONST  typ INTEGER  val  1
- 94389528999472        blue  CONST  typ INTEGER  val  2
- 94389528999664       color  TYPE   typ 94389528999568  lvl  1  siz     4  off     0
+ 94444634420464         red  CONST  typ INTEGER  val  0
+ 94444634420624       white  CONST  typ INTEGER  val  1
+ 94444634420784        blue  CONST  typ INTEGER  val  2
+ 94444634420976       color  TYPE   typ 94444634420880  lvl  1  siz     4  off     0
   0 ..   2
- 94389529000080      person  TYPE   typ 94389529001904  lvl  1  siz    48  off     0
+ 94444634421392      person  TYPE   typ 94444634423216  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94389529000272          pp  TYPE   typ 94389529000176  lvl  1  siz     8  off     0
+ 94444634421584          pp  TYPE   typ 94444634421488  lvl  1  siz     8  off     0
 (^ person)
- 94389529002992           c  VAR    0 typ 94389528998000  lvl  1  siz    16  off     0
+ 94444634424304           c  VAR    0 typ 94444634419312  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94389529003088           d  VAR    0 typ 94389528998000  lvl  1  siz    16  off    16
+ 94444634424400           d  VAR    0 typ 94444634419312  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94389529003568           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94389529003664         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94389529004656          ac  VAR    0 typ 94389529004560  lvl  1  siz   160  off    48
+ 94444634424880           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94444634424976         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94444634425968          ac  VAR    0 typ 94444634425872  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94389529005872         aco  VAR    0 typ 94389529005776  lvl  1  siz   120  off   208
+ 94444634427184         aco  VAR    0 typ 94444634427088  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94389529006608        john  VAR    4 typ 94389529000176  lvl  1  siz     8  off   328
+ 94444634427920        john  VAR    4 typ 94444634421488  lvl  1  siz     8  off   328
 (^ person)
- 94389529006704        mary  VAR    4 typ 94389529000176  lvl  1  siz     8  off   336
+ 94444634428016        mary  VAR    4 typ 94444634421488  lvl  1  siz     8  off   336
 (^ person)
- 94389529006800        fred  VAR    4 typ 94389529000176  lvl  1  siz     8  off   344
+ 94444634428112        fred  VAR    4 typ 94444634421488  lvl  1  siz     8  off   344
 (^ person)
- 94389529006896         ptr  VAR    4 typ 94389529000176  lvl  1  siz     8  off   352
+ 94444634428208         ptr  VAR    4 typ 94444634421488  lvl  1  siz     8  off   352
 (^ person)
- 94389529007888      people  VAR    0 typ 94389529007792  lvl  1  siz   960  off   368
+ 94444634429200      people  VAR    0 typ 94444634429104  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -297,7 +359,10 @@ Symbol table level 1
                                           8))
                                  24)
                            4.500000e+00)
-                       (:= (aref ac 96)
+                       (:= (aref (aref ac (+ -16
+                                             (* 16
+                                                7)))
+                                 96)
                            (aref (^ john)
                                  40))
                        (:= ptr john)
@@ -307,13 +372,19 @@ Symbol table level 1
                               (if (<> ptr 0)
                                   (progn (progn (:= sum (+ sum (aref (^ ptr)
                                                                      0)))
-                                                (:= (aref people (+ i)
-                                                                 0)
+                                                (:= (aref (aref people (+ -48
+                                                                          (* 48
+                                                                             i)))
+                                                          (+ i)
+                                                          0)
                                                     (aref (^ ptr)
                                                           0))
-                                                (:= (aref aco (+ -12
-                                                                 (* 12
-                                                                    1)))
+                                                (:= (aref (aref aco (+ -12
+                                                                       (* 12
+                                                                          i)))
+                                                          (+ -12
+                                                             (* 12
+                                                                1)))
                                                     (aref (^ john)
                                                           32))
                                                 (:= ptr (aref (^ ptr)
