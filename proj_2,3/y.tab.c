@@ -2458,6 +2458,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   }
 
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
+
     
     TOKEN off1 = var->operands->link;
     if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
@@ -2466,9 +2467,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
       finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
     }
   }
-
-
-
 
   // Now, we create the AREF operation using the possibly updated finalOffset
   TOKEN areftok = makeop(AREFOP);
@@ -2479,13 +2477,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     }
   }
 
-
-
   if (finalOffset != 0){
     var->link = finalOffset; // Link the final offset
 
   }
-
 
   if (var->link->tokentype == IDENTIFIERTOK){
     return var;
@@ -2494,25 +2489,16 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-
-  
   areftok->symentry = var->symentry;
-
-
   
   if (var->symentry && var->symentry->datatype) {
     areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
-
   if (DEBUG && DB_MAKEAREF) {
       printf("makearef - possibly merged\n");
       dbugprinttok(areftok);
   }
-
-
-
-
 
   return areftok;
 }
@@ -2829,14 +2815,13 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
-  printf("arrayref\n");
-  dbugprinttok(arr);
-  dbugprinttok(subs);
+
+
   if (subs->link) {
 
 
     printf("nested arrayref\n");
-    ppexpr(subs->link);
+    
     TOKEN timesop = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
@@ -2848,7 +2833,9 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     else{
       size = (arr->symtype->size / (high + low + 1));
     }
-    printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
+
+
+
 
     TOKEN indexTok;
     if (subs->tokentype == NUMBERTOK) {
@@ -2861,44 +2848,30 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       indexTok = talloc();
       indexTok->tokentype = IDENTIFIERTOK;
       strcpy(indexTok->stringval, subs->stringval);
-      // indexTok->stringval = subs->stringval;
+
+      printf("indexTok->stringval: %s\n", indexTok->stringval);
       indexTok->basicdt = STRINGTYPE;
     }
+
+    
+
     TOKEN elesize = makeintc(size);
 
     elesize->link = indexTok;
     timesop->operands = elesize;
-    TOKEN nsize;
-    
-      if (low == 1){
-        printf("\nlow == 1\n");
-        nsize = makeintc(-1 * size);
-      }
-      else{
-        if (subs->tokentype == NUMBERTOK) {
 
-          nsize = makeintc(-1 *(arr->symtype->size - size * subs->intval));
-        }
-        else {
-          nsize = makeintc(-1 * arr->symtype->size);
-
-        }
-      }
-    
-    nsize->intval = 1000;
-    printf("nsize: %d\n", nsize->intval);
-    TOKEN s = copytok(subs);
-    s->link = NULL;
-    elesize->link = s;
     timesop->operands = elesize;
 
-    nsize->link = timesop;
-    TOKEN plusop = makeop(PLUSOP);
-    plusop->operands = nsize;
 
-    TOKEN subarref = makearef(arr, plusop, tokb);
-    
+    TOKEN subarref = makearef(arr, timesop, tokb);
+
+
+    dbugprinttok(subarref);
     subarref->symtype = arr->symtype->datatype;
+
+    printf("subs->link: ");
+    ppexpr(subs->link);
+    printf("\n");
 
     return arrayref(subarref, tok, subs->link, tokb);
 
@@ -2908,6 +2881,12 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   
   
   else {
+
+
+    printf("nonnested\n");
+    ppexpr(arr);
+    printf("\n");
+    ppexpr(subs);
     TOKEN timesop = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
@@ -2919,71 +2898,91 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     else{
       size = (arr->symtype->size / (high + low + 1));
     }
-    printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
-
     TOKEN elesize = makeintc(size);
+    printf("size: %d\n", size);
+
+
+
     TOKEN indexTok;
+
+    //indextok needes to build off of arr
+
+    //index is an actual value
     if (subs->tokentype == NUMBERTOK) {
-    
-    // printf("subs->operands->basicdt: %d\n", subs->operands->basicdt); 
-    
+      printf("numeric index\n");
+      printf("subs->intval: %d\n", subs->intval);
+      ppexpr(arr);
       indexTok = makeintc(subs->intval);
     }
+
+    //this is the case where we have an identifier as the index; people[i]
     else if (subs->tokentype == IDENTIFIERTOK){
+      printf("variable index\n");
+
       indexTok = talloc();
       indexTok->tokentype = IDENTIFIERTOK;
       strcpy(indexTok->stringval, subs->stringval);
-      // indexTok->stringval = subs->stringval;
       indexTok->basicdt = STRINGTYPE;
     }
-
-    elesize->link = indexTok;
-    timesop->operands = elesize;
-    TOKEN nsize;
-
-
-    
-      if (low == 1){
-        nsize = makeintc(-1 * size);
-      }
-      else{
-        if (subs->tokentype == NUMBERTOK) {
-
-          nsize = makeintc(-1 *(arr->symtype->size - size * subs->intval));
-        }
-        else {
-          nsize = makeintc(-1 * arr->symtype->size);
-
-        }
-      }
-      
-    printf("nsize: %d\n", nsize->intval);
-    
-    
-    
-    nsize->link = timesop;
-    TOKEN plusop = makeop(PLUSOP);
-    plusop->operands = nsize;
-    
-    int offset = size * subs->intval - size * low;
-   
-
-    if (DEBUG & DB_ARRAYREF) {
-        printf("arrayref\n");
-        //printf("low : %d, high : %d, total size : %d, size of ele %d", low, high, arr->symtype->size, size);
-        dbugprinttok(arr);
-        dbugprinttok(subs);
-        dbugprinttok(plusop);
+    TOKEN retTok;
+    if(arr->whichval == AREFOP){
+      int offset =  size * subs->intval - size * low -  arr->symtype->size;
+      printf("\nwe have an arefop\n");
+      TOKEN plusop = makeop(PLUSOP);
+      plusop->operands = makeintc(offset);
+      plusop->operands->tokentype = NUMBERTOK;
+      plusop->operands->link = arr;
+      retTok = plusop;
     }
+    else{   
+      elesize->link = indexTok;
+      timesop->operands = elesize;
+      TOKEN nsize;
 
-    TOKEN retTok = makearef(arr, plusop, tokb);
+
+      
+        if (low == 1){
+          nsize = makeintc(-1 * size);
+        }
+        else{
+          if (subs->tokentype == NUMBERTOK) {
+
+            nsize = makeintc(-1 *(arr->symtype->size - size * subs->intval));
+          }
+          else {
+            nsize = makeintc(-1 * arr->symtype->size);
+
+          }
+        }
+        
+      
+      nsize->link = timesop;
+      TOKEN plusop = makeop(PLUSOP);
+      plusop->operands = nsize;
+      
+      int offset = size * subs->intval - size * low;
+      printf("offset: %d\n", offset);
+
+
+      
+
+      // TOKEN retTok;
+      retTok = makearef(arr, plusop, tokb);
+
+}
+
+
+
+  
+    //rettok is wrong
+    int offset = size * subs->intval - size * low;
+
 
     if (subs->tokentype == NUMBERTOK) {
       retTok->link = makeintc(offset);
       retTok->link->tokentype = NUMBERTOK;
     }
     else if (subs->tokentype == IDENTIFIERTOK){
-
       retTok->link = indexTok;
       retTok->link->tokentype = IDENTIFIERTOK;
 
