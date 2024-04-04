@@ -11,7 +11,7 @@ variable index
 offset: 4992
 nested arrayref
 indexTok->stringval: i
- token 94206805749952  OP          aref  dtype  0  link 0  operands 94206805749376
+ token 94573187252416  OP          aref  dtype  0  link 0  operands 94573187251840
 subs->link: 1
 nonnested
 (aref aco (* 12
@@ -24,45 +24,45 @@ subs->intval: 1
 we have an arefop
 yyparse result =        0
 Symbol table level 1
- 94206805717392     complex  TYPE   typ 94206805717104  lvl  1  siz    16  off     0
+ 94573187219856     complex  TYPE   typ 94573187219568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94206805718256         red  CONST  typ INTEGER  val  0
- 94206805718416       white  CONST  typ INTEGER  val  1
- 94206805718576        blue  CONST  typ INTEGER  val  2
- 94206805718768       color  TYPE   typ 94206805718672  lvl  1  siz     4  off     0
+ 94573187220720         red  CONST  typ INTEGER  val  0
+ 94573187220880       white  CONST  typ INTEGER  val  1
+ 94573187221040        blue  CONST  typ INTEGER  val  2
+ 94573187221232       color  TYPE   typ 94573187221136  lvl  1  siz     4  off     0
   0 ..   2
- 94206805719184      person  TYPE   typ 94206805721008  lvl  1  siz    48  off     0
+ 94573187221648      person  TYPE   typ 94573187223472  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94206805719376          pp  TYPE   typ 94206805719280  lvl  1  siz     8  off     0
+ 94573187221840          pp  TYPE   typ 94573187221744  lvl  1  siz     8  off     0
 (^ person)
- 94206805722096           c  VAR    0 typ 94206805717104  lvl  1  siz    16  off     0
+ 94573187224560           c  VAR    0 typ 94573187219568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94206805722192           d  VAR    0 typ 94206805717104  lvl  1  siz    16  off    16
+ 94573187224656           d  VAR    0 typ 94573187219568  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94206805722672           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94206805722768         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94206805723760          ac  VAR    0 typ 94206805723664  lvl  1  siz   160  off    48
+ 94573187225136           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94573187225232         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94573187226224          ac  VAR    0 typ 94573187226128  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94206805724976         aco  VAR    0 typ 94206805724880  lvl  1  siz   120  off   208
+ 94573187227440         aco  VAR    0 typ 94573187227344  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94206805725712        john  VAR    4 typ 94206805719280  lvl  1  siz     8  off   328
+ 94573187228176        john  VAR    4 typ 94573187221744  lvl  1  siz     8  off   328
 (^ person)
- 94206805725808        mary  VAR    4 typ 94206805719280  lvl  1  siz     8  off   336
+ 94573187228272        mary  VAR    4 typ 94573187221744  lvl  1  siz     8  off   336
 (^ person)
- 94206805725904        fred  VAR    4 typ 94206805719280  lvl  1  siz     8  off   344
+ 94573187228368        fred  VAR    4 typ 94573187221744  lvl  1  siz     8  off   344
 (^ person)
- 94206805726000         ptr  VAR    4 typ 94206805719280  lvl  1  siz     8  off   352
+ 94573187228464         ptr  VAR    4 typ 94573187221744  lvl  1  siz     8  off   352
 (^ person)
- 94206805726992      people  VAR    0 typ 94206805726896  lvl  1  siz   960  off   368
+ 94573187229456      people  VAR    0 typ 94573187229360  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -132,11 +132,11 @@ Symbol table level 1
                                                 (:= i (+ i 1)))
                                          (goto 2))))
                        (funcall write 'i = ')
-                       (funcall writeln i)
+                       (funcall writelni i)
                        (funcall write 'Sum of ages = ')
-                       (funcall writeln sum)
+                       (funcall writelni sum)
                        (funcall write 'Fred loc im = ')
-                       (funcall writeln (aref (^ fred)
-                                              24))
+                       (funcall writelnf (aref (^ fred)
+                                               24))
                        (if (< sum 3)
                            (goto 0))))

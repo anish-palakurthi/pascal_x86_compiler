@@ -2574,6 +2574,66 @@ TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
 }
 
+TOKEN write_fxn_args_type_check(TOKEN fn, TOKEN args) {
+
+	if (args->basicdt == STRINGTYPE) {
+		return fn;
+	}
+
+	TOKEN out = NULL;
+
+	SYMBOL fn_sym = searchst(fn->stringval);
+	if (!fn_sym) {
+		printf(" Error: function \"%s\" is not defined.\n", fn->stringval);
+		return out;
+	}
+
+	int fn_arg_type = fn_sym->datatype->link->basicdt;
+	int args_type = args->basicdt;
+
+	if (args_type == STRINGTYPE) {
+		out = fn;
+	}
+	else {
+
+		int replace_index = 5;
+		if (strcmp(fn->stringval, "writeln") == 0) {
+			replace_index = 7;
+		}
+
+		if (strcmp(fn->stringval, "write") == 0) {
+
+			if (args_type == INTEGER) {
+				fn->stringval[replace_index] = 'i';
+				fn->stringval[replace_index + 1] = '\0';
+				out = fn;
+			}
+			else if (args_type == REAL) {
+				fn->stringval[replace_index] = 'f';
+				fn->stringval[replace_index + 1] = '\0';
+				out = fn;				
+			}
+
+		}
+		else if (strcmp(fn->stringval, "writeln") == 0) {
+
+			if (args_type == INTEGER) {
+				fn->stringval[replace_index] = 'i';
+				fn->stringval[replace_index + 1] = '\0';
+				out = fn;
+			}
+			else if (args_type == REAL) {
+				fn->stringval[replace_index] = 'f';
+				fn->stringval[replace_index + 1] = '\0';
+				out = fn;
+			}
+
+		}
+	}
+
+	return out;
+}
+
 /* makefuncall makes a FUNCALL operator and links it to the fn and args.
    tok is a (now) unused token that is recycled. */
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
@@ -2601,6 +2661,14 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 
 
   }
+
+  if (strcmp(fn->stringval, "writeln") == 0) {
+    fn = write_fxn_args_type_check(fn, args);
+    if (!fn) {
+      return NULL;
+    }
+  }
+
   if (DEBUG && DB_MAKEFUNCALL) {
          printf("makefuncall\n");
          dbugprinttok(tok);
