@@ -3,11 +3,6 @@
 /* Copyright (c) 2013 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-/* 
- Student: S. Ram Janarthana Raja
- UTEID  : rs53992
- */ 
-
 
 /* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
 
@@ -938,187 +933,68 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
-
-
-
-  if (subs->link) {
-
-
-    printf("nested arrayref\n");
-    
-    TOKEN timesop = makeop(TIMESOP);
-    int low = arr->symtype->lowbound;
-    int high = arr->symtype->highbound;
-    int size;
-    if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
-
-    }
-    else{
-      size = (arr->symtype->size / (high + low + 1));
-    }
-
-
-
-
-    TOKEN indexTok;
-    if (subs->tokentype == NUMBERTOK) {
-    
-    // printf("subs->operands->basicdt: %d\n", subs->operands->basicdt); 
-    
-      indexTok = makeintc(subs->intval);
-    }
-    else if (subs->tokentype == IDENTIFIERTOK){
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-
-      printf("indexTok->stringval: %s\n", indexTok->stringval);
-      indexTok->basicdt = STRINGTYPE;
-    }
-
-    
-
-    TOKEN elesize = makeintc(size);
-
-    elesize->link = indexTok;
-    timesop->operands = elesize;
-
-    timesop->operands = elesize;
-
-
-    TOKEN subarref = makearef(arr, timesop, tokb);
-
-
-    dbugprinttok(subarref);
-    subarref->symtype = arr->symtype->datatype;
-
-    printf("subs->link: ");
-    ppexpr(subs->link);
-    printf("\n");
-
-    return arrayref(subarref, tok, subs->link, tokb);
-
-  } 
+  TOKEN timesop = makeop(TIMESOP);
+  int low = arr->symtype->lowbound;
+  int high = arr->symtype->highbound;
+  int size;
   
-  
-  
-  
-  else {
+  if (low == 1){
+    size = (arr->symtype->size / (high + low - 1));
+  }
+  else{
+    size = (arr->symtype->size / (high + low + 1));
+  }
+  TOKEN elesize = makeintc(size);
 
 
-    printf("nonnested\n");
-    ppexpr(arr);
-    printf("\n");
-    ppexpr(subs);
-    TOKEN timesop = makeop(TIMESOP);
-    int low = arr->symtype->lowbound;
-    int high = arr->symtype->highbound;
-    int size;
-    if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
+  TOKEN indexTok;
 
-    }
-    else{
-      size = (arr->symtype->size / (high + low + 1));
-    }
-    TOKEN elesize = makeintc(size);
-    printf("size: %d\n", size);
-
-
-
-    TOKEN indexTok;
-
-    //indextok needes to build off of arr
-
-    //index is an actual value
-    if (subs->tokentype == NUMBERTOK) {
-      printf("numeric index\n");
-      printf("subs->intval: %d\n", subs->intval);
-      ppexpr(arr);
-      indexTok = makeintc(subs->intval);
-    }
-
-    //this is the case where we have an identifier as the index; people[i]
-    else if (subs->tokentype == IDENTIFIERTOK){
-      printf("variable index\n");
-
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-      indexTok->basicdt = STRINGTYPE;
-    }
-    TOKEN retTok;
-    if(arr->whichval == AREFOP){
-      int offset =  size * subs->intval - size * low -  arr->symtype->size;
-      printf("\nwe have an arefop\n");
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = makeintc(offset);
-      plusop->operands->tokentype = NUMBERTOK;
-      plusop->operands->link = arr;
-      retTok = plusop;
-    }
-    else{   
-      elesize->link = indexTok;
-      timesop->operands = elesize;
-      TOKEN nsize;
-
-
-      
-        if (low == 1){
-          nsize = makeintc(-1 * size);
-        }
-        else{
-          if (subs->tokentype == NUMBERTOK) {
-
-            nsize = makeintc(-1 *(arr->symtype->size - size * subs->intval));
-          }
-          else {
-            nsize = makeintc(-1 * arr->symtype->size);
-
-          }
-        }
-        
-      
-      nsize->link = timesop;
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = nsize;
-      
-      int offset = size * subs->intval - size * low;
-      printf("offset: %d\n", offset);
-
-
-      
-
-      // TOKEN retTok;
-      retTok = makearef(arr, plusop, tokb);
-
-}
-
-
-
-  
-    //rettok is wrong
-    int offset = size * subs->intval - size * low;
-
-
-    if (subs->tokentype == NUMBERTOK) {
-      retTok->link = makeintc(offset);
-      retTok->link->tokentype = NUMBERTOK;
-    }
-    else if (subs->tokentype == IDENTIFIERTOK){
-      retTok->link = indexTok;
-      retTok->link->tokentype = IDENTIFIERTOK;
-
-    }
-
-
-    return retTok;
+  if (subs->tokentype == NUMBERTOK) {
+    indexTok = makeintc(subs->intval);
   }
 
+  else if (subs->tokentype == IDENTIFIERTOK){
+    indexTok = talloc();
+    indexTok->tokentype = IDENTIFIERTOK;
+    strcpy(indexTok->stringval, subs->stringval);
+    indexTok->basicdt = STRINGTYPE;
+  }
+
+
+  elesize->link = indexTok;
+  timesop->operands = elesize;
+  TOKEN nsize;
+
+
+
+
+  nsize = makeintc(-1 * size);
+  nsize->link = timesop;
   
+  TOKEN plusop = makeop(PLUSOP);
+  plusop->operands = nsize;
+  
+
+
+  TOKEN retTok = makearef(arr, plusop, tokb);
+
+  if (subs->tokentype == NUMBERTOK) {
+    int offset = size * subs->intval - size * low;
+    retTok->link = makeintc(offset);
+    retTok->link->tokentype = NUMBERTOK;
+  }
+
+  else if (subs->tokentype == IDENTIFIERTOK){
+    retTok->link = indexTok;
+    retTok->link->tokentype = IDENTIFIERTOK;
+
+  }
+
+
+  return retTok;
 }
 
+  
 
 /* dolabel is the action for a label of the form   <number>: <statement>
    tok is a (now) unused token that is recycled. */

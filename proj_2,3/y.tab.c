@@ -72,11 +72,6 @@
 /* Copyright (c) 2013 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-/* 
- Student: S. Ram Janarthana Raja
- UTEID  : rs53992
- */ 
-
 
 /* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
 
@@ -134,7 +129,7 @@
 TOKEN parseresult;
 
 
-#line 138 "y.tab.c"
+#line 133 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -681,16 +676,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    87,    87,    89,    90,    91,    93,    94,    96,    97,
-      98,    99,   100,   102,   103,   105,   106,   108,   110,   111,
-     113,   115,   116,   118,   119,   121,   123,   124,   126,   128,
-     129,   131,   132,   134,   135,   137,   138,   140,   141,   143,
-     145,   146,   147,   148,   150,   151,   153,   154,   155,   157,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   169,
-     171,   172,   174,   175,   177,   179,   180,   182,   184,   186,
-     187,   188,   190,   191,   192,   193,   194,   195,   196,   198,
-     199,   200,   201,   202,   204,   205,   206,   208,   209,   211,
-     212,   214,   215,   217,   218,   219,   220,   221
+       0,    82,    82,    84,    85,    86,    88,    89,    91,    92,
+      93,    94,    95,    97,    98,   100,   101,   103,   105,   106,
+     108,   110,   111,   113,   114,   116,   118,   119,   121,   123,
+     124,   126,   127,   129,   130,   132,   133,   135,   136,   138,
+     140,   141,   142,   143,   145,   146,   148,   149,   150,   152,
+     154,   155,   156,   157,   158,   159,   160,   161,   162,   164,
+     166,   167,   169,   170,   172,   174,   175,   177,   179,   181,
+     182,   183,   185,   186,   187,   188,   189,   190,   191,   193,
+     194,   195,   196,   197,   199,   200,   201,   203,   204,   206,
+     207,   209,   210,   212,   213,   214,   215,   216
 };
 #endif
 
@@ -1619,320 +1614,320 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 87 "parse.y"
+#line 82 "parse.y"
                                                                             { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1625 "y.tab.c"
+#line 1620 "y.tab.c"
     break;
 
   case 8:
-#line 96 "parse.y"
+#line 91 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1631 "y.tab.c"
+#line 1626 "y.tab.c"
     break;
 
   case 10:
-#line 98 "parse.y"
+#line 93 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1637 "y.tab.c"
+#line 1632 "y.tab.c"
     break;
 
   case 13:
-#line 102 "parse.y"
+#line 97 "parse.y"
                                         { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1643 "y.tab.c"
+#line 1638 "y.tab.c"
     break;
 
   case 14:
-#line 103 "parse.y"
+#line 98 "parse.y"
                               { yyval = cons(yyvsp[0], NULL); }
-#line 1649 "y.tab.c"
+#line 1644 "y.tab.c"
     break;
 
   case 15:
-#line 105 "parse.y"
+#line 100 "parse.y"
                                       { instlabel(yyvsp[-2]); }
-#line 1655 "y.tab.c"
+#line 1650 "y.tab.c"
     break;
 
   case 16:
-#line 106 "parse.y"
+#line 101 "parse.y"
                                       { instlabel(yyvsp[0]); }
-#line 1661 "y.tab.c"
+#line 1656 "y.tab.c"
     break;
 
   case 17:
-#line 108 "parse.y"
+#line 103 "parse.y"
                                        { instconst(yyvsp[-2], yyvsp[0]); }
-#line 1667 "y.tab.c"
+#line 1662 "y.tab.c"
     break;
 
   case 20:
-#line 113 "parse.y"
+#line 108 "parse.y"
                                        { insttype(yyvsp[-2], yyvsp[0]); }
-#line 1673 "y.tab.c"
+#line 1668 "y.tab.c"
     break;
 
   case 23:
-#line 118 "parse.y"
+#line 113 "parse.y"
                                                 { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1679 "y.tab.c"
+#line 1674 "y.tab.c"
     break;
 
   case 24:
-#line 119 "parse.y"
+#line 114 "parse.y"
                                            { yyval = cons(yyvsp[0], NULL); }
-#line 1685 "y.tab.c"
+#line 1680 "y.tab.c"
     break;
 
   case 25:
-#line 121 "parse.y"
+#line 116 "parse.y"
                                               { yyval = instfields(yyvsp[-2], yyvsp[0]); }
-#line 1691 "y.tab.c"
+#line 1686 "y.tab.c"
     break;
 
   case 26:
-#line 123 "parse.y"
+#line 118 "parse.y"
                                               { yyval = nconc(yyvsp[-2], yyvsp[0]); }
-#line 1697 "y.tab.c"
+#line 1692 "y.tab.c"
     break;
 
   case 28:
-#line 126 "parse.y"
+#line 121 "parse.y"
                                                 { yyval = dolabel(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1703 "y.tab.c"
+#line 1698 "y.tab.c"
     break;
 
   case 29:
-#line 128 "parse.y"
+#line 123 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1709 "y.tab.c"
+#line 1704 "y.tab.c"
     break;
 
   case 31:
-#line 131 "parse.y"
+#line 126 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1715 "y.tab.c"
+#line 1710 "y.tab.c"
     break;
 
   case 33:
-#line 134 "parse.y"
+#line 129 "parse.y"
                                         { yyval = yyvsp[0]; }
-#line 1721 "y.tab.c"
+#line 1716 "y.tab.c"
     break;
 
   case 35:
-#line 137 "parse.y"
+#line 132 "parse.y"
                                          { yyval = yyvsp[0]; }
-#line 1727 "y.tab.c"
+#line 1722 "y.tab.c"
     break;
 
   case 39:
-#line 143 "parse.y"
+#line 138 "parse.y"
                                   { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1733 "y.tab.c"
+#line 1728 "y.tab.c"
     break;
 
   case 41:
-#line 146 "parse.y"
+#line 141 "parse.y"
                                                              { yyval = instarray(yyvsp[-3], yyvsp[0]); }
-#line 1739 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 42:
-#line 147 "parse.y"
+#line 142 "parse.y"
                                                                { yyval = instrec(yyvsp[-2], yyvsp[-1]); }
-#line 1745 "y.tab.c"
+#line 1740 "y.tab.c"
     break;
 
   case 43:
-#line 148 "parse.y"
+#line 143 "parse.y"
                                                               { yyval = instpoint(yyvsp[-1], yyvsp[0]); }
-#line 1751 "y.tab.c"
+#line 1746 "y.tab.c"
     break;
 
   case 44:
-#line 150 "parse.y"
+#line 145 "parse.y"
                                              { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1757 "y.tab.c"
+#line 1752 "y.tab.c"
     break;
 
   case 45:
-#line 151 "parse.y"
+#line 146 "parse.y"
                                           { yyval = cons(yyvsp[0], NULL); }
-#line 1763 "y.tab.c"
+#line 1758 "y.tab.c"
     break;
 
   case 46:
-#line 153 "parse.y"
+#line 148 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1769 "y.tab.c"
+#line 1764 "y.tab.c"
     break;
 
   case 47:
-#line 154 "parse.y"
+#line 149 "parse.y"
                                              { yyval = instenum(yyvsp[-1]); }
-#line 1775 "y.tab.c"
+#line 1770 "y.tab.c"
     break;
 
   case 48:
-#line 155 "parse.y"
+#line 150 "parse.y"
                                              { yyval = instdotdot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1781 "y.tab.c"
+#line 1776 "y.tab.c"
     break;
 
   case 49:
-#line 157 "parse.y"
+#line 152 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1787 "y.tab.c"
+#line 1782 "y.tab.c"
     break;
 
   case 50:
-#line 159 "parse.y"
+#line 154 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1793 "y.tab.c"
+#line 1788 "y.tab.c"
     break;
 
   case 51:
-#line 160 "parse.y"
+#line 155 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1799 "y.tab.c"
+#line 1794 "y.tab.c"
     break;
 
   case 54:
-#line 163 "parse.y"
+#line 158 "parse.y"
                                               { yyval = makewhile(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1805 "y.tab.c"
+#line 1800 "y.tab.c"
     break;
 
   case 55:
-#line 164 "parse.y"
+#line 159 "parse.y"
                                                       { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1811 "y.tab.c"
+#line 1806 "y.tab.c"
     break;
 
   case 56:
-#line 165 "parse.y"
+#line 160 "parse.y"
                                                       { yyval = makerepeat(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1817 "y.tab.c"
+#line 1812 "y.tab.c"
     break;
 
   case 57:
-#line 166 "parse.y"
+#line 161 "parse.y"
                                              { yyval = dogoto(yyvsp[-1], yyvsp[0]); }
-#line 1823 "y.tab.c"
+#line 1818 "y.tab.c"
     break;
 
   case 59:
-#line 169 "parse.y"
+#line 164 "parse.y"
                                                       { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1829 "y.tab.c"
+#line 1824 "y.tab.c"
     break;
 
   case 60:
-#line 171 "parse.y"
+#line 166 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1835 "y.tab.c"
+#line 1830 "y.tab.c"
     break;
 
   case 61:
-#line 172 "parse.y"
+#line 167 "parse.y"
                                                { yyval = NULL; }
-#line 1841 "y.tab.c"
+#line 1836 "y.tab.c"
     break;
 
   case 62:
-#line 174 "parse.y"
+#line 169 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1847 "y.tab.c"
+#line 1842 "y.tab.c"
     break;
 
   case 63:
-#line 175 "parse.y"
+#line 170 "parse.y"
                                                { yyval = NULL; }
-#line 1853 "y.tab.c"
+#line 1848 "y.tab.c"
     break;
 
   case 64:
-#line 177 "parse.y"
+#line 172 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1859 "y.tab.c"
+#line 1854 "y.tab.c"
     break;
 
   case 65:
-#line 179 "parse.y"
+#line 174 "parse.y"
                                                       { yyval = findid(yyvsp[0]); }
-#line 1865 "y.tab.c"
+#line 1860 "y.tab.c"
     break;
 
   case 66:
-#line 180 "parse.y"
+#line 175 "parse.y"
                                                        { yyval = arrayref(yyvsp[-3], yyvsp[-2],
              yyvsp[-1], yyvsp[0]); }
-#line 1872 "y.tab.c"
+#line 1867 "y.tab.c"
     break;
 
   case 67:
-#line 182 "parse.y"
+#line 177 "parse.y"
                                                        { yyval = dopoint(yyvsp[-1], yyvsp[0]); }
-#line 1878 "y.tab.c"
+#line 1873 "y.tab.c"
     break;
 
   case 68:
-#line 184 "parse.y"
+#line 179 "parse.y"
                                                        { yyval = reducedot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1884 "y.tab.c"
+#line 1879 "y.tab.c"
     break;
 
   case 84:
-#line 204 "parse.y"
+#line 199 "parse.y"
                                                 { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1890 "y.tab.c"
+#line 1885 "y.tab.c"
     break;
 
   case 86:
-#line 206 "parse.y"
+#line 201 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1896 "y.tab.c"
+#line 1891 "y.tab.c"
     break;
 
   case 87:
-#line 208 "parse.y"
+#line 203 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1902 "y.tab.c"
+#line 1897 "y.tab.c"
     break;
 
   case 89:
-#line 211 "parse.y"
+#line 206 "parse.y"
                                                { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1908 "y.tab.c"
+#line 1903 "y.tab.c"
     break;
 
   case 90:
-#line 212 "parse.y"
+#line 207 "parse.y"
                                             { yyval = cons(yyvsp[0], NULL); }
-#line 1914 "y.tab.c"
+#line 1909 "y.tab.c"
     break;
 
   case 91:
-#line 214 "parse.y"
+#line 209 "parse.y"
                                                   { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1920 "y.tab.c"
+#line 1915 "y.tab.c"
     break;
 
   case 95:
-#line 219 "parse.y"
+#line 214 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1926 "y.tab.c"
+#line 1921 "y.tab.c"
     break;
 
   case 97:
-#line 221 "parse.y"
+#line 216 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1932 "y.tab.c"
+#line 1927 "y.tab.c"
     break;
 
 
-#line 1936 "y.tab.c"
+#line 1931 "y.tab.c"
 
       default: break;
     }
@@ -2164,7 +2159,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 224 "parse.y"
+#line 219 "parse.y"
 
 
 /* You should add your own debugging flags below, and add debugging
@@ -2882,187 +2877,68 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
-
-
-
-  if (subs->link) {
-
-
-    printf("nested arrayref\n");
-    
-    TOKEN timesop = makeop(TIMESOP);
-    int low = arr->symtype->lowbound;
-    int high = arr->symtype->highbound;
-    int size;
-    if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
-
-    }
-    else{
-      size = (arr->symtype->size / (high + low + 1));
-    }
-
-
-
-
-    TOKEN indexTok;
-    if (subs->tokentype == NUMBERTOK) {
-    
-    // printf("subs->operands->basicdt: %d\n", subs->operands->basicdt); 
-    
-      indexTok = makeintc(subs->intval);
-    }
-    else if (subs->tokentype == IDENTIFIERTOK){
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-
-      printf("indexTok->stringval: %s\n", indexTok->stringval);
-      indexTok->basicdt = STRINGTYPE;
-    }
-
-    
-
-    TOKEN elesize = makeintc(size);
-
-    elesize->link = indexTok;
-    timesop->operands = elesize;
-
-    timesop->operands = elesize;
-
-
-    TOKEN subarref = makearef(arr, timesop, tokb);
-
-
-    dbugprinttok(subarref);
-    subarref->symtype = arr->symtype->datatype;
-
-    printf("subs->link: ");
-    ppexpr(subs->link);
-    printf("\n");
-
-    return arrayref(subarref, tok, subs->link, tokb);
-
-  } 
+  TOKEN timesop = makeop(TIMESOP);
+  int low = arr->symtype->lowbound;
+  int high = arr->symtype->highbound;
+  int size;
   
-  
-  
-  
-  else {
+  if (low == 1){
+    size = (arr->symtype->size / (high + low - 1));
+  }
+  else{
+    size = (arr->symtype->size / (high + low + 1));
+  }
+  TOKEN elesize = makeintc(size);
 
 
-    printf("nonnested\n");
-    ppexpr(arr);
-    printf("\n");
-    ppexpr(subs);
-    TOKEN timesop = makeop(TIMESOP);
-    int low = arr->symtype->lowbound;
-    int high = arr->symtype->highbound;
-    int size;
-    if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
+  TOKEN indexTok;
 
-    }
-    else{
-      size = (arr->symtype->size / (high + low + 1));
-    }
-    TOKEN elesize = makeintc(size);
-    printf("size: %d\n", size);
-
-
-
-    TOKEN indexTok;
-
-    //indextok needes to build off of arr
-
-    //index is an actual value
-    if (subs->tokentype == NUMBERTOK) {
-      printf("numeric index\n");
-      printf("subs->intval: %d\n", subs->intval);
-      ppexpr(arr);
-      indexTok = makeintc(subs->intval);
-    }
-
-    //this is the case where we have an identifier as the index; people[i]
-    else if (subs->tokentype == IDENTIFIERTOK){
-      printf("variable index\n");
-
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-      indexTok->basicdt = STRINGTYPE;
-    }
-    TOKEN retTok;
-    if(arr->whichval == AREFOP){
-      int offset =  size * subs->intval - size * low -  arr->symtype->size;
-      printf("\nwe have an arefop\n");
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = makeintc(offset);
-      plusop->operands->tokentype = NUMBERTOK;
-      plusop->operands->link = arr;
-      retTok = plusop;
-    }
-    else{   
-      elesize->link = indexTok;
-      timesop->operands = elesize;
-      TOKEN nsize;
-
-
-      
-        if (low == 1){
-          nsize = makeintc(-1 * size);
-        }
-        else{
-          if (subs->tokentype == NUMBERTOK) {
-
-            nsize = makeintc(-1 *(arr->symtype->size - size * subs->intval));
-          }
-          else {
-            nsize = makeintc(-1 * arr->symtype->size);
-
-          }
-        }
-        
-      
-      nsize->link = timesop;
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = nsize;
-      
-      int offset = size * subs->intval - size * low;
-      printf("offset: %d\n", offset);
-
-
-      
-
-      // TOKEN retTok;
-      retTok = makearef(arr, plusop, tokb);
-
-}
-
-
-
-  
-    //rettok is wrong
-    int offset = size * subs->intval - size * low;
-
-
-    if (subs->tokentype == NUMBERTOK) {
-      retTok->link = makeintc(offset);
-      retTok->link->tokentype = NUMBERTOK;
-    }
-    else if (subs->tokentype == IDENTIFIERTOK){
-      retTok->link = indexTok;
-      retTok->link->tokentype = IDENTIFIERTOK;
-
-    }
-
-
-    return retTok;
+  if (subs->tokentype == NUMBERTOK) {
+    indexTok = makeintc(subs->intval);
   }
 
+  else if (subs->tokentype == IDENTIFIERTOK){
+    indexTok = talloc();
+    indexTok->tokentype = IDENTIFIERTOK;
+    strcpy(indexTok->stringval, subs->stringval);
+    indexTok->basicdt = STRINGTYPE;
+  }
+
+
+  elesize->link = indexTok;
+  timesop->operands = elesize;
+  TOKEN nsize;
+
+
+
+
+  nsize = makeintc(-1 * size);
+  nsize->link = timesop;
   
+  TOKEN plusop = makeop(PLUSOP);
+  plusop->operands = nsize;
+  
+
+
+  TOKEN retTok = makearef(arr, plusop, tokb);
+
+  if (subs->tokentype == NUMBERTOK) {
+    int offset = size * subs->intval - size * low;
+    retTok->link = makeintc(offset);
+    retTok->link->tokentype = NUMBERTOK;
+  }
+
+  else if (subs->tokentype == IDENTIFIERTOK){
+    retTok->link = indexTok;
+    retTok->link->tokentype = IDENTIFIERTOK;
+
+  }
+
+
+  return retTok;
 }
 
+  
 
 /* dolabel is the action for a label of the form   <number>: <statement>
    tok is a (now) unused token that is recycled. */
