@@ -2877,67 +2877,70 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
-  TOKEN timesop = makeop(TIMESOP);
-  int low = arr->symtype->lowbound;
-  int high = arr->symtype->highbound;
-  int size;
-  
-  if (low == 1){
-    size = (arr->symtype->size / (high + low - 1));
-  }
-  else{
-    size = (arr->symtype->size / (high + low + 1));
-  }
-  TOKEN elesize = makeintc(size);
+  TOKEN retTok;
+  while (subs){
+    ppexpr(subs);
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size;
+    
+    if (low == 1){
+      size = (arr->symtype->size / (high + low - 1));
+    }
+
+    else{
+      size = (arr->symtype->size / (high + low + 1));
+    }
+    TOKEN elesize = makeintc(size);
 
 
-  TOKEN indexTok;
+    TOKEN indexTok;
 
-  if (subs->tokentype == NUMBERTOK) {
-    indexTok = makeintc(subs->intval);
-  }
+    if (subs->tokentype == NUMBERTOK) {
+      indexTok = makeintc(subs->intval);
+    }
 
-  else if (subs->tokentype == IDENTIFIERTOK){
-    indexTok = talloc();
-    indexTok->tokentype = IDENTIFIERTOK;
-    strcpy(indexTok->stringval, subs->stringval);
-    indexTok->basicdt = STRINGTYPE;
-  }
-
-
-  elesize->link = indexTok;
-  timesop->operands = elesize;
-  TOKEN nsize;
+    else if (subs->tokentype == IDENTIFIERTOK){
+      indexTok = talloc();
+      indexTok->tokentype = IDENTIFIERTOK;
+      strcpy(indexTok->stringval, subs->stringval);
+      indexTok->basicdt = STRINGTYPE;
+    }
+    //good
 
 
+    elesize->link = indexTok;
+    timesop->operands = elesize;
+
+    TOKEN nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
+    
 
 
-  nsize = makeintc(-1 * size);
-  nsize->link = timesop;
-  
-  TOKEN plusop = makeop(PLUSOP);
-  plusop->operands = nsize;
-  
+    retTok = makearef(arr, plusop, tokb);
+
+    if (subs->tokentype == NUMBERTOK) {
+      int offset = size * subs->intval - size * low;
+      retTok->link = makeintc(offset);
+      retTok->link->tokentype = NUMBERTOK;
+    }
+
+    else if (subs->tokentype == IDENTIFIERTOK){
+      retTok->link = indexTok;
+      retTok->link->tokentype = IDENTIFIERTOK;
+    }
+
+    subs = subs->link;
 
 
-  TOKEN retTok = makearef(arr, plusop, tokb);
-
-  if (subs->tokentype == NUMBERTOK) {
-    int offset = size * subs->intval - size * low;
-    retTok->link = makeintc(offset);
-    retTok->link->tokentype = NUMBERTOK;
-  }
-
-  else if (subs->tokentype == IDENTIFIERTOK){
-    retTok->link = indexTok;
-    retTok->link->tokentype = IDENTIFIERTOK;
-
-  }
-
-
-  return retTok;
 }
+  return retTok;
 
+}
   
 
 /* dolabel is the action for a label of the form   <number>: <statement>
