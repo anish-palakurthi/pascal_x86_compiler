@@ -97,9 +97,9 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
 
   constant       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
              ;
-  constantList      :  constant SEMICOLON constantList    
-             |  constant SEMICOLON          
-             ;  
+
+
+///
   tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
              ;
   tlist      :  tdef SEMICOLON tlist
@@ -113,12 +113,6 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
 
 
-  cblock     :  CONST constantList tblock              { $$ = $3; }
-             |  tblock
-             ;
-  tblock     :  TYPE tlist vblock       { $$ = $3; }
-             |  vblock
-             ;
 
 
   type       :  simpletype
@@ -134,11 +128,18 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
              ;
 
+  tblock     :  TYPE tlist vblock       { $$ = $3; }
+             |  vblock
+             ;
 
+///
+  cblock     :  CONST constantList tblock              { $$ = $3; }
+             |  tblock
+             ;
 
-
-
-
+  constantList      :  constant SEMICOLON constantList    
+             |  constant SEMICOLON          
+             ;  
 
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
