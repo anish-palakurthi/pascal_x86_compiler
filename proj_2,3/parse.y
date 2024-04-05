@@ -935,7 +935,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   TOKEN curArr = copytok(arr);
   TOKEN retTok;
-  TOKEN variableTree;
+  TOKEN variableTree = NULL;
   
   int rollingOffset = 0;
   int count = 0;
@@ -995,10 +995,10 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       retTok->link->tokentype = NUMBERTOK;
     }
     else if (subs->tokentype == IDENTIFIERTOK) {
-            if (variableTree){
-        TOKEN varPlus = makeop(PLUSOP);
-        varPlus->operands = variableTree;
-        varPlus->operands->link = timesop;
+        if (variableTree){
+          TOKEN varPlus = makeop(PLUSOP);
+          varPlus->operands = variableTree;
+          varPlus->operands->link = timesop;
       }
       else{
         variableTree = timesop;
@@ -1010,9 +1010,15 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     count += 1;
   }
 
+  printf("rolling offset: %d\n", rollingOffset);
+  if(variableTree != NULL){
+    ppexpr(variableTree);
+  }
+
   TOKEN finalOffset = makeop(PLUSOP);
+
   finalOffset->operands = makeintc(rollingOffset);
-  finalOffset->link = variableTree;
+  finalOffset->operands->link = variableTree;
 
   return makearef(arr, finalOffset, NULL);
 

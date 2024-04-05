@@ -5,12 +5,15 @@ count: 0
 low: 1
 high: 10
 size: 16
+rolling offset: 80
 
 count: 0
 low: 1
 high: 20
 size: 48
-
+rolling offset: -48
+(* 48
+   i)
 count: 0
 low: 1
 high: 10
@@ -20,48 +23,49 @@ count: 1
 low: 0
 high: 2
 size: 4
-yyparse result =        0
+rolling offset: -8
+(* 12
+   i)yyparse result =        0
 Symbol table level 1
- 94343052435856     complex  TYPE   typ 94343052435568  lvl  1  siz    16  off     0
+ 94433961570704     complex  TYPE   typ 94433961570416  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94343052436720         red  CONST  typ INTEGER  val  0
- 94343052436880       white  CONST  typ INTEGER  val  1
- 94343052437040        blue  CONST  typ INTEGER  val  2
- 94343052437232       color  TYPE   typ 94343052437136  lvl  1  siz     4  off     0
+ 94433961571568         red  CONST  typ INTEGER  val  0
+ 94433961571728       white  CONST  typ INTEGER  val  1
+ 94433961571888        blue  CONST  typ INTEGER  val  2
+ 94433961572080       color  TYPE   typ 94433961571984  lvl  1  siz     4  off     0
   0 ..   2
- 94343052437648      person  TYPE   typ 94343052439472  lvl  1  siz    48  off     0
+ 94433961572496      person  TYPE   typ 94433961574320  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94343052437840          pp  TYPE   typ 94343052437744  lvl  1  siz     8  off     0
+ 94433961572688          pp  TYPE   typ 94433961572592  lvl  1  siz     8  off     0
 (^ person)
- 94343052440560           c  VAR    0 typ 94343052435568  lvl  1  siz    16  off     0
+ 94433961575408           c  VAR    0 typ 94433961570416  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94343052440656           d  VAR    0 typ 94343052435568  lvl  1  siz    16  off    16
+ 94433961575504           d  VAR    0 typ 94433961570416  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94343052441136           i  VAR    0 typ 94343052466880  lvl  1  siz     4  off    32
-NULL
- 94343052441232         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94343052442224          ac  VAR    0 typ 94343052442128  lvl  1  siz   160  off    48
+ 94433961575984           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94433961576080         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94433961577072          ac  VAR    0 typ 94433961576976  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94343052451648         aco  VAR    0 typ 94343052451552  lvl  1  siz   120  off   208
+ 94433961586496         aco  VAR    0 typ 94433961586400  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94343052452384        john  VAR    4 typ 94343052437744  lvl  1  siz     8  off   328
+ 94433961587232        john  VAR    4 typ 94433961572592  lvl  1  siz     8  off   328
 (^ person)
- 94343052452480        mary  VAR    4 typ 94343052437744  lvl  1  siz     8  off   336
+ 94433961587328        mary  VAR    4 typ 94433961572592  lvl  1  siz     8  off   336
 (^ person)
- 94343052452576        fred  VAR    4 typ 94343052437744  lvl  1  siz     8  off   344
+ 94433961587424        fred  VAR    4 typ 94433961572592  lvl  1  siz     8  off   344
 (^ person)
- 94343052452672         ptr  VAR    4 typ 94343052437744  lvl  1  siz     8  off   352
+ 94433961587520         ptr  VAR    4 typ 94433961572592  lvl  1  siz     8  off   352
 (^ person)
- 94343052453664      people  VAR    0 typ 94343052453568  lvl  1  siz   960  off   368
+ 94433961588512      people  VAR    0 typ 94433961588416  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -119,10 +123,9 @@ NULL
                                                 (:= (aref people 0)
                                                     (aref (^ ptr)
                                                           0))
-                                                (:= (aref aco (+ -8)
-                                                              
-                                                              (* 12
-                                                                 i))
+                                                (:= (aref aco (+ -8
+                                                                 (* 12
+                                                                    i)))
                                                     (aref (^ john)
                                                           32))
                                                 (:= ptr (aref (^ ptr)
