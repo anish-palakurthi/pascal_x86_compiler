@@ -82,26 +82,18 @@ TOKEN parseresult;
 
 program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-
-  sign       :  PLUS 
-             |  MINUS
-             ;
-    signedId   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
-             |  IDENTIFIER
-             ;
-    signedNumber : sign NUMBER        { $$ = unaryop($1, $2); }
-             |  NUMBER
+  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
+             |  IDENTIFIER    { $$ = cons($1, NULL); }
              ;
   constant   :  signedId
              |  signedNumber
              |  STRING
              ;
-  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
-             |  IDENTIFIER    { $$ = cons($1, NULL); }
-             ;
-  numlist    :  NUMBER COMMA numlist  { instlabel($1); }
-             |  NUMBER                { instlabel($1); }
-             ;
+  statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
+            |  statement
+            ;
+
+
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
@@ -120,11 +112,8 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
              |  fields
              ;
-  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
-             ;
-  lblock     :  LABEL numlist SEMICOLON cblock  { $$ = $4; }
-             |  cblock
-             ;
+
+
   cblock     :  CONST clist tblock              { $$ = $3; }
              |  tblock
              ;
@@ -134,11 +123,8 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
              ;
-  varspecs   :  vargroup SEMICOLON varspecs   
-             |  vargroup SEMICOLON            
-             ;
-  vargroup   :  idlist COLON type { instvars($1, $3); }
-             ;
+
+
   type       :  simpletype
              |  ARRAY LBRACKET stype_list RBRACKET OF type   { $$ = instarray($3, $6); }
              |  RECORD field_list END                          { $$ = instrec($1, $2); }
@@ -151,63 +137,106 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  LPAREN idlist RPAREN         { $$ = instenum($2); }
              |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
              ;
-  block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
+
+  functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
-  statement  :  block
-             |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
-             |  assignment
-             |  functionCall
-             |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
-             |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
-             |  REPEAT s_list UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
-             |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
-             |  label
-             ;
-  functionCall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
-             ;
-  endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
-             |  END                            { $$ = NULL; }
-             ;
-  endif      :  ELSE statement                 { $$ = $2; }
-             |  /* empty */                    { $$ = NULL; }
-             ;
-  assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
-             ;
+
+
   variable   :  IDENTIFIER                            { $$ = findid($1); }
 
              |  variable POINT                         { $$ = dopoint($1, $2); }
-            |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2,
+            |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
              $3, $4); }
              
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
+  lblock     :  LABEL labelValList SEMICOLON cblock  { $$ = $4; }
+             |  block
+             ;
+  labelValList    :  NUMBER COMMA labelValList  { instlabel($1); }
+            |  NUMBER                { instlabel($1); }
+            ;           
+  varspecs   :  vargroup SEMICOLON varspecs   
+             |  vargroup SEMICOLON            
+             ;
 
-  s_expr     :  sign term                       { $$ = unaryop($1, $2); }
-             |  term 
-             |  s_expr PLUS term                 { $$ = binop($2, $1, $3); }
-             |  s_expr MINUS term                 { $$ = binop($2, $1, $3); }
-             |  s_expr OR term                 { $$ = binop($2, $1, $3); }
+  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
+             ;
 
+  vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
-  expr       :  expr EQ s_expr              { $$ = binop($2, $1, $3); }
-             |  expr LT s_expr              { $$ = binop($2, $1, $3); }
-             |  expr GT s_expr              { $$ = binop($2, $1, $3); }
-             |  expr NE s_expr              { $$ = binop($2, $1, $3); }
-             |  expr LE s_expr              { $$ = binop($2, $1, $3); }
-             |  expr GE s_expr              { $$ = binop($2, $1, $3); }
-             |  expr IN s_expr              { $$ = binop($2, $1, $3); }
-             |  s_expr 
+
+  block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
              ;
-  expr_list  :  expr COMMA expr_list           { $$ = cons($1, $3); }
-             |  expr                        { $$ = cons($1, NULL); }
+ 
+  statement  :  block
+            |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
+            |  assignment
+            |  functionCall
+            |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
+            |  REPEAT statementList UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
+            |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
+            |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
+
+            |  label
+            ;
+
+  endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
+             |  END                            { $$ = NULL; }
              ;
+
+  endif      :  ELSE statement                 { $$ = $2; }
+             |  /* empty */                    { $$ = NULL; }
+             ;
+
+  assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
+             ;
+  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
+             |  expr
+             ;
+
+  expr       :  expr EQ signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr LT signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr GT signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr NE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr LE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr GE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr IN signedExpression              { $$ = binop($2, $1, $3); }
+             |  signedExpression 
+             ;
+
+
+  signedExpression     :  signedTerm
+             |  signedExpression PLUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression MINUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression OR term                 { $$ = binop($2, $1, $3); }
+             ;
+
   term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
-              |  term MOD factor                { $$ = binop($2, $1, $3); }
-              |  term DIV factor                { $$ = binop($2, $1, $3); }
-              |  term DIVIDE factor             { $$ = binop($2, $1, $3); }
-              |  term AND factor                { $$ = binop($2, $1, $3); }
+             |  term DIVIDE factor              { $$ = binop($2, $1, $3); }
+             |  term DIV factor              { $$ = binop($2, $1, $3); }
+             |  term MOD factor              { $$ = binop($2, $1, $3); }
+             |  term AND factor              { $$ = binop($2, $1, $3); }
              |  factor
              ;
+
+
+  sign       :  PLUS 
+             |  MINUS
+             ;
+
+  signedId   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
+             |  IDENTIFIER
+             ;
+
+  signedNumber : sign NUMBER        { $$ = unaryop($1, $2); }
+             |  NUMBER
+             ;
+
+  signedTerm :  sign term           { $$ = unaryop($1, $2); }
+             |  term
+             ;
+
   factor     : 
               variable
              |  STRING
