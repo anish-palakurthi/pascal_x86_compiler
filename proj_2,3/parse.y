@@ -469,6 +469,10 @@ TOKEN makegoto(int label){
 
 }
 
+
+/* makearef makes an array reference operation.
+   off is be an integer constant token
+   tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
@@ -479,27 +483,27 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     finalOffset->intval = var->link->intval + off->intval;
     }
     else if(var->link->tokentype == IDENTIFIERTOK){
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = var->link;
-      plusop->link = off;
-      finalOffset = plusop;
+      TOKEN plusOp = makeop(PLUSOP);
+      plusOp->operands = var->link;
+      plusOp->link = off;
+      finalOffset = plusOp;
       finalOffset->tokentype = IDENTIFIERTOK;
     }
     
   }
 
-  if (var->whichval == AREFOP && off->basicdt == INTEGER) {
+  if (off->basicdt == INTEGER  &&  var->whichval == AREFOP) {
     
-    TOKEN off1 = var->operands->link;
-    if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
+    TOKEN secondOffset = var->operands->link;
+    if (secondOffset->tokentype == NUMBERTOK) { // Assuming secondOffset is the offset in the nested AREF
       // Directly sum the integer values of the offsets
-      int sumOffsets = off1->intval + off->intval;
+      int sumOffsets = secondOffset->intval + off->intval;
       finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
     }
   }
 
   // Now, we create the AREF operation using the possibly updated finalOffset
-  TOKEN areftok = makeop(AREFOP);
+  TOKEN arefTok = makeop(AREFOP);
   if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
     if(var->link == NULL || var->link->tokentype != IDENTIFIERTOK){
       var = var->operands;
@@ -515,19 +519,19 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   if (var->link->tokentype == IDENTIFIERTOK){
     return var;
   }
-  else{
-    areftok->operands = var;
-  }
   
-  areftok->symentry = var->symentry;
+  arefTok->operands = var;
+  
+  
+  arefTok->symentry = var->symentry;
   
   if (var->symentry && var->symentry->datatype) {
-    areftok->basicdt = var->symentry->datatype->basicdt;
+    arefTok->basicdt = var->symentry->datatype->basicdt;
   }
 
   
 
-  return areftok;
+  return arefTok;
 }
 
 
@@ -846,98 +850,91 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   if (subs->link){
-  TOKEN curArr = copytok(arr);
-  TOKEN retTok;
-  TOKEN variableTree = NULL;
-  
-  int rollingOffset = 0;
-  int count = 0;
-
-  while (subs) {
-    printf("\ncount: %d\n", count);
-    int low = curArr->symtype->lowbound;
-    int high = curArr->symtype->highbound;
-    int size;
+    TOKEN curArr = copytok(arr);
+    TOKEN retTok;
+    TOKEN variableTree = NULL;
     
-    if (low == 1){
-      size = (curArr->symtype->size / (high + low - 1));
-    }
+    int rollingOffset = 0;
+    int count = 0;
 
-    else{
-      size = (curArr->symtype->size / (high + low + 1));
-    }
-    TOKEN elesize = makeintc(size);
-    printf("low: %d\n", low);
-    printf("high: %d\n", high);
-    printf("size: %d\n", size);
-
-    TOKEN indexTok;
-    TOKEN timesop = makeop(TIMESOP);
-
-    if (subs->tokentype == NUMBERTOK) {
-      rollingOffset += size * subs->intval - size * low;;
-    }
-
-    else if (subs->tokentype == IDENTIFIERTOK){
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-      indexTok->basicdt = STRINGTYPE;
-      elesize->link = indexTok;
-      timesop->operands = elesize;
-    }
-
-
-
-    if (low == 1){
-      rollingOffset -= size;
-    }
-    
-
-    retTok = makearef(curArr, makeintc(rollingOffset), NULL);
-    retTok->symtype = curArr->symtype->datatype;
-
-
-    curArr = retTok;
-
-
-
-    if (subs->tokentype == NUMBERTOK) {
-      int offset = size * subs->intval - size * low;
-      retTok->link = makeintc(offset);
-      retTok->link->tokentype = NUMBERTOK;
-    }
-    else if (subs->tokentype == IDENTIFIERTOK) {
-        if (variableTree){
-          TOKEN varPlus = makeop(PLUSOP);
-          varPlus->operands = variableTree;
-          varPlus->operands->link = timesop;
+    while (subs) {
+      int low = curArr->symtype->lowbound;
+      int high = curArr->symtype->highbound;
+      int size;
+      
+      if (low == 1){
+        size = (curArr->symtype->size / (high + low - 1));
       }
+
       else{
-        variableTree = timesop;
+        size = (curArr->symtype->size / (high + low + 1));
       }
+      TOKEN unitSize = makeintc(size);
+
+
+      TOKEN indexTok;
+      TOKEN timesOp = makeop(TIMESOP);
+
+      if (subs->tokentype == NUMBERTOK) {
+        rollingOffset += size * subs->intval - size * low;;
+      }
+
+      else if (subs->tokentype == IDENTIFIERTOK){
+        indexTok = talloc();
+        indexTok->tokentype = IDENTIFIERTOK;
+        strcpy(indexTok->stringval, subs->stringval);
+        indexTok->basicdt = STRINGTYPE;
+        unitSize->link = indexTok;
+        timesOp->operands = unitSize;
+      }
+
+
+
+      if (low == 1){
+        rollingOffset -= size;
+      }
+      
+
+      retTok = makearef(curArr, makeintc(rollingOffset), NULL);
+      retTok->symtype = curArr->symtype->datatype;
+
+
+      curArr = retTok;
+
+
+
+      if (subs->tokentype == NUMBERTOK) {
+        int offset = size * subs->intval - size * low;
+        retTok->link = makeintc(offset);
+        retTok->link->tokentype = NUMBERTOK;
+      }
+      else if (subs->tokentype == IDENTIFIERTOK) {
+          if (variableTree){
+            TOKEN varPlus = makeop(PLUSOP);
+            varPlus->operands = variableTree;
+            varPlus->operands->link = timesOp;
+        }
+        else{
+          variableTree = timesOp;
+        }
+      }
+
+
+      subs = subs->link;
+      count += 1;
     }
 
 
-    subs = subs->link;
-    count += 1;
-  }
+    TOKEN finalOffset = makeop(PLUSOP);
 
-  printf("rolling offset: %d\n", rollingOffset);
-  if(variableTree != NULL){
-    ppexpr(variableTree);
-  }
+    finalOffset->operands = makeintc(rollingOffset);
+    finalOffset->operands->link = variableTree;
 
-  TOKEN finalOffset = makeop(PLUSOP);
-
-  finalOffset->operands = makeintc(rollingOffset);
-  finalOffset->operands->link = variableTree;
-
-  return makearef(arr, finalOffset, NULL);
+    return makearef(arr, finalOffset, NULL);
 
   }
   else{
-    TOKEN timesop = makeop(TIMESOP);
+    TOKEN timesOp = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
     int size;
@@ -948,7 +945,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     else{
       size = (arr->symtype->size / (high + low + 1));
     }
-    TOKEN elesize = makeintc(size);
+    TOKEN unitSize = makeintc(size);
 
 
     TOKEN indexTok;
@@ -965,22 +962,22 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     }
 
 
-    elesize->link = indexTok;
-    timesop->operands = elesize;
-    TOKEN nsize;
+    unitSize->link = indexTok;
+    timesOp->operands = unitSize;
+    TOKEN negativeUnit;
 
 
 
 
-    nsize = makeintc(-1 * size);
-    nsize->link = timesop;
+    negativeUnit = makeintc(-1 * size);
+    negativeUnit->link = timesOp;
     
-    TOKEN plusop = makeop(PLUSOP);
-    plusop->operands = nsize;
+    TOKEN plusOp = makeop(PLUSOP);
+    plusOp->operands = negativeUnit;
     
 
 
-    TOKEN retTok = makearef(arr, plusop, tokb);
+    TOKEN retTok = makearef(arr, plusOp, tokb);
 
     if (subs->tokentype == NUMBERTOK) {
       int offset = size * subs->intval - size * low;
