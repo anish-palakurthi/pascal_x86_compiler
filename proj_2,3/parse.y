@@ -85,16 +85,17 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
              |  IDENTIFIER    { $$ = cons($1, NULL); }
              ;
-  constant   :  signedId
+  constantVal   :  signedId
              |  signedNumber
              |  STRING
              ;
+
   statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
             |  statement
             ;
 
 
-  cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
+  cdef       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
              |  cdef SEMICOLON          
@@ -130,8 +131,14 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
   simpletype :  IDENTIFIER   { $$ = findtype($1); }
              |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-             |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
+             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
              ;
+
+
+
+
+
+
 
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
@@ -246,7 +253,7 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
 
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
-%%
+%% 
 
 
 #define DEBUG           31             /* set bits here for debugging, 0 = off  */
