@@ -1018,7 +1018,15 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   TOKEN finalOffset = makeop(PLUSOP);
 
   finalOffset->operands = makeintc(rollingOffset);
-  finalOffset->operands->link = variableTree;
+
+  if(variableTree != NULL){
+    finalOffset->operands->link = variableTree;
+  }
+  else{
+    finalOffset->operands->link = makeintc(0);
+  }
+
+  
 
   return makearef(arr, finalOffset, NULL);
 
