@@ -67,20 +67,20 @@
 
 /* First part of user prologue.  */
 #line 1 "parse.y"
-     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 30 Jul 13   */
+     /* pars1.y    Pascal Parser      Gordon S. Novak Jr.  ; 10 Jan 24   */
 
-/* Copyright (c) 2013 Gordon S. Novak Jr. and
+/* Copyright (c) 2023 Gordon S. Novak Jr. and
    The University of Texas at Austin. */
 
-
-/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12 */
+/* 14 Feb 01; 01 Oct 04; 02 Mar 07; 27 Feb 08; 24 Jul 09; 02 Aug 12;
+   30 Jul 13; 25 Jul 19 ; 28 Feb 22; 08 Jul 22; 13 Nov 23 */
 
 /*
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
 ; the Free Software Foundation; either version 2 of the License, or
 ; (at your option) any later version.
-
+ 
 ; This program is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -89,6 +89,7 @@
 ; You should have received a copy of the GNU General Public License
 ; along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
+
 
 
 /* NOTE:   Copy your lexan.l lexical analyzer to this directory.      */
@@ -129,7 +130,7 @@
 TOKEN parseresult;
 
 
-#line 133 "y.tab.c"
+#line 134 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -676,16 +677,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    82,    82,    84,    85,    86,    88,    89,    91,    92,
-      93,    94,    95,    97,    98,   100,   101,   103,   105,   106,
-     108,   110,   111,   113,   114,   116,   118,   119,   121,   123,
-     124,   126,   127,   129,   130,   132,   133,   135,   136,   138,
-     140,   141,   142,   143,   145,   146,   148,   149,   150,   152,
-     154,   155,   156,   157,   158,   159,   160,   161,   162,   164,
-     166,   167,   169,   170,   172,   174,   175,   177,   179,   181,
-     182,   183,   185,   186,   187,   188,   189,   190,   191,   193,
-     194,   195,   196,   197,   199,   200,   201,   203,   204,   206,
-     207,   209,   210,   212,   213,   214,   215,   216
+       0,    83,    83,    85,    86,    87,    89,    90,    92,    93,
+      94,    95,    96,    98,    99,   101,   102,   104,   106,   107,
+     109,   111,   112,   114,   115,   117,   119,   120,   122,   124,
+     125,   127,   128,   130,   131,   133,   134,   136,   137,   139,
+     141,   142,   143,   144,   146,   147,   149,   150,   151,   153,
+     155,   156,   157,   158,   159,   160,   161,   162,   163,   165,
+     167,   168,   170,   171,   173,   175,   176,   178,   180,   182,
+     183,   184,   186,   187,   188,   189,   190,   191,   192,   194,
+     195,   196,   197,   198,   200,   201,   202,   204,   205,   207,
+     208,   210,   211,   213,   214,   215,   216,   217
 };
 #endif
 
@@ -1614,320 +1615,320 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 82 "parse.y"
-                                                                            { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
-#line 1620 "y.tab.c"
+#line 83 "parse.y"
+                                                                          { parseresult = makeprogram(yyvsp[-6], yyvsp[-4], yyvsp[-1]); }
+#line 1621 "y.tab.c"
     break;
 
   case 8:
-#line 91 "parse.y"
+#line 92 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1626 "y.tab.c"
+#line 1627 "y.tab.c"
     break;
 
   case 10:
-#line 93 "parse.y"
+#line 94 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1632 "y.tab.c"
+#line 1633 "y.tab.c"
     break;
 
   case 13:
-#line 97 "parse.y"
+#line 98 "parse.y"
                                         { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1638 "y.tab.c"
+#line 1639 "y.tab.c"
     break;
 
   case 14:
-#line 98 "parse.y"
+#line 99 "parse.y"
                               { yyval = cons(yyvsp[0], NULL); }
-#line 1644 "y.tab.c"
+#line 1645 "y.tab.c"
     break;
 
   case 15:
-#line 100 "parse.y"
+#line 101 "parse.y"
                                       { instlabel(yyvsp[-2]); }
-#line 1650 "y.tab.c"
+#line 1651 "y.tab.c"
     break;
 
   case 16:
-#line 101 "parse.y"
+#line 102 "parse.y"
                                       { instlabel(yyvsp[0]); }
-#line 1656 "y.tab.c"
+#line 1657 "y.tab.c"
     break;
 
   case 17:
-#line 103 "parse.y"
+#line 104 "parse.y"
                                        { instconst(yyvsp[-2], yyvsp[0]); }
-#line 1662 "y.tab.c"
+#line 1663 "y.tab.c"
     break;
 
   case 20:
-#line 108 "parse.y"
+#line 109 "parse.y"
                                        { insttype(yyvsp[-2], yyvsp[0]); }
-#line 1668 "y.tab.c"
+#line 1669 "y.tab.c"
     break;
 
   case 23:
-#line 113 "parse.y"
+#line 114 "parse.y"
                                                 { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1674 "y.tab.c"
+#line 1675 "y.tab.c"
     break;
 
   case 24:
-#line 114 "parse.y"
+#line 115 "parse.y"
                                            { yyval = cons(yyvsp[0], NULL); }
-#line 1680 "y.tab.c"
+#line 1681 "y.tab.c"
     break;
 
   case 25:
-#line 116 "parse.y"
+#line 117 "parse.y"
                                               { yyval = instfields(yyvsp[-2], yyvsp[0]); }
-#line 1686 "y.tab.c"
+#line 1687 "y.tab.c"
     break;
 
   case 26:
-#line 118 "parse.y"
+#line 119 "parse.y"
                                               { yyval = nconc(yyvsp[-2], yyvsp[0]); }
-#line 1692 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 28:
-#line 121 "parse.y"
+#line 122 "parse.y"
                                                 { yyval = dolabel(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1698 "y.tab.c"
+#line 1699 "y.tab.c"
     break;
 
   case 29:
-#line 123 "parse.y"
+#line 124 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1704 "y.tab.c"
+#line 1705 "y.tab.c"
     break;
 
   case 31:
-#line 126 "parse.y"
+#line 127 "parse.y"
                                                 { yyval = yyvsp[0]; }
-#line 1710 "y.tab.c"
+#line 1711 "y.tab.c"
     break;
 
   case 33:
-#line 129 "parse.y"
+#line 130 "parse.y"
                                         { yyval = yyvsp[0]; }
-#line 1716 "y.tab.c"
+#line 1717 "y.tab.c"
     break;
 
   case 35:
-#line 132 "parse.y"
+#line 133 "parse.y"
                                          { yyval = yyvsp[0]; }
-#line 1722 "y.tab.c"
+#line 1723 "y.tab.c"
     break;
 
   case 39:
-#line 138 "parse.y"
+#line 139 "parse.y"
                                   { instvars(yyvsp[-2], yyvsp[0]); }
-#line 1728 "y.tab.c"
+#line 1729 "y.tab.c"
     break;
 
   case 41:
-#line 141 "parse.y"
+#line 142 "parse.y"
                                                              { yyval = instarray(yyvsp[-3], yyvsp[0]); }
-#line 1734 "y.tab.c"
+#line 1735 "y.tab.c"
     break;
 
   case 42:
-#line 142 "parse.y"
+#line 143 "parse.y"
                                                                { yyval = instrec(yyvsp[-2], yyvsp[-1]); }
-#line 1740 "y.tab.c"
+#line 1741 "y.tab.c"
     break;
 
   case 43:
-#line 143 "parse.y"
+#line 144 "parse.y"
                                                               { yyval = instpoint(yyvsp[-1], yyvsp[0]); }
-#line 1746 "y.tab.c"
+#line 1747 "y.tab.c"
     break;
 
   case 44:
-#line 145 "parse.y"
+#line 146 "parse.y"
                                              { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1752 "y.tab.c"
+#line 1753 "y.tab.c"
     break;
 
   case 45:
-#line 146 "parse.y"
+#line 147 "parse.y"
                                           { yyval = cons(yyvsp[0], NULL); }
-#line 1758 "y.tab.c"
+#line 1759 "y.tab.c"
     break;
 
   case 46:
-#line 148 "parse.y"
+#line 149 "parse.y"
                              { yyval = findtype(yyvsp[0]); }
-#line 1764 "y.tab.c"
+#line 1765 "y.tab.c"
     break;
 
   case 47:
-#line 149 "parse.y"
+#line 150 "parse.y"
                                              { yyval = instenum(yyvsp[-1]); }
-#line 1770 "y.tab.c"
+#line 1771 "y.tab.c"
     break;
 
   case 48:
-#line 150 "parse.y"
+#line 151 "parse.y"
                                              { yyval = instdotdot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1776 "y.tab.c"
+#line 1777 "y.tab.c"
     break;
 
   case 49:
-#line 152 "parse.y"
+#line 153 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1782 "y.tab.c"
+#line 1783 "y.tab.c"
     break;
 
   case 50:
-#line 154 "parse.y"
+#line 155 "parse.y"
                                                { yyval = makeprogn(yyvsp[-2],cons(yyvsp[-1], yyvsp[0])); }
-#line 1788 "y.tab.c"
+#line 1789 "y.tab.c"
     break;
 
   case 51:
-#line 155 "parse.y"
+#line 156 "parse.y"
                                                { yyval = makeif(yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]); }
-#line 1794 "y.tab.c"
+#line 1795 "y.tab.c"
     break;
 
   case 54:
-#line 158 "parse.y"
+#line 159 "parse.y"
                                               { yyval = makewhile(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1800 "y.tab.c"
+#line 1801 "y.tab.c"
     break;
 
   case 55:
-#line 159 "parse.y"
+#line 160 "parse.y"
                                                       { yyval = makefor(1, yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1806 "y.tab.c"
+#line 1807 "y.tab.c"
     break;
 
   case 56:
-#line 160 "parse.y"
+#line 161 "parse.y"
                                                       { yyval = makerepeat(yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1812 "y.tab.c"
+#line 1813 "y.tab.c"
     break;
 
   case 57:
-#line 161 "parse.y"
+#line 162 "parse.y"
                                              { yyval = dogoto(yyvsp[-1], yyvsp[0]); }
-#line 1818 "y.tab.c"
+#line 1819 "y.tab.c"
     break;
 
   case 59:
-#line 164 "parse.y"
+#line 165 "parse.y"
                                                       { yyval = makefuncall(yyvsp[-2], yyvsp[-3], yyvsp[-1]); }
-#line 1824 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 60:
-#line 166 "parse.y"
+#line 167 "parse.y"
                                                { yyval = cons(yyvsp[-1], yyvsp[0]); }
-#line 1830 "y.tab.c"
+#line 1831 "y.tab.c"
     break;
 
   case 61:
-#line 167 "parse.y"
+#line 168 "parse.y"
                                                { yyval = NULL; }
-#line 1836 "y.tab.c"
+#line 1837 "y.tab.c"
     break;
 
   case 62:
-#line 169 "parse.y"
+#line 170 "parse.y"
                                                { yyval = yyvsp[0]; }
-#line 1842 "y.tab.c"
+#line 1843 "y.tab.c"
     break;
 
   case 63:
-#line 170 "parse.y"
+#line 171 "parse.y"
                                                { yyval = NULL; }
-#line 1848 "y.tab.c"
+#line 1849 "y.tab.c"
     break;
 
   case 64:
-#line 172 "parse.y"
+#line 173 "parse.y"
                                              { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1854 "y.tab.c"
+#line 1855 "y.tab.c"
     break;
 
   case 65:
-#line 174 "parse.y"
+#line 175 "parse.y"
                                                       { yyval = findid(yyvsp[0]); }
-#line 1860 "y.tab.c"
+#line 1861 "y.tab.c"
     break;
 
   case 66:
-#line 175 "parse.y"
+#line 176 "parse.y"
                                                        { yyval = arrayref(yyvsp[-3], yyvsp[-2],
              yyvsp[-1], yyvsp[0]); }
-#line 1867 "y.tab.c"
+#line 1868 "y.tab.c"
     break;
 
   case 67:
-#line 177 "parse.y"
+#line 178 "parse.y"
                                                        { yyval = dopoint(yyvsp[-1], yyvsp[0]); }
-#line 1873 "y.tab.c"
+#line 1874 "y.tab.c"
     break;
 
   case 68:
-#line 179 "parse.y"
+#line 180 "parse.y"
                                                        { yyval = reducedot(yyvsp[-2], yyvsp[-1], yyvsp[0]); }
-#line 1879 "y.tab.c"
+#line 1880 "y.tab.c"
     break;
 
   case 84:
-#line 199 "parse.y"
+#line 200 "parse.y"
                                                 { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1885 "y.tab.c"
+#line 1886 "y.tab.c"
     break;
 
   case 86:
-#line 201 "parse.y"
+#line 202 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1891 "y.tab.c"
+#line 1892 "y.tab.c"
     break;
 
   case 87:
-#line 203 "parse.y"
+#line 204 "parse.y"
                                                     { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1897 "y.tab.c"
+#line 1898 "y.tab.c"
     break;
 
   case 89:
-#line 206 "parse.y"
+#line 207 "parse.y"
                                                { yyval = cons(yyvsp[-2], yyvsp[0]); }
-#line 1903 "y.tab.c"
+#line 1904 "y.tab.c"
     break;
 
   case 90:
-#line 207 "parse.y"
+#line 208 "parse.y"
                                             { yyval = cons(yyvsp[0], NULL); }
-#line 1909 "y.tab.c"
+#line 1910 "y.tab.c"
     break;
 
   case 91:
-#line 209 "parse.y"
+#line 210 "parse.y"
                                                   { yyval = binop(yyvsp[-1], yyvsp[-2], yyvsp[0]); }
-#line 1915 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 95:
-#line 214 "parse.y"
+#line 215 "parse.y"
                                                { yyval = yyvsp[-1]; }
-#line 1921 "y.tab.c"
+#line 1922 "y.tab.c"
     break;
 
   case 97:
-#line 216 "parse.y"
+#line 217 "parse.y"
                                     { yyval = unaryop(yyvsp[-1], yyvsp[0]); }
-#line 1927 "y.tab.c"
+#line 1928 "y.tab.c"
     break;
 
 
-#line 1931 "y.tab.c"
+#line 1932 "y.tab.c"
 
       default: break;
     }
@@ -2162,58 +2163,25 @@ yyreturn:
 #line 219 "parse.y"
 
 
-/* You should add your own debugging flags below, and add debugging
-   printouts to your programs.
 
-   You will want to change DEBUG to turn off printouts once things
-   are working.
-  */
-
-#define DEBUG           0             /* set bits here for debugging, 0 = off  */
+#define DEBUG           31             /* set bits here for debugging, 0 = off  */
 #define DB_CONS         0             /* bit to trace cons */
 #define DB_BINOP        0             /* bit to trace binop */
 #define DB_MAKEIF       0             /* bit to trace makeif */
 #define DB_MAKEPROGN    0             /* bit to trace makeprogn */
 #define DB_PARSERES     0             /* bit to trace parseresult */
 #define DB_MAKEPROGRAM  0
-#define DB_MAKEINTC     0
-#define DB_MAKELABEL    0
-#define DB_MAKEOP       0
+#define DB_MAKENUM      0
 #define DB_MAKECOPY     0
-#define DB_MAKEGOTO     0
 #define DB_MAKEFOR      0
-#define DB_MAKEWHILE    0
 #define DB_MAKEFUNCALL  0
-#define DB_UNOP         0
-#define DB_FINDID       0  
-#define DB_INSTCONST    0  
-#define DB_INSTLABEL    0   
-#define DB_FINDLABEL    0 
-#define DB_FINDTYPE     0 
-#define DB_REDUCEDOT    1
-#define DB_ARRAYREF     1
-#define DB_MAKEREPEAT   0
-#define DB_MAKESUB      0
-#define DB_MAKEAREF     1
-#define DB_DOLABEL      0
-#define DB_DOGOTO       0
-#define DB_DOPOINT      0
-#define DB_INSTTYPE     0
-#define DB_INSTENUM     0
-#define DB_INSTDOTDOT   0
-#define DB_INSTARRAY    0
-#define DB_INSTFIELD    0
-#define DB_NCONC        0
-#define DB_INSTREC      0
-#define DB_INSTPOINT    0
 
- int labelnumber = 0;  /* sequential counter for internal label numbers */
- int labeltable[50];
+ int labelnumber = 0;  
+ int labels[100];
 
-   /*  Note: you should add to the above values and insert debugging
-       printouts in your routines similar to those that are shown here.     */
-
-TOKEN cons(TOKEN item, TOKEN list)            /* add item to front of list */
+/* cons links a new item onto the front of a list.  Equivalent to a push.
+   (cons 'a '(b c))  =  (a b c)    */
+TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
@@ -2235,128 +2203,142 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
-  if (DEBUG & DB_NCONC) {
-   printf("nconc\n");
-   dbugprinttok(temp);
-  };
+
   return temp;
 }
 
-int isReal(TOKEN tok) {
-  if(tok->basicdt == REAL)
-    return 1;
-  else 
-    return 0;
-}
-
-int isInt(TOKEN tok) {
-  if(tok->basicdt == INTEGER)
-    return 1;
-  else 
-    return 0;
-}
-
 /* unaryop links a unary operator op to one operand, lhs */
-TOKEN unaryop(TOKEN op, TOKEN lhs) {
-  op->operands = lhs;
+TOKEN unaryop(TOKEN op, TOKEN lhs){
   lhs->link = NULL;
-  if (DEBUG & DB_UNOP)
-     { printf("unaryop\n");
-       dbugprinttok(op);
-       dbugprinttok(lhs);
-     };
-  return op;  
+  op->operands = lhs;
+  if (DEBUG & DB_BINOP)
+       { printf("unaryop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+       };
+  return op;
 }
-
-
-
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
-    // printf("binop\n");
-    // dbugprinttok(lhs);
-    // dbugprinttok(rhs);
-
-    // Handle NIL as zero.
-    if (rhs->whichval == (NIL - RESERVED_BIAS)) {
-        rhs = makeintc(0);
-    }
-
-    op->operands = lhs; // Link operands to operator.
-    lhs->link = rhs; // Link second operand to first.
-    rhs->link = NULL; // Terminate operand list.
-
-
-
-      // Existing logic
-      if (isReal(lhs) && isReal(rhs)) {
-          op->basicdt = REAL;
-      } else if (isReal(lhs) && isInt(rhs)) {
-          op->basicdt = REAL;
-          TOKEN ftok = makefloat(rhs);
-          lhs->link = ftok;
-          // printf("made int rhs into a float\n");
-      } else if (isInt(lhs) && isReal(rhs)) {
-          if (op->whichval == ASSIGNOP) {
-              op->basicdt = INTEGER;
-          } else {
-              op->basicdt = REAL;
-          }
-      }
-    
-
-    if (DEBUG & DB_BINOP) {
-        printf("binop - final type handling\n");
-        dbugprinttok(op);
-    }
-
-    return op;
-}
-
-
-/* makefloat forces the item tok to be floating, by floating a constant
-   or by inserting a FLOATOP operator */
-TOKEN makefloat(TOKEN tok) {
-  if(tok->tokentype == NUMBERTOK) {
-    tok->basicdt = REAL;
-    tok->realval = (double) tok->intval;
-    return tok;
-  } else {
-    TOKEN floatop = makeop(FLOATOP);
-    floatop->operands = tok;
-    return floatop;
-  }
-  
-}
-
-
-/* makefix forces the item tok to be integer, by truncating a constant
-   or by inserting a FIXOP operator */
-TOKEN makefix(TOKEN tok) {
-  if(tok->tokentype == NUMBERTOK) {
-    tok->basicdt = INTEGER;
-    tok->intval = (int) tok->realval;
-    // printf("was numbertoken so truncated\n");
-    return tok;
-  } else { 
-    TOKEN fixop = makeop(FIXOP);
-    fixop->operands = tok;
-    return fixop;
-  }
-}
-
-
 
 /* makeop makes a new operator token with operator number opnum.
    Example:  makeop(FLOATOP)  */
 TOKEN makeop(int op){
     TOKEN tok = talloc();
-    tok->tokentype = OPERATOR;
     tok->whichval = op;
-    if (DEBUG & DB_MAKEOP) {
-      printf("makeop\n");
-      dbugprinttok(tok);
-    }
+    tok->tokentype = OPERATOR;
+
     return tok;
 }
+
+/* makefloat forces the item tok to be floating, by floating a constant
+   or by inserting a FLOATOP operator */
+TOKEN makefloat(TOKEN tok){
+  if (tok->tokentype == NUMBERTOK){
+    tok->realval = (double) tok->intval;
+    tok->basicdt = REAL;
+    return tok;
+  }
+  TOKEN floatToken = makeop(FLOATOP);
+  floatToken->operands = tok;
+  return floatToken;
+    
+
+}
+
+
+
+/* makefix forces the item tok to be integer, by truncating a constant
+   or by inserting a FIXOP operator */
+TOKEN makefix(TOKEN tok){
+  if(tok->tokentype == NUMBERTOK){
+    tok->intval = (int) tok->realval;
+    tok->basicdt = INTEGER;
+    return tok;
+  } else{
+    TOKEN fixToken = makeop(FIXOP);
+    fixToken->operands = tok;
+    return fixToken;
+  }
+}
+
+
+
+/* binop links a binary operator op to two operands, lhs and rhs. */
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
+    lhs->link = rhs;             
+    rhs->link = NULL;           
+    op->operands = lhs; 
+
+    //handles type casting
+    int lhType;
+    int rhType;
+
+    //define our variables for specifying type
+    if (lhs->basicdt == INTEGER) {
+      lhType = 1;
+    } else {
+      //REAL
+      lhType = 0;
+    }
+    if (rhs->basicdt == INTEGER) {
+      rhType = 1;
+    } else {
+      //REAL
+      rhType = 0;
+    }
+
+    //left hand = integer; right hand = float
+    if (lhType == 1 && rhType == 0) {
+
+
+      TOKEN temptoken = talloc();
+
+      // computation operation
+      if (op->whichval != ASSIGNOP){
+
+        op->basicdt = REAL;
+        TOKEN temptoken = makefloat(lhs);
+        temptoken->link = rhs;
+      }
+
+      // assignment operation
+      else{
+        op->basicdt = INTEGER;
+        TOKEN temptoken = makefix(rhs);
+        lhs->link = temptoken;
+      }
+    }
+
+    //both real
+    else if (lhType == 0 && rhType == 0) {
+      op->basicdt = REAL;
+    }
+
+    //left hand = int; right hand = real
+    else if (lhType == 0 && rhType == 1) {
+      TOKEN floatToken = makefloat(rhs);
+      lhs->link = floatToken;
+      op->basicdt = REAL;
+
+    }
+
+    //nothing needed for both int
+
+    //deciding what to set op datatype to
+    if (DEBUG & DB_BINOP)
+       { printf("binop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+         dbugprinttok(rhs);
+       };
+    
+    return op;
+
+    
+  }
+
+
+
+
 
 /* copytok makes a new token that is a copy of origtok */
 TOKEN copytok(TOKEN target) {
@@ -2375,14 +2357,19 @@ TOKEN copytok(TOKEN target) {
   }
   return copy;
 }
-
+/* makeif makes an IF operator and links it to its arguments.
+   tok is a (now) unused token that is recycled to become an IFOP operator */
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
-  {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
+  {  //decomposing if token
+     tok->tokentype = OPERATOR;  
+
+    //determining expression
+     tok->operands = exp;
      tok->whichval = IFOP;
-     if (elsepart != NULL) elsepart->link = NULL;
+
+     //exp->thenpart->elsepart
      thenpart->link = elsepart;
      exp->link = thenpart;
-     tok->operands = exp;
      if (DEBUG & DB_MAKEIF)
         { printf("makeif\n");
           dbugprinttok(tok);
@@ -2393,46 +2380,41 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
      return tok;
    }
 
-/* makeintc makes a new token with num as its value */
-TOKEN makeintc(int number) {
+
+/* makeintc makes a new integer number token with num as its value */
+TOKEN makeintc(int num) {
   TOKEN tok = talloc();
+  tok->intval = num;
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
-  tok->intval = number;
-  if (DEBUG & DB_MAKEINTC) {
+  if (DEBUG & DB_MAKENUM) {
       printf("makeintc\n");
       dbugprinttok(tok);
   }
   return tok;
 }
 
+
 /* makelabel makes a new label, using labelnumber++ */
-TOKEN makelabel() {
+TOKEN makelabel(){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
   tok->whichval = LABELOP;
   tok->operands = makeintc(labelnumber++);
-  if (DEBUG & DB_MAKELABEL) {
-      printf("makelabel\n");
-      dbugprinttok(tok);
-  }
   return tok;
+
 }
 
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
-TOKEN makegoto(int num){
+TOKEN makegoto(int label){
   TOKEN tok = talloc();
   tok->tokentype = OPERATOR;
   tok->whichval = GOTOOP;
-  tok->operands = makeintc(num);
-  if (DEBUG && DB_MAKEGOTO) {
-      printf("makegoto\n");
-      dbugprinttok(tok);
-  }
+  tok->operands = makeintc(label);
   return tok;
-}
 
+}
 
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   
@@ -2490,10 +2472,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
-  if (DEBUG && DB_MAKEAREF) {
-      printf("makearef - possibly merged\n");
-      dbugprinttok(areftok);
-  }
+  
 
   return areftok;
 }
@@ -2506,42 +2485,58 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
    endexpr is the end expression
    tok, tokb and tokc are (now) unused tokens that are recycled. */
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    // Initial assignment
     tok = makeprogn(tok, assign);
-    TOKEN label = makelabel();
-    int current = labelnumber - 1;
-    assign->link = label;
 
-    TOKEN ifs = tokb;
-    TOKEN body = tokc;
-    body = makeprogn(body, statements);
+    // Setting up the loop label token
+    TOKEN loopLabel = makelabel();
 
-    TOKEN leoper = makeop(LEOP);
-    ifs = makeif(ifs, leoper, body, NULL);
-    TOKEN iden = copytok(assign->operands);
-    TOKEN iden2 = copytok(iden);
-    TOKEN iden3 = copytok(iden);
-    iden->link = expr;
-    leoper->operands = iden;
 
-    TOKEN assgn = makeop(ASSIGNOP);
-    TOKEN increment = makeop(PLUSOP);
+    // Linking the loop initialization to the label
+    assign->link = loopLabel;
 
-    iden3->link=makeintc(1);
-    increment->operands=iden3;
-    iden2->link=increment;
-    assgn->operands=iden2;
+    // build loop body's statements tree
+    TOKEN loopBody = talloc();
+    loopBody = makeprogn(loopBody, statements);
 
-    TOKEN gototok = makegoto(current);
-    assgn->link = gototok;
-    statements->link = assgn;
+    // Creating the conditional check for the loop
+    TOKEN leOperator = makeop(LEOP);
+    TOKEN conditional = talloc();
+    conditional = makeif(conditional, leOperator, loopBody, NULL);
 
-    leoper->link = body;
-    ifs->operands = leoper;
-    label->link = ifs;
+    // Handling the loop variable and its increment
+    TOKEN varCopy = copytok(assign->operands);
+    varCopy->link = expr;
+    leOperator->operands = varCopy;
+
+    TOKEN incrementStep = copytok(varCopy);
+    TOKEN incrementVar = copytok(varCopy);
+
+    TOKEN incrementOp = makeplus(NULL, NULL, NULL);
+    TOKEN incrementAssign = makeop(ASSIGNOP);
+
+    incrementOp->operands = incrementStep;
+    incrementVar->link = incrementOp;
+    incrementStep->link = makeintc(1);
+    incrementAssign->operands = incrementVar;
+
+    // Setting up the goto operation for loop continuation
+    TOKEN gotoOperation = makegoto(labelnumber - 1);
+
+    // Linking the increment operation and the goto for the loop's next iteration
+    statements->link = incrementAssign;
+    incrementAssign->link = gotoOperation;
+
+    // Final assembly of the loop's conditional and body components
+    loopLabel->link = conditional;
+    leOperator->link = loopBody;
+    conditional->operands = leOperator;
+
+    // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
-         printf("makefor\n");
-         dbugprinttok(tok);
+        dbugprinttok(tok);
     }
+
     return tok;
 }
 
@@ -2561,10 +2556,7 @@ TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   ifs = makeif(ifs, expr, body, NULL);
   label->link = ifs;
 
-  if (DEBUG && DB_MAKEWHILE) {
-     printf("makewhile\n");
-     dbugprinttok(tok);
-  }
+
   return tok;
   
 }
@@ -2671,30 +2663,29 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
   return tok;
 }
 
-/* makerepeat makes structures for a repeat statement.
+/* makewhile makes structures for a while statement.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
-   TOKEN label = makelabel();
-   int current = labelnumber - 1;
-   tok = makeprogn(tok, label);
+  //set label token for the start
+  TOKEN repeatStart = makelabel();
+   
+   
+   tok = makeprogn(tok, repeatStart);
 
-   TOKEN body = tokb;
-   body = makeprogn(body, statements);
-   label->link = body;
+   //set up the repeat body token
+   TOKEN shellBody = makeprogn(tokb, statements);
+   repeatStart->link = shellBody;
 
-   TOKEN gototok = makegoto(current);
-   TOKEN emptytok = makeprogn((TOKEN) talloc(), NULL);
-   emptytok->link = gototok;
+   //set up the go to token for looping
+   TOKEN repeatStartGoTo = makegoto(labelnumber - 1);
+   TOKEN filler = makeprogn(talloc(), NULL);
+   filler->link = repeatStartGoTo;
 
-   TOKEN ifs = talloc();
-   ifs = makeif(ifs, expr, emptytok, gototok);
-   body->link = ifs;
+   //conditional token
+   TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
+   shellBody->link = ifs;
 
-   if (DEBUG && DB_MAKEREPEAT) {
-         printf("make repeat\n");
-         dbugprinttok(tok);
-   }
 
    return tok;  
 }
@@ -2711,15 +2702,13 @@ TOKEN makesubrange(TOKEN tok, int low, int high) {
   subrange->size = basicsizes[INTEGER];
   tok->symtype = subrange;
 
-  if (DEBUG & DB_MAKESUB) {
-    printf("making subrange\n");
-    dbugprinttok(tok);
-  }
 
   return tok;
 }
 
 
+/* makeprogn makes a PROGN operator and links it to the list of statements.
+   tok is a (now) unused token that is recycled. */
 TOKEN makeprogn(TOKEN tok, TOKEN statements)
   {  tok->tokentype = OPERATOR;
      tok->whichval = PROGNOP;
@@ -2730,39 +2719,38 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
          dbugprinttok(statements);
        };
      return tok;
-   }
-
+  }
+  
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
+  {
     TOKEN tok = talloc();
-    TOKEN nameToArgs = talloc();
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
     tok->operands = name;
-    nameToArgs = makeprogn(nameToArgs, args);
-    name->link = nameToArgs;
-    nameToArgs->link = statements;
-    if (DEBUG & DB_MAKEPROGRAM) { 
+    
+    TOKEN nameArgs = talloc();
+    nameArgs = makeprogn(nameArgs, args);
+    name->link = nameArgs;
+    nameArgs->link = statements;
+
+    if(DEBUG & DB_MAKEPROGRAM){
       printf("makeprogram\n");
       dbugprinttok(tok);
-      dbugprinttok(nameToArgs);
-    };
+      dbugprinttok(args);
+    }
     return tok;
+  
   }
 
 
 
 /* finds label number in label table for user defined labels */
 int findlabelnumber(int label) {
-  if (DEBUG & DB_FINDLABEL) {
-    printf("finding label\n");
-  }
+
   for(int i = 0; i < labelnumber; i ++) {
-    if (labeltable[i] == label) {
-      if (DEBUG & DB_FINDLABEL) {
-       printf("found label : ");
-       printf("%d\n", i);
-      }
+    if (labels[i] == label) {
+
       return i;
     }
   }
@@ -2788,11 +2776,7 @@ TOKEN findid(TOKEN tok) { /* the ID token */
         tok->intval = sym->constval.intnum;
       }
 
-      if (DEBUG & DB_FINDID) { 
-        printf("hit constant\n");
-        dbugprinttok(sym);
-        dbugprinttok(tok);
-      };
+
       return tok;
     }
 
@@ -2802,30 +2786,21 @@ TOKEN findid(TOKEN tok) { /* the ID token */
          typ->kind == POINTERSYM)
         tok->basicdt = typ->basicdt;
 
-    if (DEBUG & DB_FINDID) { 
-      printf("hit identifier\n");
-      dbugprinttok(sym);
-      dbugprinttok(tok);
-    };
 
     return tok;
   }
+
 
 /* findtype looks up a type name in the symbol table, puts the pointer
    to its type into tok->symtype, returns tok. */
-
-TOKEN findtype(TOKEN tok) {
-    SYMBOL sym = searchst(tok->stringval);
-    if (sym->kind == TYPESYM) {
+TOKEN findtype(TOKEN tok){
+  SYMBOL sym = searchst(tok->stringval);
+  if (sym->kind == TYPESYM) {
       sym = sym->datatype;
    }
-    tok->symtype = sym;
-    if (DEBUG & DB_FINDTYPE) {
-      printf("finding type\n");
-      dbugprinttok(tok);
-    }
-    return tok;
-  }
+  tok->symtype = sym;
+  return tok;
+}
 
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
@@ -2833,42 +2808,30 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
 
+  SYMBOL recordSymbol = var->symentry;
+  SYMBOL moverField = recordSymbol->datatype->datatype;
 
-  SYMBOL recsym = var->symentry;
-  SYMBOL curfield = recsym->datatype->datatype;
+  int fieldOffset = 0;
+  while (moverField != NULL){
+    if (strcmp(moverField->namestring, field->stringval) == 0){
+      var->symentry = moverField;
 
-
-  int offset = 0;
-  while(curfield) {
-    if (strcmp(curfield->namestring, field->stringval) == 0) {
-      offset = curfield->offset;
-      var->symentry = curfield;
-
+      fieldOffset = moverField->offset;
       break;
-    } 
-    else {
-      curfield = curfield->link;
     }
+    moverField = moverField->link;
+  }
+
+  TOKEN offsetToken = makeintc(fieldOffset);
+
+  TOKEN referenceTok = makearef(var, offsetToken, NULL);
+
+  if (moverField) {
+    referenceTok->basicdt = moverField->datatype->basicdt;
   }
 
 
-
-
-  dot = makearef(var, makeintc(offset), dot);
-
-  if (curfield) {
-    dot->basicdt = curfield->datatype->basicdt;
-  }
-
-
-  if (DEBUG & DB_REDUCEDOT) {
-    printf("reducedot\n");
-    //printf("-- %s ** %s", curfield->namestring, field->stringval);
-    dbugprinttok(var);
-    dbugprinttok(dot);
-    dbugprinttok(field);
-  }
-  return dot;
+  return referenceTok;
  
 }
 
@@ -3048,11 +3011,6 @@ TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
     labeltok->link = statement;
     tok = makeprogn(tok, labeltok);
 
-    if (DEBUG & DB_DOLABEL) {
-      printf("dolabel\n");
-      dbugprinttok(tok);
-    }
-
     return tok;
 }
 
@@ -3065,10 +3023,7 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
     }  
 
     tok = makegoto(real_label);
-    if (DEBUG & DB_DOGOTO) {
-      printf("dogoto\n");
-      dbugprinttok(tok);
-    }
+
 
     return tok;
 }
@@ -3081,69 +3036,57 @@ TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->operands = var;
   
 
-
-  if (DEBUG & DB_DOPOINT) {
-    printf("dopoint\n");
-    dbugprinttok(tok);
-  }
-
   return tok;
 }
 
-/* install variables in symbol table */
+/* instvars will install variables in symbol table.
+   typetok is a token containing symbol table pointer for type. */
 void instvars(TOKEN idlist, TOKEN typetok)
-  {  SYMBOL sym, typesym; int align;
-     typesym = typetok->symtype;
-     align = alignsize(typesym);
-     while ( idlist != NULL )   /* for each id */
-       {  sym = insertsym(idlist->stringval);
-          sym->kind = VARSYM;
-          sym->offset =
-              wordaddress(blockoffs[blocknumber],
-                          align);
-          sym->size = typesym->size;
-          blockoffs[blocknumber] =
-                         sym->offset + sym->size;
-          sym->datatype = typesym;
-          sym->basicdt = typesym->basicdt;
-          idlist = idlist->link;
-        };
+  {  
+    SYMBOL sym, typesym; int align;
+    typesym = typetok->symtype;
+    align = alignsize(typesym);
+    while ( idlist != NULL )   /* for each id */
+      {  sym = insertsym(idlist->stringval);
+        sym->kind = VARSYM;
+        sym->offset =     /* "next" */
+            wordaddress(blockoffs[blocknumber],
+                        align);
+        sym->size = typesym->size;
+        blockoffs[blocknumber] =   /* "next" */
+                        sym->offset + sym->size;
+        sym->datatype = typesym;
+        sym->basicdt = typesym->basicdt;
+        idlist = idlist->link;
+      };
   }
 
 /* instconst installs a constant in the symbol table */
-void instconst(TOKEN idtok, TOKEN consttok) {
-  SYMBOL sym;
-  sym = insertsym(idtok->stringval);
-  sym->kind = CONSTSYM;
-  sym->basicdt = consttok->basicdt;
-  if(sym->basicdt == REAL) {
-      sym->constval.realnum = consttok->realval;
-  }
+void instconst(TOKEN idtok, TOKEN consttok){
 
-  if(sym->basicdt == INTEGER) 
-  {
-      sym->constval.intnum = consttok->intval;
+  //create and return the symbol table entry
+  SYMBOL constSymbol = insertsym(idtok->stringval);
+
+  //update the symbol table entry to reflect the token's value and data type
+  constSymbol->basicdt = consttok->basicdt;
+  constSymbol->kind = CONSTSYM;
+
+  int type = consttok->basicdt;
+  if (type == INTEGER){
+    constSymbol->constval.intnum = consttok->intval;
   }
-  if (DEBUG & DB_INSTCONST) {
-    printf("install const\n");
-    dbugprinttok(sym);
+  else if (type == REAL){
+    constSymbol->constval.realnum = consttok->realval;
+  }
+  else {
+    return;
   }
 }
 
 /* instlabel installs a user label into the label table */
-void  instlabel (TOKEN num) {
-  labeltable[labelnumber++] = num->intval;  
+void instlabel (TOKEN num) {
+  labels[labelnumber++] = num->intval;  
 
-  if (DEBUG & DB_INSTLABEL) {
-    printf("install label\n");
-    printf("current table\n");
-    for (int i = 0; i < labelnumber; i ++) {
-      printf("label ");
-      printf("%d", i);
-      printf(" : ");
-      printf("%d\n", labeltable[i]);
-    }
-  }
 }
 
 /* instenum installs an enumerated subrange in the symbol table,
@@ -3160,10 +3103,7 @@ TOKEN instenum(TOKEN idlist) {
   }
 
   TOKEN tok = makesubrange(idlist, 0, count - 1);
-  if (DEBUG & DB_INSTENUM) {
-    printf("install enum\n");
-    dbugprinttok(idlist);
-  }
+
 
   return tok;
 }
@@ -3174,11 +3114,7 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
   int low = lowtok->intval;
   int high = hightok->intval;
 
-  if (DEBUG & DB_INSTDOTDOT) {
-    printf("install dot dot\n");
-    dbugprinttok(lowtok);
-    dbugprinttok(hightok);
-  }
+
 
   return makesubrange(dottok, low, high);
 }
@@ -3204,10 +3140,7 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     arraysym->highbound = subrange->highbound;
     arraysym->size = (arraysym->lowbound + arraysym->highbound - 1) * (typesym->size);
     typetok->symtype = arraysym;
-    if (DEBUG & DB_INSTARRAY) {
-        printf("install array\n");
-        dbugprinttok(typetok);
-    }
+
 
   return typetok;
 
@@ -3223,10 +3156,7 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     arraysym->highbound = subrange->highbound;
     arraysym->size = (arraysym->highbound - arraysym->lowbound +  1) * (typesym->size);
     typetok->symtype = arraysym;
-    if (DEBUG & DB_INSTARRAY) {
-      printf("install array base\n");
-      dbugprinttok(typetok);
-    }
+
 
     return typetok;
   }
@@ -3236,26 +3166,19 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    re, im: real    put the pointer to REAL in the RE, IM tokens.
    typetok is a token whose symtype is a symbol table pointer.
    Note that nconc() can be used to combine these lists after instrec() */
-TOKEN instfields(TOKEN idlist, TOKEN typetok) {
-  SYMBOL typesym = typetok->symtype;
-  // printf("typesym name %s\n", typesym->namestring);
-  TOKEN temp = idlist;
-  while(temp) {
-    // printf("temp name %s\n", temp->stringval);
-    temp->symtype = typesym;     
+TOKEN instfields(TOKEN idlist, TOKEN typetok){
 
-    // printf("temp type %s\n", temp->symtype->namestring);
-    temp = temp->link;
-  }
+  TOKEN mover = idlist;
 
-
-  if (DEBUG & DB_INSTFIELD) {
-      printf("install fields\n");
-      dbugprinttok(idlist);
+  while(mover != NULL){
+    mover->symtype = typetok->symtype;
+    mover = mover->link;
   }
 
   return idlist;
+  
 }
+
 
 /* instrec will install a record definition.  Each token in the linked list
    argstok has a pointer its type.  rectok is just a trash token to be
@@ -3291,12 +3214,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
   recsym->size = wordaddress(next, 8); 
   rectok->symtype = recsym;
 
-  if (DEBUG & DB_INSTREC) {
-      printf("install rec\n");
-      printf("total size %d\n", recsym->size);
-      dbugprinttok(rectok);
 
-  }
   return rectok;
 }
 
@@ -3314,10 +3232,7 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
   tok->symtype = pointsym;
 
-  if (DEBUG & DB_INSTPOINT) {
-      printf("install point\n");
-      dbugprinttok(tok);
-  }
+
 
   return tok;
 }
@@ -3331,11 +3246,7 @@ void  insttype(TOKEN typename, TOKEN typetok) {
   typesym->datatype = typetok->symtype;
   typesym->size = typetok->symtype->size;
 
-  if (DEBUG & DB_INSTTYPE) {
-    printf("install type\n");
-    dbugprinttok(typename);
-    dbugprinttok(typetok);
-  }
+
 }
 
 
@@ -3368,3 +3279,11 @@ int main(void)          /*  */
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
+
+
+/* makeplus makes a + operator.
+   tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok){
+  tok = makeop(PLUSOP);
+  return tok;
+}
