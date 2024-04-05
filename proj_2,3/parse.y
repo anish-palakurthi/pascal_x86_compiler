@@ -82,10 +82,7 @@ TOKEN parseresult;
 
 program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-  u_constant :  NUMBER
-             |  NIL 
-             |  STRING
-             ;
+
   sign       :  PLUS 
              |  MINUS
              ;
@@ -152,17 +149,17 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
              ;
-  statement  :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }
+  statement  :  block
              |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
-             |  funcall
+             |  functionCall
              |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
              |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
              |  REPEAT s_list UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
              |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
              |  label
              ;
-  funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
+  functionCall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
@@ -173,47 +170,47 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
   variable   :  IDENTIFIER                            { $$ = findid($1); }
-             |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2,
-             $3, $4); }
+
              |  variable POINT                         { $$ = dopoint($1, $2); }
+            |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2,
+             $3, $4); }
              
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
-  plus_op    :  PLUS 
-             |  MINUS  
-             |  OR
-             ;
-  compare_op :  EQ 
-             |  LT 
-             |  GT 
-             |  NE 
-             |  LE 
-             |  GE 
-             |  IN
-             ;
-  times_op   :  TIMES 
-             |  DIVIDE 
-             |  DIV 
-             |  MOD 
-             |  AND
-             ;
+
   s_expr     :  sign term                       { $$ = unaryop($1, $2); }
              |  term 
-             |  s_expr plus_op term                 { $$ = binop($2, $1, $3); }
+             |  s_expr PLUS term                 { $$ = binop($2, $1, $3); }
+             |  s_expr MINUS term                 { $$ = binop($2, $1, $3); }
+             |  s_expr OR term                 { $$ = binop($2, $1, $3); }
+
              ;
-  expr       :  expr compare_op s_expr              { $$ = binop($2, $1, $3); }
+  expr       :  expr EQ s_expr              { $$ = binop($2, $1, $3); }
+             |  expr LT s_expr              { $$ = binop($2, $1, $3); }
+             |  expr GT s_expr              { $$ = binop($2, $1, $3); }
+             |  expr NE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr LE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr GE s_expr              { $$ = binop($2, $1, $3); }
+             |  expr IN s_expr              { $$ = binop($2, $1, $3); }
              |  s_expr 
              ;
   expr_list  :  expr COMMA expr_list           { $$ = cons($1, $3); }
              |  expr                        { $$ = cons($1, NULL); }
              ;
-  term       :  term times_op factor              { $$ = binop($2, $1, $3); }
+  term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
+              |  term MOD factor                { $$ = binop($2, $1, $3); }
+              |  term DIV factor                { $$ = binop($2, $1, $3); }
+              |  term DIVIDE factor             { $$ = binop($2, $1, $3); }
+              |  term AND factor                { $$ = binop($2, $1, $3); }
              |  factor
              ;
-  factor     :  u_constant
-             |  variable
+  factor     : 
+              variable
+             |  STRING
+             | NUMBER
+             |  NIL 
+             |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
-             |  funcall
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
 %%
