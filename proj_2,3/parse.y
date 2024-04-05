@@ -463,9 +463,7 @@ TOKEN makelabel(){
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
 TOKEN makegoto(int label){
-  TOKEN tok = talloc();
-  tok->tokentype = OPERATOR;
-  tok->whichval = GOTOOP;
+  TOKEN tok = makeop(GOTOOP);
   tok->operands = makeintc(label);
   return tok;
 
@@ -1052,45 +1050,70 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 }
   
 
-/* dolabel is the action for a label of the form   <number>: <statement>
-   tok is a (now) unused token that is recycled. */
+/* Corrected dolabel function. Assumes labels and labelnumber are correctly declared and accessible. */
 TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
-    int real_label = findlabelnumber(labeltok->intval);
-    if (real_label == -1) {
-      printf("Error: user defined label not found");
+    // Convert label value to index in the labels array.
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
     }
 
-    labeltok = makeop(LABELOP);
-    TOKEN tokb = makeintc(real_label);
-    labeltok->operands=tokb;
+    // Construct the label token with the found index.
+    TOKEN indexToken = makeintc(labelIndex);
+    labeltok = makeop(LABELOP); // Assuming LABELOP is defined correctly elsewhere.
     labeltok->link = statement;
+    
+    labeltok->operands = indexToken;
+    
+    // Link the label operation with the provided statement using progn.
     tok = makeprogn(tok, labeltok);
-
+    
     return tok;
 }
+
+
 
 /* dogoto is the action for a goto statement.
    tok is a (now) unused token that is recycled. */
 TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
-    int real_label = findlabelnumber(labeltok->intval);
-    if (real_label == -1) {
-      printf("Error: user defined label not found");
-    }  
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
+    }
 
-    tok = makegoto(real_label);
+
+    return (makegoto(labelIndex));
 
 
-    return tok;
 }
 
 
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
+  tok->symentry = var->symentry->datatype->datatype;
   
-
   return tok;
 }
 
