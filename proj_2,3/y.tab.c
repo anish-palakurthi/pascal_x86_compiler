@@ -2207,58 +2207,7 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
   return temp;
 }
 
-/* unaryop links a unary operator op to one operand, lhs */
-TOKEN unaryop(TOKEN op, TOKEN lhs){
-  lhs->link = NULL;
-  op->operands = lhs;
-  if (DEBUG & DB_BINOP)
-       { printf("unaryop\n");
-         dbugprinttok(op);
-         dbugprinttok(lhs);
-       };
-  return op;
-}
 
-/* makeop makes a new operator token with operator number opnum.
-   Example:  makeop(FLOATOP)  */
-TOKEN makeop(int op){
-    TOKEN tok = talloc();
-    tok->whichval = op;
-    tok->tokentype = OPERATOR;
-
-    return tok;
-}
-
-/* makefloat forces the item tok to be floating, by floating a constant
-   or by inserting a FLOATOP operator */
-TOKEN makefloat(TOKEN tok){
-  if (tok->tokentype == NUMBERTOK){
-    tok->realval = (double) tok->intval;
-    tok->basicdt = REAL;
-    return tok;
-  }
-  TOKEN floatToken = makeop(FLOATOP);
-  floatToken->operands = tok;
-  return floatToken;
-    
-
-}
-
-
-
-/* makefix forces the item tok to be integer, by truncating a constant
-   or by inserting a FIXOP operator */
-TOKEN makefix(TOKEN tok){
-  if(tok->tokentype == NUMBERTOK){
-    tok->intval = (int) tok->realval;
-    tok->basicdt = INTEGER;
-    return tok;
-  } else{
-    TOKEN fixToken = makeop(FIXOP);
-    fixToken->operands = tok;
-    return fixToken;
-  }
-}
 
 
 
@@ -2336,27 +2285,90 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
     
   }
 
+/* unaryop links a unary operator op to one operand, lhs */
+TOKEN unaryop(TOKEN op, TOKEN lhs){
+  lhs->link = NULL;
+  op->operands = lhs;
+  if (DEBUG & DB_BINOP)
+       { printf("unaryop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+       };
+  return op;
+}
 
 
+/* makeop makes a new operator token with operator number opnum.
+   Example:  makeop(FLOATOP)  */
+TOKEN makeop(int op){
+    TOKEN tok = talloc();
+    tok->whichval = op;
+    tok->tokentype = OPERATOR;
+
+    return tok;
+}
+
+/* makefloat forces the item tok to be floating, by floating a constant
+   or by inserting a FLOATOP operator */
+TOKEN makefloat(TOKEN tok){
+  if (tok->tokentype == NUMBERTOK){
+    tok->realval = (double) tok->intval;
+    tok->basicdt = REAL;
+    return tok;
+  }
+  TOKEN floatToken = makeop(FLOATOP);
+  floatToken->operands = tok;
+  return floatToken;
+    
+
+}
+
+
+
+/* makefix forces the item tok to be integer, by truncating a constant
+   or by inserting a FIXOP operator */
+TOKEN makefix(TOKEN tok){
+  if(tok->tokentype == NUMBERTOK){
+    tok->intval = (int) tok->realval;
+    tok->basicdt = INTEGER;
+    return tok;
+  } else{
+    TOKEN fixToken = makeop(FIXOP);
+    fixToken->operands = tok;
+    return fixToken;
+  }
+}
+
+/* makeintc makes a new integer number token with num as its value */
+TOKEN makeintc(int num) {
+  TOKEN tok = talloc();
+  tok->intval = num;
+  tok->tokentype = NUMBERTOK;
+  tok->basicdt = INTEGER;
+  if (DEBUG & DB_MAKENUM) {
+      printf("makeintc\n");
+      dbugprinttok(tok);
+  }
+  return tok;
+}
 
 
 /* copytok makes a new token that is a copy of origtok */
 TOKEN copytok(TOKEN target) {
   TOKEN copy = talloc();
   copy->tokentype = target->tokentype;
-  copy->basicdt = target->basicdt;
-  copy->symtype = target->symtype;
   copy->symentry = target->symentry;
+  copy->basicdt = target->basicdt;
   copy->link = target->link;
   copy->whichval = target->whichval;
   copy->intval = target->intval;
   copy->realval = target->realval;
-  if (DEBUG & DB_MAKECOPY) {
-    printf("copytok\n");
-    dbugprinttok(copy);
-  }
+  copy->symtype = target->symtype;
+
   return copy;
 }
+
+
 /* makeif makes an IF operator and links it to its arguments.
    tok is a (now) unused token that is recycled to become an IFOP operator */
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
@@ -2381,17 +2393,42 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
    }
 
 
-/* makeintc makes a new integer number token with num as its value */
-TOKEN makeintc(int num) {
-  TOKEN tok = talloc();
-  tok->intval = num;
-  tok->tokentype = NUMBERTOK;
-  tok->basicdt = INTEGER;
-  if (DEBUG & DB_MAKENUM) {
-      printf("makeintc\n");
-      dbugprinttok(tok);
+/* makeprogn makes a PROGN operator and links it to the list of statements.
+   tok is a (now) unused token that is recycled. */
+TOKEN makeprogn(TOKEN tok, TOKEN statements)
+  {  tok->tokentype = OPERATOR;
+     tok->whichval = PROGNOP;
+     tok->operands = statements;
+     if (DEBUG & DB_MAKEPROGN)
+       { printf("makeprogn\n");
+         dbugprinttok(tok);
+         dbugprinttok(statements);
+       };
+     return tok;
   }
-  return tok;
+
+/* dogoto is the action for a goto statement.
+   tok is a (now) unused token that is recycled. */
+TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
+    }
+
+
+    return (makegoto(labelIndex));
+
+
 }
 
 
@@ -2405,6 +2442,44 @@ TOKEN makelabel(){
 
 }
 
+/* Corrected dolabel function. Assumes labels and labelnumber are correctly declared and accessible. */
+TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
+    // Convert label value to index in the labels array.
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
+    }
+
+    // Construct the label token with the found index.
+    TOKEN indexToken = makeintc(labelIndex);
+    labeltok = makeop(LABELOP); // Assuming LABELOP is defined correctly elsewhere.
+    labeltok->link = statement;
+    
+    labeltok->operands = indexToken;
+    
+    // Link the label operation with the provided statement using progn.
+    tok = makeprogn(tok, labeltok);
+    
+    return tok;
+}
+
+/* instlabel installs a user label into the label table */
+void instlabel (TOKEN num) {
+  labels[labelnumber++] = num->intval;  
+
+}
+
+
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
 TOKEN makegoto(int label){
@@ -2412,6 +2487,67 @@ TOKEN makegoto(int label){
   tok->operands = makeintc(label);
   return tok;
 
+}
+
+
+/* makefuncall makes a FUNCALL operator and links it to the fn and args.
+   tok is a (now) unused token that is recycled. */
+TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
+
+  
+  fn->link = args;
+  tok->tokentype = OPERATOR;  
+  tok->operands = fn;
+  tok->whichval = FUNCALLOP;
+  tok->basicdt = args->basicdt;
+
+  if (strcmp(fn->stringval, "writeln") == 0) {
+    int argType = args->basicdt;
+
+
+    int typeIndex = 7; 
+    switch (argType) {
+        case REAL:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'f';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        case INTEGER:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'i';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        default:
+            break;
+    }
+  }
+
+  else if (strcmp(fn->stringval, "new") == 0) {
+    tok = makeop(ASSIGNOP);
+    tok->operands = args;
+
+    TOKEN funcOp = makeop(FUNCALLOP);
+    fn->link = makeintc(args->symtype->datatype->size);
+    funcOp->operands = fn;
+    funcOp->basicdt = args->symtype->datatype->basicdt;
+    args->link = funcOp;
+
+    return tok;
+  } 
+
+
+     if (DEBUG & DB_MAKEFUNCALL)
+        { 
+          printf("makefuncall\n");
+          dbugprinttok(tok);
+          dbugprinttok(fn);
+          dbugprinttok(args);
+        };
+    
+    
+  return tok;
 }
 
 
@@ -2564,66 +2700,6 @@ TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
 
 
 
-/* makefuncall makes a FUNCALL operator and links it to the fn and args.
-   tok is a (now) unused token that is recycled. */
-TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
-
-  
-  fn->link = args;
-  tok->tokentype = OPERATOR;  
-  tok->operands = fn;
-  tok->whichval = FUNCALLOP;
-  tok->basicdt = args->basicdt;
-
-  if (strcmp(fn->stringval, "writeln") == 0) {
-    int argType = args->basicdt;
-
-
-    int typeIndex = 7; 
-    switch (argType) {
-        case REAL:
-            if (strcmp(fn->stringval, "writeln") == 0) {
-                fn->stringval[typeIndex] = 'f';
-                fn->stringval[typeIndex + 1] = '\0';
-            }
-            break;
-        case INTEGER:
-            if (strcmp(fn->stringval, "writeln") == 0) {
-                fn->stringval[typeIndex] = 'i';
-                fn->stringval[typeIndex + 1] = '\0';
-            }
-            break;
-        default:
-            break;
-    }
-  }
-
-  else if (strcmp(fn->stringval, "new") == 0) {
-    tok = makeop(ASSIGNOP);
-    tok->operands = args;
-
-    TOKEN funcOp = makeop(FUNCALLOP);
-    fn->link = makeintc(args->symtype->datatype->size);
-    funcOp->operands = fn;
-    funcOp->basicdt = args->symtype->datatype->basicdt;
-    args->link = funcOp;
-
-    return tok;
-  } 
-
-
-     if (DEBUG & DB_MAKEFUNCALL)
-        { 
-          printf("makefuncall\n");
-          dbugprinttok(tok);
-          dbugprinttok(fn);
-          dbugprinttok(args);
-        };
-    
-    
-  return tok;
-}
-
 
 /* makerepeat makes structures for a repeat statement.
    tok and tokb are (now) unused tokens that are recycled. */
@@ -2669,19 +2745,7 @@ TOKEN makesubrange(TOKEN tok, int low, int high) {
 }
 
 
-/* makeprogn makes a PROGN operator and links it to the list of statements.
-   tok is a (now) unused token that is recycled. */
-TOKEN makeprogn(TOKEN tok, TOKEN statements)
-  {  tok->tokentype = OPERATOR;
-     tok->whichval = PROGNOP;
-     tok->operands = statements;
-     if (DEBUG & DB_MAKEPROGN)
-       { printf("makeprogn\n");
-         dbugprinttok(tok);
-         dbugprinttok(statements);
-       };
-     return tok;
-  }
+
   
 /* makeprogram makes the tree structures for the top-level program */
 TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
@@ -2869,11 +2933,9 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       count += 1;
     }
 
+    
+    TOKEN finalOffset = makeplus(makeintc(rollingOffset),variableTree, NULL);
 
-    TOKEN finalOffset = makeop(PLUSOP);
-
-    finalOffset->operands = makeintc(rollingOffset);
-    finalOffset->operands->link = variableTree;
 
     return makearef(arr, finalOffset, NULL);
 
@@ -2942,64 +3004,24 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
 
 }
-  
+/* makeplus makes a + operator.
+  tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
 
-/* Corrected dolabel function. Assumes labels and labelnumber are correctly declared and accessible. */
-TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
-    // Convert label value to index in the labels array.
-    int labelValue = labeltok->intval;
-    int labelIndex = -1;
-    
-    // Search for the label index.
-    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
-        if (labels[i] == labelValue) {
-            labelIndex = i;
-            break;
-        }
-    }
-    if (labelIndex == -1){
-      
-      return NULL;
-    }
+	TOKEN ret = makeop(PLUSOP);
 
-    // Construct the label token with the found index.
-    TOKEN indexToken = makeintc(labelIndex);
-    labeltok = makeop(LABELOP); // Assuming LABELOP is defined correctly elsewhere.
-    labeltok->link = statement;
-    
-    labeltok->operands = indexToken;
-    
-    // Link the label operation with the provided statement using progn.
-    tok = makeprogn(tok, labeltok);
-    
-    return tok;
+  ret->operands = lhs;
+  lhs->link = rhs;
+  rhs->link = NULL;
+
+
+	return ret;
 }
 
 
 
-/* dogoto is the action for a goto statement.
-   tok is a (now) unused token that is recycled. */
-TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
-    int labelValue = labeltok->intval;
-    int labelIndex = -1;
-    
-    // Search for the label index.
-    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
-        if (labels[i] == labelValue) {
-            labelIndex = i;
-            break;
-        }
-    }
-    if (labelIndex == -1){
-      
-      return NULL;
-    }
 
 
-    return (makegoto(labelIndex));
-
-
-}
 
 
 /* dopoint handles a ^ operator.
@@ -3055,11 +3077,7 @@ void instconst(TOKEN idtok, TOKEN consttok){
   }
 }
 
-/* instlabel installs a user label into the label table */
-void instlabel (TOKEN num) {
-  labels[labelnumber++] = num->intval;  
 
-}
 
 /* instenum installs an enumerated subrange in the symbol table,
    e.g., type color = (red, white, blue)
@@ -3239,9 +3257,3 @@ int main(void)          /*  */
   }
 
 
-/* makeplus makes a + operator.
-   tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok){
-  tok = makeop(PLUSOP);
-  return tok;
-}
