@@ -82,31 +82,31 @@ TOKEN parseresult;
 
 program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
-             |  IDENTIFIER    { $$ = cons($1, NULL); }
-             ;
-  constant   :  signedId
-             |  signedNumber
-             |  STRING
-             ;
+idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
+            |  IDENTIFIER    { $$ = cons($1, NULL); }
+            ;
+
+  constantVal   :  STRING
+            | signedId
+            |  signedNumber
+            ;
+
+  constant   :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+            ; 
+
   statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
             |  statement
             ;
 
 
-  cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
+//
+  tdef       :  IDENTIFIER EQ type SEMICOLON    { insttype($1, $3); }
              ;
-  clist      :  cdef SEMICOLON clist    
-             |  cdef SEMICOLON          
-             ;  
-  tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
+             
+  constantVal      :  tdef constantVal
+             |  tdef 
              ;
-  tlist      :  tdef SEMICOLON tlist
-             |  tdef SEMICOLON
-             ;
-  s_list     :  statement SEMICOLON s_list      { $$ = cons($1, $3); }
-             |  statement                  { $$ = cons($1, NULL); }
-             ;
+
   fields     :  idlist COLON type             { $$ = instfields($1, $3); }
              ;
   field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
@@ -114,15 +114,8 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
 
 
-  cblock     :  CONST clist tblock              { $$ = $3; }
-             |  tblock
-             ;
-  tblock     :  TYPE tlist vblock       { $$ = $3; }
-             |  vblock
-             ;
-  vblock     :  VAR varspecs block       { $$ = $3; }
-             |  block
-             ;
+
+
 
 
   type       :  simpletype
@@ -135,21 +128,27 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
   simpletype :  IDENTIFIER   { $$ = findtype($1); }
              |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-             |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
+             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
              ;
-
-  functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
-             ;
-
-
-  variable   :  IDENTIFIER                            { $$ = findid($1); }
-
-             |  variable POINT                         { $$ = dopoint($1, $2); }
-            |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
-             $3, $4); }
              
-             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
+  tblock     :  TYPE constantVal vblock       { $$ = $3; }
+             |  vblock
              ;
+
+//
+  cblock     :  CONST constantList tblock              { $$ = $3; }
+             |  tblock
+             ;
+
+  constantList     :  constant SEMICOLON constantList    
+            |  constant SEMICOLON          
+            ;  
+
+  vblock     :  VAR varspecs block       { $$ = $3; }
+             |  block
+             ;
+
+
   lblock     :  LABEL labelValList SEMICOLON cblock  { $$ = $4; }
              |  block
              ;
@@ -180,6 +179,8 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
 
             |  label
             ;
+  functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
+             ;
 
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
@@ -245,6 +246,14 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
+             ;
+
+  
+  variable   :  IDENTIFIER                            { $$ = findid($1); }
+            |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
+             $3, $4); }
+             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
+             |  variable POINT                         { $$ = dopoint($1, $2); }
              ;
 %%
 
