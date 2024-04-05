@@ -86,10 +86,14 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   sign       :  PLUS 
              |  MINUS
              ;
-  constant   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
+    signedId   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
              |  IDENTIFIER
-             |  sign NUMBER         { $$ = unaryop($1, $2); }
+             ;
+    signedNumber : sign NUMBER        { $$ = unaryop($1, $2); }
              |  NUMBER
+             ;
+  constant   :  signedId
+             |  signedNumber
              |  STRING
              ;
   idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
@@ -1379,5 +1383,4 @@ int main(void)          /*  */
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
-
 
