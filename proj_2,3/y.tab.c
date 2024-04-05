@@ -3077,21 +3077,17 @@ TOKEN instenum(TOKEN idlist){
     traversal = traversal->link;
   }
 
-  TOKEN tok = makesubrange(idlist, 0, numOptions - 1);
+  TOKEN enumRange = makesubrange(idlist, 0, numOptions - 1);
 
 
-  return tok;
+  return enumRange;
 }
 
 /* instdotdot installs a .. subrange in the symbol table.
    dottok is a (now) unused token that is recycled. */
-TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
-  int low = lowtok->intval;
-  int high = hightok->intval;
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok){
 
-
-
-  return makesubrange(dottok, low, high);
+  return makesubrange(dottok, lowtok->intval,  hightok->intval);
 }
 
 /* instarray installs an array declaration into the symbol table.

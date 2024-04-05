@@ -1140,13 +1140,9 @@ TOKEN instenum(TOKEN idlist){
 
 /* instdotdot installs a .. subrange in the symbol table.
    dottok is a (now) unused token that is recycled. */
-TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
-  int low = lowtok->intval;
-  int high = hightok->intval;
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok){
 
-
-
-  return makesubrange(dottok, low, high);
+  return makesubrange(dottok, lowtok->intval,  hightok->intval);
 }
 
 /* instarray installs an array declaration into the symbol table.
