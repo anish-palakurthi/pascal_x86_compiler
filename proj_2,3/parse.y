@@ -597,17 +597,16 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
-  TOKEN label = makelabel();
-  int current = labelnumber - 1;
-  tok = makeprogn(tok, label);
+  TOKEN loopLabel = makelabel();
+  tok = makeprogn(tok, loopLabel);
 
-  TOKEN gototok = makegoto(current);
-  statement->link = gototok;
   TOKEN body = makeprogn(tokb, statement);
 
-  TOKEN ifs = talloc();
-  ifs = makeif(ifs, expr, body, NULL);
-  label->link = ifs;
+  TOKEN ifTok = talloc();
+  ifTok = makeif(ifTok, expr, body, NULL);
+  loopLabel->link = ifTok;
+
+  statement->link = makegoto(labelnumber - 1);
 
 
   return tok;
@@ -676,7 +675,8 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
   return tok;
 }
 
-/* makewhile makes structures for a while statement.
+
+/* makerepeat makes structures for a repeat statement.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
