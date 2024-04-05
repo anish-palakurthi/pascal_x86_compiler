@@ -104,9 +104,7 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   tlist      :  tdef SEMICOLON tlist
              |  tdef SEMICOLON
              ;
-  s_list     :  statement SEMICOLON s_list      { $$ = cons($1, $3); }
-             |  statement                  { $$ = cons($1, NULL); }
-             ;
+
   fields     :  idlist COLON type             { $$ = instfields($1, $3); }
              ;
   field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
@@ -119,9 +117,6 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
   tblock     :  TYPE tlist vblock       { $$ = $3; }
              |  vblock
-             ;
-  vblock     :  VAR varspecs block       { $$ = $3; }
-             |  block
              ;
 
 
@@ -138,6 +133,9 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
              ;
 
+  vblock     :  VAR varspecs block       { $$ = $3; }
+             |  block
+             ;
 
 
   lblock     :  LABEL labelValList SEMICOLON cblock  { $$ = $4; }
