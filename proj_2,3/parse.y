@@ -263,62 +263,13 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
 }
 
 
-int isReal(TOKEN tok) {
-  if(tok->basicdt == REAL)
-    return 1;
-  else 
-    return 0;
-}
-
-int isInt(TOKEN tok) {
-  if(tok->basicdt == INTEGER)
-    return 1;
-  else 
-    return 0;
-}
 
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-    printf("lhs->whichval: %d\n", lhs->whichval);
-    if (lhs->tokentype != NUMBERTOK){
-      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
-        rhs = makeintc(0);
-    }
-
-    op->operands = lhs; // Link operands to operator.
-    lhs->link = rhs; // Link second operand to first.
-    rhs->link = NULL; // Terminate operand list.
-
-
-
-      // Existing logic
-      if (isReal(lhs) && isReal(rhs)) {
-          op->basicdt = REAL;
-      } else if (isReal(lhs) && isInt(rhs)) {
-          op->basicdt = REAL;
-          TOKEN ftok = makefloat(rhs);
-          lhs->link = ftok;
-      } else if (isInt(lhs) && isReal(rhs)) {
-          if (op->whichval == ASSIGNOP) {
-              op->basicdt = INTEGER;
-          } else {
-              op->basicdt = REAL;
-          }
-      }
     
+    if (lhs->tokentype == NUMBERTOK){
 
-    if (DEBUG & DB_BINOP) {
-        printf("binop - final type handling\n");
-        dbugprinttok(op);
-    }
-
-    return op;
-    }
-    // if (rhs->whichval == (NIL - RESERVED_BIAS)) {
-    //     rhs = makeintc(0);
-    //     rhs->basicdt = INTEGER;
-    // }
     lhs->link = rhs;             
     rhs->link = NULL;           
     op->operands = lhs; 
@@ -387,9 +338,44 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
        };
     
     return op;
+    }
+      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+        rhs = makeintc(0);
+    }
+
+    op->operands = lhs; // Link operands to operator.
+    lhs->link = rhs; // Link second operand to first.
+    rhs->link = NULL; // Terminate operand list.
+
+
+
+      // Existing logic
+      if (checkReal(lhs) && checkReal(rhs)) {
+          op->basicdt = REAL;
+      } else if (checkReal(lhs) && checkInt(rhs)) {
+          op->basicdt = REAL;
+          TOKEN ftok = makefloat(rhs);
+          lhs->link = ftok;
+      } else if (checkInt(lhs) && checkReal(rhs)) {
+          if (op->whichval == ASSIGNOP) {
+              op->basicdt = INTEGER;
+          } else {
+              op->basicdt = REAL;
+          }
+      }
+    
+
+    if (DEBUG & DB_BINOP) {
+        printf("binop - final type handling\n");
+        dbugprinttok(op);
+    }
+
+    return op;
+    }
+
 
     
-  }
+  
 
 /* unaryop links a unary operator op to one operand, lhs */
 TOKEN unaryop(TOKEN op, TOKEN lhs){
@@ -1308,6 +1294,15 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 }
 
 
+int  checkReal(TOKEN tok) {
+  return (tok->basicdt == REAL);
+
+}
+
+int checkInt(TOKEN tok) {
+  return (tok->basicdt == INTEGER);
+
+}
 
 
 
