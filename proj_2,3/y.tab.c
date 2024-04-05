@@ -2877,6 +2877,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
+  if (subs->link){
   TOKEN curArr = copytok(arr);
   TOKEN retTok;
   TOKEN variableTree = NULL;
@@ -2962,20 +2963,74 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   TOKEN finalOffset = makeop(PLUSOP);
 
   finalOffset->operands = makeintc(rollingOffset);
-
-  if(variableTree != NULL){
-    finalOffset->operands->link = variableTree;
-  }
-  else{
-    finalOffset->operands->link = makeintc(0);
-  }
-
-  ppexpr(arr);
-  
+  finalOffset->operands->link = variableTree;
 
   return makearef(arr, finalOffset, NULL);
 
-  
+  }
+  else{
+    TOKEN timesop = makeop(TIMESOP);
+    int low = arr->symtype->lowbound;
+    int high = arr->symtype->highbound;
+    int size;
+    
+    if (low == 1){
+      size = (arr->symtype->size / (high + low - 1));
+    }
+    else{
+      size = (arr->symtype->size / (high + low + 1));
+    }
+    TOKEN elesize = makeintc(size);
+
+
+    TOKEN indexTok;
+
+    if (subs->tokentype == NUMBERTOK) {
+      indexTok = makeintc(subs->intval);
+    }
+
+    else if (subs->tokentype == IDENTIFIERTOK){
+      indexTok = talloc();
+      indexTok->tokentype = IDENTIFIERTOK;
+      strcpy(indexTok->stringval, subs->stringval);
+      indexTok->basicdt = STRINGTYPE;
+    }
+
+
+    elesize->link = indexTok;
+    timesop->operands = elesize;
+    TOKEN nsize;
+
+
+
+
+    nsize = makeintc(-1 * size);
+    nsize->link = timesop;
+    
+    TOKEN plusop = makeop(PLUSOP);
+    plusop->operands = nsize;
+    
+
+
+    TOKEN retTok = makearef(arr, plusop, tokb);
+
+    if (subs->tokentype == NUMBERTOK) {
+      int offset = size * subs->intval - size * low;
+      retTok->link = makeintc(offset);
+      retTok->link->tokentype = NUMBERTOK;
+    }
+
+    else if (subs->tokentype == IDENTIFIERTOK){
+      retTok->link = indexTok;
+      retTok->link->tokentype = IDENTIFIERTOK;
+
+    }
+
+
+    return retTok;
+  }
+
+
 }
   
 
