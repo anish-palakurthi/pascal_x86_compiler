@@ -100,13 +100,13 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
 
 
 ///
-  tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
+  tdef       :  IDENTIFIER EQ basicType     { insttype($1, $3); }
              ;
   tlist      :  tdef SEMICOLON tlist
              |  tdef SEMICOLON
              ;
 
-  fields     :  idlist COLON type             { $$ = instfields($1, $3); }
+  fields     :  idlist COLON basicType             { $$ = instfields($1, $3); }
              ;
   field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
              |  fields
@@ -115,17 +115,21 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
 
 
 
-  type       :  simpletype
-             |  ARRAY LBRACKET stype_list RBRACKET OF type   { $$ = instarray($3, $6); }
-             |  RECORD field_list END                          { $$ = instrec($1, $2); }
+  basicType       :  listableType
+             |  ARRAY LBRACKET listTypes RBRACKET OF basicType   { $$ =
+             instarray($3, $6); }
              |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
+             |  RECORD field_list END                          { $$ = instrec($1, $2); }
              ;
-  stype_list :  simpletype COMMA stype_list  { $$ = cons($1, $3); }
-             |  simpletype                { $$ = cons($1, NULL); }
+
+             
+  listTypes :  listableType COMMA listTypes  { $$ = cons($1, $3); }
+             |  listableType                { $$ = cons($1, NULL); }
              ;
-  simpletype :  IDENTIFIER   { $$ = findtype($1); }
-             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
+
+  listableType :  IDENTIFIER   { $$ = findtype($1); }
              |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
+             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
              ;
 
   tblock     :  TYPE tlist vblock       { $$ = $3; }
@@ -159,7 +163,7 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
   label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
              ;
 
-  vargroup   :  idlist COLON type { instvars($1, $3); }
+  vargroup   :  idlist COLON basicType { instvars($1, $3); }
              ;
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
