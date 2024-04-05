@@ -95,10 +95,10 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
             ;
 
 
-  cdef       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+  constant       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
              ;
-  clist      :  cdef SEMICOLON clist    
-             |  cdef SEMICOLON          
+  constantList      :  constant SEMICOLON constantList    
+             |  constant SEMICOLON          
              ;  
   tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
              ;
@@ -113,7 +113,7 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              ;
 
 
-  cblock     :  CONST clist tblock              { $$ = $3; }
+  cblock     :  CONST constantList tblock              { $$ = $3; }
              |  tblock
              ;
   tblock     :  TYPE tlist vblock       { $$ = $3; }

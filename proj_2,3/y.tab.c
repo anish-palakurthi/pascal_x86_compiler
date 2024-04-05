@@ -703,8 +703,8 @@ static const char *const yytname[] =
   "END", "FILEFILE", "FOR", "FUNCTION", "GOTO", "IF", "LABEL", "NIL", "OF",
   "PACKED", "PROCEDURE", "PROGRAM", "RECORD", "REPEAT", "SET", "THEN",
   "TO", "TYPE", "UNTIL", "VAR", "WHILE", "WITH", "$accept", "program",
-  "idlist", "constantVal", "statementList", "cdef", "clist", "tdef",
-  "tlist", "fields", "field_list", "cblock", "tblock", "type",
+  "idlist", "constantVal", "statementList", "constant", "constantList",
+  "tdef", "tlist", "fields", "field_list", "cblock", "tblock", "type",
   "stype_list", "simpletype", "vblock", "lblock", "labelValList",
   "varspecs", "label", "vargroup", "block", "statement", "functionCall",
   "endpart", "endif", "assignment", "expressionList", "expr",
@@ -1646,7 +1646,7 @@ yyreduce:
 
   case 10:
 #line 98 "parse.y"
-                                          { instconst(yyvsp[-2], yyvsp[0]); }
+                                              { instconst(yyvsp[-2], yyvsp[0]); }
 #line 1651 "y.tab.c"
     break;
 
@@ -1670,7 +1670,7 @@ yyreduce:
 
   case 19:
 #line 116 "parse.y"
-                                                { yyval = yyvsp[0]; }
+                                                       { yyval = yyvsp[0]; }
 #line 1675 "y.tab.c"
     break;
 
