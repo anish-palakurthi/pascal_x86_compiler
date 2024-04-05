@@ -82,31 +82,31 @@ TOKEN parseresult;
 
 program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
-            |  IDENTIFIER    { $$ = cons($1, NULL); }
-            ;
-
-  constantVal   :  STRING
-            | signedId
-            |  signedNumber
-            ;
-
-  constant   :  IDENTIFIER EQ constantVal { instconst($1, $3); }
-            ; 
-
+  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
+             |  IDENTIFIER    { $$ = cons($1, NULL); }
+             ;
+  constant   :  signedId
+             |  signedNumber
+             |  STRING
+             ;
   statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
             |  statement
             ;
 
 
-//
-  tdef       :  IDENTIFIER EQ type SEMICOLON    { insttype($1, $3); }
+  cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
-             
-  constantVal      :  tdef constantVal
-             |  tdef 
+  clist      :  cdef SEMICOLON clist    
+             |  cdef SEMICOLON          
+             ;  
+  tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
              ;
-
+  tlist      :  tdef SEMICOLON tlist
+             |  tdef SEMICOLON
+             ;
+  s_list     :  statement SEMICOLON s_list      { $$ = cons($1, $3); }
+             |  statement                  { $$ = cons($1, NULL); }
+             ;
   fields     :  idlist COLON type             { $$ = instfields($1, $3); }
              ;
   field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
@@ -114,8 +114,15 @@ idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
              ;
 
 
-
-
+  cblock     :  CONST clist tblock              { $$ = $3; }
+             |  tblock
+             ;
+  tblock     :  TYPE tlist vblock       { $$ = $3; }
+             |  vblock
+             ;
+  vblock     :  VAR varspecs block       { $$ = $3; }
+             |  block
+             ;
 
 
   type       :  simpletype
@@ -128,25 +135,9 @@ idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
              ;
   simpletype :  IDENTIFIER   { $$ = findtype($1); }
              |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
-             ;
-             
-  tblock     :  TYPE constantVal vblock       { $$ = $3; }
-             |  vblock
+             |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
              ;
 
-//
-  cblock     :  CONST constantList tblock              { $$ = $3; }
-             |  tblock
-             ;
-
-  constantList     :  constant SEMICOLON constantList    
-            |  constant SEMICOLON          
-            ;  
-
-  vblock     :  VAR varspecs block       { $$ = $3; }
-             |  block
-             ;
 
 
   lblock     :  LABEL labelValList SEMICOLON cblock  { $$ = $4; }
@@ -173,12 +164,13 @@ idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
             |  assignment
             |  functionCall
             |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
-            |  REPEAT statementList UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
-            |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
+            |  REPEAT statementList UNTIL expr              { $$ =
+            makerepeat($1, $2, $3, $4); }
             |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
-
+            |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
             |  label
             ;
+
   functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
 
@@ -248,12 +240,13 @@ idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
              |  NOT factor          { $$ = unaryop($1, $2); }
              ;
 
-  
-  variable   :  IDENTIFIER                            { $$ = findid($1); }
+    variable   :  IDENTIFIER                            { $$ = findid($1); }
             |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
              $3, $4); }
-             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
+             
              |  variable POINT                         { $$ = dopoint($1, $2); }
+
+             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
 %%
 
@@ -1421,4 +1414,3 @@ int main(void)          /*  */
     // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }
-
