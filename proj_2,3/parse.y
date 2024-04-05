@@ -1151,42 +1151,31 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok){
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
   
   if (bounds->link) {
-    printf("arraysym->lowbound %d\n", bounds->symtype->lowbound);
-    printf("arraysym->highbound %d\n", bounds->symtype->highbound);
-
     typetok = instarray(bounds->link, typetok);
+  } 
+  SYMBOL arrSymbol = symalloc();
+  arrSymbol->kind = ARRAYSYM;
+  arrSymbol->datatype = typetok->symtype;
 
-    SYMBOL subrange = bounds->symtype;
-    SYMBOL typesym = typetok->symtype;
-    SYMBOL arraysym = symalloc();
+  
+  arrSymbol->lowbound = bounds->symtype->lowbound;
+  arrSymbol->highbound = bounds->symtype->highbound;
 
-    arraysym->kind = ARRAYSYM;
-    arraysym->datatype = typesym;
-    arraysym->lowbound = subrange->lowbound;
-    arraysym->highbound = subrange->highbound;
-    arraysym->size = (arraysym->lowbound + arraysym->highbound - 1) * (typesym->size);
-    typetok->symtype = arraysym;
+  
+  if (bounds->link){
+    arrSymbol->size = (arrSymbol->lowbound + arrSymbol->highbound - 1) * (typetok->symtype->size);
+  }
+  else{
+    arrSymbol->size = (arrSymbol->highbound - arrSymbol->lowbound +  1) * (typetok->symtype->size);
 
+  }
+
+
+  typetok->symtype = arrSymbol;
 
   return typetok;
-
-
-  } else {
-
-    SYMBOL subrange = bounds->symtype;
-    SYMBOL typesym = typetok->symtype;
-    SYMBOL arraysym = symalloc();
-    arraysym->kind = ARRAYSYM;
-    arraysym->datatype = typesym;
-    arraysym->lowbound = subrange->lowbound;
-    arraysym->highbound = subrange->highbound;
-    arraysym->size = (arraysym->highbound - arraysym->lowbound +  1) * (typesym->size);
-    typetok->symtype = arraysym;
-
-
-    return typetok;
   }
-}
+
 
 /* instfields will install type in a list idlist of field name tokens:
    re, im: real    put the pointer to REAL in the RE, IM tokens.
