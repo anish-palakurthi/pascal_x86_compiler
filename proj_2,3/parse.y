@@ -90,53 +90,28 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  STRING
              ;
 
+  constant       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+             ;
   statementList  :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
             |  statement
             ;
 
 
-  constant       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+  type       :  IDENTIFIER EQ basicType     { insttype($1, $3); }
+             ;
+  typeList      :  type SEMICOLON typeList
+             |  type SEMICOLON
              ;
 
-
-///
-  tdef       :  IDENTIFIER EQ basicType     { insttype($1, $3); }
+  fieldsList     :  idlist COLON basicType             { $$ = instfields($1, $3); }
              ;
-  tlist      :  tdef SEMICOLON tlist
-             |  tdef SEMICOLON
+  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
+             |  fieldsList
              ;
 
-  fields     :  idlist COLON basicType             { $$ = instfields($1, $3); }
-             ;
-  field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
-             |  fields
-             ;
-
-
-
-
-  basicType       :  listableType
-             |  ARRAY LBRACKET listTypes RBRACKET OF basicType   { $$ =
-             instarray($3, $6); }
-             |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
-             |  RECORD field_list END                          { $$ = instrec($1, $2); }
-             ;
-
-             
-  listTypes :  listableType COMMA listTypes  { $$ = cons($1, $3); }
-             |  listableType                { $$ = cons($1, NULL); }
-             ;
-
-  listableType :  IDENTIFIER   { $$ = findtype($1); }
-             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
-             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-             ;
-
-  tblock     :  TYPE tlist vblock       { $$ = $3; }
+  tblock     :  TYPE typeList vblock       { $$ = $3; }
              |  vblock
              ;
-
-///
   cblock     :  CONST constantList tblock              { $$ = $3; }
              |  tblock
              ;
@@ -248,6 +223,25 @@ program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { pars
              |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
+             ;
+
+
+
+  basicType       :  listableType
+             |  ARRAY LBRACKET listTypes RBRACKET OF basicType   { $$ =
+             instarray($3, $6); }
+             |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
+             |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
+             ;
+
+             
+  listTypes :  listableType COMMA listTypes  { $$ = cons($1, $3); }
+             |  listableType                { $$ = cons($1, NULL); }
+             ;
+
+  listableType :  IDENTIFIER   { $$ = findtype($1); }
+             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
+             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
              ;
 
     variable   :  IDENTIFIER                            { $$ = findid($1); }
