@@ -761,35 +761,39 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
 /* findid finds an identifier in the symbol table, sets up symbol table
    pointers, changes a constant to its number equivalent */
 TOKEN findid(TOKEN tok) { /* the ID token */
-    SYMBOL sym, typ;
-    sym = searchst(tok->stringval);
-    tok->symentry = sym;
+    SYMBOL symbol =  searchst(tok->stringval);
+    tok->symentry = symbol;
     
-    if (sym->kind == CONSTSYM) {
-      if (sym->basicdt == REAL) {
-        tok->tokentype = NUMBERTOK;
-        tok->basicdt = REAL;
-        tok->realval = sym->constval.realnum;
-      }
-      else if (sym->basicdt == INTEGER) {
-        tok->tokentype = NUMBERTOK;
-        tok->basicdt = INTEGER;
-        tok->intval = sym->constval.intnum;
-      }
 
+    if (symbol->kind == CONSTSYM) {
+      tok->tokentype = NUMBERTOK;
+      switch(symbol->basicdt){
+        case INTEGER:
+          tok->intval = symbol->constval.intnum;
+          tok->basicdt = INTEGER;
+          break;
+        case REAL:
+          tok->realval = symbol->constval.realnum;
+          tok->basicdt = REAL;
+          break;
+        default:
+          break;
+      }
 
       return tok;
     }
-
-    typ = sym->datatype;
-    tok->symtype = typ;
-    if ( typ->kind == BASICTYPE ||
-         typ->kind == POINTERSYM)
-        tok->basicdt = typ->basicdt;
+    
+    tok->symtype = symbol->datatype;
+    if ( symbol->datatype->kind == BASICTYPE ||
+         symbol->datatype->kind == POINTERSYM)
+        tok->basicdt = symbol->datatype->basicdt;
 
 
     return tok;
   }
+
+
+
 
 
 /* findtype looks up a type name in the symbol table, puts the pointer
@@ -1118,20 +1122,20 @@ void instlabel (TOKEN num) {
 /* instenum installs an enumerated subrange in the symbol table,
    e.g., type color = (red, white, blue)
    by calling makesubrange and returning the token it returns. */
-TOKEN instenum(TOKEN idlist) {
-  int count = 0;
+TOKEN instenum(TOKEN idlist){
+  int numOptions = 0;
 
-  TOKEN list = copytok(idlist);
-  while (list) {
-    instconst(list, makeintc(count));
-    count ++;
-    list = list->link;
+  TOKEN traversal = copytok(idlist);
+
+  while (traversal != NULL) {
+    instconst(traversal, makeintc(numOptions++));
+    traversal = traversal->link;
   }
 
-  TOKEN tok = makesubrange(idlist, 0, count - 1);
+  TOKEN enumRange = makesubrange(idlist, 0, numOptions - 1);
 
 
-  return tok;
+  return enumRange;
 }
 
 /* instdotdot installs a .. subrange in the symbol table.
