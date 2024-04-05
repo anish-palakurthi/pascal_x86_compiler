@@ -2559,105 +2559,65 @@ TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
 }
 
-TOKEN write_fxn_args_type_check(TOKEN fn, TOKEN args) {
 
-	if (args->basicdt == STRINGTYPE) {
-		return fn;
-	}
-
-	TOKEN out = NULL;
-
-	SYMBOL fn_sym = searchst(fn->stringval);
-	if (!fn_sym) {
-		printf(" Error: function \"%s\" is not defined.\n", fn->stringval);
-		return out;
-	}
-
-	int fn_arg_type = fn_sym->datatype->link->basicdt;
-	int args_type = args->basicdt;
-
-	if (args_type == STRINGTYPE) {
-		out = fn;
-	}
-	else {
-
-		int replace_index = 5;
-		if (strcmp(fn->stringval, "writeln") == 0) {
-			replace_index = 7;
-		}
-
-		if (strcmp(fn->stringval, "write") == 0) {
-
-			if (args_type == INTEGER) {
-				fn->stringval[replace_index] = 'i';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-			else if (args_type == REAL) {
-				fn->stringval[replace_index] = 'f';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;				
-			}
-
-		}
-		else if (strcmp(fn->stringval, "writeln") == 0) {
-
-			if (args_type == INTEGER) {
-				fn->stringval[replace_index] = 'i';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-			else if (args_type == REAL) {
-				fn->stringval[replace_index] = 'f';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-
-		}
-	}
-
-	return out;
-}
 
 /* makefuncall makes a FUNCALL operator and links it to the fn and args.
    tok is a (now) unused token that is recycled. */
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
-  if (strcmp(fn->stringval, "new") == 0) {
-    tok = makeop(ASSIGNOP);
-    tok->operands = args;
 
-    SYMBOL typsym = args->symtype;
-    typsym = typsym->datatype;
-
-    TOKEN funcal = talloc();
-    funcal->tokentype = OPERATOR;
-    funcal->whichval = FUNCALLOP;
-    funcal->operands = fn;
-    funcal->basicdt = typsym->basicdt;
-    fn->link = makeintc(typsym->size);
-    args->link = funcal;
-
-  } else {
-    tok->tokentype = OPERATOR;
-    tok->whichval = FUNCALLOP;
-    tok->operands = fn;
-    tok->basicdt = args->basicdt;
-    fn->link=args;
-
-
-  }
+  
+  fn->link = args;
+  tok->tokentype = OPERATOR;  
+  tok->operands = fn;
+  tok->whichval = FUNCALLOP;
+  tok->basicdt = args->basicdt;
 
   if (strcmp(fn->stringval, "writeln") == 0) {
-    fn = write_fxn_args_type_check(fn, args);
-    if (!fn) {
-      return NULL;
+    int argType = args->basicdt;
+
+
+    int typeIndex = 7; 
+    switch (argType) {
+        case REAL:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'f';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        case INTEGER:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'i';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        default:
+            break;
     }
   }
 
-  if (DEBUG && DB_MAKEFUNCALL) {
-         printf("makefuncall\n");
-         dbugprinttok(tok);
-  }
+  else if (strcmp(fn->stringval, "new") == 0) {
+    tok = makeop(ASSIGNOP);
+    tok->operands = args;
+
+    TOKEN funcOp = makeop(FUNCALLOP);
+    fn->link = makeintc(args->symtype->datatype->size);
+    funcOp->operands = fn;
+    funcOp->basicdt = args->symtype->datatype->basicdt;
+    args->link = funcOp;
+
+    return tok;
+  } 
+
+
+     if (DEBUG & DB_MAKEFUNCALL)
+        { 
+          printf("makefuncall\n");
+          dbugprinttok(tok);
+          dbugprinttok(fn);
+          dbugprinttok(args);
+        };
+    
+    
   return tok;
 }
 
@@ -2692,14 +2652,14 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
    into tok, and returns tok. */
 TOKEN makesubrange(TOKEN tok, int low, int high) {
 
-  SYMBOL subrange = symalloc();
-  subrange->kind = SUBRANGE;
-  subrange->basicdt = INTEGER;
-  subrange->lowbound = low;
-  subrange->highbound = high;
-  subrange->size = basicsizes[INTEGER];
-  tok->symtype = subrange;
+  SYMBOL rangeSym = symalloc();
+  tok->symtype = rangeSym;
 
+  rangeSym->lowbound = low;
+  rangeSym->highbound = high;
+  rangeSym->basicdt = INTEGER;
+  rangeSym->kind = SUBRANGE;
+  rangeSym->size = sizeof(INTEGER);
 
   return tok;
 }
@@ -2742,18 +2702,6 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
   }
 
 
-
-/* finds label number in label table for user defined labels */
-int findlabelnumber(int label) {
-
-  for(int i = 0; i < labelnumber; i ++) {
-    if (labels[i] == label) {
-
-      return i;
-    }
-  }
-  return -1;
-}
 
 /* findid finds an identifier in the symbol table, sets up symbol table
    pointers, changes a constant to its number equivalent */
