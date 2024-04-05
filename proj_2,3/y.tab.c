@@ -2225,9 +2225,9 @@ int isInt(TOKEN tok) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-
-    if (op->whichval = AREFOP){
-if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+    printf("lhs->whichval: %d\n", lhs->whichval);
+    if (lhs->tokentype != NUMBERTOK){
+      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
         rhs = makeintc(0);
     }
 
@@ -2244,7 +2244,6 @@ if (rhs->whichval == (NIL - RESERVED_BIAS)) {
           op->basicdt = REAL;
           TOKEN ftok = makefloat(rhs);
           lhs->link = ftok;
-          // printf("made int rhs into a float\n");
       } else if (isInt(lhs) && isReal(rhs)) {
           if (op->whichval == ASSIGNOP) {
               op->basicdt = INTEGER;
@@ -2261,6 +2260,10 @@ if (rhs->whichval == (NIL - RESERVED_BIAS)) {
 
     return op;
     }
+    // if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+    //     rhs = makeintc(0);
+    //     rhs->basicdt = INTEGER;
+    // }
     lhs->link = rhs;             
     rhs->link = NULL;           
     op->operands = lhs; 
