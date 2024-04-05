@@ -1199,36 +1199,37 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok){
    argstok has a pointer its type.  rectok is just a trash token to be
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok) {
-  //Do storage allocation algorithm
-  SYMBOL recsym = symalloc();
-  recsym->kind = RECORDSYM;
-  int count = 0, next = 0, align;
+  
+  SYMBOL recordSymbol = symalloc();
+  recordSymbol->kind = RECORDSYM;
+  rectok->symtype = recordSymbol;
+
+  int curOffset = 0;
 
   SYMBOL prev = NULL;
+
   while (argstok) {
-    align = alignsize(argstok->symtype);
-    SYMBOL recfield = makesym(argstok->stringval);
-    recfield->datatype = argstok->symtype;
-    // printf("recfield name %s", recfield->namestring);
-    // printf("recfield type %s\n", recfield->datatype->namestring);
-    recfield->offset = wordaddress(next, align);
-    recfield->size = argstok->symtype->size;
-    next = recfield->offset + recfield->size;
-    if (count == 0) {
-      recsym->datatype = recfield;
-      prev = recfield;
-    } else {
-      prev->link = recfield;
-      prev = recfield;
+    SYMBOL field = makesym(argstok->stringval);
+    field->datatype = argstok->symtype;
+    field->size = argstok->symtype->size;
+    int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
+    field->offset = newSize;
+    curOffset = newSize + argstok->symtype->size;
+
+    if (prev == NULL) {
+      recordSymbol->datatype = field;
+    } 
+    else {
+      prev->link = field;
+
     }
-    recfield->link = NULL;
-    count ++;
+    prev = field;
+    field->link = NULL;
     argstok = argstok->link;
+    
   }
 
-  recsym->size = wordaddress(next, 8); 
-  rectok->symtype = recsym;
-
+  recordSymbol->size = wordaddress(curOffset, 8); 
 
   return rectok;
 }
@@ -1236,16 +1237,16 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
 /* instpoint will install a pointer type in symbol table */
 TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
-  SYMBOL typesym = searchins(typename->stringval);
+  SYMBOL typeSymbol = searchins(typename->stringval);
 
 
-  SYMBOL pointsym = symalloc();
-  pointsym->datatype = typesym;
-  pointsym->kind = POINTERSYM;
-  pointsym->size = basicsizes[POINTER];
-  pointsym->basicdt = POINTER;
+  SYMBOL pointSymbol = symalloc();
+  pointSymbol->kind = POINTERSYM;
+  pointSymbol->basicdt = POINTER;
+  pointSymbol->datatype = typeSymbol;
+  pointSymbol->size = sizeof(POINTER);
 
-  tok->symtype = pointsym;
+  tok->symtype = pointSymbol;
 
 
 
