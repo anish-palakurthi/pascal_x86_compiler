@@ -2439,7 +2439,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
   if (var->link){
-
+    
     if (var->link->tokentype == NUMBERTOK){
     finalOffset->intval = var->link->intval + off->intval;
     }
@@ -2450,10 +2450,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
       finalOffset = plusop;
       finalOffset->tokentype = IDENTIFIERTOK;
     }
+    
   }
 
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
-
     
     TOKEN off1 = var->operands->link;
     if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
@@ -2877,28 +2877,36 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
+  TOKEN curArr = copytok(arr);
   TOKEN retTok;
-  while (subs){
-    ppexpr(subs);
-    TOKEN timesop = makeop(TIMESOP);
-    int low = arr->symtype->lowbound;
-    int high = arr->symtype->highbound;
+  TOKEN variableTree;
+  
+  int rollingOffset = 0;
+  int count = 0;
+
+  while (subs) {
+    printf("\ncount: %d\n", count);
+    int low = curArr->symtype->lowbound;
+    int high = curArr->symtype->highbound;
     int size;
     
     if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
+      size = (curArr->symtype->size / (high + low - 1));
     }
 
     else{
-      size = (arr->symtype->size / (high + low + 1));
+      size = (curArr->symtype->size / (high + low + 1));
     }
     TOKEN elesize = makeintc(size);
-
+    printf("low: %d\n", low);
+    printf("high: %d\n", high);
+    printf("size: %d\n", size);
 
     TOKEN indexTok;
+    TOKEN timesop = makeop(TIMESOP);
 
     if (subs->tokentype == NUMBERTOK) {
-      indexTok = makeintc(subs->intval);
+      rollingOffset += size * subs->intval - size * low;;
     }
 
     else if (subs->tokentype == IDENTIFIERTOK){
@@ -2906,40 +2914,53 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       indexTok->tokentype = IDENTIFIERTOK;
       strcpy(indexTok->stringval, subs->stringval);
       indexTok->basicdt = STRINGTYPE;
+      elesize->link = indexTok;
+      timesop->operands = elesize;
     }
-    //good
 
 
-    elesize->link = indexTok;
-    timesop->operands = elesize;
 
-    TOKEN nsize = makeintc(-1 * size);
-    nsize->link = timesop;
-    
-    TOKEN plusop = makeop(PLUSOP);
-    plusop->operands = nsize;
+    if (low == 1){
+      rollingOffset -= size;
+    }
     
 
+    retTok = makearef(curArr, makeintc(rollingOffset), NULL);
+    retTok->symtype = curArr->symtype->datatype;
 
-    retTok = makearef(arr, plusop, tokb);
+
+    curArr = retTok;
+
+
 
     if (subs->tokentype == NUMBERTOK) {
       int offset = size * subs->intval - size * low;
       retTok->link = makeintc(offset);
       retTok->link->tokentype = NUMBERTOK;
     }
-
-    else if (subs->tokentype == IDENTIFIERTOK){
-      retTok->link = indexTok;
-      retTok->link->tokentype = IDENTIFIERTOK;
+    else if (subs->tokentype == IDENTIFIERTOK) {
+            if (variableTree){
+        TOKEN varPlus = makeop(PLUSOP);
+        varPlus->operands = variableTree;
+        varPlus->operands->link = timesop;
+      }
+      else{
+        variableTree = timesop;
+      }
     }
 
+
     subs = subs->link;
+    count += 1;
+  }
 
+  TOKEN finalOffset = makeop(PLUSOP);
+  finalOffset->operands = makeintc(rollingOffset);
+  finalOffset->link = variableTree;
 
-}
-  return retTok;
+  return makearef(arr, finalOffset, NULL);
 
+  
 }
   
 
@@ -3096,7 +3117,11 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
+  
   if (bounds->link) {
+    printf("arraysym->lowbound %d\n", bounds->symtype->lowbound);
+    printf("arraysym->highbound %d\n", bounds->symtype->highbound);
+
     typetok = instarray(bounds->link, typetok);
 
     SYMBOL subrange = bounds->symtype;

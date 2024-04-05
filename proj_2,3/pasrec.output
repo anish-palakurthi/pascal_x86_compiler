@@ -1,44 +1,67 @@
-7ii1yyparse result =        0
+arraysym->lowbound 1
+arraysym->highbound 10
+
+count: 0
+low: 1
+high: 10
+size: 16
+
+count: 0
+low: 1
+high: 20
+size: 48
+
+count: 0
+low: 1
+high: 10
+size: 12
+
+count: 1
+low: 0
+high: 2
+size: 4
+yyparse result =        0
 Symbol table level 1
- 94127214993808     complex  TYPE   typ 94127214993520  lvl  1  siz    16  off     0
+ 94343052435856     complex  TYPE   typ 94343052435568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94127214994672         red  CONST  typ INTEGER  val  0
- 94127214994832       white  CONST  typ INTEGER  val  1
- 94127214994992        blue  CONST  typ INTEGER  val  2
- 94127214995184       color  TYPE   typ 94127214995088  lvl  1  siz     4  off     0
+ 94343052436720         red  CONST  typ INTEGER  val  0
+ 94343052436880       white  CONST  typ INTEGER  val  1
+ 94343052437040        blue  CONST  typ INTEGER  val  2
+ 94343052437232       color  TYPE   typ 94343052437136  lvl  1  siz     4  off     0
   0 ..   2
- 94127214995600      person  TYPE   typ 94127214997424  lvl  1  siz    48  off     0
+ 94343052437648      person  TYPE   typ 94343052439472  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94127214995792          pp  TYPE   typ 94127214995696  lvl  1  siz     8  off     0
+ 94343052437840          pp  TYPE   typ 94343052437744  lvl  1  siz     8  off     0
 (^ person)
- 94127214998512           c  VAR    0 typ 94127214993520  lvl  1  siz    16  off     0
+ 94343052440560           c  VAR    0 typ 94343052435568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94127214998608           d  VAR    0 typ 94127214993520  lvl  1  siz    16  off    16
+ 94343052440656           d  VAR    0 typ 94343052435568  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94127214999088           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94127214999184         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94127215000176          ac  VAR    0 typ 94127215000080  lvl  1  siz   160  off    48
+ 94343052441136           i  VAR    0 typ 94343052466880  lvl  1  siz     4  off    32
+NULL
+ 94343052441232         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94343052442224          ac  VAR    0 typ 94343052442128  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94127215001392         aco  VAR    0 typ 94127215001296  lvl  1  siz   120  off   208
+ 94343052451648         aco  VAR    0 typ 94343052451552  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94127215002128        john  VAR    4 typ 94127214995696  lvl  1  siz     8  off   328
+ 94343052452384        john  VAR    4 typ 94343052437744  lvl  1  siz     8  off   328
 (^ person)
- 94127215002224        mary  VAR    4 typ 94127214995696  lvl  1  siz     8  off   336
+ 94343052452480        mary  VAR    4 typ 94343052437744  lvl  1  siz     8  off   336
 (^ person)
- 94127215002320        fred  VAR    4 typ 94127214995696  lvl  1  siz     8  off   344
+ 94343052452576        fred  VAR    4 typ 94343052437744  lvl  1  siz     8  off   344
 (^ person)
- 94127215002416         ptr  VAR    4 typ 94127214995696  lvl  1  siz     8  off   352
+ 94343052452672         ptr  VAR    4 typ 94343052437744  lvl  1  siz     8  off   352
 (^ person)
- 94127215003408      people  VAR    0 typ 94127215003312  lvl  1  siz   960  off   368
+ 94343052453664      people  VAR    0 typ 94343052453568  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
@@ -83,7 +106,7 @@ Symbol table level 1
                                           8))
                                  24)
                            4.500000e+00)
-                       (:= (aref ac 96)
+                       (:= (aref ac 0)
                            (aref (^ john)
                                  40))
                        (:= ptr john)
@@ -93,14 +116,13 @@ Symbol table level 1
                               (if (<> ptr 0)
                                   (progn (progn (:= sum (+ sum (aref (^ ptr)
                                                                      0)))
-                                                (:= (aref people (+ -48
-                                                                    (* 48
-                                                                       i)))
+                                                (:= (aref people 0)
                                                     (aref (^ ptr)
                                                           0))
-                                                (:= (aref aco (+ -12
-                                                                 (* 12
-                                                                    1)))
+                                                (:= (aref aco (+ -8)
+                                                              
+                                                              (* 12
+                                                                 i))
                                                     (aref (^ john)
                                                           32))
                                                 (:= ptr (aref (^ ptr)
