@@ -263,11 +263,59 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
 }
 
 
+int isReal(TOKEN tok) {
+  if(tok->basicdt == REAL)
+    return 1;
+  else 
+    return 0;
+}
 
+int isInt(TOKEN tok) {
+  if(tok->basicdt == INTEGER)
+    return 1;
+  else 
+    return 0;
+}
 
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
+
+    if (op->whichval = AREFOP){
+if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+        rhs = makeintc(0);
+    }
+
+    op->operands = lhs; // Link operands to operator.
+    lhs->link = rhs; // Link second operand to first.
+    rhs->link = NULL; // Terminate operand list.
+
+
+
+      // Existing logic
+      if (isReal(lhs) && isReal(rhs)) {
+          op->basicdt = REAL;
+      } else if (isReal(lhs) && isInt(rhs)) {
+          op->basicdt = REAL;
+          TOKEN ftok = makefloat(rhs);
+          lhs->link = ftok;
+          // printf("made int rhs into a float\n");
+      } else if (isInt(lhs) && isReal(rhs)) {
+          if (op->whichval == ASSIGNOP) {
+              op->basicdt = INTEGER;
+          } else {
+              op->basicdt = REAL;
+          }
+      }
+    
+
+    if (DEBUG & DB_BINOP) {
+        printf("binop - final type handling\n");
+        dbugprinttok(op);
+    }
+
+    return op;
+    }
     lhs->link = rhs;             
     rhs->link = NULL;           
     op->operands = lhs; 
