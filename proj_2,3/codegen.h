@@ -6,7 +6,7 @@
    varsize  = size of local storage in bytes = blockoffs[blocknumber]
    maxlabel = maximum label number used so far = labelnumber    */
 
-#include "token.h"
+// #include "token.h"
 
 
 void gencode(TOKEN pcode, int varsize, int maxlabel);
