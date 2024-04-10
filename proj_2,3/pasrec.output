@@ -1,45 +1,63 @@
+installed array with type of typetok 
+installed array with type of typetok 
+installed array with type of typetok 
+installed array with type of typetok 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 offset: 32
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 curfield->namestring: salary
 offset: 40
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 offset: 16
+recsym->namestring: location
 curfield->namestring: re
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 offset: 16
+recsym->namestring: location
 curfield->namestring: re
 curfield->namestring: im
 offset: 8
@@ -55,14 +73,17 @@ offsetTok
 96
 retTok
 (aref ac 96)
+recsym->namestring: ac
 curfield->namestring: 
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 curfield->namestring: salary
 offset: 40
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
 subs is null
@@ -78,8 +99,10 @@ retTok
 (aref people (+ -48
                 (* 48
                    i)))
+recsym->namestring: people
 curfield->namestring: 
 offset: 0
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
 subs is not null
@@ -95,62 +118,66 @@ high: 2
 size: 4
 rolling offset: -8
 (* 12
-   i)curfield->namestring: age
+   i)recsym->namestring: person
+curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 offset: 32
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 offset: 16
+recsym->namestring: location
 curfield->namestring: re
 curfield->namestring: im
 offset: 8
 yyparse result =        0
 Symbol table level 1
- 94338116624784     complex  TYPE   typ 94338116624496  lvl  1  siz    16  off     0
+ 94477095260560     complex  TYPE   typ 94477095260272  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94338116625648         red  CONST  typ INTEGER  val  0
- 94338116625808       white  CONST  typ INTEGER  val  1
- 94338116625968        blue  CONST  typ INTEGER  val  2
- 94338116626160       color  TYPE   typ 94338116626064  lvl  1  siz     4  off     0
+ 94477095261424         red  CONST  typ INTEGER  val  0
+ 94477095261584       white  CONST  typ INTEGER  val  1
+ 94477095261744        blue  CONST  typ INTEGER  val  2
+ 94477095261936       color  TYPE   typ 94477095261840  lvl  1  siz     4  off     0
   0 ..   2
- 94338116626576      person  TYPE   typ 94338116628400  lvl  1  siz    48  off     0
+ 94477095262352      person  TYPE   typ 94477095264176  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94338116626768          pp  TYPE   typ 94338116626672  lvl  1  siz     8  off     0
+ 94477095262544          pp  TYPE   typ 94477095262448  lvl  1  siz     8  off     0
 (^ person)
- 94338116629488           c  VAR    0 typ 94338116624496  lvl  1  siz    16  off     0
+ 94477095265264           c  VAR    0 typ 94477095260272  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94338116629584           d  VAR    0 typ 94338116624496  lvl  1  siz    16  off    16
+ 94477095265360           d  VAR    0 typ 94477095260272  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94338116630064           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94338116630160         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94338116631152          ac  VAR    0 typ 94338116631056  lvl  1  siz   160  off    48
+ 94477095265840           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94477095265936         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94477095275136          ac  VAR    0 typ 94477095275040  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94338116632368         aco  VAR    0 typ 94338116632272  lvl  1  siz   120  off   208
+ 94477095276352         aco  VAR    0 typ 94477095276256  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94338116633104        john  VAR    4 typ 94338116626672  lvl  1  siz     8  off   328
+ 94477095277088        john  VAR    4 typ 94477095262448  lvl  1  siz     8  off   328
 (^ person)
- 94338116633200        mary  VAR    4 typ 94338116626672  lvl  1  siz     8  off   336
+ 94477095277184        mary  VAR    4 typ 94477095262448  lvl  1  siz     8  off   336
 (^ person)
- 94338116633296        fred  VAR    4 typ 94338116626672  lvl  1  siz     8  off   344
+ 94477095277280        fred  VAR    4 typ 94477095262448  lvl  1  siz     8  off   344
 (^ person)
- 94338116633392         ptr  VAR    4 typ 94338116626672  lvl  1  siz     8  off   352
+ 94477095277376         ptr  VAR    4 typ 94477095262448  lvl  1  siz     8  off   352
 (^ person)
- 94338116634384      people  VAR    0 typ 94338116634288  lvl  1  siz   960  off   368
+ 94477095278368      people  VAR    0 typ 94477095278272  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)

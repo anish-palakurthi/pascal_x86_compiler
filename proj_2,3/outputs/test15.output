@@ -1,3 +1,7 @@
+installed array with type of typetok 
+installed array with type of typetok 
+installed array with type of typetok 
+installed array with type of typetok 
 subs is not null
 
 count: 0
@@ -52,16 +56,16 @@ rolling offset: 8
 (* 6
    i)yyparse result =        0
 Symbol table level 1
- 94638864125872         red  CONST  typ INTEGER  val  0
- 94638864126032       white  CONST  typ INTEGER  val  1
- 94638864126192        blue  CONST  typ INTEGER  val  2
- 94638864126384       color  TYPE   typ 94638864126288  lvl  1  siz     4  off     0
+ 94920208711600         red  CONST  typ INTEGER  val  0
+ 94920208711760       white  CONST  typ INTEGER  val  1
+ 94920208711920        blue  CONST  typ INTEGER  val  2
+ 94920208712112       color  TYPE   typ 94920208712016  lvl  1  siz     4  off     0
   0 ..   2
- 94638864126992           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94638864127088           j  VAR    0 typ integer  lvl  1  siz     4  off     4
- 94638864128304         aco  VAR    0 typ 94638864128208  lvl  1  siz   120  off    16
+ 94920208712720           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94920208712816           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94920208722240         aco  VAR    0 typ 94920208722144  lvl  1  siz   120  off    16
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94638864129520        acoX  VAR    0 typ 94638864129424  lvl  1  siz    60  off   144
+ 94920208723456        acoX  VAR    0 typ 94920208723360  lvl  1  siz    60  off   144
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ -8

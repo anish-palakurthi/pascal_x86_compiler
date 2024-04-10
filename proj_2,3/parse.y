@@ -540,10 +540,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symentry = var->symentry;
+  areftok->symtype = var->symtype;
   
-  if (var->symentry && var->symentry->datatype) {
-    areftok->basicdt = var->symentry->datatype->basicdt;
+  if (var->symtype && var->symtype->datatype) {
+    areftok->basicdt = var->symtype->datatype->basicdt;
   }
 
   if (DEBUG && DB_MAKEAREF) {
@@ -888,7 +888,7 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-  SYMBOL recsym = var->symentry;
+  SYMBOL recsym = var->symtype;
   printf("recsym->namestring: %s\n", recsym->namestring);
   
   SYMBOL curfield = recsym->datatype->datatype;
@@ -899,7 +899,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("curfield->namestring: %s\n", curfield->namestring);
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
-      var->symentry = curfield;
+      var->symtype = curfield;
 
       break;
     } 
@@ -1154,7 +1154,7 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symentry = var->symentry->datatype->datatype;
+  tok->symtype = var->symtype->datatype->datatype;
   tok->operands = var;
   
 
