@@ -1347,7 +1347,7 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
     mover = mover->link;
   }
 
-  return idlist;
+  return idlist; 
 
   return idlist;
 }
