@@ -56,16 +56,16 @@ rolling offset: 8
 (* 6
    i)yyparse result =        0
 Symbol table level 1
- 93871185670064         red  CONST  typ INTEGER  val  0
- 93871185670224       white  CONST  typ INTEGER  val  1
- 93871185670384        blue  CONST  typ INTEGER  val  2
- 93871185670576       color  TYPE   typ 93871185670480  lvl  1  siz     4  off     0
+ 94670397546416         red  CONST  typ INTEGER  val  0
+ 94670397546576       white  CONST  typ INTEGER  val  1
+ 94670397546736        blue  CONST  typ INTEGER  val  2
+ 94670397546928       color  TYPE   typ 94670397546832  lvl  1  siz     4  off     0
   0 ..   2
- 93871185671184           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 93871185671280           j  VAR    0 typ integer  lvl  1  siz     4  off     4
- 93871185680704         aco  VAR    0 typ 93871185680608  lvl  1  siz   120  off    16
+ 94670397547536           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94670397547632           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94670397557056         aco  VAR    0 typ 94670397556960  lvl  1  siz   120  off    16
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 93871185681920        acoX  VAR    0 typ 93871185681824  lvl  1  siz    60  off   144
+ 94670397558272        acoX  VAR    0 typ 94670397558176  lvl  1  siz    60  off   144
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ -8
