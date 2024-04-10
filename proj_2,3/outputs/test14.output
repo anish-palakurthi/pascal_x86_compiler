@@ -52,14 +52,14 @@ size: 1
 rolling offset: 8
 yyparse result =        0
 Symbol table level 1
- 93973965828016         red  CONST  typ INTEGER  val  0
- 93973965828176       white  CONST  typ INTEGER  val  1
- 93973965828336        blue  CONST  typ INTEGER  val  2
- 93973965828528       color  TYPE   typ 93973965828432  lvl  1  siz     4  off     0
+ 94854463315888         red  CONST  typ INTEGER  val  0
+ 94854463316048       white  CONST  typ INTEGER  val  1
+ 94854463316208        blue  CONST  typ INTEGER  val  2
+ 94854463316400       color  TYPE   typ 94854463316304  lvl  1  siz     4  off     0
   0 ..   2
- 93973965838080         aco  VAR    0 typ 93973965837984  lvl  1  siz   120  off     0
+ 94854463325952         aco  VAR    0 typ 94854463325856  lvl  1  siz   120  off     0
 (ARRAY   1 ..  10)
- 93973965839296        acoX  VAR    0 typ 93973965839200  lvl  1  siz    60  off   128
+ 94854463327168        acoX  VAR    0 typ 94854463327072  lvl  1  siz    60  off   128
 (ARRAY   2 ..   6)
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ 28))

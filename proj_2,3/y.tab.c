@@ -2324,7 +2324,6 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
   return op;  
 }
 
-
 int isReal(TOKEN tok) {
   if(tok->basicdt == REAL)
     return 1;
