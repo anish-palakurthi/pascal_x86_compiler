@@ -25,8 +25,8 @@ size: 12
 count: 1
 low: 0
 high: 2
-size: 4
-rolling offset: -4
+size: 1
+rolling offset: -10
 (* 12
    j)subs is not null
 
@@ -51,28 +51,28 @@ size: 6
 count: 1
 low: 0
 high: 2
-size: 4
-rolling offset: 8
+size: 1
+rolling offset: 2
 (* 6
    i)yyparse result =        0
 Symbol table level 1
- 94920208711600         red  CONST  typ INTEGER  val  0
- 94920208711760       white  CONST  typ INTEGER  val  1
- 94920208711920        blue  CONST  typ INTEGER  val  2
- 94920208712112       color  TYPE   typ 94920208712016  lvl  1  siz     4  off     0
+ 94600107900848         red  CONST  typ INTEGER  val  0
+ 94600107901008       white  CONST  typ INTEGER  val  1
+ 94600107901168        blue  CONST  typ INTEGER  val  2
+ 94600107901360       color  TYPE   typ 94600107901264  lvl  1  siz     4  off     0
   0 ..   2
- 94920208712720           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94920208712816           j  VAR    0 typ integer  lvl  1  siz     4  off     4
- 94920208722240         aco  VAR    0 typ 94920208722144  lvl  1  siz   120  off    16
-(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94920208723456        acoX  VAR    0 typ 94920208723360  lvl  1  siz    60  off   144
-(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
+ 94600107901968           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94600107902064           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94600107911488         aco  VAR    0 typ 94600107911392  lvl  1  siz   120  off    16
+(ARRAY   1 ..  10)
+ 94600107912704        acoX  VAR    0 typ 94600107912608  lvl  1  siz    60  off   144
+(ARRAY   2 ..   6)
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ -8
                                         (* 12
                                            i)))
                            2)
-                       (:= (aref aco (+ -4
+                       (:= (aref aco (+ -10
                                         (* 12
                                            j)))
                            0)
@@ -80,7 +80,7 @@ Symbol table level 1
                                          (* 6
                                             j)))
                            2)
-                       (:= (aref acoX (+ 8
+                       (:= (aref acoX (+ 2
                                          (* 6
                                             i)))
                            0)))

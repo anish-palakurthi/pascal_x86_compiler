@@ -81,22 +81,19 @@ TOKEN parseresult;
 
   program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
              ;
-  u_constant :  NUMBER
-             |  NIL 
-             |  STRING
+
+  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
+             |  IDENTIFIER    { $$ = cons($1, NULL); }
              ;
-  sign       :  PLUS 
-             |  MINUS
-             ;
+
+
   constant   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
              |  IDENTIFIER
              |  sign NUMBER         { $$ = unaryop($1, $2); }
              |  NUMBER
              |  STRING
              ;
-  idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
-             |  IDENTIFIER    { $$ = cons($1, NULL); }
-             ;
+
   numlist    :  NUMBER COMMA numlist  { instlabel($1); }
              |  NUMBER                { instlabel($1); }
              ;
@@ -182,40 +179,48 @@ TOKEN parseresult;
              |  MINUS  
              |  OR
              ;
-  compare_op :  EQ 
-             |  LT 
-             |  GT 
-             |  NE 
-             |  LE 
-             |  GE 
-             |  IN
+
+  signedExpression     :  signedTerm
+             |  signedExpression PLUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression MINUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression OR term                 { $$ = binop($2, $1, $3); }
              ;
-  times_op   :  TIMES 
-             |  DIVIDE 
-             |  DIV 
-             |  MOD 
-             |  AND
+  
+  signedTerm :  sign term           { $$ = unaryop($1, $2); }
+             |  term
              ;
-  s_expr     :  sign term                       { $$ = unaryop($1, $2); }
-             |  term 
-             |  s_expr plus_op term                 { $$ = binop($2, $1, $3); }
+
+  sign       :  PLUS 
+             |  MINUS
              ;
-  expr       :  expr compare_op s_expr              { $$ = binop($2, $1, $3); }
-             |  s_expr 
+
+  expr       :  expr EQ signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr LT signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr GT signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr NE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr LE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr GE signedExpression              { $$ = binop($2, $1, $3); }
+             |  expr IN signedExpression              { $$ = binop($2, $1, $3); }
+             |  signedExpression 
              ;
+
   expr_list  :  expr COMMA expr_list           { $$ = cons($1, $3); }
              |  expr                        { $$ = cons($1, NULL); }
              ;
-  term       :  term times_op factor              { $$ = binop($2, $1, $3); }
+  term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
+             |  term DIVIDE factor              { $$ = binop($2, $1, $3); }
+             |  term AND factor              { $$ = binop($2, $1, $3); }
+             |  term DIV factor              { $$ = binop($2, $1, $3); }
+             |  term MOD factor              { $$ = binop($2, $1, $3); }
              |  factor
              ;
-  factor     :  u_constant
-             |  variable
-             |  LPAREN expr RPAREN             { $$ = $2; }       
+  factor     :   variable
+             |  STRING
+             | NUMBER
+             |  NIL 
              |  funcall
+             |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
-             ;
-
 %%
 
 /* You should add your own debugging flags below, and add debugging

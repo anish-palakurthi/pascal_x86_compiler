@@ -8,54 +8,54 @@ installed array with type of typetok
 installed array with type of typetok 
 yyparse result =        0
 Symbol table level 1
- 94233727709264     complex  TYPE   typ 94233727708976  lvl  1  siz    16  off     0
+ 94430820122704     complex  TYPE   typ 94430820122416  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94233727710128         red  CONST  typ INTEGER  val  0
- 94233727710288       white  CONST  typ INTEGER  val  1
- 94233727710448        blue  CONST  typ INTEGER  val  2
- 94233727710640       color  TYPE   typ 94233727710544  lvl  1  siz     4  off     0
+ 94430820123568         red  CONST  typ INTEGER  val  0
+ 94430820123728       white  CONST  typ INTEGER  val  1
+ 94430820123888        blue  CONST  typ INTEGER  val  2
+ 94430820124080       color  TYPE   typ 94430820123984  lvl  1  siz     4  off     0
   0 ..   2
- 94233727711056      person  TYPE   typ 94233727712880  lvl  1  siz    48  off     0
+ 94430820124496      person  TYPE   typ 94430820126320  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94233727711248          pp  TYPE   typ 94233727711152  lvl  1  siz     8  off     0
+ 94430820124688          pp  TYPE   typ 94430820124592  lvl  1  siz     8  off     0
 (^ person)
- 94233727722624  complexArr  TYPE   typ 94233727722528  lvl  1  siz   160  off     0
+ 94430820136064  complexArr  TYPE   typ 94430820135968  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94233727723840  colorArr2D  TYPE   typ 94233727723744  lvl  1  siz   120  off     0
+ 94430820137280  colorArr2D  TYPE   typ 94430820137184  lvl  1  siz   120  off     0
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94233727724832   personArr  TYPE   typ 94233727724736  lvl  1  siz   960  off     0
+ 94430820138272   personArr  TYPE   typ 94430820138176  lvl  1  siz   960  off     0
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
                                             (im real)))
                           (favorite   0 ..   2)
                           (salary real)))
- 94233727725824  complexArrX  TYPE   typ 94233727725728  lvl  1  siz    80  off     0
+ 94430820139264  complexArrX  TYPE   typ 94430820139168  lvl  1  siz    80  off     0
 (ARRAY   2 ..   6 (RECORD (re real)
                           (im real)))
- 94233727727040  colorArr2DX  TYPE   typ 94233727726944  lvl  1  siz    60  off     0
+ 94430820140480  colorArr2DX  TYPE   typ 94430820140384  lvl  1  siz    60  off     0
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
- 94233727728032  personArrX  TYPE   typ 94233727727936  lvl  1  siz   720  off     0
+ 94430820141472  personArrX  TYPE   typ 94430820141376  lvl  1  siz   720  off     0
 (ARRAY   2 ..  16 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
                                             (im real)))
                           (favorite   0 ..   2)
                           (salary real)))
- 94233727728448           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94233727728800          ac  VAR    0 typ 94233727722528  lvl  1  siz   160  off    16
+ 94430820141888           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94430820142240          ac  VAR    0 typ 94430820135968  lvl  1  siz   160  off    16
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94233727729152         aco  VAR    0 typ 94233727723744  lvl  1  siz   120  off   176
+ 94430820142592         aco  VAR    0 typ 94430820137184  lvl  1  siz   120  off   176
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94233727729504      people  VAR    0 typ 94233727724736  lvl  1  siz   960  off   304
+ 94430820142944      people  VAR    0 typ 94430820138176  lvl  1  siz   960  off   304
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
