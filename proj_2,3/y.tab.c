@@ -2279,12 +2279,13 @@ yyreturn:
 #define DB_INSTREC      0
 #define DB_INSTPOINT    0
 
- int labelnumber = 0;  
- int labels[100];
+ int labelnumber = 0;  /* sequential counter for internal label numbers */
+ int labeltable[50];
 
-/* cons links a new item onto the front of a list.  Equivalent to a push.
-   (cons 'a '(b c))  =  (a b c)    */
-TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
+   /*  Note: you should add to the above values and insert debugging
+       printouts in your routines similar to those that are shown here.     */
+
+TOKEN cons(TOKEN item, TOKEN list)            /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
@@ -2306,22 +2307,11 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
-
+  if (DEBUG & DB_NCONC) {
+   printf("nconc\n");
+   dbugprinttok(temp);
+  };
   return temp;
-}
-
-
-
-/* unaryop links a unary operator op to one operand, lhs */
-TOKEN unaryop(TOKEN op, TOKEN lhs) {
-  op->operands = lhs;
-  lhs->link = NULL;
-  if (DEBUG & DB_UNOP)
-     { printf("unaryop\n");
-       dbugprinttok(op);
-       dbugprinttok(lhs);
-     };
-  return op;  
 }
 
 int isReal(TOKEN tok) {
@@ -2337,6 +2327,20 @@ int isInt(TOKEN tok) {
   else 
     return 0;
 }
+
+/* unaryop links a unary operator op to one operand, lhs */
+TOKEN unaryop(TOKEN op, TOKEN lhs) {
+  op->operands = lhs;
+  lhs->link = NULL;
+  if (DEBUG & DB_UNOP)
+     { printf("unaryop\n");
+       dbugprinttok(op);
+       dbugprinttok(lhs);
+     };
+  return op;  
+}
+
+
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     // printf("binop\n");
@@ -2434,7 +2438,6 @@ TOKEN copytok(TOKEN target) {
   copy->symtype = target->symtype;
   copy->symentry = target->symentry;
   copy->link = target->link;
-
   for (int i = 0; i < 16; i++){
     copy->stringval[i] = target->stringval[i];
   }
@@ -2554,11 +2557,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symtype = var->symtype;
+  areftok->symentry = var->symentry;
   
-  
-  if (var->symtype && var->symtype->datatype) {
-    areftok->basicdt = var->symtype->datatype->basicdt;
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
   if (DEBUG && DB_MAKEAREF) {
@@ -2829,7 +2831,7 @@ int findlabelnumber(int label) {
     printf("finding label\n");
   }
   for(int i = 0; i < labelnumber; i ++) {
-    if (labels[i] == label) {
+    if (labeltable[i] == label) {
       if (DEBUG & DB_FINDLABEL) {
        printf("found label : ");
        printf("%d\n", i);
@@ -2902,13 +2904,11 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
-  printf("reduce dot var: \n");
-  ppexpr(var);
-  printf("\n");
-  SYMBOL recsym = var->symtype;
+
+  SYMBOL recsym = var->symentry;
   printf("recsym->namestring: %s\n", recsym->namestring);
   
-  SYMBOL curfield = recsym->datatype;//->datatype;
+  SYMBOL curfield = recsym->datatype->datatype;
   
 
   int offset = 0;
@@ -2916,7 +2916,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("curfield->namestring: %s\n", curfield->namestring);
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
-      var->symtype = curfield;
+      var->symentry = curfield;
 
       break;
     } 
@@ -3041,11 +3041,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   finalOffset->operands = makeintc(rollingOffset);
   finalOffset->operands->link = variableTree;
 
-  TOKEN areftok = makearef(arr, finalOffset, NULL);
-  areftok->symtype->datatype = areftok->symtype->datatype->datatype;
-  //var->symtype->datatype->datatype needs to be
-  //var->symtype->datatype
-  return areftok;
+  return makearef(arr, finalOffset, NULL);
 
   }
 
@@ -3110,7 +3106,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     ppexpr(offsetTok);
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
-    retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
 
 
@@ -3176,12 +3171,9 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symtype = var->symtype->datatype->datatype;
+  tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
-  tok->tokentype = OPERATOR;
-  tok->whichval = POINTEROP;
-  var->link = NULL;
-
+  
 
 
   if (DEBUG & DB_DOPOINT) {
@@ -3234,7 +3226,7 @@ void instconst(TOKEN idtok, TOKEN consttok) {
 
 /* instlabel installs a user label into the label table */
 void  instlabel (TOKEN num) {
-  labels[labelnumber++] = num->intval;  
+  labeltable[labelnumber++] = num->intval;  
 
   if (DEBUG & DB_INSTLABEL) {
     printf("install label\n");
@@ -3243,7 +3235,7 @@ void  instlabel (TOKEN num) {
       printf("label ");
       printf("%d", i);
       printf(" : ");
-      printf("%d\n", labels[i]);
+      printf("%d\n", labeltable[i]);
     }
   }
 }
@@ -3342,9 +3334,6 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   SYMBOL typesym = typetok->symtype;
-  if (typesym == NULL){
-    typesym = searchins(typetok->stringval);
-  }
   // printf("typesym name %s\n", typesym->namestring);
   TOKEN temp = idlist;
   while(temp) {
@@ -3371,7 +3360,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
   //Do storage allocation algorithm
   SYMBOL recsym = symalloc();
   recsym->kind = RECORDSYM;
-  int next = 0, align;
+  int count = 0, next = 0, align;
 
   SYMBOL prev = NULL;
   while (argstok) {
@@ -3382,18 +3371,16 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     recfield->offset = wordaddress(next, align);
     recfield->size = argstok->symtype->size;
     next = recfield->offset + recfield->size;
-    if (prev == NULL) {
+    if (count == 0) {
       recsym->datatype = recfield;
       prev = recfield;
     } else {
       prev->link = recfield;
       prev = recfield;
     }
-    
     recfield->link = NULL;
-    
+    count ++;
     argstok = argstok->link;
-
   }
 
   recsym->size = wordaddress(next, 16); 

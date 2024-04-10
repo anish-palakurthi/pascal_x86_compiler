@@ -24,8 +24,8 @@ size: 12
 count: 1
 low: 0
 high: 2
-size: 1
-rolling offset: 2
+size: 4
+rolling offset: 8
 subs is not null
 
 count: 0
@@ -48,25 +48,25 @@ size: 6
 count: 1
 low: 0
 high: 2
-size: 1
-rolling offset: 8
+size: 4
+rolling offset: 14
 yyparse result =        0
 Symbol table level 1
- 94854463315888         red  CONST  typ INTEGER  val  0
- 94854463316048       white  CONST  typ INTEGER  val  1
- 94854463316208        blue  CONST  typ INTEGER  val  2
- 94854463316400       color  TYPE   typ 94854463316304  lvl  1  siz     4  off     0
+ 94228939718576         red  CONST  typ INTEGER  val  0
+ 94228939718736       white  CONST  typ INTEGER  val  1
+ 94228939718896        blue  CONST  typ INTEGER  val  2
+ 94228939719088       color  TYPE   typ 94228939718992  lvl  1  siz     4  off     0
   0 ..   2
- 94854463325952         aco  VAR    0 typ 94854463325856  lvl  1  siz   120  off     0
-(ARRAY   1 ..  10)
- 94854463327168        acoX  VAR    0 typ 94854463327072  lvl  1  siz    60  off   128
-(ARRAY   2 ..   6)
+ 94228939728640         aco  VAR    0 typ 94228939728544  lvl  1  siz   120  off     0
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94228939729856        acoX  VAR    0 typ 94228939729760  lvl  1  siz    60  off   128
+(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ 28))
                            2)
-                       (:= (aref aco (+ 2))
+                       (:= (aref aco (+ 8))
                            0)
                        (:= (aref acoX (+ 22))
                            2)
-                       (:= (aref acoX (+ 8))
+                       (:= (aref acoX (+ 14))
                            0)))
