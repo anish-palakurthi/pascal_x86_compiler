@@ -2878,6 +2878,8 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   if (subs->link){
+    printf("subs is not null\n");
+
   TOKEN curArr = copytok(arr);
   TOKEN retTok;
   TOKEN variableTree = NULL;
@@ -2968,18 +2970,18 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   return makearef(arr, finalOffset, NULL);
 
   }
+
+
+  
   else{
+    printf("subs is null\n");
+
     TOKEN timesop = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
     int size;
     
-    if (low == 1){
-      size = (arr->symtype->size / (high + low - 1));
-    }
-    else{
-      size = (arr->symtype->size / (high + low + 1));
-    }
+    size = (arr->symtype->size / (high - low + 1));
     TOKEN elesize = makeintc(size);
 
 
@@ -3004,15 +3006,32 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
 
 
-    nsize = makeintc(-1 * size);
+    nsize = makeintc(-size * low);
     nsize->link = timesop;
     
     TOKEN plusop = makeop(PLUSOP);
     plusop->operands = nsize;
     
+    printf("plusop\n");
+    ppexpr(plusop);
+    printf("\n");
 
+    TOKEN offsetTok;
+    if (subs->tokentype == NUMBERTOK) {
+      printf("subs->intval: %d\n", subs->intval);
+      printf("size: %d\n", size);
+      printf("subs->intval * size: %d\n", indexTok->intval * size + nsize->intval);
+      offsetTok = makeintc(indexTok->intval * size + nsize->intval);
+    }
 
-    TOKEN retTok = makearef(arr, plusop, tokb);
+    else if (subs->tokentype == IDENTIFIERTOK){
+      offsetTok = plusop;
+    }
+
+    printf("offsetTok\n");
+    ppexpr(offsetTok);
+    printf("\n");
+    TOKEN retTok = makearef(arr, offsetTok, tokb);
 
     if (subs->tokentype == NUMBERTOK) {
       int offset = size * subs->intval - size * low;
@@ -3187,11 +3206,6 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
-    if (DEBUG & DB_INSTARRAY) {
-        printf("In instarray()\n");
-        dbugprint2args(bounds, typetok);
-        dbprsymbol(typetok->symtype);
-    }
 
     // Recursively call instarray to ensure correct dimension order
     if (bounds->link) {
