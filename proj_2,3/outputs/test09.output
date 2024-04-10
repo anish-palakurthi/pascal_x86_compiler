@@ -1,33 +1,33 @@
 yyparse result =        0
 Symbol table level 1
- 94653156081744     complex  TYPE   typ 94653156081456  lvl  1  siz    16  off     0
+ 94679791673424     complex  TYPE   typ 94679791673136  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94653156082608         red  CONST  typ INTEGER  val  0
- 94653156082768       white  CONST  typ INTEGER  val  1
- 94653156082928        blue  CONST  typ INTEGER  val  2
- 94653156083120       color  TYPE   typ 94653156083024  lvl  1  siz     4  off     0
+ 94679791674288         red  CONST  typ INTEGER  val  0
+ 94679791674448       white  CONST  typ INTEGER  val  1
+ 94679791674608        blue  CONST  typ INTEGER  val  2
+ 94679791674800       color  TYPE   typ 94679791674704  lvl  1  siz     4  off     0
   0 ..   2
- 94653156083536      person  TYPE   typ 94653156085360  lvl  1  siz    48  off     0
+ 94679791675216      person  TYPE   typ 94679791677040  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94653156083728          pp  TYPE   typ 94653156083632  lvl  1  siz     8  off     0
+ 94679791675408          pp  TYPE   typ 94679791675312  lvl  1  siz     8  off     0
 (^ person)
- 94653156086320           c  VAR    0 typ 94653156081456  lvl  1  siz    16  off     0
+ 94679791678000           c  VAR    0 typ 94679791673136  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94653156086672         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94653156087408        john  VAR    4 typ 94653156083632  lvl  1  siz     8  off    24
+ 94679791678352         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94679791679088        john  VAR    4 typ 94679791675312  lvl  1  siz     8  off    24
 (^ person)
- 94653156087504        mary  VAR    4 typ 94653156083632  lvl  1  siz     8  off    32
+ 94679791679184        mary  VAR    4 typ 94679791675312  lvl  1  siz     8  off    32
 (^ person)
- 94653156087600        fred  VAR    4 typ 94653156083632  lvl  1  siz     8  off    40
+ 94679791679280        fred  VAR    4 typ 94679791675312  lvl  1  siz     8  off    40
 (^ person)
- 94653156087696         ptr  VAR    4 typ 94653156083632  lvl  1  siz     8  off    48
+ 94679791679376         ptr  VAR    4 typ 94679791675312  lvl  1  siz     8  off    48
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)

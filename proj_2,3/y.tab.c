@@ -2621,10 +2621,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symentry = var->symentry;
+  areftok->symtype = var->symtype;
   
-  if (var->symentry && var->symentry->datatype) {
-    areftok->basicdt = var->symentry->datatype->basicdt;
+  if (var->symtype && var->symtype->datatype) {
+    areftok->basicdt = var->symtype->datatype->basicdt;
   }
 
   if (DEBUG && DB_MAKEAREF) {
@@ -2937,13 +2937,13 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-  SYMBOL recordSymbol = var->symentry;
-  SYMBOL moverField = recordSymbol->datatype->datatype;
+  SYMBOL recordSymbol = var->symtype;
+  SYMBOL moverField = recordSymbol->datatype;
 
   int fieldOffset = 0;
   while (moverField != NULL){
     if (strcmp(moverField->namestring, field->stringval) == 0){
-      var->symentry = moverField;
+      var->symtype = moverField;
 
       fieldOffset = moverField->offset;
       break;
@@ -3059,7 +3059,9 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   finalOffset->operands = makeintc(rollingOffset);
   finalOffset->operands->link = variableTree;
 
-  return makearef(arr, finalOffset, NULL);
+  TOKEN dimensionalToken =  makearef(arr, finalOffset, NULL);
+  // dimensionalToken->symtype = dimensionalToken->symtype->symtype;
+  return dimensionalToken;
 
   }
 
@@ -3124,7 +3126,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     ppexpr(offsetTok);
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
-
+    retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
 
     if (subs->tokentype == IDENTIFIERTOK){
@@ -3204,7 +3206,7 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symentry = var->symentry->datatype->datatype;
+  tok->symtype = var->symtype->datatype->datatype;
   tok->operands = var;
   
 
@@ -3411,16 +3413,12 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
   SYMBOL pointsym = symalloc();
   pointsym->datatype = typesym;
-  pointsym->kind = POINTERSYM;
   pointsym->size = basicsizes[POINTER];
+  pointsym->kind = POINTERSYM;
   pointsym->basicdt = POINTER;
 
   tok->symtype = pointsym;
 
-  if (DEBUG & DB_INSTPOINT) {
-      printf("install point\n");
-      dbugprinttok(tok);
-  }
 
   return tok;
 }
@@ -3430,9 +3428,10 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
    typetok is a token containing symbol table pointers. */
 void insttype(TOKEN typename, TOKEN typetok) {
   SYMBOL typesym = searchins(typename->stringval);
-  typesym->kind = TYPESYM;
   typesym->datatype = typetok->symtype;
   typesym->size = typetok->symtype->size;
+  typesym->kind = TYPESYM;
+
 
   if (DEBUG & DB_INSTTYPE) {
     printf("install type\n");
