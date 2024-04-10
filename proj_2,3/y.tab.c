@@ -2484,9 +2484,12 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
+  areftok->symentry = var->symentry;
   areftok->symtype = var->symtype;
-  
-  if (var->symtype && var->symtype->datatype) {
+
+
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
     areftok->basicdt = var->symtype->datatype->basicdt;
   }
 
