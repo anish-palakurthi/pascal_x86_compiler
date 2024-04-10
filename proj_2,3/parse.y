@@ -718,105 +718,63 @@ TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
 }
 
-TOKEN write_fxn_args_type_check(TOKEN fn, TOKEN args) {
-
-	if (args->basicdt == STRINGTYPE) {
-		return fn;
-	}
-
-	TOKEN out = NULL;
-
-	SYMBOL fn_sym = searchst(fn->stringval);
-	if (!fn_sym) {
-		printf(" Error: function \"%s\" is not defined.\n", fn->stringval);
-		return out;
-	}
-
-	int fn_arg_type = fn_sym->datatype->link->basicdt;
-	int args_type = args->basicdt;
-
-	if (args_type == STRINGTYPE) {
-		out = fn;
-	}
-	else {
-
-		int replace_index = 5;
-		if (strcmp(fn->stringval, "writeln") == 0) {
-			replace_index = 7;
-		}
-
-		if (strcmp(fn->stringval, "write") == 0) {
-
-			if (args_type == INTEGER) {
-				fn->stringval[replace_index] = 'i';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-			else if (args_type == REAL) {
-				fn->stringval[replace_index] = 'f';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;				
-			}
-
-		}
-		else if (strcmp(fn->stringval, "writeln") == 0) {
-
-			if (args_type == INTEGER) {
-				fn->stringval[replace_index] = 'i';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-			else if (args_type == REAL) {
-				fn->stringval[replace_index] = 'f';
-				fn->stringval[replace_index + 1] = '\0';
-				out = fn;
-			}
-
-		}
-	}
-
-	return out;
-}
-
 /* makefuncall makes a FUNCALL operator and links it to the fn and args.
    tok is a (now) unused token that is recycled. */
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
-  if (strcmp(fn->stringval, "new") == 0) {
-    tok = makeop(ASSIGNOP);
-    tok->operands = args;
 
-    SYMBOL typsym = args->symtype;
-    typsym = typsym->datatype;
-
-    TOKEN funcal = talloc();
-    funcal->tokentype = OPERATOR;
-    funcal->whichval = FUNCALLOP;
-    funcal->operands = fn;
-    funcal->basicdt = typsym->basicdt;
-    fn->link = makeintc(typsym->size);
-    args->link = funcal;
-
-  } else {
-    tok->tokentype = OPERATOR;
-    tok->whichval = FUNCALLOP;
-    tok->operands = fn;
-    tok->basicdt = args->basicdt;
-    fn->link=args;
-
-
-  }
+  
+  fn->link = args;
+  tok->tokentype = OPERATOR;  
+  tok->operands = fn;
+  tok->whichval = FUNCALLOP;
+  tok->basicdt = args->basicdt;
 
   if (strcmp(fn->stringval, "writeln") == 0) {
-    fn = write_fxn_args_type_check(fn, args);
-    if (!fn) {
-      return NULL;
+    int argType = args->basicdt;
+
+
+    int typeIndex = 7; 
+    switch (argType) {
+        case REAL:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'f';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        case INTEGER:
+            if (strcmp(fn->stringval, "writeln") == 0) {
+                fn->stringval[typeIndex] = 'i';
+                fn->stringval[typeIndex + 1] = '\0';
+            }
+            break;
+        default:
+            break;
     }
   }
 
-  if (DEBUG && DB_MAKEFUNCALL) {
-         printf("makefuncall\n");
-         dbugprinttok(tok);
-  }
+  else if (strcmp(fn->stringval, "new") == 0) {
+    tok = makeop(ASSIGNOP);
+    tok->operands = args;
+
+    TOKEN funcOp = makeop(FUNCALLOP);
+    fn->link = makeintc(args->symtype->datatype->size);
+    funcOp->operands = fn;
+    funcOp->basicdt = args->symtype->datatype->basicdt;
+    args->link = funcOp;
+
+    return tok;
+  } 
+
+
+     if (DEBUG & DB_MAKEFUNCALL)
+        { 
+          printf("makefuncall\n");
+          dbugprinttok(tok);
+          dbugprinttok(fn);
+          dbugprinttok(args);
+        };
+    
+    
   return tok;
 }
 
@@ -966,44 +924,30 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-  SYMBOL recsym = var->symentry;
-  printf("recsym->namestring: %s\n", recsym->namestring);
-  
-  SYMBOL curfield = recsym->datatype->datatype;
-  
+  SYMBOL recordSymbol = var->symentry;
+  SYMBOL moverField = recordSymbol->datatype->datatype;
 
-  int offset = 0;
-  while(curfield) {
-    printf("curfield->namestring: %s\n", curfield->namestring);
-    if (strcmp(curfield->namestring, field->stringval) == 0) {
-      offset = curfield->offset;
-      var->symentry = curfield;
+  int fieldOffset = 0;
+  while (moverField != NULL){
+    if (strcmp(moverField->namestring, field->stringval) == 0){
+      var->symentry = moverField;
 
+      fieldOffset = moverField->offset;
       break;
-    } 
-    else {
-      curfield = curfield->link;
     }
+    moverField = moverField->link;
   }
 
-  printf("offset: %d\n", offset);
+  TOKEN offsetToken = makeintc(fieldOffset);
 
+  TOKEN referenceTok = makearef(var, offsetToken, NULL);
 
-  dot = makearef(var, makeintc(offset), dot);
-
-  if (curfield) {
-    dot->basicdt = curfield->datatype->basicdt;
+  if (moverField) {
+    referenceTok->basicdt = moverField->datatype->basicdt;
   }
 
 
-  if (DEBUG & DB_REDUCEDOT) {
-    printf("reducedot\n");
-    //printf("-- %s ** %s", curfield->namestring, field->stringval);
-    dbugprinttok(var);
-    dbugprinttok(dot);
-    dbugprinttok(field);
-  }
-  return dot;
+  return referenceTok;
  
 }
 
@@ -1189,7 +1133,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 }
   
 
-/* Corrected dolabel function. Assumes labels and labelnumber are correctly declared and accessible. */
 TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
     // Convert label value to index in the labels array.
     int labelValue = labeltok->intval;
@@ -1305,16 +1248,6 @@ void instconst(TOKEN idtok, TOKEN consttok) {
 void  instlabel (TOKEN num) {
   labels[labelnumber++] = num->intval;  
 
-  if (DEBUG & DB_INSTLABEL) {
-    printf("install label\n");
-    printf("current table\n");
-    for (int i = 0; i < labelnumber; i ++) {
-      printf("label ");
-      printf("%d", i);
-      printf(" : ");
-      printf("%d\n", labels[i]);
-    }
-  }
 }
 
 /* instenum installs an enumerated subrange in the symbol table,
@@ -1365,41 +1298,35 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     }
 
     SYMBOL subrange = bounds->symtype;
-    SYMBOL typesym;
-
-    if (typetok->symtype){
-      typesym = typetok->symtype;
-      printf("installed array with type of typetok %s\n", typesym->namestring);
-    }
-    else{
-      typesym = searchst(typetok->stringval);
-    }
-    SYMBOL arraysym = symalloc();
-    arraysym->kind = ARRAYSYM;
-    arraysym->datatype = typesym;  // Use the updated type from recursive calls or the initial type
-
     int low = subrange->lowbound;
     int high = subrange->highbound;
-    arraysym->lowbound = low;
-    arraysym->highbound = high;
+    SYMBOL typeSym;
 
-    // Calculate the size of the current array dimension
-    // If this is the base case (no more linked bounds), use the type's size.
-    // Otherwise, use the size calculated in the recursive call (typesym->size)
-    if (typesym->kind == ARRAYSYM) {
-        arraysym->size = (high - low + 1) * typesym->size;
+    if (typetok->symtype){
+      typeSym = typetok->symtype;
+      printf("installed array with type of typetok %s\n", typeSym->namestring);
+    }
+    else{
+      typeSym = searchst(typetok->stringval);
+    }
+    
+    SYMBOL arraySym = symalloc();
+    arraySym->kind = ARRAYSYM;
+    arraySym->datatype = typeSym; 
+
+
+    arraySym->lowbound = low;
+    arraySym->highbound = high;
+
+    if (typeSym->kind == ARRAYSYM) {
+        arraySym->size = (high - low + 1) * typeSym->size;
     } else {
-        // This assumes typesym points to the original data type at the base case,
-        // and its size field holds the size of a single element of that type.
-        arraysym->size = (high - low + 1) * typesym->size;
+
+        arraySym->size = (high - low + 1) * typeSym->size;
     }
 
-    typetok->symtype = arraysym;  // Update the token's symbol to the new array symbol
+    typetok->symtype = arraySym;  
 
-    if (DEBUG & DB_INSTARRAY) {
-        printf("Finished instarray().\n");
-        dbugprint1tok(typetok);
-    }
 
     return typetok;
 }
@@ -1410,22 +1337,15 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    typetok is a token whose symtype is a symbol table pointer.
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
-  SYMBOL typesym = typetok->symtype;
-  // printf("typesym name %s\n", typesym->namestring);
-  TOKEN temp = idlist;
-  while(temp) {
-    // printf("temp name %s\n", temp->stringval);
-    temp->symtype = typesym;     
 
-    // printf("temp type %s\n", temp->symtype->namestring);
-    temp = temp->link;
+  TOKEN mover = idlist;
+
+  while(mover != NULL){
+    mover->symtype = typetok->symtype;
+    mover = mover->link;
   }
 
-
-  if (DEBUG & DB_INSTFIELD) {
-      printf("install fields\n");
-      dbugprinttok(idlist);
-  }
+  return idlist;
 
   return idlist;
 }
@@ -1434,43 +1354,41 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
    argstok has a pointer its type.  rectok is just a trash token to be
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok) {
-  //Do storage allocation algorithm
-  SYMBOL recsym = symalloc();
-  recsym->kind = RECORDSYM;
-  int count = 0, next = 0, align;
+  
+  SYMBOL recordSymbol = symalloc();
+  recordSymbol->kind = RECORDSYM;
+  rectok->symtype = recordSymbol;
+
+  int curOffset = 0;
 
   SYMBOL prev = NULL;
+
   while (argstok) {
-    align = alignsize(argstok->symtype);
-    SYMBOL recfield = makesym(argstok->stringval);
-    recfield->datatype = argstok->symtype;
+    SYMBOL field = makesym(argstok->stringval);
+    field->datatype = argstok->symtype;
+    field->size = argstok->symtype->size;
+    int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
+    field->offset = newSize;
+    curOffset = newSize + argstok->symtype->size;
 
-    recfield->offset = wordaddress(next, align);
-    recfield->size = argstok->symtype->size;
-    next = recfield->offset + recfield->size;
-    if (count == 0) {
-      recsym->datatype = recfield;
-      prev = recfield;
-    } else {
-      prev->link = recfield;
-      prev = recfield;
+    if (prev == NULL) {
+      recordSymbol->datatype = field;
+    } 
+    else {
+      prev->link = field;
+
     }
-    recfield->link = NULL;
-    count ++;
+    prev = field;
+    field->link = NULL;
     argstok = argstok->link;
+    
   }
 
-  recsym->size = wordaddress(next, 16); 
-  rectok->symtype = recsym;
+  recordSymbol->size = wordaddress(curOffset, 8); 
 
-  if (DEBUG & DB_INSTREC) {
-      printf("install rec\n");
-      printf("total size %d\n", recsym->size);
-      dbugprinttok(rectok);
-
-  }
   return rectok;
 }
+
 
 /* instpoint will install a pointer type in symbol table */
 TOKEN instpoint(TOKEN tok, TOKEN typename) {
