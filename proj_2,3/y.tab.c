@@ -2366,9 +2366,11 @@ TOKEN copytok(TOKEN target) {
   copy->symtype = target->symtype;
   copy->symentry = target->symentry;
   copy->link = target->link;
-  copy->whichval = target->whichval;
-  copy->intval = target->intval;
-  copy->realval = target->realval;
+
+  for (int i = 0; i < 16; i++){
+    copy->stringval[i] = target->stringval[i];
+  }
+  
   if (DEBUG & DB_MAKECOPY) {
     printf("copytok\n");
     dbugprinttok(copy);
@@ -2484,12 +2486,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symentry = var->symentry;
   areftok->symtype = var->symtype;
-
-
-  if (var->symentry && var->symentry->datatype) {
-    areftok->basicdt = var->symentry->datatype->basicdt;
+  
+  
+  if (var->symtype && var->symtype->datatype) {
     areftok->basicdt = var->symtype->datatype->basicdt;
   }
 
@@ -2834,11 +2834,13 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
-
+  printf("reduce dot var: \n");
+  ppexpr(var);
+  printf("\n");
   SYMBOL recsym = var->symtype;
   printf("recsym->namestring: %s\n", recsym->namestring);
   
-  SYMBOL curfield = recsym->datatype->datatype;
+  SYMBOL curfield = recsym->datatype;//->datatype;
   
 
   int offset = 0;
@@ -2971,7 +2973,11 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   finalOffset->operands = makeintc(rollingOffset);
   finalOffset->operands->link = variableTree;
 
-  return makearef(arr, finalOffset, NULL);
+  TOKEN areftok = makearef(arr, finalOffset, NULL);
+  areftok->symtype->datatype = areftok->symtype->datatype->datatype;
+  //var->symtype->datatype->datatype needs to be
+  //var->symtype->datatype
+  return areftok;
 
   }
 
@@ -3036,6 +3042,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     ppexpr(offsetTok);
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
+    retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
 
 
@@ -3103,7 +3110,10 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symtype = var->symtype->datatype->datatype;
   tok->operands = var;
-  
+  tok->tokentype = OPERATOR;
+  tok->whichval = POINTEROP;
+  var->link = NULL;
+
 
 
   if (DEBUG & DB_DOPOINT) {
@@ -3264,6 +3274,9 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   SYMBOL typesym = typetok->symtype;
+  if (typesym == NULL){
+    typesym = searchins(typetok->stringval);
+  }
   // printf("typesym name %s\n", typesym->namestring);
   TOKEN temp = idlist;
   while(temp) {
@@ -3290,7 +3303,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
   //Do storage allocation algorithm
   SYMBOL recsym = symalloc();
   recsym->kind = RECORDSYM;
-  int count = 0, next = 0, align;
+  int next = 0, align;
 
   SYMBOL prev = NULL;
   while (argstok) {
@@ -3301,16 +3314,18 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     recfield->offset = wordaddress(next, align);
     recfield->size = argstok->symtype->size;
     next = recfield->offset + recfield->size;
-    if (count == 0) {
+    if (prev == NULL) {
       recsym->datatype = recfield;
       prev = recfield;
     } else {
       prev->link = recfield;
       prev = recfield;
     }
+    
     recfield->link = NULL;
-    count ++;
+    
     argstok = argstok->link;
+
   }
 
   recsym->size = wordaddress(next, 16); 
