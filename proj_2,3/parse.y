@@ -1398,16 +1398,12 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
   SYMBOL pointsym = symalloc();
   pointsym->datatype = typesym;
-  pointsym->kind = POINTERSYM;
   pointsym->size = basicsizes[POINTER];
+  pointsym->kind = POINTERSYM;
   pointsym->basicdt = POINTER;
 
   tok->symtype = pointsym;
 
-  if (DEBUG & DB_INSTPOINT) {
-      printf("install point\n");
-      dbugprinttok(tok);
-  }
 
   return tok;
 }
@@ -1417,9 +1413,10 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
    typetok is a token containing symbol table pointers. */
 void insttype(TOKEN typename, TOKEN typetok) {
   SYMBOL typesym = searchins(typename->stringval);
-  typesym->kind = TYPESYM;
   typesym->datatype = typetok->symtype;
   typesym->size = typetok->symtype->size;
+  typesym->kind = TYPESYM;
+
 
   if (DEBUG & DB_INSTTYPE) {
     printf("install type\n");
