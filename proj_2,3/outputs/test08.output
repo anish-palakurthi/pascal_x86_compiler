@@ -1,33 +1,99 @@
 recsym->namestring: 
-curfield->namestring: er
+curfield->namestring: real
+curfield->namestring: integer
+curfield->namestring: char
+curfield->namestring: boolean
+curfield->namestring: exp
+curfield->namestring: trexp
+curfield->namestring: sin
+curfield->namestring: cos
+curfield->namestring: trsin
+curfield->namestring: sqrt
+curfield->namestring: round
+curfield->namestring: iround
+curfield->namestring: ord
+curfield->namestring: new
+curfield->namestring: trnew
+curfield->namestring: write
+curfield->namestring: writeln
+curfield->namestring: writef
+curfield->namestring: writelnf
+curfield->namestring: writei
+curfield->namestring: writelni
+curfield->namestring: read
+curfield->namestring: readln
+curfield->namestring: eof
 offset: 0
 recsym->namestring: 
-curfield->namestring: er
-curfield->namestring: mi
-offset: 8
+curfield->namestring: real
+curfield->namestring: integer
+curfield->namestring: char
+curfield->namestring: boolean
+curfield->namestring: exp
+curfield->namestring: trexp
+curfield->namestring: sin
+curfield->namestring: cos
+curfield->namestring: trsin
+curfield->namestring: sqrt
+curfield->namestring: round
+curfield->namestring: iround
+curfield->namestring: ord
+curfield->namestring: new
+curfield->namestring: trnew
+curfield->namestring: write
+curfield->namestring: writeln
+curfield->namestring: writef
+curfield->namestring: writelnf
+curfield->namestring: writei
+curfield->namestring: writelni
+curfield->namestring: read
+curfield->namestring: readln
+curfield->namestring: eof
+offset: 0
 recsym->namestring: 
-curfield->namestring: er
-curfield->namestring: mi
-curfield->namestring: myreal
-offset: 16
+curfield->namestring: real
+curfield->namestring: integer
+curfield->namestring: char
+curfield->namestring: boolean
+curfield->namestring: exp
+curfield->namestring: trexp
+curfield->namestring: sin
+curfield->namestring: cos
+curfield->namestring: trsin
+curfield->namestring: sqrt
+curfield->namestring: round
+curfield->namestring: iround
+curfield->namestring: ord
+curfield->namestring: new
+curfield->namestring: trnew
+curfield->namestring: write
+curfield->namestring: writeln
+curfield->namestring: writef
+curfield->namestring: writelnf
+curfield->namestring: writei
+curfield->namestring: writelni
+curfield->namestring: read
+curfield->namestring: readln
+curfield->namestring: eof
+offset: 0
 yyparse result =        0
 Symbol table level 1
- 94729605517616     complex  TYPE   typ 94729605517232  lvl  1  siz    32  off     0
+ 94828167913776     complex  TYPE   typ 94828167913392  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94729605518224           c  VAR    0 typ 94729605517232  lvl  1  siz    32  off     0
+ 94828167914384           c  VAR    0 typ 94828167913392  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94729605518320           d  VAR    0 typ 94729605517232  lvl  1  siz    32  off    32
+ 94828167914480           d  VAR    0 typ 94828167913392  lvl  1  siz    32  off    32
 (RECORD (er real)
         (mi real)
         (myreal real))
 (program graph1 (progn output)
                 (progn (:= (aref c 0)
                            2.000000e+00)
-                       (:= (aref c 8)
-                           2.000000e+00)
-                       (:= (aref d 16)
+                       (:= (aref c 0)
+                           2)
+                       (:= (aref d 0)
                            9.000000e+00)))

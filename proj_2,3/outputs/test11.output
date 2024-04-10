@@ -81,24 +81,24 @@ curfield->namestring: eof
 offset: 0
 yyparse result =        0
 Symbol table level 1
- 94611036139600     complex  TYPE   typ 94611036139312  lvl  1  siz    16  off     0
+ 94328684511312     complex  TYPE   typ 94328684511024  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94611036140464         red  CONST  typ INTEGER  val  0
- 94611036140624       white  CONST  typ INTEGER  val  1
- 94611036140784        blue  CONST  typ INTEGER  val  2
- 94611036140976       color  TYPE   typ 94611036140880  lvl  1  siz     4  off     0
+ 94328684512176         red  CONST  typ INTEGER  val  0
+ 94328684512336       white  CONST  typ INTEGER  val  1
+ 94328684512496        blue  CONST  typ INTEGER  val  2
+ 94328684512688       color  TYPE   typ 94328684512592  lvl  1  siz     4  off     0
   0 ..   2
- 94611036141392      person  TYPE   typ 94611036143216  lvl  1  siz    48  off     0
+ 94328684513104      person  TYPE   typ 94328684514928  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94611036141584          pp  TYPE   typ 94611036141488  lvl  1  siz     8  off     0
+ 94328684513296          pp  TYPE   typ 94328684513200  lvl  1  siz     8  off     0
 (^ person)
- 94611036144176        john  VAR    4 typ 94611036141488  lvl  1  siz     8  off     0
+ 94328684515888        john  VAR    4 typ 94328684513200  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ (aref (^ john)
