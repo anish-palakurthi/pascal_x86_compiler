@@ -86,15 +86,6 @@ TOKEN parseresult;
              |  IDENTIFIER    { $$ = cons($1, NULL); }
              ;
 
-
-  labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
-             |  NUMBER                { instlabel($1); }
-             ;
-  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
-             ;
-  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
-             |  cblock
-             ;
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
@@ -114,7 +105,19 @@ TOKEN parseresult;
   statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
              |  statement                  { $$ = cons($1, NULL); }
              ;
-
+  fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
+             ;
+  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
+             |  fieldsList
+             ;
+  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
+             ;  
+  labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
+             |  NUMBER                { instlabel($1); }
+             ;
+  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
+             |  cblock
+             ;
   cblock     :  CONST clist tblock              { $$ = $3; }
              |  tblock
              ;
@@ -134,13 +137,8 @@ TOKEN parseresult;
              |  ARRAY LBRACKET basicList RBRACKET OF type   { $$ = instarray($3, $6); }
              |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
              ;
-  fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
-             ;
-  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
-             |  fieldsList
-             ;
 
-  basicList  :  basicType COMMA basicList  { $$ = cons($1, $3); }
+  basicList :  basicType COMMA basicList  { $$ = cons($1, $3); }
              |  basicType                { $$ = cons($1, NULL); }
              ;
   basicType :  IDENTIFIER   { $$ = findtype($1); }
@@ -150,7 +148,6 @@ TOKEN parseresult;
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1, cons($2, $3)); }  
              ;
-
   statement  :  block
             |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
             |  assignment
@@ -207,6 +204,7 @@ TOKEN parseresult;
   expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
              |  expr                        { $$ = cons($1, NULL); }
              ;
+
   term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
              |  term DIVIDE factor              { $$ = binop($2, $1, $3); }
              |  term AND factor              { $$ = binop($2, $1, $3); }
@@ -268,13 +266,13 @@ TOKEN parseresult;
 #define DB_INSTREC      0
 #define DB_INSTPOINT    0
 
- int labelnumber = 0;  /* sequential counter for internal label numbers */
+ int labelnumber = 0; 
  int labels[50];
 
+   /*  Note: you should add to the above values and insert debugging
+       printouts in your routines similar to those that are shown here.     */
 
-/* cons links a new item onto the front of a list.  Equivalent to a push.
-   (cons 'a '(b c))  =  (a b c)    */
-TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
+TOKEN cons(TOKEN item, TOKEN list)            /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
@@ -296,7 +294,10 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
-
+  if (DEBUG & DB_NCONC) {
+   printf("nconc\n");
+   dbugprinttok(temp);
+  };
   return temp;
 }
 
@@ -310,6 +311,18 @@ int checkInt(TOKEN tok) {
 
 }
 
+
+/* unaryop links a unary operator op to one operand, lhs */
+TOKEN unaryop(TOKEN op, TOKEN lhs) {
+  op->operands = lhs;
+  lhs->link = NULL;
+  if (DEBUG & DB_UNOP)
+     { printf("unaryop\n");
+       dbugprinttok(op);
+       dbugprinttok(lhs);
+     };
+  return op;  
+}
 
 
 
@@ -420,18 +433,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
 
     return op;
     }
-
-/* unaryop links a unary operator op to one operand, lhs */
-TOKEN unaryop(TOKEN op, TOKEN lhs) {
-  op->operands = lhs;
-  lhs->link = NULL;
-  if (DEBUG & DB_UNOP)
-     { printf("unaryop\n");
-       dbugprinttok(op);
-       dbugprinttok(lhs);
-     };
-  return op;  
-}
 
 
 /* makefloat forces the item tok to be floating, by floating a constant
@@ -629,65 +630,90 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
    endexpr is the end expression
    tok, tokb and tokc are (now) unused tokens that are recycled. */
 TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN tokc, TOKEN statements) {
+    // Initial assignment
     tok = makeprogn(tok, assign);
-    TOKEN label = makelabel();
-    int current = labelnumber - 1;
-    assign->link = label;
 
-    TOKEN ifs = tokb;
-    TOKEN body = tokc;
-    body = makeprogn(body, statements);
+    // Setting up the loop label token
+    TOKEN loopLabel = makelabel();
 
-    TOKEN leoper = makeop(LEOP);
-    ifs = makeif(ifs, leoper, body, NULL);
-    TOKEN iden = copytok(assign->operands);
-    TOKEN iden2 = copytok(iden);
-    TOKEN iden3 = copytok(iden);
-    iden->link = expr;
-    leoper->operands = iden;
 
-    TOKEN assgn = makeop(ASSIGNOP);
-    TOKEN increment = makeop(PLUSOP);
+    // Linking the loop initialization to the label
+    assign->link = loopLabel;
 
-    iden3->link=makeintc(1);
-    increment->operands=iden3;
-    iden2->link=increment;
-    assgn->operands=iden2;
+    // build loop body's statements tree
+    TOKEN loopBody = talloc();
+    loopBody = makeprogn(loopBody, statements);
 
-    TOKEN gototok = makegoto(current);
-    assgn->link = gototok;
-    statements->link = assgn;
+    // Creating the conditional check for the loop
+    TOKEN leOperator = makeop(LEOP);
+    TOKEN conditional = talloc();
+    conditional = makeif(conditional, leOperator, loopBody, NULL);
 
-    leoper->link = body;
-    ifs->operands = leoper;
-    label->link = ifs;
+    // Handling the loop variable and its increment
+    TOKEN varCopy = copytok(assign->operands);
+    varCopy->link = expr;
+    leOperator->operands = varCopy;
+
+    TOKEN incrementStep = copytok(varCopy);
+    TOKEN incrementVar = copytok(varCopy);
+
+    TOKEN incrementOp = makeplus(NULL, NULL, NULL);
+    TOKEN incrementAssign = makeop(ASSIGNOP);
+
+    incrementOp->operands = incrementStep;
+    incrementVar->link = incrementOp;
+    incrementStep->link = makeintc(1);
+    incrementAssign->operands = incrementVar;
+
+    // Setting up the goto operation for loop continuation
+    TOKEN gotoOperation = makegoto(labelnumber - 1);
+
+    // Linking the increment operation and the goto for the loop's next iteration
+    statements->link = incrementAssign;
+    incrementAssign->link = gotoOperation;
+
+    // Final assembly of the loop's conditional and body components
+    loopLabel->link = conditional;
+    leOperator->link = loopBody;
+    conditional->operands = leOperator;
+
+    // Debugging output, if enabled
     if (DEBUG && DB_MAKEFOR) {
-         printf("makefor\n");
-         dbugprinttok(tok);
+        dbugprinttok(tok);
     }
+
     return tok;
+}
+/* makeplus makes a + operator.
+  tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
+
+	TOKEN ret = makeop(PLUSOP);
+
+  ret->operands = lhs;
+  lhs->link = rhs;
+  rhs->link = NULL;
+
+
+	return ret;
 }
 
 /* makewhile makes structures for a while statement.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
-  TOKEN label = makelabel();
-  int current = labelnumber - 1;
-  tok = makeprogn(tok, label);
+  TOKEN loopLabel = makelabel();
+  tok = makeprogn(tok, loopLabel);
 
-  TOKEN gototok = makegoto(current);
-  statement->link = gototok;
   TOKEN body = makeprogn(tokb, statement);
 
-  TOKEN ifs = talloc();
-  ifs = makeif(ifs, expr, body, NULL);
-  label->link = ifs;
+  TOKEN ifTok = talloc();
+  ifTok = makeif(ifTok, expr, body, NULL);
+  loopLabel->link = ifTok;
 
-  if (DEBUG && DB_MAKEWHILE) {
-     printf("makewhile\n");
-     dbugprinttok(tok);
-  }
+  statement->link = makegoto(labelnumber - 1);
+
+
   return tok;
   
 }
@@ -798,26 +824,25 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
 
-   TOKEN label = makelabel();
-   int current = labelnumber - 1;
-   tok = makeprogn(tok, label);
+  //set label token for the start
+  TOKEN repeatStart = makelabel();
+   
+   
+   tok = makeprogn(tok, repeatStart);
 
-   TOKEN body = tokb;
-   body = makeprogn(body, statements);
-   label->link = body;
+   //set up the repeat body token
+   TOKEN shellBody = makeprogn(tokb, statements);
+   repeatStart->link = shellBody;
 
-   TOKEN gototok = makegoto(current);
-   TOKEN emptytok = makeprogn((TOKEN) talloc(), NULL);
-   emptytok->link = gototok;
+   //set up the go to token for looping
+   TOKEN repeatStartGoTo = makegoto(labelnumber - 1);
+   TOKEN filler = makeprogn(talloc(), NULL);
+   filler->link = repeatStartGoTo;
 
-   TOKEN ifs = talloc();
-   ifs = makeif(ifs, expr, emptytok, gototok);
-   body->link = ifs;
+   //conditional token
+   TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
+   shellBody->link = ifs;
 
-   if (DEBUG && DB_MAKEREPEAT) {
-         printf("make repeat\n");
-         dbugprinttok(tok);
-   }
 
    return tok;  
 }
@@ -856,41 +881,27 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements)
    }
 
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
+  {
     TOKEN tok = talloc();
-    TOKEN nameToArgs = talloc();
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
     tok->operands = name;
-    nameToArgs = makeprogn(nameToArgs, args);
-    name->link = nameToArgs;
-    nameToArgs->link = statements;
-    if (DEBUG & DB_MAKEPROGRAM) { 
+    
+    TOKEN nameArgs = talloc();
+    nameArgs = makeprogn(nameArgs, args);
+    name->link = nameArgs;
+    nameArgs->link = statements;
+
+    if(DEBUG & DB_MAKEPROGRAM){
       printf("makeprogram\n");
       dbugprinttok(tok);
-      dbugprinttok(nameToArgs);
-    };
-    return tok;
-  }
-
-
-
-/* finds label number in label table for user defined labels */
-int findlabelnumber(int label) {
-  if (DEBUG & DB_FINDLABEL) {
-    printf("finding label\n");
-  }
-  for(int i = 0; i < labelnumber; i ++) {
-    if (labels[i] == label) {
-      if (DEBUG & DB_FINDLABEL) {
-       printf("found label : ");
-       printf("%d\n", i);
-      }
-      return i;
+      dbugprinttok(args);
     }
-  }
-  return -1;
-}
+    return tok;
+  
+  } 
+
 
 /* findid finds an identifier in the symbol table, sets up symbol table
    pointers, changes a constant to its number equivalent */
@@ -1178,43 +1189,59 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 }
   
 
-/* dolabel is the action for a label of the form   <number>: <statement>
-   tok is a (now) unused token that is recycled. */
+/* Corrected dolabel function. Assumes labels and labelnumber are correctly declared and accessible. */
 TOKEN dolabel(TOKEN labeltok, TOKEN tok, TOKEN statement) {
-    int real_label = findlabelnumber(labeltok->intval);
-    if (real_label == -1) {
-      printf("Error: user defined label not found");
+    // Convert label value to index in the labels array.
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
     }
 
-    labeltok = makeop(LABELOP);
-    TOKEN tokb = makeintc(real_label);
-    labeltok->operands=tokb;
+    // Construct the label token with the found index.
+    TOKEN indexToken = makeintc(labelIndex);
+    labeltok = makeop(LABELOP); // Assuming LABELOP is defined correctly elsewhere.
     labeltok->link = statement;
+    
+    labeltok->operands = indexToken;
+    
+    // Link the label operation with the provided statement using progn.
     tok = makeprogn(tok, labeltok);
-
-    if (DEBUG & DB_DOLABEL) {
-      printf("dolabel\n");
-      dbugprinttok(tok);
-    }
-
+    
     return tok;
 }
 
 /* dogoto is the action for a goto statement.
    tok is a (now) unused token that is recycled. */
 TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
-    int real_label = findlabelnumber(labeltok->intval);
-    if (real_label == -1) {
-      printf("Error: user defined label not found");
-    }  
-
-    tok = makegoto(real_label);
-    if (DEBUG & DB_DOGOTO) {
-      printf("dogoto\n");
-      dbugprinttok(tok);
+    int labelValue = labeltok->intval;
+    int labelIndex = -1;
+    
+    // Search for the label index.
+    for(int i = 0; i < i < sizeof(labels) / sizeof(labels[0]); i++) {
+        if (labels[i] == labelValue) {
+            labelIndex = i;
+            break;
+        }
+    }
+    if (labelIndex == -1){
+      
+      return NULL;
     }
 
-    return tok;
+
+    return (makegoto(labelIndex));
+
+
 }
 
 
@@ -1470,7 +1497,7 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
 /* insttype will install a type name in symbol table.
    typetok is a token containing symbol table pointers. */
-void  insttype(TOKEN typename, TOKEN typetok) {
+void insttype(TOKEN typename, TOKEN typetok) {
   SYMBOL typesym = searchins(typename->stringval);
   typesym->kind = TYPESYM;
   typesym->datatype = typetok->symtype;
