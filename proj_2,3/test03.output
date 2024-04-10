@@ -1,0 +1,58 @@
+yyparse result =        0
+Symbol table level 1
+ 94623788150864     complex  TYPE   typ 94623788150576  lvl  1  siz    16  off     0
+(RECORD (re real)
+        (im real))
+ 94623788151728         red  CONST  typ INTEGER  val  0
+ 94623788151888       white  CONST  typ INTEGER  val  1
+ 94623788152048        blue  CONST  typ INTEGER  val  2
+ 94623788152240       color  TYPE   typ 94623788152144  lvl  1  siz     4  off     0
+  0 ..   2
+ 94623788152656      person  TYPE   typ 94623788154480  lvl  1  siz    48  off     0
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (favorite   0 ..   2)
+        (salary real))
+ 94623788152848          pp  TYPE   typ 94623788152752  lvl  1  siz     8  off     0
+(^ person)
+ 94623788156016  complexArr  TYPE   typ 94623788155920  lvl  1  siz   160  off     0
+(ARRAY   1 ..  10 (RECORD (re real)
+                          (im real)))
+ 94623788157232  colorArr2D  TYPE   typ 94623788157136  lvl  1  siz   120  off     0
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94623788158224   personArr  TYPE   typ 94623788158128  lvl  1  siz   960  off     0
+(ARRAY   1 ..  20 (RECORD (age integer)
+                          (friend (^ person))
+                          (location (RECORD (re real)
+                                            (im real)))
+                          (favorite   0 ..   2)
+                          (salary real)))
+ 94623788159216  complexArrX  TYPE   typ 94623788159120  lvl  1  siz    80  off     0
+(ARRAY   2 ..   6 (RECORD (re real)
+                          (im real)))
+ 94623788160432  colorArr2DX  TYPE   typ 94623788160336  lvl  1  siz    60  off     0
+(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
+ 94623788161424  personArrX  TYPE   typ 94623788161328  lvl  1  siz   720  off     0
+(ARRAY   2 ..  16 (RECORD (age integer)
+                          (friend (^ person))
+                          (location (RECORD (re real)
+                                            (im real)))
+                          (favorite   0 ..   2)
+                          (salary real)))
+ 94623788161840           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94623788162192          ac  VAR    0 typ 94623788155920  lvl  1  siz   160  off    16
+(ARRAY   1 ..  10 (RECORD (re real)
+                          (im real)))
+ 94623788162544         aco  VAR    0 typ 94623788157136  lvl  1  siz   120  off   176
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94623788162896      people  VAR    0 typ 94623788158128  lvl  1  siz   960  off   304
+(ARRAY   1 ..  20 (RECORD (age integer)
+                          (friend (^ person))
+                          (location (RECORD (re real)
+                                            (im real)))
+                          (favorite   0 ..   2)
+                          (salary real)))
+(program graph1 (progn output)
+                (progn (:= i 1)))

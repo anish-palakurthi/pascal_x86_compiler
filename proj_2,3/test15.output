@@ -1,0 +1,82 @@
+arraysym->lowbound 1
+arraysym->highbound 10
+arraysym->lowbound 2
+arraysym->highbound 6
+
+count: 0
+low: 1
+high: 10
+size: 12
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: -8
+(* 12
+   i)
+count: 0
+low: 1
+high: 10
+size: 12
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: -4
+(* 12
+   j)
+count: 0
+low: 2
+high: 6
+size: 9
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 4
+(* 9
+   j)
+count: 0
+low: 2
+high: 6
+size: 9
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 8
+(* 9
+   i)yyparse result =        0
+Symbol table level 1
+ 94047823880112         red  CONST  typ INTEGER  val  0
+ 94047823880272       white  CONST  typ INTEGER  val  1
+ 94047823880432        blue  CONST  typ INTEGER  val  2
+ 94047823880624       color  TYPE   typ 94047823880528  lvl  1  siz     4  off     0
+  0 ..   2
+ 94047823881232           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94047823881328           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94047823890752         aco  VAR    0 typ 94047823890656  lvl  1  siz   120  off    16
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94047823891968        acoX  VAR    0 typ 94047823891872  lvl  1  siz    84  off   144
+(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
+(program graph1 (progn output)
+                (progn (:= (aref aco (+ -8
+                                        (* 12
+                                           i)))
+                           2)
+                       (:= (aref aco (+ -4
+                                        (* 12
+                                           j)))
+                           0)
+                       (:= (aref acoX (+ 4
+                                         (* 9
+                                            j)))
+                           2)
+                       (:= (aref acoX (+ 8
+                                         (* 9
+                                            i)))
+                           0)))

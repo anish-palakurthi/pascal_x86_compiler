@@ -1,0 +1,13 @@
+yyparse result =        0
+Symbol table level 1
+ 94499357101648          pr  TYPE   typ 94499357101552  lvl  1  siz     8  off     0
+(^ real)
+ 94499357102160          pi  TYPE   typ 94499357102064  lvl  1  siz     8  off     0
+(^ integer)
+ 94499357102640           c  VAR    4 typ 94499357101552  lvl  1  siz     8  off     0
+(^ real)
+ 94499357102992           d  VAR    4 typ 94499357102064  lvl  1  siz     8  off     8
+(^ integer)
+ 94499357103344           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+(program graph1 (progn output)
+                (progn (:= i 1)))
