@@ -3399,7 +3399,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     
   }
 
-  recordSymbol->size = wordaddress(curOffset, 8); 
+  recordSymbol->size = wordaddress(curOffset, 16); 
 
   return rectok;
 }
