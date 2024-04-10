@@ -1,26 +1,26 @@
-recsym->namestring: 
+recsym->namestring: c
 curfield->namestring: er
 offset: 0
-recsym->namestring: 
+recsym->namestring: c
 curfield->namestring: er
 curfield->namestring: mi
 offset: 8
-recsym->namestring: 
+recsym->namestring: d
 curfield->namestring: er
 curfield->namestring: mi
 curfield->namestring: myreal
 offset: 16
 yyparse result =        0
 Symbol table level 1
- 94169807966512     complex  TYPE   typ 94169807966128  lvl  1  siz    32  off     0
+ 94135492616496     complex  TYPE   typ 94135492616112  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94169807967120           c  VAR    0 typ 94169807966128  lvl  1  siz    32  off     0
+ 94135492617104           c  VAR    0 typ 94135492616112  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94169807967216           d  VAR    0 typ 94169807966128  lvl  1  siz    32  off    32
+ 94135492617200           d  VAR    0 typ 94135492616112  lvl  1  siz    32  off    32
 (RECORD (er real)
         (mi real)
         (myreal real))

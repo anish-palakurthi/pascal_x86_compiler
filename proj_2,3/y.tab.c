@@ -2557,10 +2557,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symtype = var->symtype;
+  areftok->symentry = var->symentry;
   
-  if (var->symtype && var->symtype->datatype) {
-    areftok->basicdt = var->symtype->datatype->basicdt;
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
   if (DEBUG && DB_MAKEAREF) {
@@ -2905,10 +2905,10 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-  SYMBOL recsym = var->symtype;
+  SYMBOL recsym = var->symentry;
   printf("recsym->namestring: %s\n", recsym->namestring);
   
-  SYMBOL curfield = recsym->datatype;
+  SYMBOL curfield = recsym->datatype->datatype;
   
 
   int offset = 0;
@@ -2916,7 +2916,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("curfield->namestring: %s\n", curfield->namestring);
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
-      var->symtype = curfield;
+      var->symentry = curfield;
 
       break;
     } 
@@ -3005,6 +3005,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     retTok = makearef(curArr, makeintc(rollingOffset), NULL);
     retTok->symtype = curArr->symtype->datatype;
 
+
     curArr = retTok;
 
 
@@ -3040,10 +3041,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   finalOffset->operands = makeintc(rollingOffset);
   finalOffset->operands->link = variableTree;
 
-  TOKEN dimensional = makearef(arr, finalOffset, NULL);
-  dimensional->symtype = dimensional;
-
-  return dimensional;
+  return makearef(arr, finalOffset, NULL);
 
   }
 
@@ -3108,7 +3106,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     ppexpr(offsetTok);
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
-    retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
 
 
@@ -3174,7 +3171,7 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symtype = var->symtype->datatype->datatype;
+  tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
   
 

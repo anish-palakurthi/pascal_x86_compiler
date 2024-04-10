@@ -1,69 +1,69 @@
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 offset: 32
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 curfield->namestring: favorite
 curfield->namestring: salary
 offset: 40
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 curfield->namestring: location
 offset: 16
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 offset: 0
-recsym->namestring: 
+recsym->namestring: person
 curfield->namestring: age
 curfield->namestring: friend
 offset: 8
 yyparse result =        0
 Symbol table level 1
- 94097866879056     complex  TYPE   typ 94097866878768  lvl  1  siz    16  off     0
+ 94899836121168     complex  TYPE   typ 94899836120880  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94097866879920         red  CONST  typ INTEGER  val  0
- 94097866880080       white  CONST  typ INTEGER  val  1
- 94097866880240        blue  CONST  typ INTEGER  val  2
- 94097866880432       color  TYPE   typ 94097866880336  lvl  1  siz     4  off     0
+ 94899836122032         red  CONST  typ INTEGER  val  0
+ 94899836122192       white  CONST  typ INTEGER  val  1
+ 94899836122352        blue  CONST  typ INTEGER  val  2
+ 94899836122544       color  TYPE   typ 94899836122448  lvl  1  siz     4  off     0
   0 ..   2
- 94097866880848      person  TYPE   typ 94097866882672  lvl  1  siz    48  off     0
+ 94899836122960      person  TYPE   typ 94899836124784  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94097866881040          pp  TYPE   typ 94097866880944  lvl  1  siz     8  off     0
+ 94899836123152          pp  TYPE   typ 94899836123056  lvl  1  siz     8  off     0
 (^ person)
- 94097866883632           c  VAR    0 typ 94097866878768  lvl  1  siz    16  off     0
+ 94899836125744           c  VAR    0 typ 94899836120880  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94097866883984         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94097866884720        john  VAR    4 typ 94097866880944  lvl  1  siz     8  off    24
+ 94899836126096         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94899836126832        john  VAR    4 typ 94899836123056  lvl  1  siz     8  off    24
 (^ person)
- 94097866884816        mary  VAR    4 typ 94097866880944  lvl  1  siz     8  off    32
+ 94899836126928        mary  VAR    4 typ 94899836123056  lvl  1  siz     8  off    32
 (^ person)
- 94097866884912        fred  VAR    4 typ 94097866880944  lvl  1  siz     8  off    40
+ 94899836127024        fred  VAR    4 typ 94899836123056  lvl  1  siz     8  off    40
 (^ person)
- 94097866885008         ptr  VAR    4 typ 94097866880944  lvl  1  siz     8  off    48
+ 94899836127120         ptr  VAR    4 typ 94899836123056  lvl  1  siz     8  off    48
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)

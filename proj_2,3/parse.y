@@ -87,21 +87,25 @@ TOKEN parseresult;
              ;
 
 
-  constant   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
-             |  IDENTIFIER
-             |  sign NUMBER         { $$ = unaryop($1, $2); }
-             |  NUMBER
-             |  STRING
-             ;
-
   labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
              |  NUMBER                { instlabel($1); }
+             ;
+  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
+             ;
+  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
+             |  cblock
              ;
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
              ;
   clist      :  cdef SEMICOLON clist    
              |  cdef SEMICOLON          
              ;  
+  constant   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
+             |  IDENTIFIER
+             |  sign NUMBER         { $$ = unaryop($1, $2); }
+             |  NUMBER
+             |  STRING
+             ;
   tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
              ;
   tlist      :  tdef SEMICOLON tlist
@@ -110,16 +114,7 @@ TOKEN parseresult;
   statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
              |  statement                  { $$ = cons($1, NULL); }
              ;
-  fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
-             ;
-  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
-             |  fieldsList
-             ;
-  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
-             ;
-  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
-             |  cblock
-             ;
+
   cblock     :  CONST clist tblock              { $$ = $3; }
              |  tblock
              ;
@@ -139,19 +134,23 @@ TOKEN parseresult;
              |  ARRAY LBRACKET basicList RBRACKET OF type   { $$ = instarray($3, $6); }
              |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
              ;
+  fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
+             ;
+  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
+             |  fieldsList
+             ;
 
-  basicList :  basicType COMMA basicList  { $$ = cons($1, $3); }
+  basicList  :  basicType COMMA basicList  { $$ = cons($1, $3); }
              |  basicType                { $$ = cons($1, NULL); }
              ;
   basicType :  IDENTIFIER   { $$ = findtype($1); }
              |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
              |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-
              ;
-
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1, cons($2, $3)); }  
              ;
+
   statement  :  block
             |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
             |  assignment
@@ -179,10 +178,6 @@ TOKEN parseresult;
              $3, $4); }
              |  variable POINT                         { $$ = dopoint($1, $2); }
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
-             ;
-  plus_op    :  PLUS 
-             |  MINUS  
-             |  OR
              ;
 
   signedExpression     :  signedTerm
@@ -274,12 +269,12 @@ TOKEN parseresult;
 #define DB_INSTPOINT    0
 
  int labelnumber = 0;  /* sequential counter for internal label numbers */
- int labeltable[50];
+ int labels[50];
 
-   /*  Note: you should add to the above values and insert debugging
-       printouts in your routines similar to those that are shown here.     */
 
-TOKEN cons(TOKEN item, TOKEN list)            /* add item to front of list */
+/* cons links a new item onto the front of a list.  Equivalent to a push.
+   (cons 'a '(b c))  =  (a b c)    */
+TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
@@ -301,48 +296,98 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
-  if (DEBUG & DB_NCONC) {
-   printf("nconc\n");
-   dbugprinttok(temp);
-  };
+
   return temp;
 }
 
-int isReal(TOKEN tok) {
-  if(tok->basicdt == REAL)
-    return 1;
-  else 
-    return 0;
+int  checkReal(TOKEN tok) {
+  return (tok->basicdt == REAL);
+
 }
 
-int isInt(TOKEN tok) {
-  if(tok->basicdt == INTEGER)
-    return 1;
-  else 
-    return 0;
-}
+int checkInt(TOKEN tok) {
+  return (tok->basicdt == INTEGER);
 
-/* unaryop links a unary operator op to one operand, lhs */
-TOKEN unaryop(TOKEN op, TOKEN lhs) {
-  op->operands = lhs;
-  lhs->link = NULL;
-  if (DEBUG & DB_UNOP)
-     { printf("unaryop\n");
-       dbugprinttok(op);
-       dbugprinttok(lhs);
-     };
-  return op;  
 }
 
 
 
-TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
-    // printf("binop\n");
-    // dbugprinttok(lhs);
-    // dbugprinttok(rhs);
 
-    // Handle NIL as zero.
-    if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+/* binop links a binary operator op to two operands, lhs and rhs. */
+TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
+    
+    if (lhs->tokentype == NUMBERTOK){
+
+    lhs->link = rhs;             
+    rhs->link = NULL;           
+    op->operands = lhs; 
+
+    //handles type casting
+    int lhType;
+    int rhType;
+
+    //define our variables for specifying type
+    if (lhs->basicdt == INTEGER) {
+      lhType = 1;
+    } else {
+      //REAL
+      lhType = 0;
+    }
+    if (rhs->basicdt == INTEGER) {
+      rhType = 1;
+    } else {
+      //REAL
+      rhType = 0;
+    }
+
+    //left hand = integer; right hand = float
+    if (lhType == 1 && rhType == 0) {
+
+
+      TOKEN temptoken = talloc();
+
+      // computation operation
+      if (op->whichval != ASSIGNOP){
+
+        op->basicdt = REAL;
+        TOKEN temptoken = makefloat(lhs);
+        temptoken->link = rhs;
+      }
+
+      // assignment operation
+      else{
+        op->basicdt = INTEGER;
+        TOKEN temptoken = makefix(rhs);
+        lhs->link = temptoken;
+      }
+    }
+
+    //both real
+    else if (lhType == 0 && rhType == 0) {
+      op->basicdt = REAL;
+    }
+
+    //left hand = int; right hand = real
+    else if (lhType == 0 && rhType == 1) {
+      TOKEN floatToken = makefloat(rhs);
+      lhs->link = floatToken;
+      op->basicdt = REAL;
+
+    }
+
+    //nothing needed for both int
+
+    //deciding what to set op datatype to
+    if (DEBUG & DB_BINOP)
+       { printf("binop\n");
+         dbugprinttok(op);
+         dbugprinttok(lhs);
+         dbugprinttok(rhs);
+       };
+    
+    return op;
+    }
+      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
         rhs = makeintc(0);
     }
 
@@ -353,14 +398,13 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
 
 
       // Existing logic
-      if (isReal(lhs) && isReal(rhs)) {
+      if (checkReal(lhs) && checkReal(rhs)) {
           op->basicdt = REAL;
-      } else if (isReal(lhs) && isInt(rhs)) {
+      } else if (checkReal(lhs) && checkInt(rhs)) {
           op->basicdt = REAL;
           TOKEN ftok = makefloat(rhs);
           lhs->link = ftok;
-          // printf("made int rhs into a float\n");
-      } else if (isInt(lhs) && isReal(rhs)) {
+      } else if (checkInt(lhs) && checkReal(rhs)) {
           if (op->whichval == ASSIGNOP) {
               op->basicdt = INTEGER;
           } else {
@@ -375,6 +419,18 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     }
 
     return op;
+    }
+
+/* unaryop links a unary operator op to one operand, lhs */
+TOKEN unaryop(TOKEN op, TOKEN lhs) {
+  op->operands = lhs;
+  lhs->link = NULL;
+  if (DEBUG & DB_UNOP)
+     { printf("unaryop\n");
+       dbugprinttok(op);
+       dbugprinttok(lhs);
+     };
+  return op;  
 }
 
 
@@ -551,10 +607,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     areftok->operands = var;
   }
   
-  areftok->symtype = var->symtype;
+  areftok->symentry = var->symentry;
   
-  if (var->symtype && var->symtype->datatype) {
-    areftok->basicdt = var->symtype->datatype->basicdt;
+  if (var->symentry && var->symentry->datatype) {
+    areftok->basicdt = var->symentry->datatype->basicdt;
   }
 
   if (DEBUG && DB_MAKEAREF) {
@@ -825,7 +881,7 @@ int findlabelnumber(int label) {
     printf("finding label\n");
   }
   for(int i = 0; i < labelnumber; i ++) {
-    if (labeltable[i] == label) {
+    if (labels[i] == label) {
       if (DEBUG & DB_FINDLABEL) {
        printf("found label : ");
        printf("%d\n", i);
@@ -899,10 +955,10 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-  SYMBOL recsym = var->symtype;
+  SYMBOL recsym = var->symentry;
   printf("recsym->namestring: %s\n", recsym->namestring);
   
-  SYMBOL curfield = recsym->datatype;
+  SYMBOL curfield = recsym->datatype->datatype;
   
 
   int offset = 0;
@@ -910,7 +966,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("curfield->namestring: %s\n", curfield->namestring);
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
-      var->symtype = curfield;
+      var->symentry = curfield;
 
       break;
     } 
@@ -999,6 +1055,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     retTok = makearef(curArr, makeintc(rollingOffset), NULL);
     retTok->symtype = curArr->symtype->datatype;
 
+
     curArr = retTok;
 
 
@@ -1034,10 +1091,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   finalOffset->operands = makeintc(rollingOffset);
   finalOffset->operands->link = variableTree;
 
-  TOKEN dimensional = makearef(arr, finalOffset, NULL);
-  dimensional->symtype = dimensional;
-
-  return dimensional;
+  return makearef(arr, finalOffset, NULL);
 
   }
 
@@ -1102,7 +1156,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     ppexpr(offsetTok);
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
-    retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
 
 
@@ -1168,7 +1221,7 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-  tok->symtype = var->symtype->datatype->datatype;
+  tok->symentry = var->symentry->datatype->datatype;
   tok->operands = var;
   
 
@@ -1223,7 +1276,7 @@ void instconst(TOKEN idtok, TOKEN consttok) {
 
 /* instlabel installs a user label into the label table */
 void  instlabel (TOKEN num) {
-  labeltable[labelnumber++] = num->intval;  
+  labels[labelnumber++] = num->intval;  
 
   if (DEBUG & DB_INSTLABEL) {
     printf("install label\n");
@@ -1232,7 +1285,7 @@ void  instlabel (TOKEN num) {
       printf("label ");
       printf("%d", i);
       printf(" : ");
-      printf("%d\n", labeltable[i]);
+      printf("%d\n", labels[i]);
     }
   }
 }
