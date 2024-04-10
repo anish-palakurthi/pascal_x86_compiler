@@ -94,7 +94,7 @@ TOKEN parseresult;
              |  STRING
              ;
 
-  numlist    :  NUMBER COMMA numlist  { instlabel($1); }
+  labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
              |  NUMBER                { instlabel($1); }
              ;
   cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
@@ -107,17 +107,17 @@ TOKEN parseresult;
   tlist      :  tdef SEMICOLON tlist
              |  tdef SEMICOLON
              ;
-  s_list     :  statement SEMICOLON s_list      { $$ = cons($1, $3); }
+  statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
              |  statement                  { $$ = cons($1, NULL); }
              ;
-  fields     :  idlist COLON type             { $$ = instfields($1, $3); }
+  fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
              ;
-  field_list :  fields SEMICOLON field_list   { $$ = nconc($1, $3); }
-             |  fields
+  multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
+             |  fieldsList
              ;
   label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
              ;
-  lblock     :  LABEL numlist SEMICOLON cblock  { $$ = $4; }
+  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
              |  cblock
              ;
   cblock     :  CONST clist tblock              { $$ = $3; }
@@ -134,31 +134,36 @@ TOKEN parseresult;
              ;
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
-  type       :  simpletype
-             |  ARRAY LBRACKET stype_list RBRACKET OF type   { $$ = instarray($3, $6); }
-             |  RECORD field_list END                          { $$ = instrec($1, $2); }
+  type       :  basicType
              |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
+             |  ARRAY LBRACKET basicList RBRACKET OF type   { $$ = instarray($3, $6); }
+             |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
              ;
-  stype_list :  simpletype COMMA stype_list  { $$ = cons($1, $3); }
-             |  simpletype                { $$ = cons($1, NULL); }
+
+  basicList :  basicType COMMA basicList  { $$ = cons($1, $3); }
+             |  basicType                { $$ = cons($1, NULL); }
              ;
-  simpletype :  IDENTIFIER   { $$ = findtype($1); }
-             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
+  basicType :  IDENTIFIER   { $$ = findtype($1); }
              |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
+             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
+
              ;
-  block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }  
+
+
+  block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1, cons($2, $3)); }  
              ;
-  statement  :  BEGINBEGIN statement endpart   { $$ = makeprogn($1,cons($2, $3)); }
-             |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
-             |  assignment
-             |  funcall
-             |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
-             |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
-             |  REPEAT s_list UNTIL expr              { $$ = makerepeat($1, $2, $3, $4); }
-             |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
-             |  label
-             ;
-  funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
+  statement  :  block
+            |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
+            |  assignment
+            |  functionCall
+            |  FOR assignment TO expr DO statement   { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
+            |  REPEAT statementList UNTIL expr              { $$ =
+            makerepeat($1, $2, $3, $4); }
+            |  GOTO NUMBER                  { $$ = dogoto($1, $2); }
+            |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
+            |  label
+            ;
+  functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  END                            { $$ = NULL; }
@@ -168,11 +173,11 @@ TOKEN parseresult;
              ;
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
+
   variable   :  IDENTIFIER                            { $$ = findid($1); }
-             |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2,
+             |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
              $3, $4); }
              |  variable POINT                         { $$ = dopoint($1, $2); }
-             
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              ;
   plus_op    :  PLUS 
@@ -204,7 +209,7 @@ TOKEN parseresult;
              |  signedExpression 
              ;
 
-  expr_list  :  expr COMMA expr_list           { $$ = cons($1, $3); }
+  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
              |  expr                        { $$ = cons($1, NULL); }
              ;
   term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
@@ -218,7 +223,7 @@ TOKEN parseresult;
              |  STRING
              | NUMBER
              |  NIL 
-             |  funcall
+             |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
 %%
@@ -268,13 +273,12 @@ TOKEN parseresult;
 #define DB_INSTREC      0
 #define DB_INSTPOINT    0
 
- int labelnumber = 0;  /* sequential counter for internal label numbers */
- int labeltable[50];
+ int labelnumber = 0;  
+ int labels[100];
 
-   /*  Note: you should add to the above values and insert debugging
-       printouts in your routines similar to those that are shown here.     */
-
-TOKEN cons(TOKEN item, TOKEN list)            /* add item to front of list */
+/* cons links a new item onto the front of a list.  Equivalent to a push.
+   (cons 'a '(b c))  =  (a b c)    */
+TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
   { item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
@@ -296,26 +300,11 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
-  if (DEBUG & DB_NCONC) {
-   printf("nconc\n");
-   dbugprinttok(temp);
-  };
+
   return temp;
 }
 
-int isReal(TOKEN tok) {
-  if(tok->basicdt == REAL)
-    return 1;
-  else 
-    return 0;
-}
 
-int isInt(TOKEN tok) {
-  if(tok->basicdt == INTEGER)
-    return 1;
-  else 
-    return 0;
-}
 
 /* unaryop links a unary operator op to one operand, lhs */
 TOKEN unaryop(TOKEN op, TOKEN lhs) {
@@ -330,6 +319,19 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 }
 
 
+int isReal(TOKEN tok) {
+  if(tok->basicdt == REAL)
+    return 1;
+  else 
+    return 0;
+}
+
+int isInt(TOKEN tok) {
+  if(tok->basicdt == INTEGER)
+    return 1;
+  else 
+    return 0;
+}
 
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs) {
     // printf("binop\n");
@@ -822,7 +824,7 @@ int findlabelnumber(int label) {
     printf("finding label\n");
   }
   for(int i = 0; i < labelnumber; i ++) {
-    if (labeltable[i] == label) {
+    if (labels[i] == label) {
       if (DEBUG & DB_FINDLABEL) {
        printf("found label : ");
        printf("%d\n", i);
@@ -1227,7 +1229,7 @@ void instconst(TOKEN idtok, TOKEN consttok) {
 
 /* instlabel installs a user label into the label table */
 void  instlabel (TOKEN num) {
-  labeltable[labelnumber++] = num->intval;  
+  labels[labelnumber++] = num->intval;  
 
   if (DEBUG & DB_INSTLABEL) {
     printf("install label\n");
@@ -1236,7 +1238,7 @@ void  instlabel (TOKEN num) {
       printf("label ");
       printf("%d", i);
       printf(" : ");
-      printf("%d\n", labeltable[i]);
+      printf("%d\n", labels[i]);
     }
   }
 }
