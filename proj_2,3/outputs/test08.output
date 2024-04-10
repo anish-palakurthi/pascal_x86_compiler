@@ -12,15 +12,15 @@ curfield->namestring: myreal
 offset: 16
 yyparse result =        0
 Symbol table level 1
- 94135492616496     complex  TYPE   typ 94135492616112  lvl  1  siz    32  off     0
+ 94053551726896     complex  TYPE   typ 94053551726512  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94135492617104           c  VAR    0 typ 94135492616112  lvl  1  siz    32  off     0
+ 94053551727504           c  VAR    0 typ 94053551726512  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 94135492617200           d  VAR    0 typ 94135492616112  lvl  1  siz    32  off    32
+ 94053551727600           d  VAR    0 typ 94053551726512  lvl  1  siz    32  off    32
 (RECORD (er real)
         (mi real)
         (myreal real))
