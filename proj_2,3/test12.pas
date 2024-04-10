@@ -13,9 +13,11 @@ var ac: array[1..10] of complex;
     acX: array[2..6] of complex;
     people: array[1..20] of person;
     peopleX: array[2..16] of person;
+    
 begin
    ac[5].im := 4.5;
    people[15].salary := 100.0;
    acX[7].im := 5.4;
    peopleX[13].salary := 1234.0
+   
 end.

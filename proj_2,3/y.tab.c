@@ -2832,14 +2832,15 @@ TOKEN findtype(TOKEN tok) {
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
 
-
-
   SYMBOL recsym = var->symentry;
+  printf("recsym->namestring: %s\n", recsym->namestring);
+  
   SYMBOL curfield = recsym->datatype->datatype;
-
+  
 
   int offset = 0;
   while(curfield) {
+    printf("curfield->namestring: %s\n", curfield->namestring);
     if (strcmp(curfield->namestring, field->stringval) == 0) {
       offset = curfield->offset;
       var->symentry = curfield;
@@ -2851,7 +2852,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     }
   }
 
-
+  printf("offset: %d\n", offset);
 
 
   dot = makearef(var, makeintc(offset), dot);
@@ -3033,17 +3034,18 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
 
-    if (subs->tokentype == NUMBERTOK) {
-      int offset = size * subs->intval - size * low;
-      retTok->link = makeintc(offset);
-      retTok->link->tokentype = NUMBERTOK;
-    }
 
-    else if (subs->tokentype == IDENTIFIERTOK){
+
+    if (subs->tokentype == IDENTIFIERTOK){
       retTok->link = indexTok;
       retTok->link->tokentype = IDENTIFIERTOK;
 
     }
+
+
+    printf("retTok\n");
+    ppexpr(retTok);
+    printf("\n");
 
 
     return retTok;
@@ -3213,7 +3215,15 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     }
 
     SYMBOL subrange = bounds->symtype;
-    SYMBOL typesym = typetok->symtype ? typetok->symtype : searchst(typetok->stringval);
+    SYMBOL typesym;
+
+    if (typetok->symtype){
+      typesym = typetok->symtype;
+      printf("installed array with type of typetok %s\n", typesym->namestring);
+    }
+    else{
+      typesym = searchst(typetok->stringval);
+    }
     SYMBOL arraysym = symalloc();
     arraysym->kind = ARRAYSYM;
     arraysym->datatype = typesym;  // Use the updated type from recursive calls or the initial type
@@ -3284,8 +3294,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     align = alignsize(argstok->symtype);
     SYMBOL recfield = makesym(argstok->stringval);
     recfield->datatype = argstok->symtype;
-    // printf("recfield name %s", recfield->namestring);
-    // printf("recfield type %s\n", recfield->datatype->namestring);
+
     recfield->offset = wordaddress(next, align);
     recfield->size = argstok->symtype->size;
     next = recfield->offset + recfield->size;

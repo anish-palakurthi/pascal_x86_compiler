@@ -1,0 +1,68 @@
+subs is not null
+
+count: 0
+low: 1
+high: 10
+size: 12
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 28
+subs is not null
+
+count: 0
+low: 1
+high: 10
+size: 12
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 8
+subs is not null
+
+count: 0
+low: 2
+high: 6
+size: 6
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 22
+subs is not null
+
+count: 0
+low: 2
+high: 6
+size: 6
+
+count: 1
+low: 0
+high: 2
+size: 4
+rolling offset: 14
+yyparse result =        0
+Symbol table level 1
+ 94400951881648         red  CONST  typ INTEGER  val  0
+ 94400951881808       white  CONST  typ INTEGER  val  1
+ 94400951881968        blue  CONST  typ INTEGER  val  2
+ 94400951882160       color  TYPE   typ 94400951882064  lvl  1  siz     4  off     0
+  0 ..   2
+ 94400951883504         aco  VAR    0 typ 94400951883408  lvl  1  siz   120  off     0
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94400951884720        acoX  VAR    0 typ 94400951884624  lvl  1  siz    60  off   128
+(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
+(program graph1 (progn output)
+                (progn (:= (aref aco (+ 28))
+                           2)
+                       (:= (aref aco (+ 8))
+                           0)
+                       (:= (aref acoX (+ 22))
+                           2)
+                       (:= (aref acoX (+ 14))
+                           0)))
