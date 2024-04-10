@@ -74,30 +74,30 @@ curfield->namestring: salary
 offset: 40
 yyparse result =        0
 Symbol table level 1
- 94015667200080     complex  TYPE   typ 94015667199792  lvl  1  siz    16  off     0
+ 94157266591824     complex  TYPE   typ 94157266591536  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94015667200944         red  CONST  typ INTEGER  val  0
- 94015667201104       white  CONST  typ INTEGER  val  1
- 94015667201264        blue  CONST  typ INTEGER  val  2
- 94015667201456       color  TYPE   typ 94015667201360  lvl  1  siz     4  off     0
+ 94157266592688         red  CONST  typ INTEGER  val  0
+ 94157266592848       white  CONST  typ INTEGER  val  1
+ 94157266593008        blue  CONST  typ INTEGER  val  2
+ 94157266593200       color  TYPE   typ 94157266593104  lvl  1  siz     4  off     0
   0 ..   2
- 94015667201872      person  TYPE   typ 94015667203696  lvl  1  siz    48  off     0
+ 94157266593616      person  TYPE   typ 94157266595440  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94015667202064          pp  TYPE   typ 94015667201968  lvl  1  siz     8  off     0
+ 94157266593808          pp  TYPE   typ 94157266593712  lvl  1  siz     8  off     0
 (^ person)
- 94015667213504          ac  VAR    0 typ 94015667213408  lvl  1  siz   160  off     0
+ 94157266605248          ac  VAR    0 typ 94157266605152  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 real)
- 94015667214496         acX  VAR    0 typ 94015667214400  lvl  1  siz    80  off   160
+ 94157266606240         acX  VAR    0 typ 94157266606144  lvl  1  siz    80  off   160
 (ARRAY   2 ..   6 real)
- 94015667215488      people  VAR    0 typ 94015667215392  lvl  1  siz   960  off   240
+ 94157266607232      people  VAR    0 typ 94157266607136  lvl  1  siz   960  off   240
 (ARRAY   1 ..  20 integer)
- 94015667216480     peopleX  VAR    0 typ 94015667216384  lvl  1  siz   720  off  1200
+ 94157266608224     peopleX  VAR    0 typ 94157266608128  lvl  1  siz   720  off  1200
 (ARRAY   2 ..  16 integer)
 (program graph1 (progn output)
                 (progn (:= (aref ac 72)

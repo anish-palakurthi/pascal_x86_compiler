@@ -1,254 +1,90 @@
 recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
+curfield->namestring: age
+curfield->namestring: friend
+curfield->namestring: location
+curfield->namestring: favorite
+offset: 32
+recsym->namestring: 
+curfield->namestring: age
 offset: 0
 recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
+curfield->namestring: age
+curfield->namestring: friend
+offset: 8
+recsym->namestring: 
+curfield->namestring: age
+curfield->namestring: friend
+curfield->namestring: location
+curfield->namestring: favorite
+curfield->namestring: salary
+offset: 40
+recsym->namestring: 
+curfield->namestring: age
+curfield->namestring: friend
+offset: 8
+recsym->namestring: 
+curfield->namestring: age
+curfield->namestring: friend
+curfield->namestring: location
+offset: 16
+recsym->namestring: 
+curfield->namestring: age
 offset: 0
 recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
-recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
-recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
-recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
-recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
-recsym->namestring: 
-curfield->namestring: integer
-curfield->namestring: char
-curfield->namestring: boolean
-curfield->namestring: exp
-curfield->namestring: trexp
-curfield->namestring: sin
-curfield->namestring: cos
-curfield->namestring: trsin
-curfield->namestring: sqrt
-curfield->namestring: round
-curfield->namestring: iround
-curfield->namestring: ord
-curfield->namestring: new
-curfield->namestring: trnew
-curfield->namestring: write
-curfield->namestring: writeln
-curfield->namestring: writef
-curfield->namestring: writelnf
-curfield->namestring: writei
-curfield->namestring: writelni
-curfield->namestring: read
-curfield->namestring: readln
-curfield->namestring: eof
-offset: 0
+curfield->namestring: age
+curfield->namestring: friend
+offset: 8
 yyparse result =        0
 Symbol table level 1
- 93918692868176     complex  TYPE   typ 93918692867888  lvl  1  siz    16  off     0
+ 94097866879056     complex  TYPE   typ 94097866878768  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93918692869040         red  CONST  typ INTEGER  val  0
- 93918692869200       white  CONST  typ INTEGER  val  1
- 93918692869360        blue  CONST  typ INTEGER  val  2
- 93918692869552       color  TYPE   typ 93918692869456  lvl  1  siz     4  off     0
+ 94097866879920         red  CONST  typ INTEGER  val  0
+ 94097866880080       white  CONST  typ INTEGER  val  1
+ 94097866880240        blue  CONST  typ INTEGER  val  2
+ 94097866880432       color  TYPE   typ 94097866880336  lvl  1  siz     4  off     0
   0 ..   2
- 93918692869968      person  TYPE   typ 93918692871792  lvl  1  siz    48  off     0
+ 94097866880848      person  TYPE   typ 94097866882672  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 93918692870160          pp  TYPE   typ 93918692870064  lvl  1  siz     8  off     0
+ 94097866881040          pp  TYPE   typ 94097866880944  lvl  1  siz     8  off     0
 (^ person)
- 93918692872752           c  VAR    0 typ 93918692867888  lvl  1  siz    16  off     0
+ 94097866883632           c  VAR    0 typ 94097866878768  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93918692873104         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
- 93918692873840        john  VAR    4 typ 93918692870064  lvl  1  siz     8  off    24
+ 94097866883984         sum  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94097866884720        john  VAR    4 typ 94097866880944  lvl  1  siz     8  off    24
 (^ person)
- 93918692873936        mary  VAR    4 typ 93918692870064  lvl  1  siz     8  off    32
+ 94097866884816        mary  VAR    4 typ 94097866880944  lvl  1  siz     8  off    32
 (^ person)
- 93918692874032        fred  VAR    4 typ 93918692870064  lvl  1  siz     8  off    40
+ 94097866884912        fred  VAR    4 typ 94097866880944  lvl  1  siz     8  off    40
 (^ person)
- 93918692874128         ptr  VAR    4 typ 93918692870064  lvl  1  siz     8  off    48
+ 94097866885008         ptr  VAR    4 typ 94097866880944  lvl  1  siz     8  off    48
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)
-                                 0)
+                                 32)
                            2)
                        (:= (aref (^ john)
                                  0)
                            19)
                        (:= (aref (^ john)
-                                 0)
+                                 8)
                            mary)
                        (:= (aref (^ john)
-                                 0)
+                                 40)
                            4.000000e+04)
                        (:= (aref (^ fred)
-                                 0)
+                                 8)
                            0)
                        (:= (aref (^ mary)
-                                 0)
+                                 16)
                            c)
                        (:= sum (+ sum (aref (^ ptr)
                                             0)))
                        (:= ptr (aref (^ ptr)
-                                     0))))
+                                     8))))
