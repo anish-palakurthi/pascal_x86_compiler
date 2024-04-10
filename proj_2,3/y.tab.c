@@ -117,12 +117,12 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #include "token.h"
+
 #include "lexan.h"
 #include "symtab.h"
-#include "parse.h"
 
+#include "parse.h"
         /* define the type of the Yacc stack element to be TOKEN */
 
 #define YYSTYPE TOKEN
