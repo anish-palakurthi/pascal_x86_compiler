@@ -328,6 +328,16 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
+    printf("lhs\n");
+    ppexpr(lhs);
+    printf("\n");
+    printf("lhs->basicdt: %d\n", lhs->basicdt);
+
+    printf("\nop\n");;
+    ppexpr(op);
+    printf("\nrhs\n");
+    ppexpr(rhs);
+    printf("\n");
     
     if (lhs->tokentype == NUMBERTOK){
 
@@ -867,6 +877,8 @@ TOKEN findid(TOKEN tok) { /* the ID token */
     SYMBOL sym, typ;
     sym = searchst(tok->stringval);
     tok->symentry = sym;
+    // tok->symtype = sym;
+
     
     if (sym->kind == CONSTSYM) {
       if (sym->basicdt == REAL) {
@@ -923,27 +935,48 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
+  printf("reducedot\n");
+  printf("var: \n");
+  ppexpr(var);
+  printf("\n");
+  printf("field->stringval: %s\n", field->stringval);
+  printf("\n");
+  
+
+  
 
   SYMBOL recordSymbol = var->symtype;
+  printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
+
   SYMBOL moverField = recordSymbol->datatype;
+
 
   int fieldOffset = 0;
   while (moverField != NULL){
+    printf("moverField->namestring: %s\n", moverField->namestring);
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
 
       fieldOffset = moverField->offset;
+      printf("found field match\n");
       break;
     }
     moverField = moverField->link;
   }
+
+  printf("offset: %d\n", fieldOffset);
 
   TOKEN offsetToken = makeintc(fieldOffset);
 
   TOKEN referenceTok = makearef(var, offsetToken, NULL);
 
   if (moverField) {
-    referenceTok->basicdt = moverField->datatype->basicdt;
+    printf("setting basicdt\n");
+    referenceTok->symtype = moverField;
+  }
+  else{
+    printf("moverField is null\n");
+    // return NULL;
   }
 
 
@@ -1194,14 +1227,10 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symtype = var->symtype->datatype->datatype;
+  ppexpr(tok);
+  printf("\n");
   tok->operands = var;
   
-
-
-  if (DEBUG & DB_DOPOINT) {
-    printf("dopoint\n");
-    dbugprinttok(tok);
-  }
 
   return tok;
 }
@@ -1339,15 +1368,19 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    typetok is a token whose symtype is a symbol table pointer.
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
-
+  printf("instfields\n");
+  printf("typetok->stringval: %s\n", typetok->stringval);
+  SYMBOL symtypeTypeTok = searchst(typetok->stringval);
+  printf("\n");
   TOKEN mover = idlist;
 
   while(mover != NULL){
-    mover->symtype = typetok->symtype;
+    printf("mover->stringval %s\n", mover->stringval); 
+    mover->symtype = symtypeTypeTok;
+    printf("mover->symtype->namestring %s\n", mover->symtype->namestring);
     mover = mover->link;
   }
 
-  return idlist; 
 
   return idlist;
 }
@@ -1356,7 +1389,10 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
    argstok has a pointer its type.  rectok is just a trash token to be
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok) {
-  
+  printf("instrec\n");
+  ppexpr(rectok);
+  printf("\n");
+
   SYMBOL recordSymbol = symalloc();
   recordSymbol->kind = RECORDSYM;
   rectok->symtype = recordSymbol;
@@ -1366,6 +1402,9 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
   SYMBOL prev = NULL;
 
   while (argstok) {
+    printf("argstok\n");
+    ppexpr(argstok);
+    printf("\n");
     SYMBOL field = makesym(argstok->stringval);
     field->datatype = argstok->symtype;
     field->size = argstok->symtype->size;
@@ -1418,6 +1457,9 @@ void insttype(TOKEN typename, TOKEN typetok) {
   typesym->datatype = typetok->symtype;
   typesym->size = typetok->symtype->size;
   typesym->kind = TYPESYM;
+  typesym->basicdt = typetok->symtype->basicdt;
+  printf("typename: %s\n", typename->stringval);
+  printf("typesym->basicdt: %d\n", typesym->basicdt);
 
 
   if (DEBUG & DB_INSTTYPE) {
@@ -1442,8 +1484,8 @@ int main(void)          /*  */
     initsyms();
     res = yyparse();
     printf("yyparse result = %8d\n", res);
-
-    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
+    printst();
+    // printstlevel(1);    /* to see level 0 too, change to:   printst();  */
 
     if (DEBUG & DB_PARSERES){ 
 

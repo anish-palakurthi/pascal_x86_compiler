@@ -1,13 +1,90 @@
+typename: pr
+typesym->basicdt: 4
+typename: pi
+typesym->basicdt: 4
+lhs
+i
+lhs->basicdt: 0
+
+op
+(:=)
+rhs
+1
 yyparse result =        0
+Symbol table level 0
+ 94682810798752        real  BASIC  basicdt   1          siz     8
+ 94682810798848     integer  BASIC  basicdt   0          siz     4
+ 94682810798944        char  BASIC  basicdt   2          siz     1
+ 94682810799040     boolean  BASIC  basicdt   3          siz     4
+ 94682810799136         exp  knd 5 0  typ 94682810799232  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810799424       trexp  knd 5 0  typ 94682810799520  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810799712         sin  knd 5 0  typ 94682810799808  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810800000         cos  knd 5 0  typ 94682810800096  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810800288       trsin  knd 5 0  typ 94682810800384  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810800576        sqrt  knd 5 0  typ 94682810800672  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810800864       round  knd 5 0  typ 94682810800960  lvl  0  siz     0  off     0
+(FUNCTION real
+          real)
+ 94682810801152      iround  knd 5 0  typ 94682810801248  lvl  0  siz     0  off     0
+(FUNCTION integer
+          real)
+ 94682810801440         ord  knd 5 0  typ 94682810801536  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94682810801728         new  knd 5 0  typ 94682810801824  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94682810802016       trnew  knd 5 0  typ 94682810802112  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94682810802304       write  knd 5 0  typ 94682810802400  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          char)
+ 94682810802592     writeln  knd 5 0  typ 94682810802688  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          char)
+ 94682810802880      writef  knd 5 0  typ 94682810802976  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          real)
+ 94682810803168    writelnf  knd 5 0  typ 94682810803264  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          real)
+ 94682810803456      writei  knd 5 0  typ 94682810803552  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          integer)
+ 94682810803744    writelni  knd 5 0  typ 94682810803840  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          integer)
+ 94682810804032        read  knd 5 0  typ 94682810804128  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          NULL)
+ 94682810804320      readln  knd 5 0  typ 94682810804416  lvl  0  siz     0  off     0
+(FUNCTION NULL
+          NULL)
+ 94682810804608         eof  knd 5 0  typ 94682810804704  lvl  0  siz     0  off     0
+(FUNCTION boolean
+          NULL)
 Symbol table level 1
- 94807479184976          pr  TYPE   typ 94807479184880  lvl  1  siz     8  off     0
+ 94682810830416          pr  TYPE   typ 94682810830320  lvl  1  siz     8  off     0
 (^ real)
- 94807479185488          pi  TYPE   typ 94807479185392  lvl  1  siz     8  off     0
+ 94682810839136          pi  TYPE   typ 94682810839040  lvl  1  siz     8  off     0
 (^ integer)
- 94807479185968           c  VAR    4 typ 94807479184880  lvl  1  siz     8  off     0
+ 94682810839616           c  VAR    4 typ 94682810830320  lvl  1  siz     8  off     0
 (^ real)
- 94807479186320           d  VAR    4 typ 94807479185392  lvl  1  siz     8  off     8
+ 94682810839968           d  VAR    4 typ 94682810839040  lvl  1  siz     8  off     8
 (^ integer)
- 94807479186672           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94682810840320           i  VAR    0 typ integer  lvl  1  siz     4  off    16
 (program graph1 (progn output)
                 (progn (:= i 1)))
