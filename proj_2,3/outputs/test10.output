@@ -10,11 +10,15 @@ res 20
 argstok
 argstok->stringval: re
 
-field->namestring: re
 argstok
 argstok->stringval: im
 
-field->namestring: im
+typename: complex
+typesym->basicdt: 0
+typename: color
+typesym->basicdt: 0
+typename: pp
+typesym->basicdt: 4
 instfields
 typetok->stringval: integer
 
@@ -45,32 +49,27 @@ res 20
 argstok
 argstok->stringval: age
 
-field->namestring: age
 argstok
 argstok->stringval: friend
 
-field->namestring: friend
 argstok
 argstok->stringval: location
 
-field->namestring: location
 argstok
 argstok->stringval: favorite
 
-field->namestring: favorite
 argstok
 argstok->stringval: salary
 
-field->namestring: salary
+typename: person
+typesym->basicdt: 0
 (^)
 reducedot
 var: 
 (^ john)
 field->stringval: location
 
-recordSymbol is null
 recordSymbol->namestring: 
-moverField->datatype->namestring: integer
 moverField->namestring: age
 moverField->namestring: friend
 moverField->namestring: location
@@ -85,19 +84,16 @@ var:
       16)
 field->stringval: re
 
-recordSymbol is null
+Called on non-record type
 recordSymbol->namestring: location
-moverField->datatype->namestring: 
-moverField->namestring: complex
-moverField->namestring: red
-moverField->namestring: white
-moverField->namestring: blue
-moverField->namestring: color
-moverField->namestring: person
-moverField->namestring: pp
-moverField->namestring: john
+New recordSymbol->namestring: complex
+recordSymbol->namestring: complex
+moverField->namestring: re
+found field match
 offset: 0
-moverField is null
+setting basicdt
+referenceTok->symtype->namestring: re
+referenceTok->symtype->basicdt: 0
 lhs
 (aref (^ john)
       16)
@@ -113,9 +109,7 @@ var:
 (^ john)
 field->stringval: location
 
-recordSymbol is null
 recordSymbol->namestring: 
-moverField->datatype->namestring: integer
 moverField->namestring: age
 moverField->namestring: friend
 moverField->namestring: location
@@ -130,22 +124,20 @@ var:
       16)
 field->stringval: im
 
-recordSymbol is null
+Called on non-record type
 recordSymbol->namestring: location
-moverField->datatype->namestring: 
-moverField->namestring: complex
-moverField->namestring: red
-moverField->namestring: white
-moverField->namestring: blue
-moverField->namestring: color
-moverField->namestring: person
-moverField->namestring: pp
-moverField->namestring: john
-offset: 0
-moverField is null
+New recordSymbol->namestring: complex
+recordSymbol->namestring: complex
+moverField->namestring: re
+moverField->namestring: im
+found field match
+offset: 8
+setting basicdt
+referenceTok->symtype->namestring: im
+referenceTok->symtype->basicdt: 0
 lhs
 (aref (^ john)
-      16)
+      24)
 lhs->basicdt: 0
 
 op
@@ -154,94 +146,94 @@ rhs
 4.500000e+00
 yyparse result =        0
 Symbol table level 0
- 94581458281120        real  BASIC  basicdt   1          siz     8
- 94581458281216     integer  BASIC  basicdt   0          siz     4
- 94581458281312        char  BASIC  basicdt   2          siz     1
- 94581458281408     boolean  BASIC  basicdt   3          siz     4
- 94581458281504         exp  knd 5 0  typ 94581458281600  lvl  0  siz     0  off     0
+ 94381733388960        real  BASIC  basicdt   1          siz     8
+ 94381733389056     integer  BASIC  basicdt   0          siz     4
+ 94381733389152        char  BASIC  basicdt   2          siz     1
+ 94381733389248     boolean  BASIC  basicdt   3          siz     4
+ 94381733389344         exp  knd 5 0  typ 94381733389440  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458281792       trexp  knd 5 0  typ 94581458281888  lvl  0  siz     0  off     0
+ 94381733389632       trexp  knd 5 0  typ 94381733389728  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458282080         sin  knd 5 0  typ 94581458282176  lvl  0  siz     0  off     0
+ 94381733389920         sin  knd 5 0  typ 94381733390016  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458282368         cos  knd 5 0  typ 94581458282464  lvl  0  siz     0  off     0
+ 94381733390208         cos  knd 5 0  typ 94381733390304  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458282656       trsin  knd 5 0  typ 94581458282752  lvl  0  siz     0  off     0
+ 94381733390496       trsin  knd 5 0  typ 94381733390592  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458282944        sqrt  knd 5 0  typ 94581458283040  lvl  0  siz     0  off     0
+ 94381733390784        sqrt  knd 5 0  typ 94381733390880  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458283232       round  knd 5 0  typ 94581458283328  lvl  0  siz     0  off     0
+ 94381733391072       round  knd 5 0  typ 94381733391168  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94581458283520      iround  knd 5 0  typ 94581458283616  lvl  0  siz     0  off     0
+ 94381733391360      iround  knd 5 0  typ 94381733391456  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 94581458283808         ord  knd 5 0  typ 94581458283904  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94581458284096         new  knd 5 0  typ 94581458284192  lvl  0  siz     0  off     0
+ 94381733391648         ord  knd 5 0  typ 94381733391744  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94581458284384       trnew  knd 5 0  typ 94581458284480  lvl  0  siz     0  off     0
+ 94381733391936         new  knd 5 0  typ 94381733392032  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94581458284672       write  knd 5 0  typ 94581458284768  lvl  0  siz     0  off     0
+ 94381733392224       trnew  knd 5 0  typ 94381733392320  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94381733392512       write  knd 5 0  typ 94381733392608  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94581458284960     writeln  knd 5 0  typ 94581458285056  lvl  0  siz     0  off     0
+ 94381733392800     writeln  knd 5 0  typ 94381733392896  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94581458285248      writef  knd 5 0  typ 94581458285344  lvl  0  siz     0  off     0
+ 94381733393088      writef  knd 5 0  typ 94381733393184  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94581458285536    writelnf  knd 5 0  typ 94581458285632  lvl  0  siz     0  off     0
+ 94381733393376    writelnf  knd 5 0  typ 94381733393472  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94581458285824      writei  knd 5 0  typ 94581458285920  lvl  0  siz     0  off     0
+ 94381733393664      writei  knd 5 0  typ 94381733393760  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94581458286112    writelni  knd 5 0  typ 94581458286208  lvl  0  siz     0  off     0
+ 94381733393952    writelni  knd 5 0  typ 94381733394048  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94581458286400        read  knd 5 0  typ 94581458286496  lvl  0  siz     0  off     0
+ 94381733394240        read  knd 5 0  typ 94381733394336  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94581458286688      readln  knd 5 0  typ 94581458286784  lvl  0  siz     0  off     0
+ 94381733394528      readln  knd 5 0  typ 94381733394624  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94581458286976         eof  knd 5 0  typ 94581458287072  lvl  0  siz     0  off     0
+ 94381733394816         eof  knd 5 0  typ 94381733394912  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 94581458321504     complex  TYPE   typ 94581458321216  lvl  1  siz    16  off     0
+ 94381733429344     complex  TYPE   typ 94381733429056  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94581458322368         red  CONST  typ INTEGER  val  0
- 94581458322528       white  CONST  typ INTEGER  val  1
- 94581458322688        blue  CONST  typ INTEGER  val  2
- 94581458322880       color  TYPE   typ 94581458322784  lvl  1  siz     4  off     0
+ 94381733430208         red  CONST  typ INTEGER  val  0
+ 94381733430368       white  CONST  typ INTEGER  val  1
+ 94381733430528        blue  CONST  typ INTEGER  val  2
+ 94381733430720       color  TYPE   typ 94381733430624  lvl  1  siz     4  off     0
   0 ..   2
- 94581458323296      person  TYPE   typ 94581458325120  lvl  1  siz    48  off     0
+ 94381733431136      person  TYPE   typ 94381733432960  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94581458323488          pp  TYPE   typ 94581458323392  lvl  1  siz     8  off     0
+ 94381733431328          pp  TYPE   typ 94381733431232  lvl  1  siz     8  off     0
 (^ person)
- 94581458326080        john  VAR    4 typ 94581458323392  lvl  1  siz     8  off     0
+ 94381733433920        john  VAR    4 typ 94381733431232  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)
                                  16)
                            3)
                        (:= (aref (^ john)
-                                 16)
+                                 24)
                            4.500000e+00)))

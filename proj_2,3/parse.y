@@ -934,7 +934,7 @@ TOKEN findtype(TOKEN tok) {
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
-
+  
   printf("reducedot\n");
   printf("var: \n");
   ppexpr(var);
@@ -946,27 +946,30 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   
 
   SYMBOL recordSymbol = var->symtype;
-
-  if(searchst(recordSymbol->namestring) == NULL){
-    printf("recordSymbol is null\n");
+  SYMBOL moverField;
+  if(recordSymbol->kind != RECORDSYM){
+    printf("Called on non-record type\n");
+    printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
+    recordSymbol = recordSymbol->datatype;
+    printf("New recordSymbol->namestring: %s\n", recordSymbol->namestring);
+    moverField = recordSymbol->datatype->datatype;
   }
   else{
-    printf("searchst(recordSymbol->namestring)->namestring: %s\n",
-    searchst(recordSymbol->namestring)->namestring);
-    
+    moverField = recordSymbol->datatype;
   }
+  // printf("recordSymbol == RECORDSYM: %d\n", recordSymbol->kind == RECORDSYM);
+
 
   printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
 
-  SYMBOL moverField = recordSymbol->datatype;
 
-  if (moverField->datatype){
-    printf("moverField->datatype->namestring: %s\n",
-    moverField->datatype->namestring);
-  }
-  else{
-    printf("moverField->datatype is null\n");
-  }
+  // if (moverField->datatype){
+  //   printf("moverField->datatype->namestring: %s\n",
+  //   moverField->datatype->namestring);
+  // }
+  // else{
+  //   printf("moverField->datatype is null\n");
+  // }
 
 
   int fieldOffset = 0;
@@ -1435,7 +1438,6 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
     printf("\n");
     SYMBOL field = makesym(argstok->stringval);
     field->datatype = argstok->symtype;
-    printf("field->namestring: %s\n", field->namestring);
     field->size = argstok->symtype->size;
     int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
     field->offset = newSize;
@@ -1483,12 +1485,13 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
    typetok is a token containing symbol table pointers. */
 void insttype(TOKEN typename, TOKEN typetok) {
   SYMBOL typesym = searchins(typename->stringval);
-  // typesym->datatype = typetok->symtype;
+  typesym->datatype = typetok->symtype;
   // printf("typesym->datatype->namestring: %s\n", typesym->datatype->namestring);
   typesym->size = typetok->symtype->size;
   typesym->kind = TYPESYM;
   typesym->basicdt = typetok->symtype->basicdt;
-  printf("typename: %s\n", typename->stringval);
+  printf("typename: %s\n", typename->stringval); // same as ppexpr typename
+  
   printf("typesym->basicdt: %d\n", typesym->basicdt);
 
 
