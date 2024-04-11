@@ -957,19 +957,10 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   else{
     moverField = recordSymbol->datatype;
   }
-  // printf("recordSymbol == RECORDSYM: %d\n", recordSymbol->kind == RECORDSYM);
 
 
   printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
 
-
-  // if (moverField->datatype){
-  //   printf("moverField->datatype->namestring: %s\n",
-  //   moverField->datatype->namestring);
-  // }
-  // else{
-  //   printf("moverField->datatype is null\n");
-  // }
 
 
   int fieldOffset = 0;
