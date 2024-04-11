@@ -3323,54 +3323,43 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
-  printf("instarray\n");
-	TOKEN curr_bound = bounds;
-	SYMBOL prev_sym = NULL;
+    // Temporary variables to store bounds and dimensions information
+    TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
+    int numDimensions = 0;
+    
+    // First pass: collect bounds information and count dimensions
+    for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
+        boundsList[numDimensions++] = curr_bound;
+    }
 
-	SYMBOL typesym = searchst(typetok->stringval);
-  printf("typesym->namestring: %s\n", typesym->namestring);
-	int low, high;
+    // Reverse the process: start installing from the last dimension to the first
+    for (int i = numDimensions - 1; i >= 0; --i) {
+        TOKEN curr_bound = boundsList[i];
+        int low = curr_bound->symtype->lowbound;
+        int high = curr_bound->symtype->highbound;
+        SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
+        
+        // Allocate a new symbol for the current array dimension
+        SYMBOL arraysym = symalloc();
+        arraysym->kind = ARRAYSYM;
+        arraysym->datatype = typesym; // Link to the next dimension or base type
+        
+        // Set bounds and size for the current dimension
+        arraysym->lowbound = low;
+        arraysym->highbound = high;
+        arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
 
-	while (curr_bound) {
-    printf("curr_bound\n");
-    ppexpr(curr_bound);
-    printf("\n");
-		SYMBOL arrsym = symalloc();
-		arrsym->kind = ARRAYSYM;
+        // Update typetok to reflect the newest dimension
+        typetok->symtype = arraysym;
+    }
 
-		if (typesym) {
-			arrsym->datatype = typesym;
-		}
-		else {
-//			arrsym->basicdt = typetok->datatype;
-		}
+    if (DEBUG & DB_INSTARRAY) {
+        printf("Finished instarray() iteratively with correct dimension order.\n");
+        dbugprint1tok(typetok);
+    }
 
-		low = curr_bound->symtype->lowbound;
-		high = curr_bound->symtype->highbound;
-    printf("low: %d\n", low);
-    printf("high: %d\n", high);
-
-		if (!prev_sym) {
-			arrsym->size = (high - low + 1) * typesym->size;
-		}
-		else {
-			arrsym->datatype = typetok->symtype;
-			arrsym->size = (high - low + 1) * prev_sym->size;
-		}
-
-		typetok->symtype = arrsym;
-		prev_sym = arrsym;
-
-		arrsym->lowbound = low;
-		arrsym->highbound = high;
-
-		curr_bound = curr_bound->link;
-	}
-
-
-	
-	return typetok;
-  }
+    return typetok;
+}
 
 
 /* instfields will install type in a list idlist of field name tokens:
