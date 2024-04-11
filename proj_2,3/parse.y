@@ -602,7 +602,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     }
 
     var->link = finalOffset; // Link the final offset to the base array
-
+ 
     areftok->operands = var;
     areftok->symtype = var->symtype;
     
