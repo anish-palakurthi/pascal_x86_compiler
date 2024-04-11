@@ -3071,7 +3071,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       int high = curArr->symtype->highbound;
       size /= (high - low + 1);
       // size = rollingSize;
-      // printf("arr->symtype->size: %d\n", arr->symtype->size);
+      printf("arr->symtype->size: %d\n", arr->symtype->size);
       printf("low: %d, high: %d, size: %d\n", low, high, size);
 
       TOKEN elesize = makeintc(size);
@@ -3080,7 +3080,10 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       TOKEN timesop = makeop(TIMESOP);
 
       if (subs->tokentype == NUMBERTOK) {
+        printf("numbertoken\n");
+        printf("subs->intval: %d\n", subs->intval);
         rollingOffset += size * subs->intval - size * low;;
+        printf("rollingOffset: %d\n", rollingOffset);
       }
 
       else if (subs->tokentype == IDENTIFIERTOK){
@@ -3090,14 +3093,9 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
         indexTok->basicdt = STRINGTYPE;
         elesize->link = indexTok;
         timesop->operands = elesize;
+        rollingOffset -= size * low;
       }
 
-
-
-      // if (low == 1){
-      //   rollingOffset -= size;
-      // }
-      
 
       retTok = makearef(curArr, makeintc(rollingOffset), NULL);
       retTok->symtype = curArr->symtype->datatype;
