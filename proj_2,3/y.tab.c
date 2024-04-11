@@ -2959,14 +2959,38 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   
 
   SYMBOL recordSymbol = var->symtype;
+
+  if(searchst(recordSymbol->namestring) == NULL){
+    printf("recordSymbol is null\n");
+  }
+  else{
+    printf("searchst(recordSymbol->namestring)->namestring: %s\n",
+    searchst(recordSymbol->namestring)->namestring);
+    
+  }
+
   printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
 
   SYMBOL moverField = recordSymbol->datatype;
+
+  if (moverField->datatype){
+    printf("moverField->datatype->namestring: %s\n",
+    moverField->datatype->namestring);
+  }
+  else{
+    printf("moverField->datatype is null\n");
+  }
 
 
   int fieldOffset = 0;
   while (moverField != NULL){
     printf("moverField->namestring: %s\n", moverField->namestring);
+    // if (moverField->basicdt){
+    //   printf("moverField->basicdt: %s\n", moverField->basicdt);
+    // }else{
+    //   printf("moverField->basicdt is null\n");
+    // }
+    
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
 
@@ -2986,6 +3010,10 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   if (moverField) {
     printf("setting basicdt\n");
     referenceTok->symtype = moverField;
+    printf("referenceTok->symtype->namestring: %s\n",
+    referenceTok->symtype->namestring);
+    printf("referenceTok->symtype->basicdt: %d\n", referenceTok->symtype->basicdt);
+    
   }
   else{
     printf("moverField is null\n");
@@ -3416,10 +3444,11 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
 
   while (argstok) {
     printf("argstok\n");
-    ppexpr(argstok);
+    printf("argstok->stringval: %s\n", argstok->stringval);
     printf("\n");
     SYMBOL field = makesym(argstok->stringval);
     field->datatype = argstok->symtype;
+    printf("field->namestring: %s\n", field->namestring);
     field->size = argstok->symtype->size;
     int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
     field->offset = newSize;
@@ -3457,7 +3486,7 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
   pointsym->basicdt = POINTER;
 
   tok->symtype = pointsym;
-
+  
 
   return tok;
 }
@@ -3466,20 +3495,15 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 /* insttype will install a type name in symbol table.
    typetok is a token containing symbol table pointers. */
 void insttype(TOKEN typename, TOKEN typetok) {
-  SYMBOL typesym = searchins(typename->stringval);
-  typesym->datatype = typetok->symtype;
-  typesym->size = typetok->symtype->size;
-  typesym->kind = TYPESYM;
-  typesym->basicdt = typetok->symtype->basicdt;
-  printf("typename: %s\n", typename->stringval);
-  printf("typesym->basicdt: %d\n", typesym->basicdt);
+  SYMBOL sym, typesym;
 
+	typesym = typetok->symtype;
 
-  if (DEBUG & DB_INSTTYPE) {
-    printf("install type\n");
-    dbugprinttok(typename);
-    dbugprinttok(typetok);
-  }
+	sym = searchins(typename->stringval);
+	sym->kind = TYPESYM;
+	sym->size = typesym->size;
+	sym->datatype = typesym;
+	sym->basicdt = typesym->basicdt;
 }
 
 
