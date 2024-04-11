@@ -59,80 +59,15 @@ rollingOffset: 20
 dimensionalToken
 (aref acoX 20)
 yyparse result =        0
-Symbol table level 0
- 94528748831392        real  BASIC  basicdt   1          siz     8
- 94528748831488     integer  BASIC  basicdt   0          siz     4
- 94528748831584        char  BASIC  basicdt   2          siz     1
- 94528748831680     boolean  BASIC  basicdt   3          siz     4
- 94528748831776         exp  knd 5 0  typ 94528748831872  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748832064       trexp  knd 5 0  typ 94528748832160  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748832352         sin  knd 5 0  typ 94528748832448  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748832640         cos  knd 5 0  typ 94528748832736  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748832928       trsin  knd 5 0  typ 94528748833024  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748833216        sqrt  knd 5 0  typ 94528748833312  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748833504       round  knd 5 0  typ 94528748833600  lvl  0  siz     0  off     0
-(FUNCTION real
-          real)
- 94528748833792      iround  knd 5 0  typ 94528748833888  lvl  0  siz     0  off     0
-(FUNCTION integer
-          real)
- 94528748834080         ord  knd 5 0  typ 94528748834176  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94528748834368         new  knd 5 0  typ 94528748834464  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94528748834656       trnew  knd 5 0  typ 94528748834752  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94528748834944       write  knd 5 0  typ 94528748835040  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          char)
- 94528748835232     writeln  knd 5 0  typ 94528748835328  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          char)
- 94528748835520      writef  knd 5 0  typ 94528748835616  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          real)
- 94528748835808    writelnf  knd 5 0  typ 94528748835904  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          real)
- 94528748836096      writei  knd 5 0  typ 94528748836192  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          integer)
- 94528748836384    writelni  knd 5 0  typ 94528748836480  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          integer)
- 94528748836672        read  knd 5 0  typ 94528748836768  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          NULL)
- 94528748836960      readln  knd 5 0  typ 94528748837056  lvl  0  siz     0  off     0
-(FUNCTION NULL
-          NULL)
- 94528748837248         eof  knd 5 0  typ 94528748837344  lvl  0  siz     0  off     0
-(FUNCTION boolean
-          NULL)
 Symbol table level 1
- 94528748863408         red  CONST  typ INTEGER  val  0
- 94528748863568       white  CONST  typ INTEGER  val  1
- 94528748863728        blue  CONST  typ INTEGER  val  2
- 94528748863920       color  TYPE   typ 94528748863824  lvl  1  siz     4  off     0
+ 94399436681136         red  CONST  typ INTEGER  val  0
+ 94399436681296       white  CONST  typ INTEGER  val  1
+ 94399436681456        blue  CONST  typ INTEGER  val  2
+ 94399436681648       color  TYPE   typ 94399436681552  lvl  1  siz     4  off     0
   0 ..   2
- 94528748865264         aco  VAR    0 typ 94528748865168  lvl  1  siz   120  off     0
+ 94399436682992         aco  VAR    0 typ 94399436682896  lvl  1  siz   120  off     0
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94528748866480        acoX  VAR    0 typ 94528748866384  lvl  1  siz    60  off   128
+ 94399436684208        acoX  VAR    0 typ 94399436684112  lvl  1  siz    60  off   128
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco 40)
