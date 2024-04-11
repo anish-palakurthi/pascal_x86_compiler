@@ -2,12 +2,30 @@ field->stringval: friend
 moverField->namestring: age
 moverField->namestring: friend
 fieldOffset: 8
+makearef
+var: 
+(^ john)
+off: 
+8
+areftok
+(aref (^ john)
+      8)
 referenceTok
 (aref (^ john)
       8)
 field->stringval: age
 moverField->namestring: age
 fieldOffset: 0
+makearef
+var: 
+(^ (aref (^ john)
+         8))
+off: 
+0
+areftok
+(aref (^ (aref (^ john)
+               8))
+      0)
 referenceTok
 (aref (^ (aref (^ john)
                8))
@@ -16,6 +34,14 @@ field->stringval: friend
 moverField->namestring: age
 moverField->namestring: friend
 fieldOffset: 8
+makearef
+var: 
+(^ john)
+off: 
+8
+areftok
+(aref (^ john)
+      8)
 referenceTok
 (aref (^ john)
       8)
@@ -26,6 +52,16 @@ moverField->namestring: location
 moverField->namestring: favorite
 moverField->namestring: salary
 fieldOffset: 40
+makearef
+var: 
+(^ (aref (^ john)
+         8))
+off: 
+40
+areftok
+(aref (^ (aref (^ john)
+               8))
+      40)
 referenceTok
 (aref (^ (aref (^ john)
                8))
@@ -34,6 +70,14 @@ field->stringval: friend
 moverField->namestring: age
 moverField->namestring: friend
 fieldOffset: 8
+makearef
+var: 
+(^ john)
+off: 
+8
+areftok
+(aref (^ john)
+      8)
 referenceTok
 (aref (^ john)
       8)
@@ -42,6 +86,16 @@ moverField->namestring: age
 moverField->namestring: friend
 moverField->namestring: location
 fieldOffset: 16
+makearef
+var: 
+(^ (aref (^ john)
+         8))
+off: 
+16
+areftok
+(aref (^ (aref (^ john)
+               8))
+      16)
 referenceTok
 (aref (^ (aref (^ john)
                8))
@@ -50,14 +104,33 @@ field->stringval: im
 moverField->namestring: re
 moverField->namestring: im
 fieldOffset: 8
+makearef
+var: 
+(aref (^ (aref (^ john)
+               8))
+      16)
+off: 
+8
+areftok
+(aref (^ (aref (^ john)
+               8))
+      8)
 referenceTok
 (aref (^ (aref (^ john)
                8))
-      24)
+      8)
 field->stringval: friend
 moverField->namestring: age
 moverField->namestring: friend
 fieldOffset: 8
+makearef
+var: 
+(^ john)
+off: 
+8
+areftok
+(aref (^ john)
+      8)
 referenceTok
 (aref (^ john)
       8)
@@ -65,6 +138,16 @@ field->stringval: friend
 moverField->namestring: age
 moverField->namestring: friend
 fieldOffset: 8
+makearef
+var: 
+(^ (aref (^ john)
+         8))
+off: 
+8
+areftok
+(aref (^ (aref (^ john)
+               8))
+      8)
 referenceTok
 (aref (^ (aref (^ john)
                8))
@@ -74,6 +157,18 @@ moverField->namestring: age
 moverField->namestring: friend
 moverField->namestring: location
 fieldOffset: 16
+makearef
+var: 
+(^ (aref (^ (aref (^ john)
+                  8))
+         8))
+off: 
+16
+areftok
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      16)
 referenceTok
 (aref (^ (aref (^ (aref (^ john)
                         8))
@@ -82,96 +177,109 @@ referenceTok
 field->stringval: re
 moverField->namestring: re
 fieldOffset: 0
-referenceTok
+makearef
+var: 
 (aref (^ (aref (^ (aref (^ john)
                         8))
                8))
       16)
+off: 
+0
+areftok
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      0)
+referenceTok
+(aref (^ (aref (^ (aref (^ john)
+                        8))
+               8))
+      0)
 yyparse result =        0
 Symbol table level 0
- 93919576793760        real  BASIC  basicdt   1          siz     8
- 93919576793856     integer  BASIC  basicdt   0          siz     4
- 93919576793952        char  BASIC  basicdt   2          siz     1
- 93919576794048     boolean  BASIC  basicdt   3          siz     4
- 93919576794144         exp  knd 5 0  typ 93919576794240  lvl  0  siz     0  off     0
+ 94671891239584        real  BASIC  basicdt   1          siz     8
+ 94671891239680     integer  BASIC  basicdt   0          siz     4
+ 94671891239776        char  BASIC  basicdt   2          siz     1
+ 94671891239872     boolean  BASIC  basicdt   3          siz     4
+ 94671891239968         exp  knd 5 0  typ 94671891240064  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576794432       trexp  knd 5 0  typ 93919576794528  lvl  0  siz     0  off     0
+ 94671891240256       trexp  knd 5 0  typ 94671891240352  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576794720         sin  knd 5 0  typ 93919576794816  lvl  0  siz     0  off     0
+ 94671891240544         sin  knd 5 0  typ 94671891240640  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576795008         cos  knd 5 0  typ 93919576795104  lvl  0  siz     0  off     0
+ 94671891240832         cos  knd 5 0  typ 94671891240928  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576795296       trsin  knd 5 0  typ 93919576795392  lvl  0  siz     0  off     0
+ 94671891241120       trsin  knd 5 0  typ 94671891241216  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576795584        sqrt  knd 5 0  typ 93919576795680  lvl  0  siz     0  off     0
+ 94671891241408        sqrt  knd 5 0  typ 94671891241504  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576795872       round  knd 5 0  typ 93919576795968  lvl  0  siz     0  off     0
+ 94671891241696       round  knd 5 0  typ 94671891241792  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 93919576796160      iround  knd 5 0  typ 93919576796256  lvl  0  siz     0  off     0
+ 94671891241984      iround  knd 5 0  typ 94671891242080  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 93919576796448         ord  knd 5 0  typ 93919576796544  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 93919576796736         new  knd 5 0  typ 93919576796832  lvl  0  siz     0  off     0
+ 94671891242272         ord  knd 5 0  typ 94671891242368  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 93919576797024       trnew  knd 5 0  typ 93919576797120  lvl  0  siz     0  off     0
+ 94671891242560         new  knd 5 0  typ 94671891242656  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 93919576797312       write  knd 5 0  typ 93919576797408  lvl  0  siz     0  off     0
+ 94671891242848       trnew  knd 5 0  typ 94671891242944  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94671891243136       write  knd 5 0  typ 94671891243232  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 93919576797600     writeln  knd 5 0  typ 93919576797696  lvl  0  siz     0  off     0
+ 94671891243424     writeln  knd 5 0  typ 94671891243520  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 93919576797888      writef  knd 5 0  typ 93919576797984  lvl  0  siz     0  off     0
+ 94671891243712      writef  knd 5 0  typ 94671891243808  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 93919576798176    writelnf  knd 5 0  typ 93919576798272  lvl  0  siz     0  off     0
+ 94671891244000    writelnf  knd 5 0  typ 94671891244096  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 93919576798464      writei  knd 5 0  typ 93919576798560  lvl  0  siz     0  off     0
+ 94671891244288      writei  knd 5 0  typ 94671891244384  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 93919576798752    writelni  knd 5 0  typ 93919576798848  lvl  0  siz     0  off     0
+ 94671891244576    writelni  knd 5 0  typ 94671891244672  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 93919576799040        read  knd 5 0  typ 93919576799136  lvl  0  siz     0  off     0
+ 94671891244864        read  knd 5 0  typ 94671891244960  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 93919576799328      readln  knd 5 0  typ 93919576799424  lvl  0  siz     0  off     0
+ 94671891245152      readln  knd 5 0  typ 94671891245248  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 93919576799616         eof  knd 5 0  typ 93919576799712  lvl  0  siz     0  off     0
+ 94671891245440         eof  knd 5 0  typ 94671891245536  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 93919576825936     complex  TYPE   typ 93919576825648  lvl  1  siz    16  off     0
+ 94671891271760     complex  TYPE   typ 94671891271472  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93919576826800         red  CONST  typ INTEGER  val  0
- 93919576826960       white  CONST  typ INTEGER  val  1
- 93919576827120        blue  CONST  typ INTEGER  val  2
- 93919576827312       color  TYPE   typ 93919576827216  lvl  1  siz     4  off     0
+ 94671891272624         red  CONST  typ INTEGER  val  0
+ 94671891272784       white  CONST  typ INTEGER  val  1
+ 94671891272944        blue  CONST  typ INTEGER  val  2
+ 94671891273136       color  TYPE   typ 94671891273040  lvl  1  siz     4  off     0
   0 ..   2
- 93919576827728      person  TYPE   typ 93919576829552  lvl  1  siz    48  off     0
+ 94671891273552      person  TYPE   typ 94671891275376  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 93919576827920          pp  TYPE   typ 93919576827824  lvl  1  siz     8  off     0
+ 94671891273744          pp  TYPE   typ 94671891273648  lvl  1  siz     8  off     0
 (^ person)
- 93919576830512        john  VAR    4 typ 93919576827824  lvl  1  siz     8  off     0
+ 94671891276336        john  VAR    4 typ 94671891273648  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ (aref (^ john)
@@ -184,10 +292,10 @@ Symbol table level 1
                            1.200000e+03)
                        (:= (aref (^ (aref (^ john)
                                           8))
-                                 24)
+                                 8)
                            5.400000e+00)
                        (:= (aref (^ (aref (^ (aref (^ john)
                                                    8))
                                           8))
-                                 16)
+                                 0)
                            9.700000e+01)))
