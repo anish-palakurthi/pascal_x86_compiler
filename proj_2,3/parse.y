@@ -992,9 +992,9 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("setting basicdt\n");
     referenceTok->symtype = moverField;
     printf("referenceTok->symtype->namestring: %s\n",
-    referenceTok->symtype->namestring);
-    printf("referenceTok->symtype->basicdt: %d\n", referenceTok->symtype->basicdt);
-    
+    referenceTok->symtype->datatype->namestring);
+    printf("referenceTok->symtype->basicdt: %d\n", referenceTok->symtype->datatype->basicdt);
+    referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
   }
   else{
     printf("moverField is null\n");
