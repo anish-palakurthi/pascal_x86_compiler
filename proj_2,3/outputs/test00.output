@@ -1,28 +1,28 @@
 yyparse result =        0
 Symbol table level 1
- 94070082340656   newcolor0  CONST  typ INTEGER  val  0
- 94070082340816   newcolor1  CONST  typ INTEGER  val  1
- 94070082340976   newcolor2  CONST  typ INTEGER  val  2
- 94070082341136         red  CONST  typ INTEGER  val  3
- 94070082341296      orange  CONST  typ INTEGER  val  4
- 94070082341456      yellow  CONST  typ INTEGER  val  5
- 94070082341616       green  CONST  typ INTEGER  val  6
- 94070082341776        cyan  CONST  typ INTEGER  val  7
- 94070082341936        blue  CONST  typ INTEGER  val  8
- 94070082342096      indigo  CONST  typ INTEGER  val  9
- 94070082342256      violet  CONST  typ INTEGER  val  10
- 94070082342416      purple  CONST  typ INTEGER  val  11
- 94070082342576     magenta  CONST  typ INTEGER  val  12
- 94070082342736        pink  CONST  typ INTEGER  val  13
- 94070082342896       brown  CONST  typ INTEGER  val  14
- 94070082343056       white  CONST  typ INTEGER  val  15
- 94070082343216        gray  CONST  typ INTEGER  val  16
- 94070082343376       black  CONST  typ INTEGER  val  17
- 94070082343568       color  TYPE   typ 94070082343472  lvl  1  siz     4  off     0
+ 94556907271984   newcolor0  CONST  typ INTEGER  val  0
+ 94556907272144   newcolor1  CONST  typ INTEGER  val  1
+ 94556907272304   newcolor2  CONST  typ INTEGER  val  2
+ 94556907272464         red  CONST  typ INTEGER  val  3
+ 94556907272624      orange  CONST  typ INTEGER  val  4
+ 94556907272784      yellow  CONST  typ INTEGER  val  5
+ 94556907272944       green  CONST  typ INTEGER  val  6
+ 94556907273104        cyan  CONST  typ INTEGER  val  7
+ 94556907273264        blue  CONST  typ INTEGER  val  8
+ 94556907273424      indigo  CONST  typ INTEGER  val  9
+ 94556907273584      violet  CONST  typ INTEGER  val  10
+ 94556907273744      purple  CONST  typ INTEGER  val  11
+ 94556907273904     magenta  CONST  typ INTEGER  val  12
+ 94556907274064        pink  CONST  typ INTEGER  val  13
+ 94556907274224       brown  CONST  typ INTEGER  val  14
+ 94556907274384       white  CONST  typ INTEGER  val  15
+ 94556907274544        gray  CONST  typ INTEGER  val  16
+ 94556907274704       black  CONST  typ INTEGER  val  17
+ 94556907274896       color  TYPE   typ 94556907274800  lvl  1  siz     4  off     0
   0 ..  17
- 94070082344176           c  VAR    0 typ 94070082343472  lvl  1  siz     4  off     0
+ 94556907275504           c  VAR    0 typ 94556907274800  lvl  1  siz     4  off     0
   0 ..  17
- 94070082344272           d  VAR    0 typ 94070082343472  lvl  1  siz     4  off     4
+ 94556907275600           d  VAR    0 typ 94556907274800  lvl  1  siz     4  off     4
   0 ..  17
 (program graph1 (progn output)
                 (progn (:= c 0)))

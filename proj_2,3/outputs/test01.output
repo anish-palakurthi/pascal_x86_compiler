@@ -1,13 +1,13 @@
 yyparse result =        0
 Symbol table level 1
- 94334520196688          pr  TYPE   typ 94334520196592  lvl  1  siz     8  off     0
+ 94258948468304          pr  TYPE   typ 94258948468208  lvl  1  siz     8  off     0
 (^ real)
- 94334520197200          pi  TYPE   typ 94334520197104  lvl  1  siz     8  off     0
+ 94258948468816          pi  TYPE   typ 94258948468720  lvl  1  siz     8  off     0
 (^ integer)
- 94334520197680           c  VAR    4 typ 94334520196592  lvl  1  siz     8  off     0
+ 94258948469296           c  VAR    4 typ 94258948468208  lvl  1  siz     8  off     0
 (^ real)
- 94334520198032           d  VAR    4 typ 94334520197104  lvl  1  siz     8  off     8
+ 94258948469648           d  VAR    4 typ 94258948468720  lvl  1  siz     8  off     8
 (^ integer)
- 94334520198384           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94258948470000           i  VAR    0 typ integer  lvl  1  siz     4  off    16
 (program graph1 (progn output)
                 (progn (:= i 1)))

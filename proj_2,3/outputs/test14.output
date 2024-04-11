@@ -1,73 +1,13 @@
-arrayref
-arr:
-aco
-arr->symtype->size: 120
-low: 1, high: 10, size: 12
-numbertoken
-subs->intval: 4
-rollingOffset: 36
-arr->symtype->size: 120
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 1
-rollingOffset: 40
-dimensionalToken
-(aref aco 40)
-arrayref
-arr:
-aco
-arr->symtype->size: 120
-low: 1, high: 10, size: 12
-numbertoken
-subs->intval: 2
-rollingOffset: 12
-arr->symtype->size: 120
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 2
-rollingOffset: 20
-dimensionalToken
-(aref aco 20)
-arrayref
-arr:
-acoX
-arr->symtype->size: 60
-low: 2, high: 6, size: 12
-numbertoken
-subs->intval: 5
-rollingOffset: 36
-arr->symtype->size: 60
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 1
-rollingOffset: 40
-dimensionalToken
-(aref acoX 40)
-arrayref
-arr:
-acoX
-arr->symtype->size: 60
-low: 2, high: 6, size: 12
-numbertoken
-subs->intval: 3
-rollingOffset: 12
-arr->symtype->size: 60
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 2
-rollingOffset: 20
-dimensionalToken
-(aref acoX 20)
 yyparse result =        0
 Symbol table level 1
- 94399436681136         red  CONST  typ INTEGER  val  0
- 94399436681296       white  CONST  typ INTEGER  val  1
- 94399436681456        blue  CONST  typ INTEGER  val  2
- 94399436681648       color  TYPE   typ 94399436681552  lvl  1  siz     4  off     0
+ 94501071380400         red  CONST  typ INTEGER  val  0
+ 94501071380560       white  CONST  typ INTEGER  val  1
+ 94501071380720        blue  CONST  typ INTEGER  val  2
+ 94501071380912       color  TYPE   typ 94501071380816  lvl  1  siz     4  off     0
   0 ..   2
- 94399436682992         aco  VAR    0 typ 94399436682896  lvl  1  siz   120  off     0
+ 94501071382256         aco  VAR    0 typ 94501071382160  lvl  1  siz   120  off     0
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94399436684208        acoX  VAR    0 typ 94399436684112  lvl  1  siz    60  off   128
+ 94501071383472        acoX  VAR    0 typ 94501071383376  lvl  1  siz    60  off   128
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco 40)

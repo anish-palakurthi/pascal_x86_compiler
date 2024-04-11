@@ -1,71 +1,15 @@
-arrayref
-arr:
-aco
-arr->symtype->size: 120
-low: 1, high: 10, size: 12
-arr->symtype->size: 120
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 1
-rollingOffset: -8
-dimensionalToken
-(aref aco (+ -8
-             (* 12
-                i)))
-arrayref
-arr:
-aco
-arr->symtype->size: 120
-low: 1, high: 10, size: 12
-arr->symtype->size: 120
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 2
-rollingOffset: -4
-dimensionalToken
-(aref aco (+ -4
-             (* 12
-                j)))
-arrayref
-arr:
-acoX
-arr->symtype->size: 60
-low: 2, high: 6, size: 12
-arr->symtype->size: 60
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 1
-rollingOffset: -20
-dimensionalToken
-(aref acoX (+ -20
-              (* 12
-                 j)))
-arrayref
-arr:
-acoX
-arr->symtype->size: 60
-low: 2, high: 6, size: 12
-arr->symtype->size: 60
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 2
-rollingOffset: -16
-dimensionalToken
-(aref acoX (+ -16
-              (* 12
-                 i)))
 yyparse result =        0
 Symbol table level 1
- 94214980136880         red  CONST  typ INTEGER  val  0
- 94214980137040       white  CONST  typ INTEGER  val  1
- 94214980137200        blue  CONST  typ INTEGER  val  2
- 94214980137392       color  TYPE   typ 94214980137296  lvl  1  siz     4  off     0
+ 93920115437488         red  CONST  typ INTEGER  val  0
+ 93920115437648       white  CONST  typ INTEGER  val  1
+ 93920115437808        blue  CONST  typ INTEGER  val  2
+ 93920115438000       color  TYPE   typ 93920115437904  lvl  1  siz     4  off     0
   0 ..   2
- 94214980138000           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94214980138096           j  VAR    0 typ integer  lvl  1  siz     4  off     4
- 94214980139312         aco  VAR    0 typ 94214980139216  lvl  1  siz   120  off    16
+ 93920115438608           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 93920115438704           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 93920115439920         aco  VAR    0 typ 93920115439824  lvl  1  siz   120  off    16
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94214980140528        acoX  VAR    0 typ 94214980140432  lvl  1  siz    60  off   144
+ 93920115441136        acoX  VAR    0 typ 93920115441040  lvl  1  siz    60  off   144
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ -8

@@ -1,79 +1,44 @@
-arrayref
-arr:
-ac
-subs is null
-subs->intval: 7
-size: 16
-subs->intval * size: 96
-retTok
-(aref ac 96)
-arrayref
-arr:
-people
-subs is null
-retTok
-(aref people (+ -48
-                (* 48
-                   i)))
-areftok
-(aref people (+ -48
-                (* 48
-                   i)))
-arrayref
-arr:
-aco
-arr->symtype->size: 120
-low: 1, high: 10, size: 12
-arr->symtype->size: 120
-low: 0, high: 2, size: 4
-numbertoken
-subs->intval: 1
-rollingOffset: -8
-dimensionalToken
-(aref aco (+ -8
-             (* 12
-                i)))
 yyparse result =        0
 Symbol table level 1
- 94120748880272     complex  TYPE   typ 94120748879984  lvl  1  siz    16  off     0
+ 94880158626192     complex  TYPE   typ 94880158625904  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94120748881136         red  CONST  typ INTEGER  val  0
- 94120748881296       white  CONST  typ INTEGER  val  1
- 94120748881456        blue  CONST  typ INTEGER  val  2
- 94120748881648       color  TYPE   typ 94120748881552  lvl  1  siz     4  off     0
+ 94880158627056         red  CONST  typ INTEGER  val  0
+ 94880158627216       white  CONST  typ INTEGER  val  1
+ 94880158627376        blue  CONST  typ INTEGER  val  2
+ 94880158627568       color  TYPE   typ 94880158627472  lvl  1  siz     4  off     0
   0 ..   2
- 94120748882064      person  TYPE   typ 94120748883888  lvl  1  siz    48  off     0
+ 94880158627984      person  TYPE   typ 94880158629808  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94120748882256          pp  TYPE   typ 94120748882160  lvl  1  siz     8  off     0
+ 94880158628176          pp  TYPE   typ 94880158628080  lvl  1  siz     8  off     0
 (^ person)
- 94120748884976           c  VAR    0 typ 94120748879984  lvl  1  siz    16  off     0
+ 94880158630896           c  VAR    0 typ 94880158625904  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94120748885072           d  VAR    0 typ 94120748879984  lvl  1  siz    16  off    16
+ 94880158630992           d  VAR    0 typ 94880158625904  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94120748885552           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94120748885648         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94120748886640          ac  VAR    0 typ 94120748886544  lvl  1  siz   160  off    48
+ 94880158631472           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94880158631568         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94880158632560          ac  VAR    0 typ 94880158632464  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94120748887856         aco  VAR    0 typ 94120748887760  lvl  1  siz   120  off   208
+ 94880158633776         aco  VAR    0 typ 94880158633680  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94120748888592        john  VAR    4 typ 94120748882160  lvl  1  siz     8  off   328
+ 94880158634512        john  VAR    4 typ 94880158628080  lvl  1  siz     8  off   328
 (^ person)
- 94120748888688        mary  VAR    4 typ 94120748882160  lvl  1  siz     8  off   336
+ 94880158634608        mary  VAR    4 typ 94880158628080  lvl  1  siz     8  off   336
 (^ person)
- 94120748888784        fred  VAR    4 typ 94120748882160  lvl  1  siz     8  off   344
+ 94880158634704        fred  VAR    4 typ 94880158628080  lvl  1  siz     8  off   344
 (^ person)
- 94120748888880         ptr  VAR    4 typ 94120748882160  lvl  1  siz     8  off   352
+ 94880158634800         ptr  VAR    4 typ 94880158628080  lvl  1  siz     8  off   352
 (^ person)
- 94120748889872      people  VAR    0 typ 94120748889776  lvl  1  siz   960  off   368
+ 94880158635792      people  VAR    0 typ 94880158635696  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
