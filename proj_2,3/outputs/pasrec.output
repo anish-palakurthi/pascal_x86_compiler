@@ -1,767 +1,158 @@
-instfields
-typetok->stringval: real
-
-mover->stringval re
-mover->symtype->namestring real
-mover->stringval im
-mover->symtype->namestring real
-instrec
-res 20
-argstok
-argstok->stringval: re
-
-argstok
-argstok->stringval: im
-
-typename: complex
-typesym->basicdt: 0
-typename: color
-typesym->basicdt: 0
-typename: pp
-typesym->basicdt: 4
-instfields
-typetok->stringval: integer
-
-mover->stringval age
-mover->symtype->namestring integer
-instfields
-typetok->stringval: pp
-
-mover->stringval friend
-mover->symtype->namestring pp
-instfields
-typetok->stringval: complex
-
-mover->stringval location
-mover->symtype->namestring complex
-instfields
-typetok->stringval: color
-
-mover->stringval favorite
-mover->symtype->namestring color
-instfields
-typetok->stringval: real
-
-mover->stringval salary
-mover->symtype->namestring real
-instrec
-res 20
-argstok
-argstok->stringval: age
-
-argstok
-argstok->stringval: friend
-
-argstok
-argstok->stringval: location
-
-argstok
-argstok->stringval: favorite
-
-argstok
-argstok->stringval: salary
-
-typename: person
-typesym->basicdt: 0
-installed array with type of typetok 
-installed array with type of typetok 
-installed array with type of typetok 
-installed array with type of typetok 
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: favorite
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-moverField->namestring: favorite
-found field match
-offset: 32
-setting basicdt
-referenceTok->symtype->namestring: color
-referenceTok->symtype->basicdt: 0
-lhs
-(aref (^ john)
-      32)
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-2
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: age
-
-recordSymbol->namestring: 
-moverField->namestring: age
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: integer
-referenceTok->symtype->basicdt: 0
-lhs
-(aref (^ john)
-      0)
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-19
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: friend
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-lhs
-(aref (^ john)
-      8)
-lhs->basicdt: 4
-
-op
-(:=)
-rhs
-mary
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: salary
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-moverField->namestring: favorite
-moverField->namestring: salary
-found field match
-offset: 40
-setting basicdt
-referenceTok->symtype->namestring: real
-referenceTok->symtype->basicdt: 1
-lhs
-(aref (^ john)
-      40)
-lhs->basicdt: 1
-
-op
-(:=)
-rhs
-4.000000e+04
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: location
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-found field match
-offset: 16
-setting basicdt
-referenceTok->symtype->namestring: complex
-referenceTok->symtype->basicdt: 0
-reducedot
-var: 
-(aref (^ john)
-      16)
-field->stringval: re
-
-Called on non-record type
-recordSymbol->namestring: location
-New recordSymbol->namestring: complex
-recordSymbol->namestring: complex
-moverField->namestring: re
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: real
-referenceTok->symtype->basicdt: 1
-lhs
-(aref (^ john)
-      16)
-lhs->basicdt: 1
-
-op
-(:=)
-rhs
-3
-(^)
-reducedot
-var: 
-(^ mary)
-field->stringval: age
-
-recordSymbol->namestring: 
-moverField->namestring: age
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: integer
-referenceTok->symtype->basicdt: 0
-lhs
-(aref (^ mary)
-      0)
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-21
-(^)
-reducedot
-var: 
-(^ mary)
-field->stringval: friend
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-lhs
-(aref (^ mary)
-      8)
-lhs->basicdt: 4
-
-op
-(:=)
-rhs
-fred
-(^)
-reducedot
-var: 
-(^ fred)
-field->stringval: age
-
-recordSymbol->namestring: 
-moverField->namestring: age
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: integer
-referenceTok->symtype->basicdt: 0
-lhs
-(aref (^ fred)
-      0)
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-20
-(^)
-reducedot
-var: 
-(^ fred)
-field->stringval: friend
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-lhs
-(aref (^ fred)
-      8)
-lhs->basicdt: 4
-
-op
-(:=)
-rhs
-res 15
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: friend
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-(^)
-reducedot
-var: 
-(^ (aref (^ john)
-         8))
-field->stringval: friend
-
-Called on non-record type
-recordSymbol->namestring: 
-New recordSymbol->namestring: person
-recordSymbol->namestring: person
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-(^)
-reducedot
-var: 
-(^ (aref (^ (aref (^ john)
-                  8))
-         8))
-field->stringval: location
-
-Called on non-record type
-recordSymbol->namestring: 
-New recordSymbol->namestring: person
-recordSymbol->namestring: person
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-found field match
-offset: 16
-setting basicdt
-referenceTok->symtype->namestring: complex
-referenceTok->symtype->basicdt: 0
-reducedot
-var: 
-(aref (^ (aref (^ (aref (^ john)
-                        8))
-               8))
-      16)
-field->stringval: im
-
-Called on non-record type
-recordSymbol->namestring: location
-New recordSymbol->namestring: complex
-recordSymbol->namestring: complex
-moverField->namestring: re
-moverField->namestring: im
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: real
-referenceTok->symtype->basicdt: 1
-lhs
-(aref (^ (aref (^ (aref (^ john)
-                        8))
-               8))
-      24)
-lhs->basicdt: 1
-
-op
-(:=)
-rhs
-4.500000e+00
+instarray
+typesym->namestring: complex
+curr_bound
+del 8
+low: 1
+high: 10
+instarray
+typesym->namestring: color
+curr_bound
+del 8
+low: 1
+high: 10
+curr_bound
+color
+low: 0
+high: 2
+instarray
+typesym->namestring: person
+curr_bound
+del 8
+low: 1
+high: 20
 subs is null
-plusop
-(+ -16
-   (* 16
-      7))
 subs->intval: 7
 size: 16
 subs->intval * size: 96
-offsetTok
-96
 retTok
 (aref ac 96)
-reducedot
-var: 
-(aref ac 96)
-field->stringval: re
-
-Called on non-record type
-recordSymbol->namestring: 
-New recordSymbol->namestring: re
-recordSymbol->namestring: re
-offset: 0
 moverField is null
-(^)
-reducedot
-var: 
-(^ john)
-field->stringval: salary
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-moverField->namestring: favorite
-moverField->namestring: salary
-found field match
-offset: 40
-setting basicdt
-referenceTok->symtype->namestring: real
-referenceTok->symtype->basicdt: 1
-lhs
-(aref ac 96)
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-(aref (^ john)
-      40)
-lhs
-ptr
-lhs->basicdt: 4
-
-op
-(:=)
-rhs
-john
-lhs
-sum
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-0
-lhs
-i
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-1
-lhs
-ptr
-lhs->basicdt: 4
-
-op
-(<>)
-rhs
-res 15
-(^)
-reducedot
-var: 
-(^ ptr)
-field->stringval: age
-
-recordSymbol->namestring: 
-moverField->namestring: age
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: integer
-referenceTok->symtype->basicdt: 0
-lhs
-sum
-lhs->basicdt: 0
-
-op
-(+)
-rhs
-(aref (^ ptr)
-      0)
-lhs
-sum
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-(+ sum (aref (^ ptr)
-             0))
 subs is null
-plusop
-(+ -48
-   (* 48
-      i))
-offsetTok
-(+ -48
-   (* 48
-      i))
 retTok
 (aref people (+ -48
                 (* 48
                    i)))
-reducedot
-var: 
-(aref people (+ -48
-                (* 48
-                   i)))
-field->stringval: age
-
-Called on non-record type
-recordSymbol->namestring: 
-New recordSymbol->namestring: age
-recordSymbol->namestring: age
-offset: 0
 moverField is null
-(^)
-reducedot
-var: 
-(^ ptr)
-field->stringval: age
-
-recordSymbol->namestring: 
-moverField->namestring: age
-found field match
-offset: 0
-setting basicdt
-referenceTok->symtype->namestring: integer
-referenceTok->symtype->basicdt: 0
-lhs
-(aref people (+ -48
-                (* 48
-                   i)))
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-(aref (^ ptr)
-      0)
-subs is not null
-
-count: 0
-low: 1
-high: 10
-size: 12
-
-count: 1
 low: 0
 high: 2
+size: 40
+low: 1
+high: 10
 size: 4
-rolling offset: -8
-(* 12
-   i)(^)
-reducedot
-var: 
-(^ john)
-field->stringval: favorite
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-moverField->namestring: favorite
-found field match
-offset: 32
-setting basicdt
-referenceTok->symtype->namestring: color
-referenceTok->symtype->basicdt: 0
-lhs
-(aref aco (+ -8
-             (* 12
-                i)))
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-(aref (^ john)
-      32)
-(^)
-reducedot
-var: 
-(^ ptr)
-field->stringval: friend
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: pp
-referenceTok->symtype->basicdt: 4
-lhs
-ptr
-lhs->basicdt: 4
-
-op
-(:=)
-rhs
-(aref (^ ptr)
-      8)
-lhs
-i
-lhs->basicdt: 0
-
-op
-(+)
-rhs
-1
-lhs
-i
-lhs->basicdt: 0
-
-op
-(:=)
-rhs
-(+ i 1)
-(^)
-reducedot
-var: 
-(^ fred)
-field->stringval: location
-
-recordSymbol->namestring: 
-moverField->namestring: age
-moverField->namestring: friend
-moverField->namestring: location
-found field match
-offset: 16
-setting basicdt
-referenceTok->symtype->namestring: complex
-referenceTok->symtype->basicdt: 0
-reducedot
-var: 
-(aref (^ fred)
-      16)
-field->stringval: im
-
-Called on non-record type
-recordSymbol->namestring: location
-New recordSymbol->namestring: complex
-recordSymbol->namestring: complex
-moverField->namestring: re
-moverField->namestring: im
-found field match
-offset: 8
-setting basicdt
-referenceTok->symtype->namestring: real
-referenceTok->symtype->basicdt: 1
-lhs
-sum
-lhs->basicdt: 0
-
-op
-(<)
-rhs
-3
-yyparse result =        0
+rolling offset: -4
+(* 40
+   i)yyparse result =        0
 Symbol table level 0
- 94468749324960        real  BASIC  basicdt   1          siz     8
- 94468749325056     integer  BASIC  basicdt   0          siz     4
- 94468749325152        char  BASIC  basicdt   2          siz     1
- 94468749325248     boolean  BASIC  basicdt   3          siz     4
- 94468749325344         exp  knd 5 0  typ 94468749325440  lvl  0  siz     0  off     0
+ 94131859956384        real  BASIC  basicdt   1          siz     8
+ 94131859956480     integer  BASIC  basicdt   0          siz     4
+ 94131859956576        char  BASIC  basicdt   2          siz     1
+ 94131859956672     boolean  BASIC  basicdt   3          siz     4
+ 94131859956768         exp  knd 5 0  typ 94131859956864  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749325632       trexp  knd 5 0  typ 94468749325728  lvl  0  siz     0  off     0
+ 94131859957056       trexp  knd 5 0  typ 94131859957152  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749325920         sin  knd 5 0  typ 94468749326016  lvl  0  siz     0  off     0
+ 94131859957344         sin  knd 5 0  typ 94131859957440  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749326208         cos  knd 5 0  typ 94468749326304  lvl  0  siz     0  off     0
+ 94131859957632         cos  knd 5 0  typ 94131859957728  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749326496       trsin  knd 5 0  typ 94468749326592  lvl  0  siz     0  off     0
+ 94131859957920       trsin  knd 5 0  typ 94131859958016  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749326784        sqrt  knd 5 0  typ 94468749326880  lvl  0  siz     0  off     0
+ 94131859958208        sqrt  knd 5 0  typ 94131859958304  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749327072       round  knd 5 0  typ 94468749327168  lvl  0  siz     0  off     0
+ 94131859958496       round  knd 5 0  typ 94131859958592  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94468749327360      iround  knd 5 0  typ 94468749327456  lvl  0  siz     0  off     0
+ 94131859958784      iround  knd 5 0  typ 94131859958880  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 94468749327648         ord  knd 5 0  typ 94468749327744  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94468749327936         new  knd 5 0  typ 94468749328032  lvl  0  siz     0  off     0
+ 94131859959072         ord  knd 5 0  typ 94131859959168  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94468749328224       trnew  knd 5 0  typ 94468749328320  lvl  0  siz     0  off     0
+ 94131859959360         new  knd 5 0  typ 94131859959456  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94468749328512       write  knd 5 0  typ 94468749328608  lvl  0  siz     0  off     0
+ 94131859959648       trnew  knd 5 0  typ 94131859959744  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94131859959936       write  knd 5 0  typ 94131859960032  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94468749328800     writeln  knd 5 0  typ 94468749328896  lvl  0  siz     0  off     0
+ 94131859960224     writeln  knd 5 0  typ 94131859960320  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94468749329088      writef  knd 5 0  typ 94468749329184  lvl  0  siz     0  off     0
+ 94131859960512      writef  knd 5 0  typ 94131859960608  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94468749329376    writelnf  knd 5 0  typ 94468749329472  lvl  0  siz     0  off     0
+ 94131859960800    writelnf  knd 5 0  typ 94131859960896  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94468749329664      writei  knd 5 0  typ 94468749329760  lvl  0  siz     0  off     0
+ 94131859961088      writei  knd 5 0  typ 94131859961184  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94468749329952    writelni  knd 5 0  typ 94468749330048  lvl  0  siz     0  off     0
+ 94131859961376    writelni  knd 5 0  typ 94131859961472  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94468749330240        read  knd 5 0  typ 94468749330336  lvl  0  siz     0  off     0
+ 94131859961664        read  knd 5 0  typ 94131859961760  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94468749330528      readln  knd 5 0  typ 94468749330624  lvl  0  siz     0  off     0
+ 94131859961952      readln  knd 5 0  typ 94131859962048  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94468749330816         eof  knd 5 0  typ 94468749330912  lvl  0  siz     0  off     0
+ 94131859962240         eof  knd 5 0  typ 94131859962336  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 94468749365664     complex  TYPE   typ 94468749365376  lvl  1  siz    16  off     0
+ 94131859988880     complex  TYPE   typ 94131859988592  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94468749366528         red  CONST  typ INTEGER  val  0
- 94468749366688       white  CONST  typ INTEGER  val  1
- 94468749366848        blue  CONST  typ INTEGER  val  2
- 94468749367040       color  TYPE   typ 94468749366944  lvl  1  siz     4  off     0
+ 94131859989744         red  CONST  typ INTEGER  val  0
+ 94131859989904       white  CONST  typ INTEGER  val  1
+ 94131859990064        blue  CONST  typ INTEGER  val  2
+ 94131859990256       color  TYPE   typ 94131859990160  lvl  1  siz     4  off     0
   0 ..   2
- 94468749367456      person  TYPE   typ 94468749369280  lvl  1  siz    48  off     0
+ 94131859990672      person  TYPE   typ 94131859992496  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94468749367648          pp  TYPE   typ 94468749367552  lvl  1  siz     8  off     0
+ 94131859990864          pp  TYPE   typ 94131859990768  lvl  1  siz     8  off     0
 (^ person)
- 94468749370368           c  VAR    0 typ 94468749365376  lvl  1  siz    16  off     0
+ 94131859993584           c  VAR    0 typ 94131859988592  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94468749370464           d  VAR    0 typ 94468749365376  lvl  1  siz    16  off    16
+ 94131859993680           d  VAR    0 typ 94131859988592  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94468749370944           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94468749371040         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94468749372032          ac  VAR    0 typ 94468749371936  lvl  1  siz   160  off    48
-(ARRAY   1 ..  10 real)
- 94468749373248         aco  VAR    0 typ 94468749373152  lvl  1  siz   120  off   208
-(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94468749373984        john  VAR    4 typ 94468749367552  lvl  1  siz     8  off   328
+ 94131859994160           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94131859994256         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94131860003456          ac  VAR    0 typ 94131860003360  lvl  1  siz   160  off    48
+(ARRAY   1 ..  10 (RECORD (re real)
+                          (im real)))
+ 94131860004672         aco  VAR    0 typ 94131860004576  lvl  1  siz   120  off   208
+(ARRAY   0 ..   2 (ARRAY   1 ..  10   0 ..   2))
+ 94131860005408        john  VAR    4 typ 94131859990768  lvl  1  siz     8  off   328
 (^ person)
- 94468749374080        mary  VAR    4 typ 94468749367552  lvl  1  siz     8  off   336
+ 94131860005504        mary  VAR    4 typ 94131859990768  lvl  1  siz     8  off   336
 (^ person)
- 94468749374176        fred  VAR    4 typ 94468749367552  lvl  1  siz     8  off   344
+ 94131860005600        fred  VAR    4 typ 94131859990768  lvl  1  siz     8  off   344
 (^ person)
- 94468749374272         ptr  VAR    4 typ 94468749367552  lvl  1  siz     8  off   352
+ 94131860005696         ptr  VAR    4 typ 94131859990768  lvl  1  siz     8  off   352
 (^ person)
- 94468749375264      people  VAR    0 typ 94468749375168  lvl  1  siz   960  off   368
-(ARRAY   1 ..  20 integer)
+ 94131860006688      people  VAR    0 typ 94131860006592  lvl  1  siz   960  off   368
+(ARRAY   1 ..  20 (RECORD (age integer)
+                          (friend (^ person))
+                          (location (RECORD (re real)
+                                            (im real)))
+                          (favorite   0 ..   2)
+                          (salary real)))
 (program graph1 (progn output)
                 (progn (:= john (funcall new 48))
                        (:= mary (funcall new 48))
@@ -815,8 +206,8 @@ Symbol table level 1
                                                                        i)))
                                                     (aref (^ ptr)
                                                           0))
-                                                (:= (aref aco (+ -8
-                                                                 (* 12
+                                                (:= (aref aco (+ -4
+                                                                 (* 40
                                                                     i)))
                                                     (aref (^ john)
                                                           32))

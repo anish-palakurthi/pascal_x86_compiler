@@ -328,16 +328,6 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-    printf("lhs\n");
-    ppexpr(lhs);
-    printf("\n");
-    printf("lhs->basicdt: %d\n", lhs->basicdt);
-
-    printf("\nop\n");;
-    ppexpr(op);
-    printf("\nrhs\n");
-    ppexpr(rhs);
-    printf("\n");
     
     if (lhs->tokentype == NUMBERTOK){
 
@@ -935,23 +925,13 @@ TOKEN findtype(TOKEN tok) {
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   
-  printf("reducedot\n");
-  printf("var: \n");
-  ppexpr(var);
-  printf("\n");
-  printf("field->stringval: %s\n", field->stringval);
-  printf("\n");
   
 
-  
 
   SYMBOL recordSymbol = var->symtype;
   SYMBOL moverField;
   if(recordSymbol->kind != RECORDSYM){
-    printf("Called on non-record type\n");
-    printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
     recordSymbol = recordSymbol->datatype;
-    printf("New recordSymbol->namestring: %s\n", recordSymbol->namestring);
     moverField = recordSymbol->datatype->datatype;
   }
   else{
@@ -959,46 +939,38 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
 
-  printf("recordSymbol->namestring: %s\n", recordSymbol->namestring);
+  
 
 
 
   int fieldOffset = 0;
   while (moverField != NULL){
-    printf("moverField->namestring: %s\n", moverField->namestring);
-    // if (moverField->basicdt){
-    //   printf("moverField->basicdt: %s\n", moverField->basicdt);
-    // }else{
-    //   printf("moverField->basicdt is null\n");
-    // }
+    
+
     
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
 
       fieldOffset = moverField->offset;
-      printf("found field match\n");
       break;
     }
     moverField = moverField->link;
   }
 
-  printf("offset: %d\n", fieldOffset);
+  
 
   TOKEN offsetToken = makeintc(fieldOffset);
 
   TOKEN referenceTok = makearef(var, offsetToken, NULL);
 
   if (moverField) {
-    printf("setting basicdt\n");
+    
     referenceTok->symtype = moverField;
-    printf("referenceTok->symtype->namestring: %s\n",
-    referenceTok->symtype->datatype->namestring);
-    printf("referenceTok->symtype->basicdt: %d\n", referenceTok->symtype->datatype->basicdt);
     referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
   }
   else{
     printf("moverField is null\n");
-    // return NULL;
+    
   }
 
 
@@ -1012,7 +984,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   if (subs->link){
-    printf("subs is not null\n");
+    
 
   TOKEN curArr = copytok(arr);
   TOKEN retTok;
@@ -1022,7 +994,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   int count = 0;
 
   while (subs) {
-    printf("\ncount: %d\n", count);
+    
     int low = curArr->symtype->lowbound;
     int high = curArr->symtype->highbound;
     int size;
@@ -1148,9 +1120,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     TOKEN plusop = makeop(PLUSOP);
     plusop->operands = nsize;
     
-    printf("plusop\n");
-    ppexpr(plusop);
-    printf("\n");
 
     TOKEN offsetTok;
     if (subs->tokentype == NUMBERTOK) {
@@ -1164,9 +1133,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       offsetTok = plusop;
     }
 
-    printf("offsetTok\n");
-    ppexpr(offsetTok);
-    printf("\n");
     TOKEN retTok = makearef(arr, offsetTok, tokb);
     retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
@@ -1249,8 +1215,8 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symtype = var->symtype->datatype->datatype;
-  ppexpr(tok);
-  printf("\n");
+  // ppexpr(tok);
+  // printf("\n");
   tok->operands = var;
   
 
@@ -1344,45 +1310,54 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
+  printf("instarray\n");
+	TOKEN curr_bound = bounds;
+	SYMBOL prev_sym = NULL;
 
-    // Recursively call instarray to ensure correct dimension order
-    if (bounds->link) {
-        typetok = instarray(bounds->link, typetok);
-    }
+	SYMBOL typesym = searchst(typetok->stringval);
+  printf("typesym->namestring: %s\n", typesym->namestring);
+	int low, high;
 
-    SYMBOL subrange = bounds->symtype;
-    int low = subrange->lowbound;
-    int high = subrange->highbound;
-    SYMBOL typeSym;
+	while (curr_bound) {
+    printf("curr_bound\n");
+    ppexpr(curr_bound);
+    printf("\n");
+		SYMBOL arrsym = symalloc();
+		arrsym->kind = ARRAYSYM;
 
-    if (typetok->symtype){
-      typeSym = typetok->symtype;
-      printf("installed array with type of typetok %s\n", typeSym->namestring);
-    }
-    else{
-      typeSym = searchst(typetok->stringval);
-    }
-    
-    SYMBOL arraySym = symalloc();
-    arraySym->kind = ARRAYSYM;
-    arraySym->datatype = typeSym; 
+		if (typesym) {
+			arrsym->datatype = typesym;
+		}
+		else {
+//			arrsym->basicdt = typetok->datatype;
+		}
+
+		low = curr_bound->symtype->lowbound;
+		high = curr_bound->symtype->highbound;
+    printf("low: %d\n", low);
+    printf("high: %d\n", high);
+
+		if (!prev_sym) {
+			arrsym->size = (high - low + 1) * typesym->size;
+		}
+		else {
+			arrsym->datatype = typetok->symtype;
+			arrsym->size = (high - low + 1) * prev_sym->size;
+		}
+
+		typetok->symtype = arrsym;
+		prev_sym = arrsym;
+
+		arrsym->lowbound = low;
+		arrsym->highbound = high;
+
+		curr_bound = curr_bound->link;
+	}
 
 
-    arraySym->lowbound = low;
-    arraySym->highbound = high;
-
-    if (typeSym->kind == ARRAYSYM) {
-        arraySym->size = (high - low + 1) * typeSym->size;
-    } else {
-
-        arraySym->size = (high - low + 1) * typeSym->size;
-    }
-
-    typetok->symtype = arraySym;  
-
-
-    return typetok;
-}
+	
+	return typetok;
+  }
 
 
 /* instfields will install type in a list idlist of field name tokens:
@@ -1390,16 +1365,12 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
    typetok is a token whose symtype is a symbol table pointer.
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
-  printf("instfields\n");
-  printf("typetok->stringval: %s\n", typetok->stringval);
+
   SYMBOL symtypeTypeTok = searchst(typetok->stringval);
-  printf("\n");
   TOKEN mover = idlist;
 
   while(mover != NULL){
-    printf("mover->stringval %s\n", mover->stringval); 
     mover->symtype = symtypeTypeTok;
-    printf("mover->symtype->namestring %s\n", mover->symtype->namestring);
     mover = mover->link;
   }
 
@@ -1411,22 +1382,18 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
    argstok has a pointer its type.  rectok is just a trash token to be
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok) {
-  printf("instrec\n");
-  ppexpr(rectok);
-  printf("\n");
 
   SYMBOL recordSymbol = symalloc();
   recordSymbol->kind = RECORDSYM;
   rectok->symtype = recordSymbol;
+
 
   int curOffset = 0;
 
   SYMBOL prev = NULL;
 
   while (argstok) {
-    printf("argstok\n");
-    printf("argstok->stringval: %s\n", argstok->stringval);
-    printf("\n");
+
     SYMBOL field = makesym(argstok->stringval);
     field->datatype = argstok->symtype;
     field->size = argstok->symtype->size;
@@ -1481,9 +1448,6 @@ void insttype(TOKEN typename, TOKEN typetok) {
   typesym->size = typetok->symtype->size;
   typesym->kind = TYPESYM;
   typesym->basicdt = typetok->symtype->basicdt;
-  printf("typename: %s\n", typename->stringval); // same as ppexpr typename
-  
-  printf("typesym->basicdt: %d\n", typesym->basicdt);
 
 
   if (DEBUG & DB_INSTTYPE) {
