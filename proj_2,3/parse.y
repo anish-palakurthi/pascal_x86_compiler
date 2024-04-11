@@ -950,6 +950,8 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   
+
+  printf("field->stringval: %s\n", field->stringval);
   
   
 
@@ -957,7 +959,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
   int fieldOffset = 0;
   while (moverField != NULL){
-    
+    printf("moverField->namestring: %s\n", moverField->namestring);
     
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
@@ -968,7 +970,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     moverField = moverField->link;
   }
 
-  
+  printf("fieldOffset: %d\n", fieldOffset);
 
   TOKEN offsetToken = makeintc(fieldOffset);
 
@@ -983,6 +985,11 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("moverField is null\n");
     
   }
+
+  printf("referenceTok\n");
+
+  ppexpr(referenceTok);
+  printf("\n");
 
 
   return referenceTok;

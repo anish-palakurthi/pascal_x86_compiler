@@ -2943,7 +2943,6 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
   SYMBOL recordSymbol = var->symtype;
   SYMBOL moverField;
-  printf("recordSymbol->kind: %d\n", recordSymbol->kind);
   
   if(recordSymbol->kind == ARRAYSYM){
     
@@ -2964,14 +2963,15 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   
+
   printf("field->stringval: %s\n", field->stringval);
+  
   
 
 
 
   int fieldOffset = 0;
   while (moverField != NULL){
-    
     printf("moverField->namestring: %s\n", moverField->namestring);
     
     if (strcmp(moverField->namestring, field->stringval) == 0){
@@ -2984,7 +2984,6 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   printf("fieldOffset: %d\n", fieldOffset);
-  
 
   TOKEN offsetToken = makeintc(fieldOffset);
 
@@ -2999,6 +2998,11 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("moverField is null\n");
     
   }
+
+  printf("referenceTok\n");
+
+  ppexpr(referenceTok);
+  printf("\n");
 
 
   return referenceTok;
@@ -3034,9 +3038,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       size = (curArr->symtype->size / (high + low + 1));
     }
     TOKEN elesize = makeintc(size);
-    printf("low: %d\n", low);
-    printf("high: %d\n", high);
-    printf("size: %d\n", size);
 
     TOKEN indexTok;
     TOKEN timesop = makeop(TIMESOP);
@@ -3090,7 +3091,6 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     count += 1;
   }
 
-  printf("rolling offset: %d\n", rollingOffset);
   if(variableTree != NULL){
     ppexpr(variableTree);
   }
@@ -3137,7 +3137,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     elesize->link = indexTok;
     timesop->operands = elesize;
     TOKEN nsize;
-
+ 
 
 
 
