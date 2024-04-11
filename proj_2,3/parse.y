@@ -557,43 +557,46 @@ TOKEN makegoto(int num){
   return tok;
 }
 
-TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok) {
-    printf("makearef\n");
-    printf("var: \n");
-    ppexpr(var);
-    printf("\n");
-    printf("off: \n");
-    ppexpr(off);
-    printf("\n");
 
-    TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
-    if (var->link){
-        if (var->link->tokentype == NUMBERTOK) {
-            finalOffset->intval = var->link->intval + off->intval;
-        }
-        else if(var->link->tokentype == IDENTIFIERTOK) {
-            TOKEN plusop = makeop(PLUSOP);
-            plusop->operands = var->link;
-            plusop->link = off;
-            finalOffset = plusop;
-            finalOffset->tokentype = IDENTIFIERTOK;
-        }
+TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
+  
+  TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
+
+  if (var->link){
+    
+    if (var->link->tokentype == NUMBERTOK){
+    finalOffset->intval = var->link->intval + off->intval;
     }
-
-    // Check if var is a nested AREF and if the offset in this AREF is part of an arithmetic operation
-    if (var->whichval == AREFOP && var->operands && var->operands->link && var->operands->link->tokentype == OPERATOR) {
-        TOKEN nestedOffset = var->operands->link;
-
-        // Navigate to the constant part of the expression, assuming the leftmost child is the integer
-        if (nestedOffset->operands && nestedOffset->operands->tokentype == NUMBERTOK) {
-            // Modify the integer directly, assuming the rest of the expression does not need to be changed
-            nestedOffset->operands->intval += off->intval; // Add the new offset to the existing integer
-            finalOffset = nestedOffset; // Use the updated nestedOffset as the final offset
-        }
+    else if(var->link->tokentype == IDENTIFIERTOK){
+      TOKEN plusop = makeop(PLUSOP);
+      plusop->operands = var->link;
+      plusop->link = off;
+      finalOffset = plusop;
+      finalOffset->tokentype = IDENTIFIERTOK;
     }
+    
+  }
 
-    TOKEN areftok = makeop(AREFOP);
+  if (var->whichval == AREFOP && off->basicdt == INTEGER) {
+    
+    TOKEN off1 = var->operands->link;
+    if (off1->tokentype == NUMBERTOK) { // Assuming off1 is the offset in the nested AREF
+      // Directly sum the integer values of the offsets
+      int sumOffsets = off1->intval + off->intval;
+      finalOffset = makeintc(sumOffsets); // Use this new offset for the final AREF
+    }
+  }
+  if (var->whichval == AREFOP && var->operands && var->operands->link && var->operands->link->tokentype == OPERATOR) {
+      TOKEN nestedOffset = var->operands->link;
+
+      // Navigate to the constant part of the expression, assuming the leftmost child is the integer
+      if (nestedOffset->operands && nestedOffset->operands->tokentype == NUMBERTOK) {
+          // Modify the integer directly, assuming the rest of the expression does not need to be changed
+          nestedOffset->operands->intval += off->intval; // Add the new offset to the existing integer
+          finalOffset = nestedOffset; // Use the updated nestedOffset as the final offset
+      }
+      TOKEN areftok = makeop(AREFOP);
     if (var->whichval == AREFOP) { // If nesting was detected, use the base array part of the nested AREF
         var = var->operands;
     }
@@ -616,7 +619,44 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok) {
     ppexpr(areftok);
     printf("\n");
     return areftok;
+  }
+  // Now, we create the AREF operation using the possibly updated finalOffset
+  TOKEN areftok = makeop(AREFOP);
+  if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
+    if(var->link == NULL || var->link->tokentype != IDENTIFIERTOK){
+      var = var->operands;
+
+    }
+  }
+
+  if (finalOffset != 0){
+    var->link = finalOffset; // Link the final offset
+
+  }
+
+  if (var->link->tokentype == IDENTIFIERTOK){
+    return var;
+  }
+  else{
+    areftok->operands = var;
+  }
+  
+  areftok->symtype = var->symtype;
+  
+  if (var->symtype && var->symtype->datatype) {
+    areftok->basicdt = var->symtype->datatype->basicdt;
+  }
+
+  if (DEBUG && DB_MAKEAREF) {
+      printf("makearef - possibly merged\n");
+      dbugprinttok(areftok);
+  }
+
+  return areftok;
 }
+
+
+
 
 
 
@@ -947,8 +987,6 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   
-
-  printf("field->stringval: %s\n", field->stringval);
   
   
 
@@ -956,7 +994,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
   int fieldOffset = 0;
   while (moverField != NULL){
-    printf("moverField->namestring: %s\n", moverField->namestring);
+    
     
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
@@ -967,7 +1005,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     moverField = moverField->link;
   }
 
-  printf("fieldOffset: %d\n", fieldOffset);
+  
 
   TOKEN offsetToken = makeintc(fieldOffset);
 
@@ -982,11 +1020,6 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     printf("moverField is null\n");
     
   }
-
-  printf("referenceTok\n");
-
-  ppexpr(referenceTok);
-  printf("\n");
 
 
   return referenceTok;
@@ -1349,6 +1382,11 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
 
         // Update typetok to reflect the newest dimension
         typetok->symtype = arraysym;
+    }
+
+    if (DEBUG & DB_INSTARRAY) {
+        printf("Finished instarray() iteratively with correct dimension order.\n");
+        dbugprint1tok(typetok);
     }
 
     return typetok;

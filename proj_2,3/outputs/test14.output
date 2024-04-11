@@ -1,162 +1,78 @@
-makearef
-var: 
-aco
-off: 
-24
-areftok
-(aref aco 24)
-makearef
-var: 
-(aref aco 24)
-off: 
-28
-areftok
-(aref aco 64)
-makearef
-var: 
-aco
-off: 
-(+ 28)
-areftok
-(aref aco (+ 28))
-makearef
-var: 
-aco
-off: 
-0
-areftok
-(aref aco 0)
-makearef
-var: 
-(aref aco 0)
-off: 
-8
-areftok
-(aref aco 20)
-makearef
-var: 
-aco
-off: 
-(+ 8)
-areftok
-(aref aco (+ 8))
-makearef
-var: 
-acoX
-off: 
-18
-areftok
-(aref acoX 18)
-makearef
-var: 
-(aref acoX 18)
-off: 
-22
-areftok
-(aref acoX 40)
-makearef
-var: 
-acoX
-off: 
-(+ 22)
-areftok
-(aref acoX (+ 22))
-makearef
-var: 
-acoX
-off: 
-6
-areftok
-(aref acoX 6)
-makearef
-var: 
-(aref acoX 6)
-off: 
-14
-areftok
-(aref acoX 20)
-makearef
-var: 
-acoX
-off: 
-(+ 14)
-areftok
-(aref acoX (+ 14))
 yyparse result =        0
 Symbol table level 0
- 94923554005664        real  BASIC  basicdt   1          siz     8
- 94923554005760     integer  BASIC  basicdt   0          siz     4
- 94923554005856        char  BASIC  basicdt   2          siz     1
- 94923554005952     boolean  BASIC  basicdt   3          siz     4
- 94923554006048         exp  knd 5 0  typ 94923554006144  lvl  0  siz     0  off     0
+ 93949316788896        real  BASIC  basicdt   1          siz     8
+ 93949316788992     integer  BASIC  basicdt   0          siz     4
+ 93949316789088        char  BASIC  basicdt   2          siz     1
+ 93949316789184     boolean  BASIC  basicdt   3          siz     4
+ 93949316789280         exp  knd 5 0  typ 93949316789376  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554006336       trexp  knd 5 0  typ 94923554006432  lvl  0  siz     0  off     0
+ 93949316789568       trexp  knd 5 0  typ 93949316789664  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554006624         sin  knd 5 0  typ 94923554006720  lvl  0  siz     0  off     0
+ 93949316789856         sin  knd 5 0  typ 93949316789952  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554006912         cos  knd 5 0  typ 94923554007008  lvl  0  siz     0  off     0
+ 93949316790144         cos  knd 5 0  typ 93949316790240  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554007200       trsin  knd 5 0  typ 94923554007296  lvl  0  siz     0  off     0
+ 93949316790432       trsin  knd 5 0  typ 93949316790528  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554007488        sqrt  knd 5 0  typ 94923554007584  lvl  0  siz     0  off     0
+ 93949316790720        sqrt  knd 5 0  typ 93949316790816  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554007776       round  knd 5 0  typ 94923554007872  lvl  0  siz     0  off     0
+ 93949316791008       round  knd 5 0  typ 93949316791104  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94923554008064      iround  knd 5 0  typ 94923554008160  lvl  0  siz     0  off     0
+ 93949316791296      iround  knd 5 0  typ 93949316791392  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 94923554008352         ord  knd 5 0  typ 94923554008448  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94923554008640         new  knd 5 0  typ 94923554008736  lvl  0  siz     0  off     0
+ 93949316791584         ord  knd 5 0  typ 93949316791680  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94923554008928       trnew  knd 5 0  typ 94923554009024  lvl  0  siz     0  off     0
+ 93949316791872         new  knd 5 0  typ 93949316791968  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94923554009216       write  knd 5 0  typ 94923554009312  lvl  0  siz     0  off     0
+ 93949316792160       trnew  knd 5 0  typ 93949316792256  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 93949316792448       write  knd 5 0  typ 93949316792544  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94923554009504     writeln  knd 5 0  typ 94923554009600  lvl  0  siz     0  off     0
+ 93949316792736     writeln  knd 5 0  typ 93949316792832  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94923554009792      writef  knd 5 0  typ 94923554009888  lvl  0  siz     0  off     0
+ 93949316793024      writef  knd 5 0  typ 93949316793120  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94923554010080    writelnf  knd 5 0  typ 94923554010176  lvl  0  siz     0  off     0
+ 93949316793312    writelnf  knd 5 0  typ 93949316793408  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94923554010368      writei  knd 5 0  typ 94923554010464  lvl  0  siz     0  off     0
+ 93949316793600      writei  knd 5 0  typ 93949316793696  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94923554010656    writelni  knd 5 0  typ 94923554010752  lvl  0  siz     0  off     0
+ 93949316793888    writelni  knd 5 0  typ 93949316793984  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94923554010944        read  knd 5 0  typ 94923554011040  lvl  0  siz     0  off     0
+ 93949316794176        read  knd 5 0  typ 93949316794272  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94923554011232      readln  knd 5 0  typ 94923554011328  lvl  0  siz     0  off     0
+ 93949316794464      readln  knd 5 0  typ 93949316794560  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94923554011520         eof  knd 5 0  typ 94923554011616  lvl  0  siz     0  off     0
+ 93949316794752         eof  knd 5 0  typ 93949316794848  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 94923554037680         red  CONST  typ INTEGER  val  0
- 94923554037840       white  CONST  typ INTEGER  val  1
- 94923554038000        blue  CONST  typ INTEGER  val  2
- 94923554038192       color  TYPE   typ 94923554038096  lvl  1  siz     4  off     0
+ 93949316820912         red  CONST  typ INTEGER  val  0
+ 93949316821072       white  CONST  typ INTEGER  val  1
+ 93949316821232        blue  CONST  typ INTEGER  val  2
+ 93949316821424       color  TYPE   typ 93949316821328  lvl  1  siz     4  off     0
   0 ..   2
- 94923554039536         aco  VAR    0 typ 94923554039440  lvl  1  siz   120  off     0
+ 93949316822768         aco  VAR    0 typ 93949316822672  lvl  1  siz   120  off     0
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94923554040752        acoX  VAR    0 typ 94923554040656  lvl  1  siz    60  off   128
+ 93949316823984        acoX  VAR    0 typ 93949316823888  lvl  1  siz    60  off   128
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ 28))
