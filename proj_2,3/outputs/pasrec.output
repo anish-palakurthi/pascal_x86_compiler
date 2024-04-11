@@ -21,110 +21,110 @@ rolling offset: -8
 (* 12
    i)yyparse result =        0
 Symbol table level 0
- 94598135206560        real  BASIC  basicdt   1          siz     8
- 94598135206656     integer  BASIC  basicdt   0          siz     4
- 94598135206752        char  BASIC  basicdt   2          siz     1
- 94598135206848     boolean  BASIC  basicdt   3          siz     4
- 94598135206944         exp  knd 5 0  typ 94598135207040  lvl  0  siz     0  off     0
+ 94242481271456        real  BASIC  basicdt   1          siz     8
+ 94242481271552     integer  BASIC  basicdt   0          siz     4
+ 94242481271648        char  BASIC  basicdt   2          siz     1
+ 94242481271744     boolean  BASIC  basicdt   3          siz     4
+ 94242481271840         exp  knd 5 0  typ 94242481271936  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135207232       trexp  knd 5 0  typ 94598135207328  lvl  0  siz     0  off     0
+ 94242481272128       trexp  knd 5 0  typ 94242481272224  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135207520         sin  knd 5 0  typ 94598135207616  lvl  0  siz     0  off     0
+ 94242481272416         sin  knd 5 0  typ 94242481272512  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135207808         cos  knd 5 0  typ 94598135207904  lvl  0  siz     0  off     0
+ 94242481272704         cos  knd 5 0  typ 94242481272800  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135208096       trsin  knd 5 0  typ 94598135208192  lvl  0  siz     0  off     0
+ 94242481272992       trsin  knd 5 0  typ 94242481273088  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135208384        sqrt  knd 5 0  typ 94598135208480  lvl  0  siz     0  off     0
+ 94242481273280        sqrt  knd 5 0  typ 94242481273376  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135208672       round  knd 5 0  typ 94598135208768  lvl  0  siz     0  off     0
+ 94242481273568       round  knd 5 0  typ 94242481273664  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94598135208960      iround  knd 5 0  typ 94598135209056  lvl  0  siz     0  off     0
+ 94242481273856      iround  knd 5 0  typ 94242481273952  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 94598135209248         ord  knd 5 0  typ 94598135209344  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94598135209536         new  knd 5 0  typ 94598135209632  lvl  0  siz     0  off     0
+ 94242481274144         ord  knd 5 0  typ 94242481274240  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94598135209824       trnew  knd 5 0  typ 94598135209920  lvl  0  siz     0  off     0
+ 94242481274432         new  knd 5 0  typ 94242481274528  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94598135210112       write  knd 5 0  typ 94598135210208  lvl  0  siz     0  off     0
+ 94242481274720       trnew  knd 5 0  typ 94242481274816  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94242481275008       write  knd 5 0  typ 94242481275104  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94598135210400     writeln  knd 5 0  typ 94598135210496  lvl  0  siz     0  off     0
+ 94242481275296     writeln  knd 5 0  typ 94242481275392  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94598135210688      writef  knd 5 0  typ 94598135210784  lvl  0  siz     0  off     0
+ 94242481275584      writef  knd 5 0  typ 94242481275680  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94598135210976    writelnf  knd 5 0  typ 94598135211072  lvl  0  siz     0  off     0
+ 94242481275872    writelnf  knd 5 0  typ 94242481275968  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94598135211264      writei  knd 5 0  typ 94598135211360  lvl  0  siz     0  off     0
+ 94242481276160      writei  knd 5 0  typ 94242481276256  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94598135211552    writelni  knd 5 0  typ 94598135211648  lvl  0  siz     0  off     0
+ 94242481276448    writelni  knd 5 0  typ 94242481276544  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94598135211840        read  knd 5 0  typ 94598135211936  lvl  0  siz     0  off     0
+ 94242481276736        read  knd 5 0  typ 94242481276832  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94598135212128      readln  knd 5 0  typ 94598135212224  lvl  0  siz     0  off     0
+ 94242481277024      readln  knd 5 0  typ 94242481277120  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94598135212416         eof  knd 5 0  typ 94598135212512  lvl  0  siz     0  off     0
+ 94242481277312         eof  knd 5 0  typ 94242481277408  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 94598135239056     complex  TYPE   typ 94598135238768  lvl  1  siz    16  off     0
+ 94242481303952     complex  TYPE   typ 94242481303664  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94598135239920         red  CONST  typ INTEGER  val  0
- 94598135240080       white  CONST  typ INTEGER  val  1
- 94598135240240        blue  CONST  typ INTEGER  val  2
- 94598135240432       color  TYPE   typ 94598135240336  lvl  1  siz     4  off     0
+ 94242481304816         red  CONST  typ INTEGER  val  0
+ 94242481304976       white  CONST  typ INTEGER  val  1
+ 94242481305136        blue  CONST  typ INTEGER  val  2
+ 94242481305328       color  TYPE   typ 94242481305232  lvl  1  siz     4  off     0
   0 ..   2
- 94598135240848      person  TYPE   typ 94598135242672  lvl  1  siz    48  off     0
+ 94242481305744      person  TYPE   typ 94242481307568  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94598135241040          pp  TYPE   typ 94598135240944  lvl  1  siz     8  off     0
+ 94242481305936          pp  TYPE   typ 94242481305840  lvl  1  siz     8  off     0
 (^ person)
- 94598135243760           c  VAR    0 typ 94598135238768  lvl  1  siz    16  off     0
+ 94242481308656           c  VAR    0 typ 94242481303664  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94598135243856           d  VAR    0 typ 94598135238768  lvl  1  siz    16  off    16
+ 94242481308752           d  VAR    0 typ 94242481303664  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94598135244336           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94598135244432         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94598135245424          ac  VAR    0 typ 94598135245328  lvl  1  siz   160  off    48
+ 94242481309232           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94242481309328         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94242481310320          ac  VAR    0 typ 94242481310224  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94598135246640         aco  VAR    0 typ 94598135246544  lvl  1  siz   120  off   208
+ 94242481311536         aco  VAR    0 typ 94242481311440  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94598135247376        john  VAR    4 typ 94598135240944  lvl  1  siz     8  off   328
+ 94242481312272        john  VAR    4 typ 94242481305840  lvl  1  siz     8  off   328
 (^ person)
- 94598135247472        mary  VAR    4 typ 94598135240944  lvl  1  siz     8  off   336
+ 94242481312368        mary  VAR    4 typ 94242481305840  lvl  1  siz     8  off   336
 (^ person)
- 94598135247568        fred  VAR    4 typ 94598135240944  lvl  1  siz     8  off   344
+ 94242481312464        fred  VAR    4 typ 94242481305840  lvl  1  siz     8  off   344
 (^ person)
- 94598135247664         ptr  VAR    4 typ 94598135240944  lvl  1  siz     8  off   352
+ 94242481312560         ptr  VAR    4 typ 94242481305840  lvl  1  siz     8  off   352
 (^ person)
- 94598135248656      people  VAR    0 typ 94598135248560  lvl  1  siz   960  off   368
+ 94242481313552      people  VAR    0 typ 94242481313456  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
