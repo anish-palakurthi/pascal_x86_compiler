@@ -930,15 +930,28 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 
   SYMBOL recordSymbol = var->symtype;
   SYMBOL moverField;
-  if(recordSymbol->kind != RECORDSYM){
+  printf("recordSymbol->kind: %d\n", recordSymbol->kind);
+  
+  if(recordSymbol->kind == ARRAYSYM){
+    
     recordSymbol = recordSymbol->datatype;
+    // moverField = recordSymbol->datatype;
+    moverField = recordSymbol->datatype;
+  }
+
+  else if (recordSymbol->kind != RECORDSYM){
+    recordSymbol = recordSymbol->datatype;
+    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype->datatype;
   }
+
+
   else{
     moverField = recordSymbol->datatype;
   }
 
-
+  
+  printf("field->stringval: %s\n", field->stringval);
   
 
 
@@ -946,7 +959,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   int fieldOffset = 0;
   while (moverField != NULL){
     
-
+    printf("moverField->namestring: %s\n", moverField->namestring);
     
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
@@ -957,6 +970,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     moverField = moverField->link;
   }
 
+  printf("fieldOffset: %d\n", fieldOffset);
   
 
   TOKEN offsetToken = makeintc(fieldOffset);
