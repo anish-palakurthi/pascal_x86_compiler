@@ -1,93 +1,93 @@
 yyparse result =        0
 Symbol table level 0
- 94395997258400        real  BASIC  basicdt   1          siz     8
- 94395997258496     integer  BASIC  basicdt   0          siz     4
- 94395997258592        char  BASIC  basicdt   2          siz     1
- 94395997258688     boolean  BASIC  basicdt   3          siz     4
- 94395997258784         exp  knd 5 0  typ 94395997258880  lvl  0  siz     0  off     0
+ 94338698863264        real  BASIC  basicdt   1          siz     8
+ 94338698863360     integer  BASIC  basicdt   0          siz     4
+ 94338698863456        char  BASIC  basicdt   2          siz     1
+ 94338698863552     boolean  BASIC  basicdt   3          siz     4
+ 94338698863648         exp  knd 5 0  typ 94338698863744  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997259072       trexp  knd 5 0  typ 94395997259168  lvl  0  siz     0  off     0
+ 94338698863936       trexp  knd 5 0  typ 94338698864032  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997259360         sin  knd 5 0  typ 94395997259456  lvl  0  siz     0  off     0
+ 94338698864224         sin  knd 5 0  typ 94338698864320  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997259648         cos  knd 5 0  typ 94395997259744  lvl  0  siz     0  off     0
+ 94338698864512         cos  knd 5 0  typ 94338698864608  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997259936       trsin  knd 5 0  typ 94395997260032  lvl  0  siz     0  off     0
+ 94338698864800       trsin  knd 5 0  typ 94338698864896  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997260224        sqrt  knd 5 0  typ 94395997260320  lvl  0  siz     0  off     0
+ 94338698865088        sqrt  knd 5 0  typ 94338698865184  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997260512       round  knd 5 0  typ 94395997260608  lvl  0  siz     0  off     0
+ 94338698865376       round  knd 5 0  typ 94338698865472  lvl  0  siz     0  off     0
 (FUNCTION real
           real)
- 94395997260800      iround  knd 5 0  typ 94395997260896  lvl  0  siz     0  off     0
+ 94338698865664      iround  knd 5 0  typ 94338698865760  lvl  0  siz     0  off     0
 (FUNCTION integer
           real)
- 94395997261088         ord  knd 5 0  typ 94395997261184  lvl  0  siz     0  off     0
-(FUNCTION integer
-          integer)
- 94395997261376         new  knd 5 0  typ 94395997261472  lvl  0  siz     0  off     0
+ 94338698865952         ord  knd 5 0  typ 94338698866048  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94395997261664       trnew  knd 5 0  typ 94395997261760  lvl  0  siz     0  off     0
+ 94338698866240         new  knd 5 0  typ 94338698866336  lvl  0  siz     0  off     0
 (FUNCTION integer
           integer)
- 94395997261952       write  knd 5 0  typ 94395997262048  lvl  0  siz     0  off     0
+ 94338698866528       trnew  knd 5 0  typ 94338698866624  lvl  0  siz     0  off     0
+(FUNCTION integer
+          integer)
+ 94338698866816       write  knd 5 0  typ 94338698866912  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94395997262240     writeln  knd 5 0  typ 94395997262336  lvl  0  siz     0  off     0
+ 94338698867104     writeln  knd 5 0  typ 94338698867200  lvl  0  siz     0  off     0
 (FUNCTION NULL
           char)
- 94395997262528      writef  knd 5 0  typ 94395997262624  lvl  0  siz     0  off     0
+ 94338698867392      writef  knd 5 0  typ 94338698867488  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94395997262816    writelnf  knd 5 0  typ 94395997262912  lvl  0  siz     0  off     0
+ 94338698867680    writelnf  knd 5 0  typ 94338698867776  lvl  0  siz     0  off     0
 (FUNCTION NULL
           real)
- 94395997263104      writei  knd 5 0  typ 94395997263200  lvl  0  siz     0  off     0
+ 94338698867968      writei  knd 5 0  typ 94338698868064  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94395997263392    writelni  knd 5 0  typ 94395997263488  lvl  0  siz     0  off     0
+ 94338698868256    writelni  knd 5 0  typ 94338698868352  lvl  0  siz     0  off     0
 (FUNCTION NULL
           integer)
- 94395997263680        read  knd 5 0  typ 94395997263776  lvl  0  siz     0  off     0
+ 94338698868544        read  knd 5 0  typ 94338698868640  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94395997263968      readln  knd 5 0  typ 94395997264064  lvl  0  siz     0  off     0
+ 94338698868832      readln  knd 5 0  typ 94338698868928  lvl  0  siz     0  off     0
 (FUNCTION NULL
           NULL)
- 94395997264256         eof  knd 5 0  typ 94395997264352  lvl  0  siz     0  off     0
+ 94338698869120         eof  knd 5 0  typ 94338698869216  lvl  0  siz     0  off     0
 (FUNCTION boolean
           NULL)
 Symbol table level 1
- 94395997292336   newcolor0  CONST  typ INTEGER  val  0
- 94395997292496   newcolor1  CONST  typ INTEGER  val  1
- 94395997292656   newcolor2  CONST  typ INTEGER  val  2
- 94395997292816         red  CONST  typ INTEGER  val  3
- 94395997292976      orange  CONST  typ INTEGER  val  4
- 94395997293136      yellow  CONST  typ INTEGER  val  5
- 94395997293296       green  CONST  typ INTEGER  val  6
- 94395997293456        cyan  CONST  typ INTEGER  val  7
- 94395997293616        blue  CONST  typ INTEGER  val  8
- 94395997293776      indigo  CONST  typ INTEGER  val  9
- 94395997293936      violet  CONST  typ INTEGER  val  10
- 94395997294096      purple  CONST  typ INTEGER  val  11
- 94395997294256     magenta  CONST  typ INTEGER  val  12
- 94395997294416        pink  CONST  typ INTEGER  val  13
- 94395997294576       brown  CONST  typ INTEGER  val  14
- 94395997294736       white  CONST  typ INTEGER  val  15
- 94395997294896        gray  CONST  typ INTEGER  val  16
- 94395997295056       black  CONST  typ INTEGER  val  17
- 94395997295248       color  TYPE   typ 94395997295152  lvl  1  siz     4  off     0
+ 94338698897200   newcolor0  CONST  typ INTEGER  val  0
+ 94338698897360   newcolor1  CONST  typ INTEGER  val  1
+ 94338698897520   newcolor2  CONST  typ INTEGER  val  2
+ 94338698897680         red  CONST  typ INTEGER  val  3
+ 94338698897840      orange  CONST  typ INTEGER  val  4
+ 94338698898000      yellow  CONST  typ INTEGER  val  5
+ 94338698898160       green  CONST  typ INTEGER  val  6
+ 94338698898320        cyan  CONST  typ INTEGER  val  7
+ 94338698898480        blue  CONST  typ INTEGER  val  8
+ 94338698898640      indigo  CONST  typ INTEGER  val  9
+ 94338698898800      violet  CONST  typ INTEGER  val  10
+ 94338698898960      purple  CONST  typ INTEGER  val  11
+ 94338698899120     magenta  CONST  typ INTEGER  val  12
+ 94338698899280        pink  CONST  typ INTEGER  val  13
+ 94338698899440       brown  CONST  typ INTEGER  val  14
+ 94338698899600       white  CONST  typ INTEGER  val  15
+ 94338698899760        gray  CONST  typ INTEGER  val  16
+ 94338698899920       black  CONST  typ INTEGER  val  17
+ 94338698900112       color  TYPE   typ 94338698900016  lvl  1  siz     4  off     0
   0 ..  17
- 94395997295856           c  VAR    0 typ 94395997295152  lvl  1  siz     4  off     0
+ 94338698900720           c  VAR    0 typ 94338698900016  lvl  1  siz     4  off     0
   0 ..  17
- 94395997295952           d  VAR    0 typ 94395997295152  lvl  1  siz     4  off     4
+ 94338698900816           d  VAR    0 typ 94338698900016  lvl  1  siz     4  off     4
   0 ..  17
 (program graph1 (progn output)
                 (progn (:= c 0)))

@@ -2341,7 +2341,13 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-    
+    // printf("binop\n");
+    // ppsym(op->symtype);
+    // ppsym(lhs->symtype);
+    // ppsym(rhs->symtype);
+
+    // dbugprinttok(lhs);
+    // dbugprinttok(rhs);
     if (lhs->tokentype == NUMBERTOK){
 
     lhs->link = rhs;             
@@ -2615,7 +2621,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     }
 
     var->link = finalOffset; // Link the final offset to the base array
-
+  
     areftok->operands = var;
     areftok->symtype = var->symtype;
     
@@ -3044,95 +3050,103 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
+
+  printf("arrayref\n");
+  printf("arr:\n");
+  ppexpr(arr);
+  printf("\n");
   if (subs->link){
     
-
-  TOKEN curArr = copytok(arr);
-  TOKEN retTok;
-  TOKEN variableTree = NULL;
-  
-  int rollingOffset = 0;
-  int count = 0;
-
-  while (subs) {
+    int size = arr->symtype->size;
+    TOKEN curArr = copytok(arr);
+    TOKEN retTok;
+    TOKEN variableTree = NULL;
     
-    int low = curArr->symtype->lowbound;
-    int high = curArr->symtype->highbound;
-    int size;
-    
-    if (low == 1){
-      size = (curArr->symtype->size / (high + low - 1));
-    }
+    int rollingOffset = 0;
+    int count = 0;
 
-    else{
-      size = (curArr->symtype->size / (high + low + 1));
-    }
-    TOKEN elesize = makeintc(size);
+    while (subs) {
+      
+      int low = curArr->symtype->lowbound;
+      int high = curArr->symtype->highbound;
+      size /= (high - low + 1);
+      // size = rollingSize;
+      // printf("arr->symtype->size: %d\n", arr->symtype->size);
+      printf("low: %d, high: %d, size: %d\n", low, high, size);
 
-    TOKEN indexTok;
-    TOKEN timesop = makeop(TIMESOP);
+      TOKEN elesize = makeintc(size);
 
-    if (subs->tokentype == NUMBERTOK) {
-      rollingOffset += size * subs->intval - size * low;;
-    }
+      TOKEN indexTok;
+      TOKEN timesop = makeop(TIMESOP);
 
-    else if (subs->tokentype == IDENTIFIERTOK){
-      indexTok = talloc();
-      indexTok->tokentype = IDENTIFIERTOK;
-      strcpy(indexTok->stringval, subs->stringval);
-      indexTok->basicdt = STRINGTYPE;
-      elesize->link = indexTok;
-      timesop->operands = elesize;
-    }
-
-
-
-    if (low == 1){
-      rollingOffset -= size;
-    }
-    
-
-    retTok = makearef(curArr, makeintc(rollingOffset), NULL);
-    retTok->symtype = curArr->symtype->datatype;
-
-
-    curArr = retTok;
-
-
-
-    if (subs->tokentype == NUMBERTOK) {
-      int offset = size * subs->intval - size * low;
-      retTok->link = makeintc(offset);
-      retTok->link->tokentype = NUMBERTOK;
-    }
-    else if (subs->tokentype == IDENTIFIERTOK) {
-        if (variableTree){
-          TOKEN varPlus = makeop(PLUSOP);
-          varPlus->operands = variableTree;
-          varPlus->operands->link = timesop;
+      if (subs->tokentype == NUMBERTOK) {
+        rollingOffset += size * subs->intval - size * low;;
       }
-      else{
-        variableTree = timesop;
+
+      else if (subs->tokentype == IDENTIFIERTOK){
+        indexTok = talloc();
+        indexTok->tokentype = IDENTIFIERTOK;
+        strcpy(indexTok->stringval, subs->stringval);
+        indexTok->basicdt = STRINGTYPE;
+        elesize->link = indexTok;
+        timesop->operands = elesize;
       }
+
+
+
+      // if (low == 1){
+      //   rollingOffset -= size;
+      // }
+      
+
+      retTok = makearef(curArr, makeintc(rollingOffset), NULL);
+      retTok->symtype = curArr->symtype->datatype;
+
+
+      curArr = retTok;
+
+
+
+      if (subs->tokentype == NUMBERTOK) {
+        int offset = size * subs->intval - size * low;
+        retTok->link = makeintc(offset);
+        retTok->link->tokentype = NUMBERTOK;
+      }
+      else if (subs->tokentype == IDENTIFIERTOK) {
+          if (variableTree){
+            TOKEN varPlus = makeop(PLUSOP);
+            varPlus->operands = variableTree;
+            varPlus->operands->link = timesop;
+        }
+        else{
+          variableTree = timesop;
+        }
+      }
+
+
+      subs = subs->link;
+      count += 1;
     }
 
+    // if(variableTree != NULL){
+    //   ppexpr(variableTree);
+    // }
 
-    subs = subs->link;
-    count += 1;
-  }
+    TOKEN finalOffset = makeop(PLUSOP);
 
-  if(variableTree != NULL){
-    ppexpr(variableTree);
-  }
+    finalOffset->operands = makeintc(rollingOffset);
+    finalOffset->operands->link = variableTree;
 
-  TOKEN finalOffset = makeop(PLUSOP);
+    if (!variableTree){
+      finalOffset = makeintc(rollingOffset);
+    }
+    TOKEN dimensionalToken =  makearef(arr, finalOffset, NULL);
+    // dimensionalToken->symtype = dimensionalToken->symtype->symtype;
 
-  finalOffset->operands = makeintc(rollingOffset);
-  finalOffset->operands->link = variableTree;
-
-  TOKEN dimensionalToken =  makearef(arr, finalOffset, NULL);
-  // dimensionalToken->symtype = dimensionalToken->symtype->symtype;
-  return dimensionalToken;
+    printf("dimensionalToken\n");
+    ppexpr(dimensionalToken);
+    printf("\n");
+    return dimensionalToken;
 
   }
 
@@ -3370,6 +3384,8 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     // Temporary variables to store bounds and dimensions information
     TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
     int numDimensions = 0;
+
+    
     
     // First pass: collect bounds information and count dimensions
     for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
@@ -3392,15 +3408,12 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
         arraysym->lowbound = low;
         arraysym->highbound = high;
         arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
-
+        
         // Update typetok to reflect the newest dimension
         typetok->symtype = arraysym;
     }
 
-    if (DEBUG & DB_INSTARRAY) {
-        printf("Finished instarray() iteratively with correct dimension order.\n");
-        dbugprint1tok(typetok);
-    }
+
 
     return typetok;
 }
