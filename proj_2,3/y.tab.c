@@ -2398,16 +2398,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
     return op;
     }
 
-int  checkReal(TOKEN tok) {
-  return (tok->basicdt == REAL);
-
-}
-
-int checkInt(TOKEN tok) {
-  return (tok->basicdt == INTEGER);
-
-}
-
 
 
 /* unaryop links a unary operator op to one operand, lhs */
@@ -2896,6 +2886,159 @@ TOKEN instenum(TOKEN idlist){
   return enumRange;
 }
 
+/* instdotdot installs a .. subrange in the symbol table.
+   dottok is a (now) unused token that is recycled. */
+TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok){
+
+  return makesubrange(dottok, lowtok->intval,  hightok->intval);
+}
+
+
+/* findtype looks up a type name in the symbol table, puts the pointer
+   to its type into tok->symtype, returns tok. */
+
+TOKEN findtype(TOKEN tok) {
+    SYMBOL sym = searchst(tok->stringval);
+    if (sym->kind == TYPESYM) {
+      sym = sym->datatype;
+   }
+    tok->symtype = sym;
+
+    return tok;
+  }
+
+/* wordaddress pads the offset n to be a multiple of wordsize.
+   wordsize should be 4 for integer, 8 for real and pointers,
+   16 for records and arrays */
+int wordaddress(int n, int wordsize)
+  { return ((n + wordsize - 1) / wordsize) * wordsize; }
+
+
+
+/* install variables in symbol table */
+void instvars(TOKEN idlist, TOKEN typetok)
+  {  SYMBOL sym, typesym; int align;
+     typesym = typetok->symtype;
+     align = alignsize(typesym);
+     while ( idlist != NULL )   /* for each id */
+       {  sym = insertsym(idlist->stringval);
+          sym->kind = VARSYM;
+          sym->offset =
+              wordaddress(blockoffs[blocknumber],
+                          align);
+          sym->size = typesym->size;
+          blockoffs[blocknumber] =
+                         sym->offset + sym->size;
+          sym->datatype = typesym;
+          sym->basicdt = typesym->basicdt;
+          idlist = idlist->link;
+        };
+  }
+
+
+/* insttype will install a type name in symbol table.
+   typetok is a token containing symbol table pointers. */
+void insttype(TOKEN typename, TOKEN typetok) {
+  SYMBOL typeSymbol = searchins(typename->stringval);
+  typeSymbol->datatype = typetok->symtype;
+  typeSymbol->size = typetok->symtype->size;
+  typeSymbol->kind = TYPESYM;
+  typeSymbol->basicdt = typetok->symtype->basicdt;
+
+
+}
+
+
+/* instpoint will install a pointer type in symbol table */
+TOKEN instpoint(TOKEN tok, TOKEN typename) {
+
+  SYMBOL typesym = searchins(typename->stringval);
+
+  SYMBOL pointsym = symalloc();
+  pointsym->datatype = typesym;
+  pointsym->size = basicsizes[POINTER];
+  pointsym->kind = POINTERSYM;
+  pointsym->basicdt = POINTER;
+  tok->symtype = pointsym;
+
+  return tok;
+}
+
+
+/* instrec will install a record definition.  Each token in the linked list
+   argstok has a pointer its type.  rectok is just a trash token to be
+   used to return the result in its symtype */
+TOKEN instrec(TOKEN rectok, TOKEN argstok) {
+
+  SYMBOL recordSymbol = symalloc();
+  recordSymbol->kind = RECORDSYM;
+  rectok->symtype = recordSymbol;
+
+
+  int curOffset = 0;
+
+  SYMBOL prev = NULL;
+
+  while (argstok) {
+
+    SYMBOL field = makesym(argstok->stringval);
+    field->datatype = argstok->symtype;
+    field->size = argstok->symtype->size;
+    int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
+    field->offset = newSize;
+    curOffset = newSize + argstok->symtype->size;
+
+    if (prev == NULL) {
+      recordSymbol->datatype = field;
+    } 
+    else {
+      prev->link = field;
+
+    }
+    prev = field;
+    field->link = NULL;
+    argstok = argstok->link;
+    
+  }
+
+  recordSymbol->size = wordaddress(curOffset, 16); 
+
+  return rectok;
+}
+
+/* instfields will install type in a list idlist of field name tokens:
+   re, im: real    put the pointer to REAL in the RE, IM tokens.
+   typetok is a token whose symtype is a symbol table pointer.
+   Note that nconc() can be used to combine these lists after instrec() */
+TOKEN instfields(TOKEN idlist, TOKEN typetok) {
+
+  SYMBOL symtypeTypeTok = searchst(typetok->stringval);
+  TOKEN mover = idlist;
+
+  while(mover != NULL){
+    mover->symtype = symtypeTypeTok;
+    mover = mover->link;
+  }
+
+
+  return idlist;
+}
+
+/* makeplus makes a + operator.
+  tok (if not NULL) is a (now) unused token that is recycled. */
+TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
+
+	TOKEN ret = makeop(PLUSOP);
+
+  ret->operands = lhs;
+  lhs->link = rhs;
+  rhs->link = NULL;
+
+
+	return ret;
+}
+
+
 
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   
@@ -2986,46 +3129,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
 
 
 
-
-
-/* makeplus makes a + operator.
-  tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
-
-	TOKEN ret = makeop(PLUSOP);
-
-  ret->operands = lhs;
-  lhs->link = rhs;
-  rhs->link = NULL;
-
-
-	return ret;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* findtype looks up a type name in the symbol table, puts the pointer
-   to its type into tok->symtype, returns tok. */
-
-TOKEN findtype(TOKEN tok) {
-    SYMBOL sym = searchst(tok->stringval);
-    if (sym->kind == TYPESYM) {
-      sym = sym->datatype;
-   }
-    tok->symtype = sym;
-
-    return tok;
-  }
 
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
@@ -3255,6 +3358,16 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   
 
 
+int  checkReal(TOKEN tok) {
+  return (tok->basicdt == REAL);
+
+}
+
+int checkInt(TOKEN tok) {
+  return (tok->basicdt == INTEGER);
+
+}
+
 
 
 
@@ -3271,40 +3384,7 @@ TOKEN dopoint(TOKEN var, TOKEN tok) {
   return tok;
 }
 
-/* install variables in symbol table */
-void instvars(TOKEN idlist, TOKEN typetok)
-  {  SYMBOL sym, typesym; int align;
-     typesym = typetok->symtype;
-     align = alignsize(typesym);
-     while ( idlist != NULL )   /* for each id */
-       {  sym = insertsym(idlist->stringval);
-          sym->kind = VARSYM;
-          sym->offset =
-              wordaddress(blockoffs[blocknumber],
-                          align);
-          sym->size = typesym->size;
-          blockoffs[blocknumber] =
-                         sym->offset + sym->size;
-          sym->datatype = typesym;
-          sym->basicdt = typesym->basicdt;
-          idlist = idlist->link;
-        };
-  }
 
-
-
-
-
-/* instdotdot installs a .. subrange in the symbol table.
-   dottok is a (now) unused token that is recycled. */
-TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
-  int low = lowtok->intval;
-  int high = hightok->intval;
-
-
-
-  return makesubrange(dottok, low, high);
-}
 
 /* instarray installs an array declaration into the symbol table.
    bounds points to a SUBRANGE symbol table entry.
@@ -3347,99 +3427,6 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     return typetok;
 }
 
-
-/* instfields will install type in a list idlist of field name tokens:
-   re, im: real    put the pointer to REAL in the RE, IM tokens.
-   typetok is a token whose symtype is a symbol table pointer.
-   Note that nconc() can be used to combine these lists after instrec() */
-TOKEN instfields(TOKEN idlist, TOKEN typetok) {
-
-  SYMBOL symtypeTypeTok = searchst(typetok->stringval);
-  TOKEN mover = idlist;
-
-  while(mover != NULL){
-    mover->symtype = symtypeTypeTok;
-    mover = mover->link;
-  }
-
-
-  return idlist;
-}
-
-/* instrec will install a record definition.  Each token in the linked list
-   argstok has a pointer its type.  rectok is just a trash token to be
-   used to return the result in its symtype */
-TOKEN instrec(TOKEN rectok, TOKEN argstok) {
-
-  SYMBOL recordSymbol = symalloc();
-  recordSymbol->kind = RECORDSYM;
-  rectok->symtype = recordSymbol;
-
-
-  int curOffset = 0;
-
-  SYMBOL prev = NULL;
-
-  while (argstok) {
-
-    SYMBOL field = makesym(argstok->stringval);
-    field->datatype = argstok->symtype;
-    field->size = argstok->symtype->size;
-    int newSize = wordaddress(curOffset, alignsize(argstok->symtype));
-    field->offset = newSize;
-    curOffset = newSize + argstok->symtype->size;
-
-    if (prev == NULL) {
-      recordSymbol->datatype = field;
-    } 
-    else {
-      prev->link = field;
-
-    }
-    prev = field;
-    field->link = NULL;
-    argstok = argstok->link;
-    
-  }
-
-  recordSymbol->size = wordaddress(curOffset, 16); 
-
-  return rectok;
-}
-
-
-/* instpoint will install a pointer type in symbol table */
-TOKEN instpoint(TOKEN tok, TOKEN typename) {
-
-  SYMBOL typesym = searchins(typename->stringval);
-
-  SYMBOL pointsym = symalloc();
-  pointsym->datatype = typesym;
-  pointsym->size = basicsizes[POINTER];
-  pointsym->kind = POINTERSYM;
-  pointsym->basicdt = POINTER;
-  tok->symtype = pointsym;
-
-  return tok;
-}
-
-
-/* insttype will install a type name in symbol table.
-   typetok is a token containing symbol table pointers. */
-void insttype(TOKEN typename, TOKEN typetok) {
-  SYMBOL typesym = searchins(typename->stringval);
-  typesym->datatype = typetok->symtype;
-  // printf("typesym->datatype->namestring: %s\n", typesym->datatype->namestring);
-  typesym->size = typetok->symtype->size;
-  typesym->kind = TYPESYM;
-  typesym->basicdt = typetok->symtype->basicdt;
-
-
-}
-
-
-int wordaddress(int n, int wordsize)
-  { return ((n + wordsize - 1) / wordsize) * wordsize; }
  
 yyerror(s)
   char * s;
