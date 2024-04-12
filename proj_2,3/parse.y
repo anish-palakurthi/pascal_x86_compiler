@@ -400,7 +400,7 @@ TOKEN makefix(TOKEN tok){
     tok->basicdt = INTEGER;
     return tok;
   } 
-
+  
   TOKEN fixToken = makeop(FIXOP);
   fixToken->operands = tok;
   return fixToken;
@@ -792,7 +792,7 @@ TOKEN makesubrange(TOKEN tok, int low, int high) {
   rangeSym->highbound = high;
   rangeSym->basicdt = INTEGER;
   rangeSym->kind = SUBRANGE;
-  rangeSym->size = sizeof(INTEGER);
+  rangeSym->size = basicsizes[INTEGER];
 
   return tok;
 }
@@ -885,7 +885,7 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
   SYMBOL pointerSymbol = symalloc();
   pointerSymbol->datatype = typeSymbol;
-  pointerSymbol->size = sizeof(POINTER);
+  pointerSymbol->size = basicsizes[POINTER];;
   pointerSymbol->kind = POINTERSYM;
   pointerSymbol->basicdt = POINTER;
   tok->symtype = pointerSymbol;
