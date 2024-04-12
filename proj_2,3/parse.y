@@ -9,7 +9,7 @@
 /*
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation; either version 2 of the License, or
+; the Free Software Foundation; either version 2 of the License, or 
 ; (at your option) any later version.
 
 ; This program is distributed in the hope that it will be useful,
@@ -509,7 +509,9 @@ TOKEN copytok(TOKEN target) {
 TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
   {  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
      tok->whichval = IFOP;
-     if (elsepart != NULL) elsepart->link = NULL;
+     if (elsepart != NULL) {
+      elsepart->link = NULL;
+      }
      thenpart->link = elsepart;
      exp->link = thenpart;
      tok->operands = exp;
@@ -826,23 +828,23 @@ TOKEN makerepeat(TOKEN tok, TOKEN statements, TOKEN tokb, TOKEN expr) {
   TOKEN repeatStart = makelabel();
    
    
-   tok = makeprogn(tok, repeatStart);
+  tok = makeprogn(tok, repeatStart);
 
-   //set up the repeat body token
-   TOKEN shellBody = makeprogn(tokb, statements);
-   repeatStart->link = shellBody;
+  //set up the repeat body token
+  TOKEN shellBody = makeprogn(tokb, statements);
+  repeatStart->link = shellBody;
 
-   //set up the go to token for looping
-   TOKEN repeatStartGoTo = makegoto(labelnumber - 1);
-   TOKEN filler = makeprogn(talloc(), NULL);
-   filler->link = repeatStartGoTo;
+  //set up the go to token for looping
+  TOKEN repeatStartGoTo = makegoto(labelnumber - 1);
+  TOKEN filler = makeprogn(talloc(), NULL);
+  filler->link = repeatStartGoTo;
 
-   //conditional token
-   TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
-   shellBody->link = ifs;
+  //conditional token
+  TOKEN ifs = makeif(talloc(), expr, filler, repeatStartGoTo);
+  shellBody->link = ifs;
 
 
-   return tok;  
+  return tok;  
 }
 
 /* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
