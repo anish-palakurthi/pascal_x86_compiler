@@ -1,36 +1,36 @@
 yyparse result =        0
 Symbol table level 1
- 93884489121872     complex  TYPE   typ 93884489121584  lvl  1  siz    16  off     0
+ 93906323316816     complex  TYPE   typ 93906323316528  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93884489122736         red  CONST  typ INTEGER  val  0
- 93884489122896       white  CONST  typ INTEGER  val  1
- 93884489123056        blue  CONST  typ INTEGER  val  2
- 93884489123248       color  TYPE   typ 93884489123152  lvl  1  siz     4  off     0
+ 93906323317680         red  CONST  typ INTEGER  val  0
+ 93906323317840       white  CONST  typ INTEGER  val  1
+ 93906323318000        blue  CONST  typ INTEGER  val  2
+ 93906323318192       color  TYPE   typ 93906323318096  lvl  1  siz     4  off     0
   0 ..   2
- 93884489123664      person  TYPE   typ 93884489125488  lvl  1  siz    48  off     0
+ 93906323318608      person  TYPE   typ 93906323320432  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 93884489123856          pp  TYPE   typ 93884489123760  lvl  1  siz     8  off     0
+ 93906323318800          pp  TYPE   typ 93906323318704  lvl  1  siz     8  off     0
 (^ person)
- 93884489127088          ac  VAR    0 typ 93884489126992  lvl  1  siz   160  off     0
+ 93906323322032          ac  VAR    0 typ 93906323321936  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 93884489128080         acX  VAR    0 typ 93884489127984  lvl  1  siz    80  off   160
+ 93906323323024         acX  VAR    0 typ 93906323322928  lvl  1  siz    80  off   160
 (ARRAY   2 ..   6 (RECORD (re real)
                           (im real)))
- 93884489129072      people  VAR    0 typ 93884489128976  lvl  1  siz   960  off   240
+ 93906323324016      people  VAR    0 typ 93906323323920  lvl  1  siz   960  off   240
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)
                                             (im real)))
                           (favorite   0 ..   2)
                           (salary real)))
- 93884489130064     peopleX  VAR    0 typ 93884489129968  lvl  1  siz   720  off  1200
+ 93906323325008     peopleX  VAR    0 typ 93906323324912  lvl  1  siz   720  off  1200
 (ARRAY   2 ..  16 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)

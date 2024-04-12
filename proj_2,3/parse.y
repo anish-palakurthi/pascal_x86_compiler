@@ -1083,26 +1083,28 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
           nestedOffset->operands->intval += off->intval; // Add the new offset to the existing integer
           finalOffset = nestedOffset; // Use the updated nestedOffset as the final offset
       }
-      TOKEN areftok = makeop(AREFOP);
+      TOKEN referenceToken = makeop(AREFOP);
     if (var->whichval == AREFOP) { // If nesting was detected, use the base array part of the nested AREF
         var = var->operands;
     }
 
     var->link = finalOffset; // Link the final offset to the base array
   
-    areftok->operands = var;
-    areftok->symtype = var->symtype;
+    referenceToken->operands = var;
+    referenceToken->symtype = var->symtype;
     
     if (var->symtype && var->symtype->datatype) {
-        areftok->basicdt = var->symtype->datatype->basicdt;
+        referenceToken->basicdt = var->symtype->datatype->basicdt;
     }
 
 
 
-    return areftok;
+    return referenceToken;
   }
+
+
   // Now, we create the AREF operation using the possibly updated finalOffset
-  TOKEN areftok = makeop(AREFOP);
+  TOKEN referenceToken = makeop(AREFOP);
   if (var->whichval == AREFOP) { // If nesting was detected, link directly to the array part of the nested AREF
     if(var->link == NULL || var->link->tokentype != IDENTIFIERTOK){
       var = var->operands;
@@ -1119,18 +1121,18 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     return var;
   }
   else{
-    areftok->operands = var;
+    referenceToken->operands = var;
   }
   
-  areftok->symtype = var->symtype;
+  referenceToken->symtype = var->symtype;
   
   if (var->symtype && var->symtype->datatype) {
-    areftok->basicdt = var->symtype->datatype->basicdt;
+    referenceToken->basicdt = var->symtype->datatype->basicdt;
   }
 
 
 
-  return areftok;
+  return referenceToken;
 }
 
 
@@ -1140,8 +1142,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   
-  
-
 
   SYMBOL recordSymbol = var->symtype;
   SYMBOL moverField;
@@ -1149,34 +1149,23 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   if(recordSymbol->kind == ARRAYSYM){
     
     recordSymbol = recordSymbol->datatype;
-    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype;
   }
 
   else if (recordSymbol->kind != RECORDSYM){
     recordSymbol = recordSymbol->datatype;
-    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype->datatype;
   }
-
 
   else{
     moverField = recordSymbol->datatype;
   }
 
   
-  
-  
-
-
-
   int fieldOffset = 0;
   while (moverField != NULL){
-    
-    
     if (strcmp(moverField->namestring, field->stringval) == 0){
       var->symtype = moverField;
-
       fieldOffset = moverField->offset;
       break;
     }
@@ -1184,21 +1173,12 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   
-
-  TOKEN offsetToken = makeintc(fieldOffset);
-
-  TOKEN referenceTok = makearef(var, offsetToken, NULL);
+  TOKEN referenceTok = makearef(var, makeintc(fieldOffset), NULL);
 
   if (moverField) {
-    
     referenceTok->symtype = moverField;
     referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
   }
-  else{
-    printf("moverField is null\n");
-    
-  }
-
 
   return referenceTok;
  
@@ -1403,32 +1383,30 @@ TOKEN instarray(TOKEN bounds, TOKEN typetok) {
     
     
     // First pass: collect bounds information and count dimensions
-    for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
-        boundsList[numDimensions++] = curr_bound;
+    for (TOKEN curr = bounds; curr != NULL; curr = curr->link) {
+        boundsList[numDimensions++] = curr;
     }
 
     // Reverse the process: start installing from the last dimension to the first
     for (int i = numDimensions - 1; i >= 0; --i) {
-        TOKEN curr_bound = boundsList[i];
-        int low = curr_bound->symtype->lowbound;
-        int high = curr_bound->symtype->highbound;
+        TOKEN curr = boundsList[i];
+        int low = curr->symtype->lowbound;
+        int high = curr->symtype->highbound;
         SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
         
         // Allocate a new symbol for the current array dimension
-        SYMBOL arraysym = symalloc();
-        arraysym->kind = ARRAYSYM;
-        arraysym->datatype = typesym; // Link to the next dimension or base type
+        SYMBOL arraySymbol = symalloc();
+        arraySymbol->kind = ARRAYSYM;
+        arraySymbol->datatype = typesym; // Link to the next dimension or base type
         
         // Set bounds and size for the current dimension
-        arraysym->lowbound = low;
-        arraysym->highbound = high;
-        arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
+        arraySymbol->lowbound = low;
+        arraySymbol->highbound = high;
+        arraySymbol->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
         
         // Update typetok to reflect the newest dimension
-        typetok->symtype = arraysym;
+        typetok->symtype = arraySymbol;
     }
-
-
 
     return typetok;
 }
