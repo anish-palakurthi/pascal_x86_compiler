@@ -2293,7 +2293,7 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
 
-    if (lhs->tokentype == NUMBERTOK){
+  if (lhs->tokentype == NUMBERTOK){
 
     lhs->link = rhs;             
     rhs->link = NULL;           
@@ -2356,15 +2356,18 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
 
     //deciding what to set op datatype to
     if (DEBUG & DB_BINOP)
-       { printf("binop\n");
-         dbugprinttok(op);
-         dbugprinttok(lhs);
-         dbugprinttok(rhs);
-       };
+        { printf("binop\n");
+          dbugprinttok(op);
+          dbugprinttok(lhs);
+          dbugprinttok(rhs);
+        };
     
     return op;
-    }
-      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+  }
+
+
+
+    if (rhs->whichval == (NIL - RESERVED_BIAS)) {
         rhs = makeintc(0);
     }
 
@@ -2373,22 +2376,41 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
     rhs->link = NULL; // Terminate operand list.
 
 
+    //handles type casting
+    int lhType;
+    int rhType;
 
-      // Existing logic
-      if (checkReal(lhs) && checkReal(rhs)) {
-          op->basicdt = REAL;
-      } else if (checkReal(lhs) && checkInt(rhs)) {
-          op->basicdt = REAL;
-          TOKEN ftok = makefloat(rhs);
-          lhs->link = ftok;
-      } else if (checkInt(lhs) && checkReal(rhs)) {
-          if (op->whichval == ASSIGNOP) {
-              op->basicdt = INTEGER;
-          } else {
-              op->basicdt = REAL;
-          }
-      }
-    
+    //define our variables for specifying type
+    if (lhs->basicdt == INTEGER) {
+      lhType = 1;
+    } else {
+      //REAL
+      lhType = 0;
+    }
+    if (rhs->basicdt == INTEGER) {
+      rhType = 1;
+    } else {
+      //REAL
+      rhType = 0;
+    }
+
+
+    // Existing logic
+    if (lhType == 0 && rhType == 0){
+    // if (checkReal(lhs) && checkReal(rhs)) {
+        op->basicdt = REAL;
+    } else if (checkReal(lhs) && checkInt(rhs)) {
+        op->basicdt = REAL;
+        TOKEN ftok = makefloat(rhs);
+        lhs->link = ftok;
+    } else if (checkInt(lhs) && checkReal(rhs)) {
+        if (op->whichval == ASSIGNOP) {
+            op->basicdt = INTEGER;
+        } else {
+            op->basicdt = REAL;
+        }
+    }
+  
 
     if (DEBUG & DB_BINOP) {
         printf("binop - final type handling\n");

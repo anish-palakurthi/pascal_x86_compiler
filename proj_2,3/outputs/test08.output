@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 93941141565744     complex  TYPE   typ 93941141565360  lvl  1  siz    32  off     0
+ 94266580660528     complex  TYPE   typ 94266580660144  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 93941141566352           c  VAR    0 typ 93941141565360  lvl  1  siz    32  off     0
+ 94266580661136           c  VAR    0 typ 94266580660144  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 93941141566448           d  VAR    0 typ 93941141565360  lvl  1  siz    32  off    32
+ 94266580661232           d  VAR    0 typ 94266580660144  lvl  1  siz    32  off    32
 (RECORD (er real)
         (mi real)
         (myreal real))
