@@ -2300,13 +2300,10 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
   op->operands = lhs; 
 
 
-
-    //same
   if (checkReal(lhs) && checkReal(rhs)) {
       op->basicdt = REAL;
   } 
 
-  //same
   else if (checkReal(lhs) && checkInt(rhs)) {
       op->basicdt = REAL;
       lhs->link =  makefloat(rhs);
