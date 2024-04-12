@@ -79,75 +79,71 @@ TOKEN parseresult;
 
 %%
 
-  program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); } ;
+  program    : PROGRAM IDENTIFIER LPAREN idlist RPAREN SEMICOLON lblock DOT { parseresult = makeprogram($2, $4, $7); }
              ;
 
   idlist     :  IDENTIFIER COMMA idlist { $$ = cons($1, $3); }
              |  IDENTIFIER    { $$ = cons($1, NULL); }
              ;
-
-  cdef       :  IDENTIFIER EQ constant { instconst($1, $3); }
-             ;
-  clist      :  cdef SEMICOLON clist    
-             |  cdef SEMICOLON          
-             ;  
-  constant   :  sign IDENTIFIER     { $$ = unaryop($1, $2); }
-             |  IDENTIFIER
-             |  sign NUMBER         { $$ = unaryop($1, $2); }
-             |  NUMBER
+  constantVal   :  signedId
+             |  signedNum
              |  STRING
              ;
+  constant       :  IDENTIFIER EQ constantVal { instconst($1, $3); }
+             ;
+  constantList      :  constant SEMICOLON constantList    
+             |  constant SEMICOLON          
+             ;  
+
+  statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
+             |  statement                  { $$ = cons($1, NULL); }
+             ;
+
   tdef       :  IDENTIFIER EQ type     { insttype($1, $3); }
              ;
   tlist      :  tdef SEMICOLON tlist
              |  tdef SEMICOLON
              ;
-  statementList     :  statement SEMICOLON statementList      { $$ = cons($1, $3); }
-             |  statement                  { $$ = cons($1, NULL); }
-             ;
+
   fieldsList     :  idlist COLON type             { $$ = instfields($1, $3); }
              ;
   multiFieldsList :  fieldsList SEMICOLON multiFieldsList   { $$ = nconc($1, $3); }
              |  fieldsList
              ;
-  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
-             ;  
-  labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
-             |  NUMBER                { instlabel($1); }
-             ;
-  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
-             |  cblock
-             ;
-  cblock     :  CONST clist tblock              { $$ = $3; }
-             |  tblock
-             ;
+
   tblock     :  TYPE tlist vblock       { $$ = $3; }
              |  vblock
              ;
+
+  cblock     :  CONST constantList tblock              { $$ = $3; }
+            |  tblock
+            ;
+
   vblock     :  VAR varspecs block       { $$ = $3; }
              |  block
              ;
+
+  lblock     :  LABEL labelsList SEMICOLON cblock  { $$ = $4; }
+             |  cblock
+             ;
+
+  labelsList    :  NUMBER COMMA labelsList  { instlabel($1); }
+             |  NUMBER                { instlabel($1); }
+             ;
+
+  label      :  NUMBER COLON statement          { $$ = dolabel($1, $2, $3); }
+             ;  
+
+
   varspecs   :  vargroup SEMICOLON varspecs   
              |  vargroup SEMICOLON            
              ;
   vargroup   :  idlist COLON type { instvars($1, $3); }
              ;
-  type       :  basicType
-             |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
-             |  ARRAY LBRACKET basicList RBRACKET OF type   { $$ = instarray($3, $6); }
-             |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
-             ;
-
-  basicList :  basicType COMMA basicList  { $$ = cons($1, $3); }
-             |  basicType                { $$ = cons($1, NULL); }
-             ;
-  basicType :  IDENTIFIER   { $$ = findtype($1); }
-             |  constant DOTDOT constant     { $$ = instdotdot($1, $2, $3); }
-             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
-             ;
 
   block      :  BEGINBEGIN statement endpart   { $$ = makeprogn($1, cons($2, $3)); }  
              ;
+
   statement  :  block
             |  IF expr THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
             |  assignment
@@ -159,6 +155,7 @@ TOKEN parseresult;
             |  WHILE expr DO statement       { $$ = makewhile($1, $2, $3, $4); }
             |  label
             ;
+
   functionCall    :  IDENTIFIER LPAREN expressionList RPAREN    { $$ = makefuncall($2, $1, $3); }
              ;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
@@ -170,25 +167,8 @@ TOKEN parseresult;
   assignment :  variable ASSIGN expr         { $$ = binop($2, $1, $3); }
              ;
 
-  variable   :  IDENTIFIER                            { $$ = findid($1); }
-             |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
-             $3, $4); }
-             |  variable POINT                         { $$ = dopoint($1, $2); }
-             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
-             ;
-
-  signedExpression     :  signedTerm
-             |  signedExpression PLUS term                 { $$ = binop($2, $1, $3); }
-             |  signedExpression MINUS term                 { $$ = binop($2, $1, $3); }
-             |  signedExpression OR term                 { $$ = binop($2, $1, $3); }
-             ;
-  
-  signedTerm :  sign term           { $$ = unaryop($1, $2); }
-             |  term
-             ;
-
-  sign       :  PLUS 
-             |  MINUS
+  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
+             |  expr                        { $$ = cons($1, NULL); }
              ;
 
   expr       :  expr EQ signedExpression              { $$ = binop($2, $1, $3); }
@@ -201,16 +181,33 @@ TOKEN parseresult;
              |  signedExpression 
              ;
 
-  expressionList  :  expr COMMA expressionList           { $$ = cons($1, $3); }
-             |  expr                        { $$ = cons($1, NULL); }
+  signedExpression     :  signedTerm
+             |  signedExpression PLUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression MINUS term                 { $$ = binop($2, $1, $3); }
+             |  signedExpression OR term                 { $$ = binop($2, $1, $3); }
              ;
-
+  
   term       :  term TIMES factor              { $$ = binop($2, $1, $3); }
              |  term DIVIDE factor              { $$ = binop($2, $1, $3); }
              |  term AND factor              { $$ = binop($2, $1, $3); }
              |  term DIV factor              { $$ = binop($2, $1, $3); }
              |  term MOD factor              { $$ = binop($2, $1, $3); }
              |  factor
+             ;
+  signedTerm :  sign term           { $$ = unaryop($1, $2); }
+             |  term
+             ;
+
+  sign       :  PLUS 
+             |  MINUS
+             ;
+
+  signedId   : sign IDENTIFIER     { $$ = unaryop($1, $2); }
+             |  IDENTIFIER
+             ;
+  
+  signedNum  : sign NUMBER         { $$ = unaryop($1, $2); }
+             |  NUMBER
              ;
   factor     :   variable
              |  STRING
@@ -219,6 +216,31 @@ TOKEN parseresult;
              |  functionCall
              |  LPAREN expr RPAREN             { $$ = $2; }       
              |  NOT factor          { $$ = unaryop($1, $2); }
+             ; 
+             
+  type       :  basicType
+             |  POINT IDENTIFIER                              { $$ = instpoint($1, $2); }
+             |  ARRAY LBRACKET basicList RBRACKET OF type   { $$ = instarray($3, $6); }
+             |  RECORD multiFieldsList END                          { $$ = instrec($1, $2); }
+             ;
+
+  basicList :  basicType COMMA basicList  { $$ = cons($1, $3); }
+             |  basicType                { $$ = cons($1, NULL); }
+             ;
+  basicType :  IDENTIFIER   { $$ = findtype($1); }
+             |  constantVal DOTDOT constantVal     { $$ = instdotdot($1, $2, $3); }
+             |  LPAREN idlist RPAREN         { $$ = instenum($2); }
+             ;
+
+  variable   :  IDENTIFIER                            { $$ = findid($1); }
+             |  variable LBRACKET expressionList RBRACKET   { $$ = arrayref($1, $2,
+             $3, $4); }
+             |  variable POINT                         { $$ = dopoint($1, $2); }
+             |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
+             ;
+
+
+
 %%
 
 /* You should add your own debugging flags below, and add debugging
@@ -267,7 +289,7 @@ TOKEN parseresult;
 #define DB_INSTPOINT    0
 
  int labelnumber = 0; 
- int labels[50];
+ int labels[100];
 
    /*  Note: you should add to the above values and insert debugging
        printouts in your routines similar to those that are shown here.     */
@@ -328,13 +350,7 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-    // printf("binop\n");
-    // ppsym(op->symtype);
-    // ppsym(lhs->symtype);
-    // ppsym(rhs->symtype);
 
-    // dbugprinttok(lhs);
-    // dbugprinttok(rhs);
     if (lhs->tokentype == NUMBERTOK){
 
     lhs->link = rhs;             
@@ -661,11 +677,6 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
 }
 
 
-
-
-
-
-
 /* makefor makes structures for a for statement.
    sign is 1 for normal loop, -1 for downto.
    asg is an assignment statement, e.g. (:= i 1)
@@ -726,6 +737,8 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
 
     return tok;
 }
+
+
 /* makeplus makes a + operator.
   tok (if not NULL) is a (now) unused token that is recycled. */
 TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
@@ -739,6 +752,7 @@ TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
 
 	return ret;
 }
+
 
 /* makewhile makes structures for a while statement.
    tok and tokb are (now) unused tokens that are recycled. */
@@ -1447,15 +1461,12 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
   SYMBOL typesym = searchins(typename->stringval);
 
-
   SYMBOL pointsym = symalloc();
   pointsym->datatype = typesym;
   pointsym->size = basicsizes[POINTER];
   pointsym->kind = POINTERSYM;
   pointsym->basicdt = POINTER;
-
   tok->symtype = pointsym;
-  
 
   return tok;
 }
