@@ -2805,6 +2805,97 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     return tok;
 }
 
+/* findid finds an identifier in the symbol table, sets up symbol table
+   pointers, changes a constant to its number equivalent */
+TOKEN findid(TOKEN tok) { /* the ID token */
+    SYMBOL symbol =  searchst(tok->stringval);
+    tok->symentry = symbol;
+    
+
+    if (symbol->kind == CONSTSYM) {
+      tok->tokentype = NUMBERTOK;
+      switch(symbol->basicdt){
+        case INTEGER:
+          tok->intval = symbol->constval.intnum;
+          tok->basicdt = INTEGER;
+          break;
+        case REAL:
+          tok->realval = symbol->constval.realnum;
+          tok->basicdt = REAL;
+          break;
+        default:
+          break;
+      }
+
+      return tok;
+    }
+    
+    tok->symtype = symbol->datatype;
+    if ( symbol->datatype->kind == BASICTYPE ||
+         symbol->datatype->kind == POINTERSYM)
+        tok->basicdt = symbol->datatype->basicdt;
+
+
+    return tok;
+  }
+
+/* instconst installs a constant in the symbol table */
+void instconst(TOKEN idtok, TOKEN consttok){
+
+  //create and return the symbol table entry
+  SYMBOL constSymbol = insertsym(idtok->stringval);
+
+  //update the symbol table entry to reflect the token's value and data type
+  constSymbol->basicdt = consttok->basicdt;
+  constSymbol->kind = CONSTSYM;
+
+  int type = consttok->basicdt;
+  if (type == INTEGER){
+    constSymbol->constval.intnum = consttok->intval;
+  }
+  else if (type == REAL){
+    constSymbol->constval.realnum = consttok->realval;
+  }
+  else {
+    return;
+  }
+}
+
+/* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
+   into tok, and returns tok. */
+TOKEN makesubrange(TOKEN tok, int low, int high) {
+
+  SYMBOL rangeSym = symalloc();
+  tok->symtype = rangeSym;
+
+  rangeSym->lowbound = low;
+  rangeSym->highbound = high;
+  rangeSym->basicdt = INTEGER;
+  rangeSym->kind = SUBRANGE;
+  rangeSym->size = sizeof(INTEGER);
+
+  return tok;
+}
+
+/* instenum installs an enumerated subrange in the symbol table,
+   e.g., type color = (red, white, blue)
+   by calling makesubrange and returning the token it returns. */
+TOKEN instenum(TOKEN idlist){
+  int numOptions = 0;
+
+  TOKEN traversal = copytok(idlist);
+
+  while (traversal != NULL) {
+    instconst(traversal, makeintc(numOptions++));
+    traversal = traversal->link;
+  }
+
+  TOKEN enumRange = makesubrange(idlist, 0, numOptions - 1);
+
+
+  return enumRange;
+}
+
 
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   
@@ -2917,61 +3008,11 @@ TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
 
 
 
-/* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
-   into tok, and returns tok. */
-TOKEN makesubrange(TOKEN tok, int low, int high) {
-
-  SYMBOL subrange = symalloc();
-  subrange->kind = SUBRANGE;
-  subrange->basicdt = INTEGER;
-  subrange->lowbound = low;
-  subrange->highbound = high;
-  subrange->size = basicsizes[INTEGER];
-  tok->symtype = subrange;
-
-
-  return tok;
-}
 
 
 
 
 
-/* findid finds an identifier in the symbol table, sets up symbol table
-   pointers, changes a constant to its number equivalent */
-TOKEN findid(TOKEN tok) { /* the ID token */
-    SYMBOL sym, typ;
-    sym = searchst(tok->stringval);
-    tok->symentry = sym;
-    // tok->symtype = sym;
-
-    
-    if (sym->kind == CONSTSYM) {
-      if (sym->basicdt == REAL) {
-        tok->tokentype = NUMBERTOK;
-        tok->basicdt = REAL;
-        tok->realval = sym->constval.realnum;
-      }
-      else if (sym->basicdt == INTEGER) {
-        tok->tokentype = NUMBERTOK;
-        tok->basicdt = INTEGER;
-        tok->intval = sym->constval.intnum;
-      }
-
-
-      return tok;
-    }
-
-    typ = sym->datatype;
-    tok->symtype = typ;
-    if ( typ->kind == BASICTYPE ||
-         typ->kind == POINTERSYM)
-        tok->basicdt = typ->basicdt;
-
-
-
-    return tok;
-  }
 
 /* findtype looks up a type name in the symbol table, puts the pointer
    to its type into tok->symtype, returns tok. */
@@ -3250,42 +3291,9 @@ void instvars(TOKEN idlist, TOKEN typetok)
         };
   }
 
-/* instconst installs a constant in the symbol table */
-void instconst(TOKEN idtok, TOKEN consttok) {
-  SYMBOL sym;
-  sym = insertsym(idtok->stringval);
-  sym->kind = CONSTSYM;
-  sym->basicdt = consttok->basicdt;
-  if(sym->basicdt == REAL) {
-      sym->constval.realnum = consttok->realval;
-  }
-
-  if(sym->basicdt == INTEGER) 
-  {
-      sym->constval.intnum = consttok->intval;
-  }
-
-}
 
 
-/* instenum installs an enumerated subrange in the symbol table,
-   e.g., type color = (red, white, blue)
-   by calling makesubrange and returning the token it returns. */
-TOKEN instenum(TOKEN idlist) {
-  int count = 0;
 
-  TOKEN list = copytok(idlist);
-  while (list) {
-    instconst(list, makeintc(count));
-    count ++;
-    list = list->link;
-  }
-
-  TOKEN tok = makesubrange(idlist, 0, count - 1);
-
-
-  return tok;
-}
 
 /* instdotdot installs a .. subrange in the symbol table.
    dottok is a (now) unused token that is recycled. */
