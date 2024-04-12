@@ -301,27 +301,37 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
   if (rhs->whichval == (NIL - RESERVED_BIAS)) {
     rhs = makeintc(0);
   }
+
+  //creates unit tree
+  op->operands = lhs; 
   lhs->link = rhs;             
   rhs->link = NULL;           
-  op->operands = lhs; 
 
 
+  //updating op token types
+
+  //both real
   if (checkReal(lhs) && checkReal(rhs)) {
       op->basicdt = REAL;
   } 
 
+  //cast INT input to variable REAL type
   else if (checkReal(lhs) && checkInt(rhs)) {
       op->basicdt = REAL;
-      lhs->link =  makefloat(rhs);
+      lhs->link = makefloat(rhs);
   } 
 
+  //cast REAL input to variable INT type
   else if (checkInt(lhs) && checkReal(rhs)) {
+
+    //assignment
     if (op->whichval == ASSIGNOP) {
         op->basicdt = INTEGER;
         if (lhs->tokentype == NUMBERTOK){
             lhs->link = makefix(rhs);
         }
     } 
+    //operation
     else {
         op->basicdt = REAL;
         if (lhs->tokentype == NUMBERTOK){
@@ -375,10 +385,10 @@ TOKEN makefloat(TOKEN tok){
     tok->basicdt = REAL;
     return tok;
   }
+
   TOKEN floatToken = makeop(FLOATOP);
   floatToken->operands = tok;
-  return floatToken;
-    
+  return floatToken;  
 
 }
 
@@ -389,11 +399,12 @@ TOKEN makefix(TOKEN tok){
     tok->intval = (int) tok->realval;
     tok->basicdt = INTEGER;
     return tok;
-  } else{
-    TOKEN fixToken = makeop(FIXOP);
-    fixToken->operands = tok;
-    return fixToken;
-  }
+  } 
+
+  TOKEN fixToken = makeop(FIXOP);
+  fixToken->operands = tok;
+  return fixToken;
+  
 }
 
 /* makeintc makes a new integer number token with num as its value */
@@ -402,10 +413,7 @@ TOKEN makeintc(int num) {
   tok->intval = num;
   tok->tokentype = NUMBERTOK;
   tok->basicdt = INTEGER;
-  if (DEBUG & DB_MAKENUM) {
-      printf("makeintc\n");
-      dbugprinttok(tok);
-  }
+
   return tok;
 }
 
@@ -417,22 +425,19 @@ TOKEN copytok(TOKEN target) {
   copy->symtype = target->symtype;
   copy->symentry = target->symentry;
   copy->link = target->link;
+  //copy over value
   for (int i = 0; i < 16; i++){
     copy->stringval[i] = target->stringval[i];
   }
-  
-  if (DEBUG & DB_MAKECOPY) {
-    printf("copytok\n");
-    dbugprinttok(copy);
-  }
+
   return copy;
 }
 
 
 /* makeif makes an IF operator and links it to its arguments.
    tok is a (now) unused token that is recycled to become an IFOP operator */
-TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
-  {  //decomposing if token
+TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart){ 
+   //decomposing if token
      tok->tokentype = OPERATOR;  
 
     //determining expression
@@ -442,29 +447,20 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart)
      //exp->thenpart->elsepart
      thenpart->link = elsepart;
      exp->link = thenpart;
-     if (DEBUG & DB_MAKEIF)
-        { printf("makeif\n");
-          dbugprinttok(tok);
-          dbugprinttok(exp);
-          dbugprinttok(thenpart);
-          dbugprinttok(elsepart);
-        };
+
+
      return tok;
    }
 
 
 /* makeprogn makes a PROGN operator and links it to the list of statements.
    tok is a (now) unused token that is recycled. */
-TOKEN makeprogn(TOKEN tok, TOKEN statements)
-  {  tok->tokentype = OPERATOR;
-     tok->whichval = PROGNOP;
-     tok->operands = statements;
-     if (DEBUG & DB_MAKEPROGN)
-       { printf("makeprogn\n");
-         dbugprinttok(tok);
-         dbugprinttok(statements);
-       };
-     return tok;
+TOKEN makeprogn(TOKEN tok, TOKEN statements){
+    tok->tokentype = OPERATOR;
+    tok->whichval = PROGNOP;
+    tok->operands = statements;
+
+    return tok;
   }
 
 /* dogoto is the action for a goto statement.
@@ -480,8 +476,8 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
             break;
         }
     }
+
     if (labelIndex == -1){
-      
       return NULL;
     }
 
@@ -552,13 +548,13 @@ TOKEN makegoto(int label){
    tok is a (now) unused token that is recycled. */
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 
-  
   fn->link = args;
   tok->tokentype = OPERATOR;  
   tok->operands = fn;
   tok->whichval = FUNCALLOP;
   tok->basicdt = args->basicdt;
 
+  //append type suffix
   if (strcmp(fn->stringval, "writeln") == 0) {
     int argType = args->basicdt;
 
@@ -582,6 +578,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     }
   }
 
+  //expand new function operator
   else if (strcmp(fn->stringval, "new") == 0) {
     tok = makeop(ASSIGNOP);
     tok->operands = args;
@@ -592,25 +589,14 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     funcOp->basicdt = args->symtype->datatype->basicdt;
     args->link = funcOp;
 
-    return tok;
   } 
-
-
-     if (DEBUG & DB_MAKEFUNCALL)
-        { 
-          printf("makefuncall\n");
-          dbugprinttok(tok);
-          dbugprinttok(fn);
-          dbugprinttok(args);
-        };
-    
+ 
     
   return tok;
 }
 
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
-  {
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements){
     TOKEN tok = talloc();
     tok->tokentype = OPERATOR;
     tok->whichval = PROGRAMOP;
@@ -634,11 +620,14 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN makewhile(TOKEN tok, TOKEN expr, TOKEN tokb, TOKEN statement) {
   
+  //set label token for the start
   TOKEN loopLabel = makelabel();
   tok = makeprogn(tok, loopLabel);
 
+  //set up the while body token
   TOKEN body = makeprogn(tokb, statement);
 
+  //set up the go to token for looping
   TOKEN ifTok = talloc();
   ifTok = makeif(ifTok, expr, body, NULL);
   loopLabel->link = ifTok;
@@ -789,9 +778,7 @@ void instconst(TOKEN idtok, TOKEN consttok){
   else if (type == REAL){
     constSymbol->constval.realnum = consttok->realval;
   }
-  else {
-    return;
-  }
+
 }
 
 /* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
@@ -818,6 +805,7 @@ TOKEN instenum(TOKEN idlist){
 
   TOKEN traversal = copytok(idlist);
 
+  //traverse and install the enum options
   while (traversal != NULL) {
     instconst(traversal, makeintc(numOptions++));
     traversal = traversal->link;
@@ -825,14 +813,12 @@ TOKEN instenum(TOKEN idlist){
 
   TOKEN enumRange = makesubrange(idlist, 0, numOptions - 1);
 
-
   return enumRange;
 }
 
 /* instdotdot installs a .. subrange in the symbol table.
    dottok is a (now) unused token that is recycled. */
 TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok){
-
   return makesubrange(dottok, lowtok->intval,  hightok->intval);
 }
 
@@ -895,14 +881,14 @@ void insttype(TOKEN typename, TOKEN typetok) {
 /* instpoint will install a pointer type in symbol table */
 TOKEN instpoint(TOKEN tok, TOKEN typename) {
 
-  SYMBOL typesym = searchins(typename->stringval);
+  SYMBOL typeSymbol = searchins(typename->stringval);
 
-  SYMBOL pointsym = symalloc();
-  pointsym->datatype = typesym;
-  pointsym->size = basicsizes[POINTER];
-  pointsym->kind = POINTERSYM;
-  pointsym->basicdt = POINTER;
-  tok->symtype = pointsym;
+  SYMBOL pointerSymbol = symalloc();
+  pointerSymbol->datatype = typeSymbol;
+  pointerSymbol->size = sizeof(POINTER);
+  pointerSymbol->kind = POINTERSYM;
+  pointerSymbol->basicdt = POINTER;
+  tok->symtype = pointerSymbol;
 
   return tok;
 }
@@ -913,6 +899,7 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
    used to return the result in its symtype */
 TOKEN instrec(TOKEN rectok, TOKEN argstok) {
 
+  //create the record symbol table entry
   SYMBOL recordSymbol = symalloc();
   recordSymbol->kind = RECORDSYM;
   rectok->symtype = recordSymbol;
@@ -922,6 +909,7 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
 
   SYMBOL prev = NULL;
 
+  //traverse the linked list of record fields and install them in the symbol table
   while (argstok) {
 
     SYMBOL field = makesym(argstok->stringval);
@@ -955,9 +943,11 @@ TOKEN instrec(TOKEN rectok, TOKEN argstok) {
    Note that nconc() can be used to combine these lists after instrec() */
 TOKEN instfields(TOKEN idlist, TOKEN typetok) {
 
+  //find the type token
   SYMBOL symtypeTypeTok = searchst(typetok->stringval);
   TOKEN mover = idlist;
 
+  //traverse the linked list of field names and install them in the symbol table
   while(mover != NULL){
     mover->symtype = symtypeTypeTok;
     mover = mover->link;
@@ -987,11 +977,15 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
   
   TOKEN finalOffset = off; // Start with the assumption we'll use the provided offset
 
+  
   if (var->link){
-    
+
+    // If the offset is a number, we can directly sum the integer values  
     if (var->link->tokentype == NUMBERTOK){
-    finalOffset->intval = var->link->intval + off->intval;
+      finalOffset->intval = var->link->intval + off->intval;
     }
+
+    // If the offset is an identifier, we need to create a PLUSOP operation
     else if(var->link->tokentype == IDENTIFIERTOK){
       TOKEN plusOp = makeop(PLUSOP);
       plusOp->operands = var->link;
@@ -1002,6 +996,7 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     
   }
 
+  // If the offset is a number, we can directly sum the integer values
   if (var->whichval == AREFOP && off->basicdt == INTEGER) {
     
     TOKEN off1 = var->operands->link;
@@ -1079,10 +1074,12 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   
-
+  //get the record symbol table entry
   SYMBOL recordSymbol = var->symtype;
   SYMBOL moverField;
   
+
+  //depending on the kind of symbol, we need to navigate to the correct field
   if(recordSymbol->kind == ARRAYSYM){
     
     recordSymbol = recordSymbol->datatype;
@@ -1099,6 +1096,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   }
 
   
+  //traverse the linked list of record fields to find the correct field
   int fieldOffset = 0;
   while (moverField != NULL){
     if (strcmp(moverField->namestring, field->stringval) == 0){
@@ -1109,9 +1107,11 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
     moverField = moverField->link;
   }
 
-  
+  //create the reference token
   TOKEN referenceTok = makearef(var, makeintc(fieldOffset), NULL);
 
+
+  //update the reference token's data type
   if (moverField) {
     referenceTok->symtype = moverField;
     referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
@@ -1128,6 +1128,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
 
+  //if there are multiple dimensions
   if (subs->link){
     
     int size = arr->symtype->size;
@@ -1138,12 +1139,12 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     int rollingOffset = 0;
     int count = 0;
 
+    //traverse the linked list of dimensions
     while (subs) {
       
       int low = curArr->symtype->lowbound;
       int high = curArr->symtype->highbound;
       size /= (high - low + 1);
-      // size = rollingSize;
 
 
       TOKEN unitSize = makeintc(size);
@@ -1151,11 +1152,13 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       TOKEN indexTok;
       TOKEN timesOp = makeop(TIMESOP);
 
+      //if the subscript is a number, we can directly calculate the offset
       if (subs->tokentype == NUMBERTOK) {
 
         rollingOffset += size * subs->intval - size * low;;
       }
 
+      //if the subscript is an identifier, we need to create a TIMESOP operation
       else if (subs->tokentype == IDENTIFIERTOK){
         indexTok = talloc();
         indexTok->tokentype = IDENTIFIERTOK;
@@ -1167,6 +1170,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       }
 
 
+      //create the final offset token
       retTok = makearef(curArr, makeintc(rollingOffset), NULL);
       retTok->symtype = curArr->symtype->datatype;
 
@@ -1175,18 +1179,19 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
 
 
+      //if the subscript is a number, we can directly calculate the offset
       if (subs->tokentype == NUMBERTOK) {
         int offset = size * subs->intval - size * low;
         retTok->link = makeintc(offset);
         retTok->link->tokentype = NUMBERTOK;
       }
       else if (subs->tokentype == IDENTIFIERTOK) {
-          if (variableTree){
-            TOKEN varPlus = makeop(PLUSOP);
-            varPlus->operands = variableTree;
-            varPlus->operands->link = timesOp;
+        if (variableTree){
+          TOKEN varPlus = makeop(PLUSOP);
+          varPlus->operands = variableTree;
+          varPlus->operands->link = timesOp;
         }
-        else{
+      else{
           variableTree = timesOp;
         }
       }
@@ -1197,6 +1202,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     }
 
 
+    //include the final offset
     TOKEN finalOffset = makeop(PLUSOP);
 
     finalOffset->operands = makeintc(rollingOffset);
@@ -1206,16 +1212,18 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       finalOffset = makeintc(rollingOffset);
     }
     TOKEN dimensionalToken =  makearef(arr, finalOffset, NULL);
-    // dimensionalToken->symtype = dimensionalToken->symtype->symtype;
+    
 
     return dimensionalToken;
 
   }
 
 
-  
+  //if there is only one dimension
   else{
 
+
+    //make the offset token
     TOKEN timesOp = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
@@ -1227,10 +1235,12 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
 
     TOKEN indexTok;
 
+    //if the subscript is a number, we can directly calculate the offset
     if (subs->tokentype == NUMBERTOK) {
       indexTok = makeintc(subs->intval);
     }
 
+    //if the subscript is an identifier, we need to create a TIMESOP operation
     else if (subs->tokentype == IDENTIFIERTOK){
       indexTok = talloc();
       indexTok->tokentype = IDENTIFIERTOK;
@@ -1238,14 +1248,14 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       indexTok->basicdt = STRINGTYPE;
     }
 
-
+    //link the size of one unit to the index
     unitSize->link = indexTok;
     timesOp->operands = unitSize;
     TOKEN nsize;
  
 
 
-
+    //negative offset
     nsize = makeintc(-size * low);
     nsize->link = timesOp;
     
@@ -1253,15 +1263,20 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     plusOp->operands = nsize;
     
 
+    //create the final offset token
     TOKEN offsetTok;
+
+    //if the subscript is a number, we can directly calculate the offset
     if (subs->tokentype == NUMBERTOK) {
       offsetTok = makeintc(indexTok->intval * size + nsize->intval);
     }
 
+    //can use the previous variable tree
     else if (subs->tokentype == IDENTIFIERTOK){
       offsetTok = plusOp;
     }
 
+    //create the final offset token
     TOKEN retTok = makearef(arr, offsetTok, tokb);
     retTok->symtype->datatype = retTok->symtype->datatype->datatype;
 
@@ -1299,8 +1314,6 @@ int checkInt(TOKEN tok) {
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
   tok->symtype = var->symtype->datatype->datatype;
-  // ppexpr(tok);
-  // printf("\n");
   tok->operands = var;
   
 
