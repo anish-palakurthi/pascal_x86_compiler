@@ -1,22 +1,22 @@
 yyparse result =        0
 Symbol table level 1
- 93930460876880     complex  TYPE   typ 93930460876592  lvl  1  siz    16  off     0
+ 94440646361168     complex  TYPE   typ 94440646360880  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93930460877744         red  CONST  typ INTEGER  val  0
- 93930460877904       white  CONST  typ INTEGER  val  1
- 93930460878064        blue  CONST  typ INTEGER  val  2
- 93930460878256       color  TYPE   typ 93930460878160  lvl  1  siz     4  off     0
+ 94440646362032         red  CONST  typ INTEGER  val  0
+ 94440646362192       white  CONST  typ INTEGER  val  1
+ 94440646362352        blue  CONST  typ INTEGER  val  2
+ 94440646362544       color  TYPE   typ 94440646362448  lvl  1  siz     4  off     0
   0 ..   2
- 93930460878672      person  TYPE   typ 93930460880848  lvl  1  siz    48  off     0
+ 94440646362960      person  TYPE   typ 94440646365136  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2))
- 93930460878864          pp  TYPE   typ 93930460878768  lvl  1  siz     8  off     0
+ 94440646363152          pp  TYPE   typ 94440646363056  lvl  1  siz     8  off     0
 (^ person)
- 93930460879280     personX  TYPE   typ 93930460883120  lvl  1  siz    64  off     0
+ 94440646363568     personX  TYPE   typ 94440646367408  lvl  1  siz    64  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
@@ -24,15 +24,15 @@ Symbol table level 1
         (favorite   0 ..   2)
         (height real)
         (weight real))
- 93930460879472         ppX  TYPE   typ 93930460879376  lvl  1  siz     8  off     0
+ 94440646363760         ppX  TYPE   typ 94440646363664  lvl  1  siz     8  off     0
 (^ personX)
- 93930460884304         joh  VAR    4 typ 93930460878768  lvl  1  siz     8  off     0
+ 94440646368592         joh  VAR    4 typ 94440646363056  lvl  1  siz     8  off     0
 (^ person)
- 93930460884400         mry  VAR    4 typ 93930460878768  lvl  1  siz     8  off     8
+ 94440646368688         mry  VAR    4 typ 94440646363056  lvl  1  siz     8  off     8
 (^ person)
- 93930460884880         frd  VAR    4 typ 93930460879376  lvl  1  siz     8  off    16
+ 94440646369168         frd  VAR    4 typ 94440646363664  lvl  1  siz     8  off    16
 (^ personX)
- 93930460884976         trx  VAR    4 typ 93930460879376  lvl  1  siz     8  off    24
+ 94440646369264         trx  VAR    4 typ 94440646363664  lvl  1  siz     8  off    24
 (^ personX)
 (program graph1 (progn output)
                 (progn (:= joh (funcall new 48))
