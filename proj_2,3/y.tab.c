@@ -3050,10 +3050,10 @@ TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
     finalOffset->intval = var->link->intval + off->intval;
     }
     else if(var->link->tokentype == IDENTIFIERTOK){
-      TOKEN plusop = makeop(PLUSOP);
-      plusop->operands = var->link;
-      plusop->link = off;
-      finalOffset = plusop;
+      TOKEN plusOp = makeop(PLUSOP);
+      plusOp->operands = var->link;
+      plusOp->link = off;
+      finalOffset = plusOp;
       finalOffset->tokentype = IDENTIFIERTOK;
     }
     
@@ -3203,10 +3203,10 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
       // size = rollingSize;
 
 
-      TOKEN elesize = makeintc(size);
+      TOKEN unitSize = makeintc(size);
 
       TOKEN indexTok;
-      TOKEN timesop = makeop(TIMESOP);
+      TOKEN timesOp = makeop(TIMESOP);
 
       if (subs->tokentype == NUMBERTOK) {
 
@@ -3218,8 +3218,8 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
         indexTok->tokentype = IDENTIFIERTOK;
         strcpy(indexTok->stringval, subs->stringval);
         indexTok->basicdt = STRINGTYPE;
-        elesize->link = indexTok;
-        timesop->operands = elesize;
+        unitSize->link = indexTok;
+        timesOp->operands = unitSize;
         rollingOffset -= size * low;
       }
 
@@ -3241,10 +3241,10 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
           if (variableTree){
             TOKEN varPlus = makeop(PLUSOP);
             varPlus->operands = variableTree;
-            varPlus->operands->link = timesop;
+            varPlus->operands->link = timesOp;
         }
         else{
-          variableTree = timesop;
+          variableTree = timesOp;
         }
       }
 
@@ -3273,13 +3273,13 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
   
   else{
 
-    TOKEN timesop = makeop(TIMESOP);
+    TOKEN timesOp = makeop(TIMESOP);
     int low = arr->symtype->lowbound;
     int high = arr->symtype->highbound;
     int size;
     
     size = (arr->symtype->size / (high - low + 1));
-    TOKEN elesize = makeintc(size);
+    TOKEN unitSize = makeintc(size);
 
 
     TOKEN indexTok;
@@ -3296,18 +3296,18 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     }
 
 
-    elesize->link = indexTok;
-    timesop->operands = elesize;
+    unitSize->link = indexTok;
+    timesOp->operands = unitSize;
     TOKEN nsize;
  
 
 
 
     nsize = makeintc(-size * low);
-    nsize->link = timesop;
+    nsize->link = timesOp;
     
-    TOKEN plusop = makeop(PLUSOP);
-    plusop->operands = nsize;
+    TOKEN plusOp = makeop(PLUSOP);
+    plusOp->operands = nsize;
     
 
     TOKEN offsetTok;
@@ -3316,7 +3316,7 @@ TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
     }
 
     else if (subs->tokentype == IDENTIFIERTOK){
-      offsetTok = plusop;
+      offsetTok = plusOp;
     }
 
     TOKEN retTok = makearef(arr, offsetTok, tokb);
