@@ -1,6 +1,0 @@
-failing:
-0 = seg fault
-12 = very weird size issues in code but not symbol table
-13 = code size issues we're fucked
-14 = issue with symbol table and sizes in output
-15 = issue with symbol table and sizes in output
