@@ -1,14 +1,17 @@
+var->symtype->kind: 7
+var->symtype->kind: 7
+var->symtype->kind: 7
 yyparse result =        0
 Symbol table level 1
- 93956646412592     complex  TYPE   typ 93956646412208  lvl  1  siz    32  off     0
+ 94253930410288     complex  TYPE   typ 94253930409904  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 93956646413200           c  VAR    0 typ 93956646412208  lvl  1  siz    32  off     0
+ 94253930410896           c  VAR    0 typ 94253930409904  lvl  1  siz    32  off     0
 (RECORD (er real)
         (mi real)
         (myreal real))
- 93956646413296           d  VAR    0 typ 93956646412208  lvl  1  siz    32  off    32
+ 94253930410992           d  VAR    0 typ 94253930409904  lvl  1  siz    32  off    32
 (RECORD (er real)
         (mi real)
         (myreal real))

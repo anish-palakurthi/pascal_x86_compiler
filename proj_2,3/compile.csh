@@ -1,3 +1,4 @@
+make compiler
 ./compiler <tests/test00.pas >outputs/test00.output
 ./compiler <tests/test01.pas >outputs/test01.output
 ./compiler <tests/test02.pas >outputs/test02.output

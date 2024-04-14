@@ -52,6 +52,7 @@
 #include "lexan.h"
 #include "symtab.h"
 #include "parse.h"
+#include "assert.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -966,6 +967,11 @@ TOKEN findtype(TOKEN tok) {
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
+
+  printf("reducedot\n");
+  printf("var->symtype->kind: %d\n", var->symtype->kind);
+  ppexpr(var);
+  printf("\n");
   assert( var->symtype->kind == RECORDSYM );
   
 
@@ -976,13 +982,12 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   if(recordSymbol->kind == ARRAYSYM){
     
     recordSymbol = recordSymbol->datatype;
-    // moverField = recordSymbol->datatype;
+    
     moverField = recordSymbol->datatype;
   }
 
   else if (recordSymbol->kind != RECORDSYM){
     recordSymbol = recordSymbol->datatype;
-    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype->datatype;
   }
 
@@ -1015,10 +1020,15 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   TOKEN offsetToken = makeintc(fieldOffset);
 
   TOKEN referenceTok = makearef(var, offsetToken, NULL);
+  
 
   if (moverField) {
     
     referenceTok->symtype = moverField;
+    if(moverField->datatype && moverField->datatype->datatype){
+      printf("referenceTok->symtype->datatype->kind: %d\n", moverField->datatype->datatype->kind);
+      referenceTok->symtype = moverField->datatype->datatype;
+    }
     referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
   }
   else{
@@ -1249,11 +1259,15 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
 
-  assert( var->symtype->kind == POINTERSYM );
-  assert( var->symtype->datatype->kind == TYPESYM );
+  printf("do point\n");
+  ppexpr(var);
+  printf("\n");
+  printf("var->symtype->kind: %d\n", var->symtype->kind);
+  printf("var->symtype->datatype->kind: %d\n", var->symtype->datatype->kind);
+  // assert( var->symtype->kind == POINTERSYM );
+  // assert( var->symtype->datatype->kind == TYPESYM );
   tok->symtype = var->symtype->datatype->datatype;
-  // ppexpr(tok);
-  // printf("\n");
+
   tok->operands = var;
   
 
@@ -1471,9 +1485,10 @@ TOKEN instpoint(TOKEN tok, TOKEN typename) {
 void insttype(TOKEN typename, TOKEN typetok) {
   SYMBOL typesym = searchins(typename->stringval);
   typesym->datatype = typetok->symtype;
-  // printf("typesym->datatype->namestring: %s\n", typesym->datatype->namestring);
   typesym->size = typetok->symtype->size;
   typesym->kind = TYPESYM;
+  printf("typetok->symtype->kind: %d\n", typetok->symtype->kind);
+  // typesym->kind = typetok->symtype->kind;
   typesym->basicdt = typetok->symtype->basicdt;
 
 

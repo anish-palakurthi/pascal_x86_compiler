@@ -1,3 +1,4 @@
+make parser
 ./parser <zp5_tests/tests/graph1.pas >zp5_tests/outputs/graph1.output
 ./parser <zp5_tests/tests/test00.pas >zp5_tests/outputs/test00.output
 ./parser <zp5_tests/tests/test01.pas >zp5_tests/outputs/test01.output
