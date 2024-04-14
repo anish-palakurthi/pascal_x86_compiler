@@ -29,3 +29,6 @@
 ./compiler <tests/test28.pas >outputs/test28.output
 ./compiler <tests/test29.pas >outputs/test29.output
 ./compiler <tests/test30.pas >outputs/test30.output
+
+
+./compare_p6_files.sh

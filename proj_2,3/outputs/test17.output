@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94535639240176           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94643499699696           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (funcall writelni i)))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"

@@ -2263,7 +2263,9 @@ yyreturn:
 /* cons links a new item onto the front of a list.  Equivalent to a push.
    (cons 'a '(b c))  =  (a b c)    */
 TOKEN cons(TOKEN item, TOKEN list)           /* add item to front of list */
-  { item->link = list;
+  { 
+
+    item->link = list;
     if (DEBUG & DB_CONS)
        { printf("cons\n");
          dbugprinttok(item);
@@ -2284,6 +2286,7 @@ TOKEN nconc(TOKEN lista, TOKEN listb) {
     temp = temp->link;
   }
   temp->link = listb;
+
 
   return temp;
 }
@@ -2693,7 +2696,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     TOKEN incrementStep = copytok(varCopy);
     TOKEN incrementVar = copytok(varCopy);
 
-    TOKEN incrementOp = makeplus(NULL, NULL, NULL);
+    TOKEN incrementOp = makeop(PLUSOP);
     TOKEN incrementAssign = makeop(ASSIGNOP);
 
     incrementOp->operands = incrementStep;
@@ -2950,21 +2953,6 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
 
   return idlist;
 }
-
-/* makeplus makes a + operator.
-  tok (if not NULL) is a (now) unused token that is recycled. */
-TOKEN makeplus(TOKEN lhs, TOKEN rhs, TOKEN tok) {
-
-	TOKEN ret = makeop(PLUSOP);
-
-  ret->operands = lhs;
-  lhs->link = rhs;
-  rhs->link = NULL;
-
-
-	return ret;
-}
-
 
 
 TOKEN makearef(TOKEN var, TOKEN off, TOKEN tok){
@@ -3302,8 +3290,6 @@ int checkInt(TOKEN tok) {
 
 
 
-
-
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
@@ -3379,6 +3365,6 @@ int main(void)          /*  */
 
     /* uncomment following to call code generator. */
      
-    gencode(parseresult, blockoffs[blocknumber], labelnumber);
+    // gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }

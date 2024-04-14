@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Directories
-dir1="outputs"
-dir2="samples"
+dir1="zp5_tests/outputs"
+dir2="zp5_tests/samples"
 
 # Extensions
 ext1=".output"
@@ -24,7 +24,7 @@ preprocess_file() {
             sub(/#.*/, "");  # Remove comments starting with #
             if ($0 != "") print;  # Only print if the line is not empty after removal
         }
-    }' "$1" | sed -E 's/(CS 375 Compiler - Spring )[0-9]{4}/\1XXXX/g'  # Normalize .ident strings
+    }' "$1" | sed -E 's/(CS 375 Compiler - Spring )[0-9]{4}/\1XXXX/g' 
 }
 
 # Compare files
