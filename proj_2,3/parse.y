@@ -52,7 +52,6 @@
 #include "lexan.h"
 #include "symtab.h"
 #include "parse.h"
-#include "assert.h"
 
         /* define the type of the Yacc stack element to be TOKEN */
 
@@ -329,109 +328,50 @@ TOKEN unaryop(TOKEN op, TOKEN lhs) {
 
 /* binop links a binary operator op to two operands, lhs and rhs. */
 TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){ 
-    // printf("binop\n");
-    // ppsym(op->symtype);
-    // ppsym(lhs->symtype);
-    // ppsym(rhs->symtype);
+  if (rhs->whichval == (NIL - RESERVED_BIAS)) {
+    rhs = makeintc(0);
+  }
 
-    // dbugprinttok(lhs);
-    // dbugprinttok(rhs);
-    if (lhs->tokentype == NUMBERTOK){
-
-    lhs->link = rhs;             
-    rhs->link = NULL;           
-    op->operands = lhs; 
-
-    //handles type casting
-    int lhType;
-    int rhType;
-
-    //define our variables for specifying type
-    if (lhs->basicdt == INTEGER) {
-      lhType = 1;
-    } else {
-      //REAL
-      lhType = 0;
-    }
-    if (rhs->basicdt == INTEGER) {
-      rhType = 1;
-    } else {
-      //REAL
-      rhType = 0;
-    }
-
-    //left hand = integer; right hand = float
-    if (lhType == 1 && rhType == 0) {
+  //creates unit tree
+  op->operands = lhs; 
+  lhs->link = rhs;             
+  rhs->link = NULL;           
 
 
-      TOKEN temptoken = talloc();
 
-      // computation operation
-      if (op->whichval != ASSIGNOP){
+  //updating op token types
 
-        op->basicdt = REAL;
-        TOKEN temptoken = makefloat(lhs);
-        temptoken->link = rhs;
-      }
+  //both real
+  if (checkReal(lhs) && checkReal(rhs)) {
+      op->basicdt = REAL;
+  } 
 
-      // assignment operation
-      else{
+  //cast INT input to variable REAL type
+  else if (checkReal(lhs) && checkInt(rhs)) {
+      op->basicdt = REAL;
+      lhs->link = makefloat(rhs);
+  } 
+
+  //cast REAL input to variable INT type
+  else if (checkInt(lhs) && checkReal(rhs)) {
+
+    //assignment
+    if (op->whichval == ASSIGNOP) {
         op->basicdt = INTEGER;
-        TOKEN temptoken = makefix(rhs);
-        lhs->link = temptoken;
-      }
+        if (lhs->tokentype != OPERATOR){
+            lhs->link = makefix(rhs);
+        }
+    } 
+    //operation
+    else {
+        op->basicdt = REAL;
+        if (lhs->tokentype != OPERATOR){
+            makefloat(lhs)->link = rhs;
+        
+        }
     }
-
-    //both real
-    else if (lhType == 0 && rhType == 0) {
-      op->basicdt = REAL;
-    }
-
-    //left hand = int; right hand = real
-    else if (lhType == 0 && rhType == 1) {
-      TOKEN floatToken = makefloat(rhs);
-      lhs->link = floatToken;
-      op->basicdt = REAL;
-
-    }
-
-    //nothing needed for both int
-
-    //deciding what to set op datatype to
-    if (DEBUG & DB_BINOP)
-       { printf("binop\n");
-         dbugprinttok(op);
-         dbugprinttok(lhs);
-         dbugprinttok(rhs);
-       };
-    
-    return op;
-    }
-      if (rhs->whichval == (NIL - RESERVED_BIAS)) {
-        rhs = makeintc(0);
-    }
-
-    op->operands = lhs; // Link operands to operator.
-    lhs->link = rhs; // Link second operand to first.
-    rhs->link = NULL; // Terminate operand list.
-
-
-
-      // Existing logic
-      if (checkReal(lhs) && checkReal(rhs)) {
-          op->basicdt = REAL;
-      } else if (checkReal(lhs) && checkInt(rhs)) {
-          op->basicdt = REAL;
-          TOKEN ftok = makefloat(rhs);
-          lhs->link = ftok;
-      } else if (checkInt(lhs) && checkReal(rhs)) {
-          if (op->whichval == ASSIGNOP) {
-              op->basicdt = INTEGER;
-          } else {
-              op->basicdt = REAL;
-          }
-      }
-    
+  }
+  
 
     if (DEBUG & DB_BINOP) {
         printf("binop - final type handling\n");
@@ -439,7 +379,8 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
     }
 
     return op;
-    }
+  }
+
 
 
 /* makefloat forces the item tok to be floating, by floating a constant
@@ -700,7 +641,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN assign, TOKEN tokb, TOKEN expr, TOKEN t
     TOKEN incrementStep = copytok(varCopy);
     TOKEN incrementVar = copytok(varCopy);
 
-    TOKEN incrementOp = makeplus(NULL, NULL, NULL);
+    TOKEN incrementOp = makeop(PLUSOP);
     TOKEN incrementAssign = makeop(ASSIGNOP);
 
     incrementOp->operands = incrementStep;
@@ -967,12 +908,7 @@ TOKEN findtype(TOKEN tok) {
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
-
-  printf("reducedot\n");
-  printf("var->symtype->kind: %d\n", var->symtype->kind);
-  ppexpr(var);
-  printf("\n");
-  assert( var->symtype->kind == RECORDSYM );
+  
   
 
 
@@ -982,12 +918,13 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   if(recordSymbol->kind == ARRAYSYM){
     
     recordSymbol = recordSymbol->datatype;
-    
+    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype;
   }
 
   else if (recordSymbol->kind != RECORDSYM){
     recordSymbol = recordSymbol->datatype;
+    // moverField = recordSymbol->datatype;
     moverField = recordSymbol->datatype->datatype;
   }
 
@@ -1020,15 +957,10 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
   TOKEN offsetToken = makeintc(fieldOffset);
 
   TOKEN referenceTok = makearef(var, offsetToken, NULL);
-  
 
   if (moverField) {
     
     referenceTok->symtype = moverField;
-    if(moverField->datatype && moverField->datatype->datatype){
-      printf("referenceTok->symtype->datatype->kind: %d\n", moverField->datatype->datatype->kind);
-      referenceTok->symtype = moverField->datatype->datatype;
-    }
     referenceTok->basicdt = referenceTok->symtype->datatype->basicdt;
   }
   else{
@@ -1046,7 +978,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
-  assert( arr->symtype->kind == ARRAYSYM );
+
 
   if (subs->link){
     
@@ -1258,14 +1190,6 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
-
-  printf("do point\n");
-  ppexpr(var);
-  printf("\n");
-  printf("var->symtype->kind: %d\n", var->symtype->kind);
-  printf("var->symtype->datatype->kind: %d\n", var->symtype->datatype->kind);
-  // assert( var->symtype->kind == POINTERSYM );
-  // assert( var->symtype->datatype->kind == TYPESYM );
   tok->symtype = var->symtype->datatype->datatype;
 
   tok->operands = var;
@@ -1361,38 +1285,36 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
-  assert(bounds->symtype->kind == SUBRANGE );
+    // Temporary variables to store bounds and dimensions information
+    TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
+    int numDimensions = 0;
 
-  // Temporary variables to store bounds and dimensions information
-  TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
-  int numDimensions = 0;
+    
+    
+    // First pass: collect bounds information and count dimensions
+    for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
+        boundsList[numDimensions++] = curr_bound;
+    }
 
-  
-  
-  // First pass: collect bounds information and count dimensions
-  for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
-      boundsList[numDimensions++] = curr_bound;
-  }
-
-  // Reverse the process: start installing from the last dimension to the first
-  for (int i = numDimensions - 1; i >= 0; --i) {
-      TOKEN curr_bound = boundsList[i];
-      int low = curr_bound->symtype->lowbound;
-      int high = curr_bound->symtype->highbound;
-      SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
-      
-      // Allocate a new symbol for the current array dimension
-      SYMBOL arraysym = symalloc();
-      arraysym->kind = ARRAYSYM;
-      arraysym->datatype = typesym; // Link to the next dimension or base type
-      
-      // Set bounds and size for the current dimension
-      arraysym->lowbound = low;
-      arraysym->highbound = high;
-      arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
-      
-      // Update typetok to reflect the newest dimension
-      typetok->symtype = arraysym;
+    // Reverse the process: start installing from the last dimension to the first
+    for (int i = numDimensions - 1; i >= 0; --i) {
+        TOKEN curr_bound = boundsList[i];
+        int low = curr_bound->symtype->lowbound;
+        int high = curr_bound->symtype->highbound;
+        SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
+        
+        // Allocate a new symbol for the current array dimension
+        SYMBOL arraysym = symalloc();
+        arraysym->kind = ARRAYSYM;
+        arraysym->datatype = typesym; // Link to the next dimension or base type
+        
+        // Set bounds and size for the current dimension
+        arraysym->lowbound = low;
+        arraysym->highbound = high;
+        arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
+        
+        // Update typetok to reflect the newest dimension
+        typetok->symtype = arraysym;
     }
 
 
@@ -1487,8 +1409,6 @@ void insttype(TOKEN typename, TOKEN typetok) {
   typesym->datatype = typetok->symtype;
   typesym->size = typetok->symtype->size;
   typesym->kind = TYPESYM;
-  printf("typetok->symtype->kind: %d\n", typetok->symtype->kind);
-  // typesym->kind = typetok->symtype->kind;
   typesym->basicdt = typetok->symtype->basicdt;
 
 

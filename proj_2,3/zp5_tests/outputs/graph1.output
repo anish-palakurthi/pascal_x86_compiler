@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94434569063856           d  CONST  typ    REAL  val  6.250000e-02
- 94434569064208           s  CONST  typ INTEGER  val  32
- 94434569064560           h  CONST  typ INTEGER  val  34
- 94434569064912           c  CONST  typ    REAL  val  6.283180e+00
- 94434569065264         lim  CONST  typ INTEGER  val  32
- 94434569065872           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94434569065968           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94434569066448           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94434569066544           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94397464440240           d  CONST  typ    REAL  val  6.250000e-02
+ 94397464440592           s  CONST  typ INTEGER  val  32
+ 94397464440944           h  CONST  typ INTEGER  val  34
+ 94397464441296           c  CONST  typ    REAL  val  6.283180e+00
+ 94397464441648         lim  CONST  typ INTEGER  val  32
+ 94397464442256           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94397464442352           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94397464442832           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94397464442928           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -18,9 +18,9 @@ Symbol table level 1
                                                 (:= y (* (funcall exp (- x))
                                                          (funcall sin (* 6.283180e+00
                                                                          x))))
-                                                (:= n (+ (funcall round (* 3.200000e+01
-                                                                           y))
-                                                         3.400000e+01))
+                                                (:= n (fix (+ (funcall round (* 3.200000e+01
+                                                                                y))
+                                                              3.400000e+01)))
                                                 (progn (label 0)
                                                        (progn (funcall write ' ')
                                                               (:= n (- n 1)))
