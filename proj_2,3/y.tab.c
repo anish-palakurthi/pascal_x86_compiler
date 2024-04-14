@@ -3379,6 +3379,6 @@ int main(void)          /*  */
 
     /* uncomment following to call code generator. */
      
-    // gencode(parseresult, blockoffs[blocknumber], labelnumber);
+    gencode(parseresult, blockoffs[blocknumber], labelnumber);
  
   }

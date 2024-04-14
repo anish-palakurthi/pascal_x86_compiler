@@ -1,10 +1,5 @@
-{ unit test 08  a.b}
-
 program graph1(output);
-type complex = record er, mi, myreal: real end;
-var c,d: complex;
+var x : real;
 begin
-   c.er := 2.0;
-   c.mi := 2;
-   d.myreal := 9.0
+   x := x - 4.5
 end.
