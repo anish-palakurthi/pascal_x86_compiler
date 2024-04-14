@@ -966,7 +966,7 @@ TOKEN findtype(TOKEN tok) {
 /* reducedot handles a record reference.
    dot is a (now) unused token that is recycled. */
 TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
-  
+  assert( var->symtype->kind == RECORDSYM );
   
 
 
@@ -1036,7 +1036,7 @@ TOKEN reducedot(TOKEN var, TOKEN dot, TOKEN field) {
    subs is a list of subscript expressions.
    tok and tokb are (now) unused tokens that are recycled. */
 TOKEN arrayref(TOKEN arr, TOKEN tok, TOKEN subs, TOKEN tokb) {
-
+  assert( arr->symtype->kind == ARRAYSYM );
 
   if (subs->link){
     
@@ -1248,6 +1248,9 @@ TOKEN dogoto(TOKEN tok, TOKEN labeltok) {
 /* dopoint handles a ^ operator.
    tok is a (now) unused token that is recycled. */
 TOKEN dopoint(TOKEN var, TOKEN tok) {
+
+  assert( var->symtype->kind == POINTERSYM );
+  assert( var->symtype->datatype->kind == TYPESYM );
   tok->symtype = var->symtype->datatype->datatype;
   // ppexpr(tok);
   // printf("\n");
@@ -1344,36 +1347,38 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
    bounds points to a SUBRANGE symbol table entry.
    The symbol table pointer is returned in token typetok. */
 TOKEN instarray(TOKEN bounds, TOKEN typetok) {
-    // Temporary variables to store bounds and dimensions information
-    TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
-    int numDimensions = 0;
+  assert(bounds->symtype->kind == SUBRANGE );
 
-    
-    
-    // First pass: collect bounds information and count dimensions
-    for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
-        boundsList[numDimensions++] = curr_bound;
-    }
+  // Temporary variables to store bounds and dimensions information
+  TOKEN boundsList[100];  // Assuming a maximum of 100 dimensions for simplicity
+  int numDimensions = 0;
 
-    // Reverse the process: start installing from the last dimension to the first
-    for (int i = numDimensions - 1; i >= 0; --i) {
-        TOKEN curr_bound = boundsList[i];
-        int low = curr_bound->symtype->lowbound;
-        int high = curr_bound->symtype->highbound;
-        SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
-        
-        // Allocate a new symbol for the current array dimension
-        SYMBOL arraysym = symalloc();
-        arraysym->kind = ARRAYSYM;
-        arraysym->datatype = typesym; // Link to the next dimension or base type
-        
-        // Set bounds and size for the current dimension
-        arraysym->lowbound = low;
-        arraysym->highbound = high;
-        arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
-        
-        // Update typetok to reflect the newest dimension
-        typetok->symtype = arraysym;
+  
+  
+  // First pass: collect bounds information and count dimensions
+  for (TOKEN curr_bound = bounds; curr_bound != NULL; curr_bound = curr_bound->link) {
+      boundsList[numDimensions++] = curr_bound;
+  }
+
+  // Reverse the process: start installing from the last dimension to the first
+  for (int i = numDimensions - 1; i >= 0; --i) {
+      TOKEN curr_bound = boundsList[i];
+      int low = curr_bound->symtype->lowbound;
+      int high = curr_bound->symtype->highbound;
+      SYMBOL typesym = (i == numDimensions - 1) ? searchst(typetok->stringval) : typetok->symtype;
+      
+      // Allocate a new symbol for the current array dimension
+      SYMBOL arraysym = symalloc();
+      arraysym->kind = ARRAYSYM;
+      arraysym->datatype = typesym; // Link to the next dimension or base type
+      
+      // Set bounds and size for the current dimension
+      arraysym->lowbound = low;
+      arraysym->highbound = high;
+      arraysym->size = (high - low + 1) * ((typesym->kind == ARRAYSYM) ? typesym->size : typesym->size); // Adjust this calculation based on your type system
+      
+      // Update typetok to reflect the newest dimension
+      typetok->symtype = arraysym;
     }
 
 
