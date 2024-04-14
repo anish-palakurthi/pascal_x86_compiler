@@ -1433,16 +1433,16 @@ int main(void)          /*  */
   { int res;
     initsyms();
     res = yyparse();
-    // printf("yyparse result = %8d\n", res);
+    printf("yyparse result = %8d\n", res);
     // printst();
-    // printstlevel(1);    /* to see level 0 too, change to:   printst();  */
+    printstlevel(1);    /* to see level 0 too, change to:   printst();  */
 
     if (DEBUG & DB_PARSERES){ 
 
       dbugprinttok(parseresult);
     }
 
-    // ppexpr(parseresult);           /* Pretty-print the result tree */
+    ppexpr(parseresult);           /* Pretty-print the result tree */
 
     /* uncomment following to call code generator. */
      

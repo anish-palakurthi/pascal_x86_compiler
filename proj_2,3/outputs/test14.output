@@ -1,10 +1,36 @@
 yyparse result =        0
 Symbol table level 1
- 94712748990032         ptr  VAR    4 typ 94712748989936  lvl  1  siz     8  off     0
+ 94776326209104         ptr  VAR    4 typ 94776326209008  lvl  1  siz     8  off     0
 (^ integer)
- 94712748990448           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94776326209520           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (progn (label 0)
                               (if (<> ptr 0)
                                   (progn (progn (:= i (+ i 1)))
-                                         (goto 0))))))
+                                         (goto 0))))))# ---------------- Beginning of Generated Code --------------------
+        .file   "foo"
+        .text
+        .globl graph1
+        .type   graph1, @function
+graph1:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp              # save base pointer on stack
+	.cfi_def_cfa_offset 16
+	movq	%rsp, %rbp        # move stack pointer to base pointer
+	.cfi_offset 6, -16
+	.cfi_def_cfa_register 6
+        subq	$32, %rsp 	  # make space for this stack frame
+	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
+# ------------------------- begin Your code -----------------------------
+# ----------------------- begin Epilogue code ---------------------------
+	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
+        leave
+        ret
+        .cfi_endproc
+.LFE0:
+        .size   graph1, .-graph1
+# ----------------- end Epilogue; Literal data follows ------------------
+        .section        .rodata
+
+        .ident  "CS 375 Compiler - Spring 2024"
