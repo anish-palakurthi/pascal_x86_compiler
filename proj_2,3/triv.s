@@ -1,6 +1,3 @@
-yyparse result =        0
-Symbol table level 1
- 94602745626096           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 # ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
