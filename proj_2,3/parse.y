@@ -316,6 +316,7 @@ int checkInt(TOKEN tok) {
 TOKEN unaryop(TOKEN op, TOKEN lhs) {
   op->operands = lhs;
   lhs->link = NULL;
+  op->basicdt = lhs->basicdt;
   if (DEBUG & DB_UNOP)
      { printf("unaryop\n");
        dbugprinttok(op);
@@ -336,8 +337,6 @@ TOKEN binop(TOKEN op, TOKEN lhs, TOKEN rhs){
   op->operands = lhs; 
   lhs->link = rhs;             
   rhs->link = NULL;           
-
-
 
   //updating op token types
 

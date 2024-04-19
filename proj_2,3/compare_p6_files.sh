@@ -24,7 +24,7 @@ preprocess_file() {
             sub(/#.*/, "");  # Remove comments starting with #
             if ($0 != "") print;  # Only print if the line is not empty after removal
         }
-    }' "$1" | sed -E 's/(CS 375 Compiler - Spring )[0-9]{4}/\1XXXX/g' 
+    }' "$1" | sed -E 's/(CS 375 Compiler - )[A-Za-z]+ [0-9]{4}/\1XXXX/g' 
 }
 
 # Compare files

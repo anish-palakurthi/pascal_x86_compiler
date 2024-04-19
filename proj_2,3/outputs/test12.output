@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94843215031920           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94843215032016           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94383310655088           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94383310655184           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
-                (progn (:= x (float (- y)))))# ---------------- Beginning of Generated Code --------------------
+                (progn (:= x (- y))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
 .globl graph1
@@ -22,8 +22,7 @@ graph1:
 	movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
 	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
 	xorpd	%xmm1,%xmm0           	#  negate %xmm0
-	cvtsi2sd	%eax,%xmm2    	#  float %eax -> %xmm2
-	movsd	%xmm2,-32(%rbp)     	#  %xmm2 -> x
+	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
