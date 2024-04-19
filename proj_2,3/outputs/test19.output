@@ -1,12 +1,12 @@
 yyparse result =        0
 Symbol table level 1
- 93949639687760        john  VAR    4 typ 93949639687664  lvl  1  siz     8  off     0
+ 94144583048784        john  VAR    4 typ 94144583048688  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -19,7 +19,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	movl	negl,-32(%rbp)     	#  negl -> john
+	movl	$8,%eax         	#  8 -> %eax
+	movl	%eax,%edi         	#  %eax -> %edi
+	call	new              	#  new()
+	movq	%rax,-32(%rbp)     	#  %rax -> john
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -30,4 +33,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"

@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94059796934128           n  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94475267976688           n  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= n 1)
                        (progn (label 0)
@@ -10,7 +10,7 @@ Symbol table level 1
                                   (goto 0)))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -25,7 +25,21 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movl	$1,%eax         	#  1 -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> n
-	movl	%r10d,-32(%rbp)     	#  %r10d -> n
+.L0:
+	movl	-32(%rbp),%eax     	#  n -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+MINUSOP
+SUBL
+	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> n
+	movl	-32(%rbp),%eax     	#  n -> %eax
+	movl	$0,%ecx         	#  0 -> %ecx
+	cmpl	%ecx,%eax           	#  compare %eax - %ecx
+	je	.L2 			#  jump if     ==
+	jmp	.L0 			#  jump 
+	jmp	.L3 			#  jump 
+.L2:
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -36,4 +50,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"

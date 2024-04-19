@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 93971708550768           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 93971708550864         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94473287110256           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94473287110352         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (:= i (+ i 1))
                        (:= sum (+ sum 1))
                        (:= i (+ i sum))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -21,9 +21,18 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	movl	negl,-32(%rbp)     	#  negl -> i
-	movl	negl,-28(%rbp)     	#  negl -> sum
-	movl	negl,-32(%rbp)     	#  negl -> i
+	movl	-32(%rbp),%eax     	#  i -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> i
+	movl	-28(%rbp),%eax     	#  sum -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-28(%rbp)     	#  %eax -> sum
+	movl	-32(%rbp),%eax     	#  i -> %eax
+	movl	-28(%rbp),%ecx     	#  sum -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> i
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -34,4 +43,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"

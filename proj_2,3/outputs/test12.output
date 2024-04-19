@@ -1,12 +1,12 @@
 yyparse result =        0
 Symbol table level 1
- 94821547601520           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94821547601616           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94715792985712           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94715792985808           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= x (float (- y)))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -19,6 +19,13 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+	movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
+MINUSOP
+NEGATE
+	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
+	xorpd	%xmm1,%xmm0           	#  negate %xmm0
+	cvtsi2sd	%eax,%xmm2    	#  float %eax -> %xmm2
+	movsd	%xmm2,-32(%rbp)     	#  %xmm2 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -28,5 +35,11 @@ graph1:
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
+	.align 16
+.LC666:                    # constant for floating negation
+	.long	0
+	.long	-2147483648
+	.long	0
+	.long	0
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"

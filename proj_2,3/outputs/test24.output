@@ -1,17 +1,17 @@
 yyparse result =        0
 Symbol table level 1
- 94401926942800     complex  TYPE   typ 94401926942512  lvl  1  siz    16  off     0
+ 94797368193104     complex  TYPE   typ 94797368192816  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94401926943920          ac  VAR    0 typ 94401926943824  lvl  1  siz   160  off     0
+ 94797368194224          ac  VAR    0 typ 94797368194128  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94401926944272           y  VAR    1 typ    real  lvl  1  siz     8  off   160
+ 94797368194576           y  VAR    1 typ    real  lvl  1  siz     8  off   160
 (program graph1 (progn output)
                 (progn (:= y (aref ac 96))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -24,6 +24,9 @@ graph1:
         subq	$192, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+	movl	$96,%ecx         	#  96 -> %ecx
+	movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -34,4 +37,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"

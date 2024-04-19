@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 93991181917808           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 93991181917904           n  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94014068498032           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94014068498128           n  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 0)
@@ -11,7 +11,7 @@ Symbol table level 1
                                          (goto 0))))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-        .globl graph1
+.globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -26,6 +26,21 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movl	$0,%eax         	#  0 -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i
+.L0:
+	movl	-32(%rbp),%eax     	#  i -> %eax
+	movl	$32,%ecx         	#  32 -> %ecx
+	cmpl	%ecx,%eax           	#  compare %eax - %ecx
+	jle	.L2 			#  jump if     <=
+	jmp	.L3 			#  jump 
+.L2:
+	movl	$1,%eax         	#  1 -> %eax
+	movl	%eax,-28(%rbp)     	#  %eax -> n
+	movl	-32(%rbp),%eax     	#  i -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> i
+	jmp	.L0 			#  jump 
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -36,4 +51,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2024"
+        .ident  "CS 375 Compiler - Summer 2014"
