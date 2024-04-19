@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94004261727728           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94664762117616           x  VAR    1 typ    real  lvl  1  siz     8  off     0
 (program graph1 (progn output)
                 (progn (:= x (- x 4.500000e+00))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -20,8 +20,7 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
-	movsd	.LC666(%rip),%xmm2   	#  0.000000 -> %xmm2
-	xorpd	%xmm2,%xmm0           	#  negate %xmm0
+	subsd	%xmm1,%xmm0         	#  %xmm0 - %xmm1 -> %xmm0
 	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
@@ -32,12 +31,6 @@ graph1:
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
-	.align 16
-.LC666:                    # constant for floating negation
-	.long	0
-	.long	-2147483648
-	.long	0
-	.long	0
 	.align  8
 .LC1:
 	.long	0   	#  4.500000

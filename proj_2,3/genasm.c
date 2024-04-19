@@ -202,7 +202,7 @@ void asmlabel(int labeln)
 /* Subroutine call */
 /* Example:  asmcall(code->stringval);    Call function */
 void asmcall(char name[])
-  {  printf("\tcall\t%s              \t#  %s()\n", name, name);
+  {  printf("\tcall\t%s@PLT          \t#  %s()\n", name, name);
   }
 
 /* Generate a jump instruction.  Example:  asmjump(JG, 17);   */

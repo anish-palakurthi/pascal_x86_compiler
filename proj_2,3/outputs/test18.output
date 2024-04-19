@@ -17,7 +17,7 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movl	$.LC1,%edi       	#  addr of literal .LC1
-	call	write              	#  write()
+	call	write@PLT          	#  write()
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
