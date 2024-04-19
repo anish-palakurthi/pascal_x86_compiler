@@ -347,8 +347,8 @@ void asmldflit(int inst, int label, int dstreg)
 /* Set up a literal address argument for subroutine call */
 /* Example:  asmlitarg(8, EDI);   addr of literal 8 --> %edi */
 void asmlitarg(int labeln, int dstreg)
-  {  printf("\tmovl\t$.LC%d,%s       \t#  addr of literal .LC%d\n",
-             labeln, regpr[dstreg], labeln);
+  {  printf("\tleaq\t.LC%d(%%rip),%s  \t#  addr of literal .LC%d\n",
+             labeln, dregpr[dstreg], labeln);
   }
 
 /* Generate instructions to float data from an integer register to F reg. */
