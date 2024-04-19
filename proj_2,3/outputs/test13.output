@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94241963728496           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94241963728592         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 93917791108720           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 93917791108816         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (:= i (+ i 1))
                        (:= sum (+ sum 1))
                        (:= i (+ i sum))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -43,4 +43,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"

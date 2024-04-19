@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94547901795824           n  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94657584115184           n  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= n 1)
                        (progn (label 0)
@@ -10,7 +10,7 @@ Symbol table level 1
                                   (goto 0)))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -48,4 +48,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"

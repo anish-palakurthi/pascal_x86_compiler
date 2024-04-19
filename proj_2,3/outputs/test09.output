@@ -1,11 +1,11 @@
 yyparse result =        0
 Symbol table level 1
- 94641707683312           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94576233647600           x  VAR    1 typ    real  lvl  1  siz     8  off     0
 (program graph1 (progn output)
                 (progn (:= x (* x 4.500000e+00))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -36,4 +36,4 @@ graph1:
 	.long	0   	#  4.500000
 	.long	1074921472
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"

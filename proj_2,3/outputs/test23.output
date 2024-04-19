@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94378366173264     complex  TYPE   typ 94378366172976  lvl  1  siz    16  off     0
+ 93950937419856     complex  TYPE   typ 93950937419568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94378366174384          ac  VAR    0 typ 94378366174288  lvl  1  siz   160  off     0
+ 93950937420976          ac  VAR    0 typ 93950937420880  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
 (program graph1 (progn output)
@@ -11,7 +11,7 @@ Symbol table level 1
                            4.500000e+00)))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -42,4 +42,4 @@ graph1:
 	.long	0   	#  4.500000
 	.long	1074921472
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"

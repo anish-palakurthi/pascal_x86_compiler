@@ -3,7 +3,7 @@ yyparse result =        0
                 (progn (funcall write 'i = ')))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -31,4 +31,4 @@ graph1:
 .LC1:
 	.string	"i = "
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"

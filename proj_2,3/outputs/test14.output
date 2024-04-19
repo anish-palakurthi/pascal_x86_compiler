@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 93845176798800         ptr  VAR    4 typ 93845176798704  lvl  1  siz     8  off     0
+ 94743791083088         ptr  VAR    4 typ 94743791082992  lvl  1  siz     8  off     0
 (^ integer)
- 93845176799216           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94743791083504           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (progn (label 0)
                               (if (<> ptr 0)
@@ -10,7 +10,7 @@ Symbol table level 1
                                          (goto 0))))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
-.globl graph1
+        .globl graph1
         .type   graph1, @function
 graph1:
 .LFB0:
@@ -25,7 +25,7 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 .L0:
 	movq	-32(%rbp),%rax     	#  ptr -> %rax
-	movq	$0,%rcx         	#  -> 0 -> %rcx
+	movq	$0,%rcx         	#  0 -> %rcx
 	cmpq	%rcx,%rax           	#  compare %rax - %rcx
 	jne	.L2 			#  jump if     !=
 	jmp	.L3 			#  jump 
@@ -46,4 +46,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Summer 2014"
+        .ident  "CS 375 Compiler - Spring 2024"
