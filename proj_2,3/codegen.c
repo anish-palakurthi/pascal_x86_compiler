@@ -501,7 +501,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 else if (which_val == AREFOP) {
     if (saved_float_reg != -DBL_MAX) {
         /* Use MOVSD because saved_float_reg implies floating-point data. */
-        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
     } else {
         if (last_id_reg_num > -1) {
             int temp = rhs_reg;
@@ -1167,5 +1167,4 @@ bool is_fp_reg(int reg_num) {
     }
     return true;
 }
-
 
