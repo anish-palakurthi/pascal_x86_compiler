@@ -553,8 +553,17 @@ else if (which_val == AREFOP) {
                     }
 
                     if (!found) {
-                        /* Default to MOVQ to handle potentially larger data safely */
-                        asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                        /* Default to MOVQ to handle potentially larger data
+                        safely */
+                        // printf("code->basicdt: %d\n", code->basicdt);
+                        if (code->basicdt == 4){
+                            asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+                        }
+                        else{
+                            asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+                        }
                     }
 
                     last_ptr_reg_num = -1;
