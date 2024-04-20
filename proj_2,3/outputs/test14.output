@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94717263564368         ptr  VAR    4 typ 94717263564272  lvl  1  siz     8  off     0
+ 94019463839312         ptr  VAR    4 typ 94019463839216  lvl  1  siz     8  off     0
 (^ integer)
- 94717263564784           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94019463839728           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (progn (label 0)
                               (if (<> ptr 0)
@@ -30,12 +30,9 @@ graph1:
 	jne	.L2 			#  jump if     !=
 	jmp	.L3 			#  jump 
 .L2:
-ASSIGNOP
 	movl	-24(%rbp),%eax     	#  i -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-if was true
-integer
 	movl	%eax,-24(%rbp)     	#  %eax -> i
 	jmp	.L0 			#  jump 
 .L3:

@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94068095045232           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94068095045328           n  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94145034485360           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94145034485456           n  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 0)
@@ -24,10 +24,7 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-ASSIGNOP
 	movl	$0,%eax         	#  0 -> %eax
-if was true
-integer
 	movl	%eax,-32(%rbp)     	#  %eax -> i
 .L0:
 	movl	-32(%rbp),%eax     	#  i -> %eax
@@ -36,17 +33,11 @@ integer
 	jle	.L2 			#  jump if     <=
 	jmp	.L3 			#  jump 
 .L2:
-ASSIGNOP
 	movl	$1,%eax         	#  1 -> %eax
-if was true
-integer
 	movl	%eax,-28(%rbp)     	#  %eax -> n
-ASSIGNOP
 	movl	-32(%rbp),%eax     	#  i -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-if was true
-integer
 	movl	%eax,-32(%rbp)     	#  %eax -> i
 	jmp	.L0 			#  jump 
 .L3:

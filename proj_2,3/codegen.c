@@ -554,7 +554,7 @@ else if (which_val == AREFOP) {
 
                     if (!found) {
                         /* Default to MOVQ to handle potentially larger data safely */
-                        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                        asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
                     }
 
                     last_ptr_reg_num = -1;

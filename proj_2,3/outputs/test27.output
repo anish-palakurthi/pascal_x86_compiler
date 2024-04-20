@@ -1,23 +1,23 @@
 yyparse result =        0
 Symbol table level 1
- 94246912024656     complex  TYPE   typ 94246912024368  lvl  1  siz    16  off     0
+ 94372062486608     complex  TYPE   typ 94372062486320  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94246912025520         red  CONST  typ INTEGER  val  0
- 94246912025680       white  CONST  typ INTEGER  val  1
- 94246912025840        blue  CONST  typ INTEGER  val  2
- 94246912026032       color  TYPE   typ 94246912025936  lvl  1  siz     4  off     0
+ 94372062487472         red  CONST  typ INTEGER  val  0
+ 94372062487632       white  CONST  typ INTEGER  val  1
+ 94372062487792        blue  CONST  typ INTEGER  val  2
+ 94372062487984       color  TYPE   typ 94372062487888  lvl  1  siz     4  off     0
   0 ..   2
- 94246912026448      person  TYPE   typ 94246912028272  lvl  1  siz    48  off     0
+ 94372062488400      person  TYPE   typ 94372062490224  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94246912026640          pp  TYPE   typ 94246912026544  lvl  1  siz     8  off     0
+ 94372062488592          pp  TYPE   typ 94372062488496  lvl  1  siz     8  off     0
 (^ person)
- 94246912029232        john  VAR    4 typ 94246912026544  lvl  1  siz     8  off     0
+ 94372062491184        john  VAR    4 typ 94372062488496  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ (aref (^ john)
@@ -39,7 +39,6 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-ASSIGNOP
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
 	movq	-32(%rbp),%rax     	#  john -> %rax
 	movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
