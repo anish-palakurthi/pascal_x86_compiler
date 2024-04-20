@@ -544,7 +544,7 @@ else if (which_val == AREFOP) {
                                         asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
                                     } else {
                                         /* Use MOVL for data fitting in an integer */
-                                        asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                                        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
                                     }
                                 }
                                 temp3 = temp3->link;
@@ -560,7 +560,7 @@ else if (which_val == AREFOP) {
                     last_ptr_reg_num = -1;
                 } else {
                     /* Use MOVL as this seems to handle standard integer data */
-                    asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");                        
+                    asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");                        
                 }
             } else {
                 if (last_id_reg_num == rhs_reg) {
@@ -576,12 +576,21 @@ else if (which_val == AREFOP) {
             /* Use MOVSD as a default when no information about the data type is available */
             //asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg,
             //"^.");
+            
             // printf("code->basicdt: %d\n", code->basicdt);
             if(code->basicdt == 4){
                 asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
 
             }
+
+            else if (code->basicdt == 1){
+                free_reg(rhs_reg);
+                rhs_reg = getreg(REAL);
+                asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            }
             else{
+                //its this one
+
                 asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
 
             }

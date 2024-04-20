@@ -156,46 +156,34 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 > .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,29c27,30
+27,28c27,29
 < movl	$96,%ecx         	#  96 -> %ecx
-< movl	96(%rax),%ecx         	#  ^.[96+%rax] -> %ecx
-< movl	%ecx,-32(%rbp)     	#  %ecx -> y
+< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
 ---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
-> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-44,45c44,45
-< movl	24(%rcx),%eax         	#  ^.[24+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> y
----
-> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
-> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-nd samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,29c27,30
+-------- end Epilogue; Literal data follows ------------------
+> .section        .rodata
+> .ident  "CS 375 Compiler - XXXX"
+Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
+27,28c27,29
 < movl	$96,%ecx         	#  96 -> %ecx
-< movl	96(%rax),%ecx         	#  ^.[96+%rax] -> %ecx
-< movl	%ecx,-32(%rbp)     	#  %ecx -> y
+< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
 ---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
-> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-44,45c44,45
-< movl	24(%rcx),%eax         	#  ^.[24+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> y
----
-> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
-> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
