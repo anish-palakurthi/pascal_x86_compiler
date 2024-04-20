@@ -1,8 +1,3 @@
-anishp@dorado:~/compilers/proj_2,3$ compile_p6.csh
-make: 'compiler' is up to date.
-./compile_p6.csh: line 22: 284503 Segmentation fault      (core dumped) ./compiler < tests/test20.pas > outputs/test20.output
-./compile_p6.csh: line 23: 284505 Segmentation fault      (core dumped) ./compiler < tests/test21.pas > outputs/test21.output
-./compile_p6.csh: line 24: 284507 Segmentation fault      (core dumped) ./compiler < tests/test22.pas > outputs/test22.output
 Comparing outputs/test00.output and samples/test00.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test01.output and samples/test01.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test02.output and samples/test02.sample (ignoring memory addresses, specific strings, and handling code splits):
@@ -60,19 +55,19 @@ Comparing outputs/test20.output and samples/test20.sample (ignoring memory addre
 > graph1:
 > .LFB0:
 > .cfi_startproc
-> pushq %rbp              # save base pointer on stack
+> pushq	%rbp              # save base pointer on stack
 > .cfi_def_cfa_offset 16
-> movq  %rsp, %rbp        # move stack pointer to base pointer
+> movq	%rsp, %rbp        # move stack pointer to base pointer
 > .cfi_offset 6, -16
 > .cfi_def_cfa_register 6
-> subq  $32, %rsp         # make space for this stack frame
-> movq  %rbx, %r9        # save %rbx (callee-saved) in %r9
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 > # ------------------------- begin Your code -----------------------------
-> movsd -32(%rbp),%xmm0         #  x -> %xmm0
-> call  exp@PLT                 #  exp()
-> movsd %xmm0,-24(%rbp)         #  %xmm0 -> y
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	exp@PLT          	#  exp()
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 > # ----------------------- begin Epilogue code ---------------------------
-> movq  %r9, %rbx        # restore %rbx (callee-saved) from %r9
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
 > leave
 > ret
 > .cfi_endproc
@@ -96,19 +91,19 @@ Comparing outputs/test21.output and samples/test21.sample (ignoring memory addre
 > graph1:
 > .LFB0:
 > .cfi_startproc
-> pushq %rbp              # save base pointer on stack
+> pushq	%rbp              # save base pointer on stack
 > .cfi_def_cfa_offset 16
-> movq  %rsp, %rbp        # move stack pointer to base pointer
+> movq	%rsp, %rbp        # move stack pointer to base pointer
 > .cfi_offset 6, -16
 > .cfi_def_cfa_register 6
-> subq  $32, %rsp         # make space for this stack frame
-> movq  %rbx, %r9        # save %rbx (callee-saved) in %r9
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 > # ------------------------- begin Your code -----------------------------
-> movsd -32(%rbp),%xmm0         #  x -> %xmm0
-> call  iround@PLT              #  iround()
-> movl  %eax,-24(%rbp)          #  %eax -> n
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	iround@PLT          	#  iround()
+> movl	%eax,-24(%rbp)     	#  %eax -> n
 > # ----------------------- begin Epilogue code ---------------------------
-> movq  %r9, %rbx        # restore %rbx (callee-saved) from %r9
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
 > leave
 > ret
 > .cfi_endproc
@@ -133,24 +128,24 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 > graph1:
 > .LFB0:
 > .cfi_startproc
-> pushq %rbp              # save base pointer on stack
+> pushq	%rbp              # save base pointer on stack
 > .cfi_def_cfa_offset 16
-> movq  %rsp, %rbp        # move stack pointer to base pointer
+> movq	%rsp, %rbp        # move stack pointer to base pointer
 > .cfi_offset 6, -16
 > .cfi_def_cfa_register 6
-> subq  $32, %rsp         # make space for this stack frame
-> movq  %rbx, %r9        # save %rbx (callee-saved) in %r9
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 > # ------------------------- begin Your code -----------------------------
-> movsd -32(%rbp),%xmm0         #  x -> %xmm0
-> call  exp@PLT                 #  exp()
-> movsd %xmm0,-8(%rbp)          #  %xmm0 -> temp
-> movsd -32(%rbp),%xmm0         #  x -> %xmm0
-> call  sin@PLT                 #  sin()
-> movsd -8(%rbp),%xmm1          #  temp -> %xmm1
-> mulsd %xmm0,%xmm1             #  %xmm1 * %xmm0 -> %xmm1
-> movsd %xmm1,-24(%rbp)         #  %xmm1 -> y
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	exp@PLT          	#  exp()
+> movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	sin@PLT          	#  sin()
+> movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
+> mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
+> movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
 > # ----------------------- begin Epilogue code ---------------------------
-> movq  %r9, %rbx        # restore %rbx (callee-saved) from %r9
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
 > leave
 > ret
 > .cfi_endproc
@@ -162,30 +157,45 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
 27,29c27,30
-< movl  $96,%ecx                #  96 -> %ecx
-< movl  96(%rax),%ecx           #  ^.[96+%rax] -> %ecx
-< movl  %ecx,-32(%rbp)          #  %ecx -> y
+< movl	$96,%ecx         	#  96 -> %ecx
+< movl	96(%rax),%ecx         	#  ^.[96+%rax] -> %ecx
+< movl	%ecx,-32(%rbp)     	#  %ecx -> y
 ---
-> movl  $96,%eax                #  96 -> %eax
-> cltq                          #  sign-extend
-> movsd -192(%rbp,%rax),%xmm0           #  ac[-192] -> %xmm0
-> movsd %xmm0,-32(%rbp)         #  %xmm0 -> y
+> movl	$96,%eax         	#  96 -> %eax
+> cltq	                  	#  sign-extend
+> movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
-44c44
-< movsd 8(%rax),%ecx            #  ^.[8+%rax] -> %ecx
----
-> movq  8(%rax),%rcx            #  ^.[8+%rax] -> %rcx
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-43,45c43,45
-< movl  8(%rax),%ecx            #  ^.[8+%rax] -> %ecx
-< movl  24(%rcx),%eax           #  ^.[24+%rcx] -> %eax
-< movl  %eax,-24(%rbp)          #  %eax -> y
+44,45c44,45
+< movl	24(%rcx),%eax         	#  ^.[24+%rcx] -> %eax
+< movl	%eax,-24(%rbp)     	#  %eax -> y
 ---
-> movq  8(%rax),%rcx            #  ^.[8+%rax] -> %rcx
-> movsd 24(%rcx),%xmm0          #  ^.[24+%rcx] -> %xmm0
-> movsd %xmm0,-24(%rbp)         #  %xmm0 -> y
+> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-anishp@dorado:~/compilers/proj_2,3$ 
+nd samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
+27,29c27,30
+< movl	$96,%ecx         	#  96 -> %ecx
+< movl	96(%rax),%ecx         	#  ^.[96+%rax] -> %ecx
+< movl	%ecx,-32(%rbp)     	#  %ecx -> y
+---
+> movl	$96,%eax         	#  96 -> %eax
+> cltq	                  	#  sign-extend
+> movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
+Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+44,45c44,45
+< movl	24(%rcx),%eax         	#  ^.[24+%rcx] -> %eax
+< movl	%eax,-24(%rbp)     	#  %eax -> y
+---
+> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
+Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):

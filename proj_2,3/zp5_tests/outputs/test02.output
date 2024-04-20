@@ -1,21 +1,21 @@
 yyparse result =        0
 Symbol table level 1
- 94397554229328     complex  TYPE   typ 94397554229040  lvl  1  siz    16  off     0
+ 94387710918736     complex  TYPE   typ 94387710918448  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94397554229744      person  TYPE   typ 94397554231312  lvl  1  siz    48  off     0
+ 94387710919152      person  TYPE   typ 94387710920720  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (salary real))
- 94397554229936          pp  TYPE   typ 94397554229840  lvl  1  siz     8  off     0
+ 94387710919344          pp  TYPE   typ 94387710919248  lvl  1  siz     8  off     0
 (^ person)
- 94397554232944    complexX  TYPE   typ 94397554232560  lvl  1  siz    32  off     0
+ 94387710922352    complexX  TYPE   typ 94387710921968  lvl  1  siz    32  off     0
 (RECORD (re real)
         (im real)
         (dummy real))
- 94397554235856     personX  TYPE   typ 94397554235088  lvl  1  siz    80  off     0
+ 94387710925264     personX  TYPE   typ 94387710924496  lvl  1  siz    80  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
@@ -25,40 +25,40 @@ Symbol table level 1
         (height integer)
         (weight integer)
         (birthMonth integer))
- 94397554236464           c  VAR    0 typ 94397554229040  lvl  1  siz    16  off     0
+ 94387710925872           c  VAR    0 typ 94387710918448  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94397554236560           d  VAR    0 typ 94397554229040  lvl  1  siz    16  off    16
+ 94387710925968           d  VAR    0 typ 94387710918448  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94397554236912           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94397554237648        john  VAR    4 typ 94397554229840  lvl  1  siz     8  off    40
+ 94387710926320           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94387710927056        john  VAR    4 typ 94387710919248  lvl  1  siz     8  off    40
 (^ person)
- 94397554237744        mary  VAR    4 typ 94397554229840  lvl  1  siz     8  off    48
+ 94387710927152        mary  VAR    4 typ 94387710919248  lvl  1  siz     8  off    48
 (^ person)
- 94397554237840        fred  VAR    4 typ 94397554229840  lvl  1  siz     8  off    56
+ 94387710927248        fred  VAR    4 typ 94387710919248  lvl  1  siz     8  off    56
 (^ person)
- 94397554237936         ptr  VAR    4 typ 94397554229840  lvl  1  siz     8  off    64
+ 94387710927344         ptr  VAR    4 typ 94387710919248  lvl  1  siz     8  off    64
 (^ person)
- 94397554238672         you  VAR    0 typ 94397554231312  lvl  1  siz    48  off    80
+ 94387710928080         you  VAR    0 typ 94387710920720  lvl  1  siz    48  off    80
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (salary real))
- 94397554238768          he  VAR    0 typ 94397554231312  lvl  1  siz    48  off   128
+ 94387710928176          he  VAR    0 typ 94387710920720  lvl  1  siz    48  off   128
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (salary real))
- 94397554238864         she  VAR    0 typ 94397554231312  lvl  1  siz    48  off   176
+ 94387710928272         she  VAR    0 typ 94387710920720  lvl  1  siz    48  off   176
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (salary real))
- 94397554238960          me  VAR    0 typ 94397554231312  lvl  1  siz    48  off   224
+ 94387710928368          me  VAR    0 typ 94387710920720  lvl  1  siz    48  off   224
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)

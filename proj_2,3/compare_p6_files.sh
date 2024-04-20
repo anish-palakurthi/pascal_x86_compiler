@@ -45,4 +45,4 @@ for file1 in "$dir1"/*"$ext1"; do
     else
         echo "No corresponding file for $file1 in $dir2"
     fi
-done
+done | tee currentshOut.txt

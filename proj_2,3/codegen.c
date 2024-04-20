@@ -576,7 +576,16 @@ else if (which_val == AREFOP) {
             /* Use MOVSD as a default when no information about the data type is available */
             //asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg,
             //"^.");
-            asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            // printf("code->basicdt: %d\n", code->basicdt);
+            if(code->basicdt == 4){
+                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+            }
+            else{
+                asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+            }
+
             
         }
     }
@@ -1167,4 +1176,3 @@ bool is_fp_reg(int reg_num) {
     }
     return true;
 }
-

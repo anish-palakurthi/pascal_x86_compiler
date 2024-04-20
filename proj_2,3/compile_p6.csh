@@ -32,4 +32,4 @@ make compiler
 ./compiler <tests/test30.pas >outputs/test30.output
 
 
-./compare_p6_files.sh
+./compare_p6_files.sh | tee -a currentshOut.txt
