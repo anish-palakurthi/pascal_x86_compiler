@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94085860749392     complex  TYPE   typ 94085860749104  lvl  1  siz    16  off     0
+ 94001341861968     complex  TYPE   typ 94001341861680  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94085860750512          ac  VAR    0 typ 94085860750416  lvl  1  siz   160  off     0
+ 94001341863088          ac  VAR    0 typ 94001341862992  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
 (program graph1 (progn output)
@@ -24,6 +24,7 @@ graph1:
         subq	$176, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+ASSIGNOP
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
 	movl	$96,%eax         	#  96 -> %eax
 	cltq	                  	#  sign-extend

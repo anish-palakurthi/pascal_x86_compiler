@@ -697,6 +697,7 @@ void genc(TOKEN code) {
            Then store the register into the location specified
            by the LHS. */
 
+        printf("ASSIGNOP\n");
         if (DEBUGGEN) {
             printf("\n ASSIGNOP detected.\n");
             ppexpr(code);
@@ -730,6 +731,8 @@ void genc(TOKEN code) {
         int datatype = code->basicdt;                  /* store value into lhs  */
 
         if (sym) {
+            printf("if was true\n");
+            ppsym(sym);
             offs = sym->offset - stkframesize;          /* net offset of the var   */
 
             if (reg_num >= 0 && reg_num < 16) {
@@ -790,10 +793,12 @@ void genc(TOKEN code) {
                 offs = sym->offset - stkframesize;
 
                 TOKEN last_link = get_last_link(lhs->operands);
+                // printf("not not executing yet\n");
 
                 if (last_link) {
+                    // printf("Not executing yet\n");
                     if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
-
+                        // printf("executing array reference\n");
                         asmimmed(MOVL, last_link->intval, EAX);
                         asmop(CLTQ);
 

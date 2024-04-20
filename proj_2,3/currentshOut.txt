@@ -1,17 +1,97 @@
 Comparing outputs/test00.output and samples/test00.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+23,24d21
+< if was true
+< integer
 Comparing outputs/test01.output and samples/test01.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+23,24d21
+< if was true
+< real
 Comparing outputs/test02.output and samples/test02.sample (ignoring memory addresses, specific strings, and handling code splits):
+24d23
+< ASSIGNOP
+26,27d24
+< if was true
+< (^ real)
 Comparing outputs/test03.output and samples/test03.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< integer
 Comparing outputs/test04.output and samples/test04.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< integer
 Comparing outputs/test05.output and samples/test05.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< integer
 Comparing outputs/test06.output and samples/test06.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< integer
 Comparing outputs/test07.output and samples/test07.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< real
 Comparing outputs/test08.output and samples/test08.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< real
 Comparing outputs/test09.output and samples/test09.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< real
 Comparing outputs/test10.output and samples/test10.sample (ignoring memory addresses, specific strings, and handling code splits):
+21d20
+< ASSIGNOP
+25,26d23
+< if was true
+< real
 Comparing outputs/test11.output and samples/test11.sample (ignoring memory addresses, specific strings, and handling code splits):
+22d21
+< ASSIGNOP
+25,26d23
+< if was true
+< real
 Comparing outputs/test12.output and samples/test12.sample (ignoring memory addresses, specific strings, and handling code splits):
+22d21
+< ASSIGNOP
+26,27d24
+< if was true
+< real
 Comparing outputs/test13.output and samples/test13.sample (ignoring memory addresses, specific strings, and handling code splits):
+24d23
+< ASSIGNOP
+28,29d26
+< if was true
+< integer
+31d27
+< ASSIGNOP
+35,36d30
+< if was true
+< integer
+38d31
+< ASSIGNOP
+42,43d34
+< if was true
+< integer
 Comparing outputs/test14.output and samples/test14.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (progn (label 0)
@@ -23,6 +103,11 @@ Comparing outputs/test14.output and samples/test14.sample (ignoring memory addre
 ---
 > (progn (:= i (+ i 1))
 > (goto 0)))))
+33d32
+< ASSIGNOP
+37,38d35
+< if was true
+< integer
 Comparing outputs/test15.output and samples/test15.sample (ignoring memory addresses, specific strings, and handling code splits):
 6c6
 < (progn (progn (:= i 0)
@@ -32,14 +117,44 @@ Comparing outputs/test15.output and samples/test15.sample (ignoring memory addre
 < (goto 0))))))
 ---
 > (goto 0)))))
+27d26
+< ASSIGNOP
+29,30d27
+< if was true
+< integer
+39d35
+< ASSIGNOP
+41,42d36
+< if was true
+< integer
+44d37
+< ASSIGNOP
+48,49d40
+< if was true
+< integer
 Comparing outputs/test16.output and samples/test16.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (:= n (- n 1)))
 ---
 > (:= n (- n 1))
+26d25
+< ASSIGNOP
+28,29d26
+< if was true
+< integer
+32d28
+< ASSIGNOP
+36,37d31
+< if was true
+< integer
 Comparing outputs/test17.output and samples/test17.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
+22d21
+< ASSIGNOP
+26,27d24
+< if was true
+< (^ real)
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
 0a1,34
 > yyparse result =        0
@@ -155,35 +270,143 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 > .section        .rodata
 > .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
+27d26
+< ASSIGNOP
 Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
+27,31c27,29
+< ASSIGNOP
 < movl	$96,%ecx         	#  96 -> %ecx
 < movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+< if was true
+< real
 ---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+41d40
+< ASSIGNOP
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+41d40
+< ASSIGNOP
+44,45d42
+< if was true
+< integer
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+42d41
+< ASSIGNOP
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+42d41
+< ASSIGNOP
+46,47d44
+< if was true
+< real
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+56d55
+< ASSIGNOP
+60d58
+< ASSIGNOP
+64d61
+< ASSIGNOP
+68d64
+< ASSIGNOP
+72d67
+< ASSIGNOP
+76d70
+< ASSIGNOP
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
--------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
-Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
-< movl	$96,%ecx         	#  96 -> %ecx
-< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
----
-> movl	$96,%eax         	#  96 -> %eax
+51d50
+< ASSIGNOP
+54,55d52
+< if was true
+< integer
+57d53
+< ASSIGNOP
+60,61d55
+< if was true
+< integer
+63d56
+< ASSIGNOP
+66,67d58
+< if was true
+< integer
+69d59
+< ASSIGNOP
+72,73d61
+< if was true
+< integer
+75d62
+< ASSIGNOP
+78,79d64
+< if was true
+< integer
+81d65
+< ASSIGNOP
+84,85d67
+< if was true
+< integer
+ax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+41d40
+< ASSIGNOP
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+41d40
+< ASSIGNOP
+44,45d42
+< if was true
+< integer
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+42d41
+< ASSIGNOP
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+42d41
+< ASSIGNOP
+46,47d44
+< if was true
+< real
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+56d55
+< ASSIGNOP
+60d58
+< ASSIGNOP
+64d61
+< ASSIGNOP
+68d64
+< ASSIGNOP
+72d67
+< ASSIGNOP
+76d70
+< ASSIGNOP
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
+51d50
+< ASSIGNOP
+54,55d52
+< if was true
+< integer
+57d53
+< ASSIGNOP
+60,61d55
+< if was true
+< integer
+63d56
+< ASSIGNOP
+66,67d58
+< if was true
+< integer
+69d59
+< ASSIGNOP
+72,73d61
+< if was true
+< integer
+75d62
+< ASSIGNOP
+78,79d64
+< if was true
+< integer
+81d65
+< ASSIGNOP
+84,85d67
+< if was true
+< integer
