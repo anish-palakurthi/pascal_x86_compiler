@@ -571,10 +571,13 @@ else if (which_val == AREFOP) {
                 asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
             }
         } else {
-            free_reg(rhs_reg);
-            rhs_reg = getreg(REAL);
+            // free_reg(rhs_reg);
+            // rhs_reg = getreg(REAL);
             /* Use MOVSD as a default when no information about the data type is available */
-            asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            //asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg,
+            //"^.");
+            asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            
         }
     }
 

@@ -1,12 +1,12 @@
 yyparse result =        0
 Symbol table level 1
- 94568338755664     complex  TYPE   typ 94568338755376  lvl  1  siz    16  off     0
+ 94159425601616     complex  TYPE   typ 94159425601328  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94568338756784          ac  VAR    0 typ 94568338756688  lvl  1  siz   160  off     0
+ 94159425602736          ac  VAR    0 typ 94159425602640  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94568338757136           y  VAR    1 typ    real  lvl  1  siz     8  off   160
+ 94159425603088           y  VAR    1 typ    real  lvl  1  siz     8  off   160
 (program graph1 (progn output)
                 (progn (:= y (aref ac 96))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -25,8 +25,8 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movl	$96,%ecx         	#  96 -> %ecx
-	movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
-	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
+	movl	96(%rax),%ecx         	#  ^.[96+%rax] -> %ecx
+	movl	%ecx,-32(%rbp)     	#  %ecx -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
