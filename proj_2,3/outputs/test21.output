@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 93849015348720           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93849015349072           n  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94486430490096           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94486430490448           n  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= n (fix (funcall iround x)))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -19,9 +19,6 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	Error: bad code token! (genc())
- token 93849015349488  ID             x  dtype  1  link 0
-
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	call	iround@PLT          	#  iround()
 	cvttsd2si	%ecx,%edx    	#  fix %ecx -> %edx

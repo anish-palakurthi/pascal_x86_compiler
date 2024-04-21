@@ -43,33 +43,29 @@ Comparing outputs/test17.output and samples/test17.sample (ignoring memory addre
 > movl	%eax,%edi         	#  %eax -> %edi
 > call	writelni@PLT          	#  writelni()
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
+18a19,20
+> leaq	.LC1(%rip),%rdi  	#  addr of literal .LC1
+> call	write@PLT          	#  write()
+27a30,32
+> .align  4
+> .LC1:
+> .string	"i = "
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
-22,23d21
-< Error: bad code token! (genc())
-< token   ID             x  dtype  1  link 0
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
 6c6
 < (progn (:= n (fix (funcall iround x)))))
 ---
 > (progn (:= n (funcall iround x))))
-22,23d21
-< Error: bad code token! (genc())
-< token   ID             x  dtype  1  link 0
-26d23
+24d23
 < cvttsd2si	%ecx,%edx    	#  fix %ecx -> %edx
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
-23,24d22
-< Error: bad code token! (genc())
-< token   ID             x  dtype  1  link 0
-27,29c25
-< movsd	%eax,-8(%rbp)     	#  %eax -> temp
-< Error: bad code token! (genc())
-< token   ID             x  dtype  1  link 0
+25c25,26
+< movsd	-32(%rbp),%xmm1     	#  x -> %xmm1
 ---
 > movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
-32,34c28,30
-< movsd	-8(%rbp),%eax     	#  temp -> %eax
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+27,28c28,30
 < imull	%eax,%ecx         	#  %ecx * %eax -> %ecx
 < movl	%eax,-24(%rbp)     	#  %eax -> y
 ---
@@ -91,8 +87,6 @@ Comparing outputs/test27.output and samples/test27.sample (ignoring memory addre
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-strings, and handling code splits):
-Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
