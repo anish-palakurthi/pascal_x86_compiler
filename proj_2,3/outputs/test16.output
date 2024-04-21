@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94502496751088           n  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94235531640304           n  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= n 1)
                        (progn (label 0)
@@ -24,20 +24,13 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movl	$1,%eax         	#  1 -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> n
 .L0:
-	movl	-32(%rbp),%eax     	#  n -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> n
-	movl	-32(%rbp),%eax     	#  n -> %eax
-	movl	$0,%ecx         	#  0 -> %ecx
-	cmpl	%ecx,%eax           	#  compare %eax - %ecx
-	je	.L2 			#  jump if     ==
+OPERATOR detected, from genarith().
+OPERATOR detected, from genarith().
 	jmp	.L0 			#  jump 
-	jmp	.L3 			#  jump 
+	jmp	.L2 			#  jump 
+.L6:
 .L2:
-.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

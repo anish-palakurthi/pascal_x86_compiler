@@ -130,6 +130,34 @@ int getreg(int kind) {
 
     return RBASE;
 }
+/* Generate code for a function call */
+int genfun(TOKEN code) {
+    TOKEN tok = code->operands; //FUNCTION
+    TOKEN lhs = tok->link;  //FIRST ARGUMENT
+    int count = 0;
+    while (lhs) {
+      genarith(lhs);        
+      lhs = lhs->link;
+      count ++;
+    }
+
+    asmcall(tok->stringval);  
+    SYMBOL sym = searchst(tok->stringval);
+
+    if (DEBUGGEN) {
+      printf("genfunc\n");
+      printf("no of arguments: %d", count);
+      dbugprinttok(code);
+    }
+    if (sym->datatype->basicdt == REAL) {
+      return XMM0;
+    } else if (sym->datatype->basicdt == INTEGER) {
+      return EAX;
+    } else {
+      return RAX;
+    }
+}
+
 
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
@@ -253,6 +281,15 @@ int genarith(TOKEN code) {
 
     }
     else if (code->tokentype == OPERATOR) {
+        printf("OPERATOR detected, from genarith().\n");
+        if (code->whichval == FUNCALLOP) {
+            printf("FUNCALLOP detected, from genarith().\n");
+            return genfun(code);
+            // free_reg(lhs_reg);
+            // lhs_reg = saved_inline_regs[num_inlines_processed - 1];
+            // mark_reg_used(lhs_reg);
+        }
+        return;
 
         if (first_op_genarith == NULL) {
             first_op_genarith = code;
@@ -271,12 +308,7 @@ int genarith(TOKEN code) {
             rhs_reg = 0;
         }
 
-        if (code->operands->whichval == FUNCALLOP) {
 
-            free_reg(lhs_reg);
-            lhs_reg = saved_inline_regs[num_inlines_processed - 1];
-            mark_reg_used(lhs_reg);
-        }
         if (code->operands->link) {
             if (code->operands->link->whichval == FUNCALLOP) {
 
@@ -731,6 +763,9 @@ void genc(TOKEN code) {
         }
 
         reg_num = genarith(rhs);                        /* generate rhs into a register */
+
+        return;
+
         saved_rhs_reg = rhs;
         saved_rhs_reg_num = reg_num;
 

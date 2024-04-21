@@ -1,17 +1,136 @@
 Comparing outputs/test00.output and samples/test00.sample (ignoring memory addresses, specific strings, and handling code splits):
+21a22
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test01.output and samples/test01.sample (ignoring memory addresses, specific strings, and handling code splits):
+21a22
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 Comparing outputs/test02.output and samples/test02.sample (ignoring memory addresses, specific strings, and handling code splits):
+24a25
+> movq	%rax,-32(%rbp)     	#  %rax -> ptr
 Comparing outputs/test03.output and samples/test03.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test04.output and samples/test04.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test05.output and samples/test05.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$2,%ecx         	#  2 -> %ecx
+> imull	%ecx,%eax         	#  %eax * %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test06.output and samples/test06.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$2,%ecx         	#  2 -> %ecx
+> divl	%ecx,%eax         	#  %eax / %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test07.output and samples/test07.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> addsd	%xmm1,%xmm0         	#  %xmm0 + %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+30a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test08.output and samples/test08.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> subsd	%xmm1,%xmm0         	#  %xmm0 - %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+30a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test09.output and samples/test09.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+30a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test10.output and samples/test10.sample (ignoring memory addresses, specific strings, and handling code splits):
+21c21,24
+< OPERATOR detected, from genarith().
+---
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> divsd	%xmm1,%xmm0         	#  %xmm0 / %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+30a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test11.output and samples/test11.sample (ignoring memory addresses, specific strings, and handling code splits):
+22c22,24
+< OPERATOR detected, from genarith().
+---
+> movl	-24(%rbp),%eax     	#  i -> %eax
+> cvtsi2sd	%eax,%xmm0    	#  float %eax -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 Comparing outputs/test12.output and samples/test12.sample (ignoring memory addresses, specific strings, and handling code splits):
+22c22,25
+< OPERATOR detected, from genarith().
+---
+> movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
+> movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
+> xorpd	%xmm1,%xmm0           	#  negate %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+31a35,40
+> .align 16
+> .LC666:                    # constant for floating negation
+> .long	0
+> .long	-2147483648
+> .long	0
+> .long	0
 Comparing outputs/test13.output and samples/test13.sample (ignoring memory addresses, specific strings, and handling code splits):
+24,26c24,35
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+> movl	-28(%rbp),%eax     	#  sum -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-28(%rbp)     	#  %eax -> sum
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	-28(%rbp),%ecx     	#  sum -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test14.output and samples/test14.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (progn (label 0)
@@ -23,6 +142,25 @@ Comparing outputs/test14.output and samples/test14.sample (ignoring memory addre
 ---
 > (progn (:= i (+ i 1))
 > (goto 0)))))
+27,31c27,31
+< OPERATOR detected, from genarith().
+< jmp	.L2 			#  jump
+< .L7:
+< OPERATOR detected, from genarith().
+< jmp	.L0 			#  jump
+---
+> movq	-32(%rbp),%rax     	#  ptr -> %rax
+> movq	$0,%rcx         	#  0 -> %rcx
+> cmpq	%rcx,%rax           	#  compare %rax - %rcx
+> jne	.L2 			#  jump if     !=
+> jmp	.L3 			#  jump
+32a33,38
+> movl	-24(%rbp),%eax     	#  i -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-24(%rbp)     	#  %eax -> i
+> jmp	.L0 			#  jump
+> .L3:
 Comparing outputs/test15.output and samples/test15.sample (ignoring memory addresses, specific strings, and handling code splits):
 6c6
 < (progn (progn (:= i 0)
@@ -32,110 +170,88 @@ Comparing outputs/test15.output and samples/test15.sample (ignoring memory addre
 < (goto 0))))))
 ---
 > (goto 0)))))
+27a28
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+29,31c30,35
+< OPERATOR detected, from genarith().
+< jmp	.L2 			#  jump
+< .L9:
+---
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$32,%ecx         	#  32 -> %ecx
+> cmpl	%ecx,%eax           	#  compare %eax - %ecx
+> jle	.L2 			#  jump if     <=
+> jmp	.L3 			#  jump
+> .L2:
+33c37,41
+< OPERATOR detected, from genarith().
+---
+> movl	%eax,-28(%rbp)     	#  %eax -> n
+> movl	-32(%rbp),%eax     	#  i -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+35c43
+< .L2:
+---
+> .L3:
 Comparing outputs/test16.output and samples/test16.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (:= n (- n 1)))
 ---
 > (:= n (- n 1))
+26a27
+> movl	%eax,-32(%rbp)     	#  %eax -> n
+28,29c29,36
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+---
+> movl	-32(%rbp),%eax     	#  n -> %eax
+> movl	$1,%ecx         	#  1 -> %ecx
+> subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> n
+> movl	-32(%rbp),%eax     	#  n -> %eax
+> movl	$0,%ecx         	#  0 -> %ecx
+> cmpl	%ecx,%eax           	#  compare %eax - %ecx
+> je	.L2 			#  jump if     ==
+31,32c38
+< jmp	.L2 			#  jump
+< .L6:
+---
+> jmp	.L3 			#  jump
+33a40
+> .L3:
 Comparing outputs/test17.output and samples/test17.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
+22,23d21
+< OPERATOR detected, from genarith().
+< FUNCALLOP detected, from genarith().
+24a23
+> movl	%eax,%edi         	#  %eax -> %edi
+25a25
+> movq	%rax,-32(%rbp)     	#  %rax -> john
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,34
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> y  VAR    1 typ    real  lvl  1  siz     8  off     8
-> (program graph1 (progn output)
-> (progn (:= y (funcall exp x))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
-> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
-> call	exp@PLT          	#  exp()
+22,23d21
+< OPERATOR detected, from genarith().
+< FUNCALLOP detected, from genarith().
+25a24
 > movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,34
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> n  VAR    0 typ integer  lvl  1  siz     4  off     8
-> (program graph1 (progn output)
+6c6
+< (progn (:= n (fix (funcall iround x)))))
+---
 > (progn (:= n (funcall iround x))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
+22c22,24
+< OPERATOR detected, from genarith().
+---
 > movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 > call	iround@PLT          	#  iround()
 > movl	%eax,-24(%rbp)     	#  %eax -> n
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,40
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> y  VAR    1 typ    real  lvl  1  siz     8  off     8
-> (program graph1 (progn output)
-> (progn (:= y (* (funcall exp x)
-> (funcall sin x)))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
+23c23,30
+< OPERATOR detected, from genarith().
+---
 > movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 > call	exp@PLT          	#  exp()
 > movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
@@ -144,46 +260,112 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 > movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
 > mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
 > movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
+27a28,30
+> movl	$96,%eax         	#  96 -> %eax
+> cltq	                  	#  sign-extend
+> movsd	%xmm0,-176(%rbp,%rax)	#  %xmm0 -> ac[%rax]
 Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
-< movl	$96,%ecx         	#  96 -> %ecx
-< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+27c27,30
+< OPERATOR detected, from genarith().
 ---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+41a42,43
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
--------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
-Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
-< movl	$96,%ecx         	#  96 -> %ecx
-< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+41c41,43
+< OPERATOR detected, from genarith().
 ---
-> movl	$96,%eax         	#  96 -> %eax
-> cltq	                  	#  sign-extend
-> movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
-Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+42a43,45
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
+> movsd	%xmm0,24(%rcx)         	#  %xmm0 -> ^. [24+%rcx]
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+42c42,45
+< OPERATOR detected, from genarith().
+---
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
+> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+56a57,58
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+57a60,61
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+58a63,64
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+59a66,67
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+60a69,70
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+61a72,73
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
+51,56c51,68
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+---
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+51,56c51,68
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+< OPERATOR detected, from genarith().
+---
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum

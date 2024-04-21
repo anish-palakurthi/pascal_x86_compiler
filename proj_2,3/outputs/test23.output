@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94362713288784     complex  TYPE   typ 94362713288496  lvl  1  siz    16  off     0
+ 94568620363856     complex  TYPE   typ 94568620363568  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94362713289904          ac  VAR    0 typ 94362713289808  lvl  1  siz   160  off     0
+ 94568620364976          ac  VAR    0 typ 94568620364880  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
 (program graph1 (progn output)
@@ -25,9 +25,6 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
-	movl	$96,%eax         	#  96 -> %eax
-	cltq	                  	#  sign-extend
-	movsd	%xmm0,-176(%rbp,%rax)	#  %xmm0 -> ac[%rax]
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
