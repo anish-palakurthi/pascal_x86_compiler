@@ -1,44 +1,44 @@
 yyparse result =        0
 Symbol table level 1
- 94067632681360     complex  TYPE   typ 94067632681072  lvl  1  siz    16  off     0
+ 94334194975120     complex  TYPE   typ 94334194974832  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94067632682224         red  CONST  typ INTEGER  val  0
- 94067632682384       white  CONST  typ INTEGER  val  1
- 94067632682544        blue  CONST  typ INTEGER  val  2
- 94067632682736       color  TYPE   typ 94067632682640  lvl  1  siz     4  off     0
+ 94334194975984         red  CONST  typ INTEGER  val  0
+ 94334194976144       white  CONST  typ INTEGER  val  1
+ 94334194976304        blue  CONST  typ INTEGER  val  2
+ 94334194976496       color  TYPE   typ 94334194976400  lvl  1  siz     4  off     0
   0 ..   2
- 94067632683152      person  TYPE   typ 94067632684976  lvl  1  siz    48  off     0
+ 94334194976912      person  TYPE   typ 94334194978736  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94067632683344          pp  TYPE   typ 94067632683248  lvl  1  siz     8  off     0
+ 94334194977104          pp  TYPE   typ 94334194977008  lvl  1  siz     8  off     0
 (^ person)
- 94067632686064           c  VAR    0 typ 94067632681072  lvl  1  siz    16  off     0
+ 94334194979824           c  VAR    0 typ 94334194974832  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94067632686160           d  VAR    0 typ 94067632681072  lvl  1  siz    16  off    16
+ 94334194979920           d  VAR    0 typ 94334194974832  lvl  1  siz    16  off    16
 (RECORD (re real)
         (im real))
- 94067632686640           i  VAR    0 typ integer  lvl  1  siz     4  off    32
- 94067632686736         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
- 94067632687728          ac  VAR    0 typ 94067632687632  lvl  1  siz   160  off    48
+ 94334194980400           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 94334194980496         sum  VAR    0 typ integer  lvl  1  siz     4  off    36
+ 94334194981488          ac  VAR    0 typ 94334194981392  lvl  1  siz   160  off    48
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 94067632688944         aco  VAR    0 typ 94067632688848  lvl  1  siz   120  off   208
+ 94334194982704         aco  VAR    0 typ 94334194982608  lvl  1  siz   120  off   208
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94067632689680        john  VAR    4 typ 94067632683248  lvl  1  siz     8  off   328
+ 94334194983440        john  VAR    4 typ 94334194977008  lvl  1  siz     8  off   328
 (^ person)
- 94067632689776        mary  VAR    4 typ 94067632683248  lvl  1  siz     8  off   336
+ 94334194983536        mary  VAR    4 typ 94334194977008  lvl  1  siz     8  off   336
 (^ person)
- 94067632689872        fred  VAR    4 typ 94067632683248  lvl  1  siz     8  off   344
+ 94334194983632        fred  VAR    4 typ 94334194977008  lvl  1  siz     8  off   344
 (^ person)
- 94067632689968         ptr  VAR    4 typ 94067632683248  lvl  1  siz     8  off   352
+ 94334194983728         ptr  VAR    4 typ 94334194977008  lvl  1  siz     8  off   352
 (^ person)
- 94067632690960      people  VAR    0 typ 94067632690864  lvl  1  siz   960  off   368
+ 94334194984720      people  VAR    0 typ 94334194984624  lvl  1  siz   960  off   368
 (ARRAY   1 ..  20 (RECORD (age integer)
                           (friend (^ person))
                           (location (RECORD (re real)

@@ -287,7 +287,6 @@ int genarith(TOKEN code) {
         // printf("code->stringval: %s\n", code->stringval);
         // printf("code->operands->stringval: %s\n", code->operands->stringval);
         if (code->whichval == FUNCALLOP && strcmp(code->operands->stringval, "new") != 0) {
-            free_reg(lhs_reg);
 
             return genfun(code);
         }
@@ -501,6 +500,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         out = lhs_reg;
     }
     else if (which_val == FUNCALLOP) {
+        // printf("Does it get here ever???\n");
         if (inline_funcall) {
 
             if (num_funcalls_in_curr_tree > 1) {
@@ -1104,7 +1104,7 @@ void reset_regs() {
 
 void free_reg(int reg_num) {
     if (reg_num < 0 || reg_num >= NUM_REGS) {
-        // printf("Error: cannot free register number %d\n", reg_num);
+        printf("Error: cannot free register number %d\n", reg_num);
         return;
     }
     used_regs[reg_num] = 0;

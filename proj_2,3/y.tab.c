@@ -2727,7 +2727,9 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 
   if (strcmp(fn->stringval, "writeln") == 0) {
     int argType = args->basicdt;
-
+    // if (strcmp(args, "*") == 0) {
+    //   argType = args->operands->basicdt;
+    // }
 
     int typeIndex = 7; 
     switch (argType) {
