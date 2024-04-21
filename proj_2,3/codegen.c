@@ -299,7 +299,7 @@ int genarith(TOKEN code) {
 
         lhs_reg = genarith(code->operands);
 
-        if (code->operands->link) {
+        if (code->operands->link) { 
             rhs_reg = genarith(code->operands->link);
         }
         else {
