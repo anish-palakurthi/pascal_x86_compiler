@@ -1,10 +1,6 @@
 Comparing outputs/test00.output and samples/test00.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test01.output and samples/test01.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test02.output and samples/test02.sample (ignoring memory addresses, specific strings, and handling code splits):
-25c25
-< movl	%eax,-32(%rbp)     	#  %eax -> ptr
----
-> movq	%rax,-32(%rbp)     	#  %rax -> ptr
 Comparing outputs/test03.output and samples/test03.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test04.output and samples/test04.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test05.output and samples/test05.sample (ignoring memory addresses, specific strings, and handling code splits):
@@ -15,10 +11,6 @@ Comparing outputs/test09.output and samples/test09.sample (ignoring memory addre
 Comparing outputs/test10.output and samples/test10.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test11.output and samples/test11.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test12.output and samples/test12.sample (ignoring memory addresses, specific strings, and handling code splits):
-25c25
-< movsd	%xmm1,-32(%rbp)     	#  %xmm1 -> x
----
-> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 Comparing outputs/test13.output and samples/test13.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test14.output and samples/test14.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
@@ -31,12 +23,6 @@ Comparing outputs/test14.output and samples/test14.sample (ignoring memory addre
 ---
 > (progn (:= i (+ i 1))
 > (goto 0)))))
-28,29c28,29
-< movl	$0,%ecx         	#  0 -> %ecx
-< cmpl	%ecx,%eax           	#  compare %eax - %ecx
----
-> movq	$0,%rcx         	#  0 -> %rcx
-> cmpq	%rcx,%rax           	#  compare %rax - %rcx
 Comparing outputs/test15.output and samples/test15.sample (ignoring memory addresses, specific strings, and handling code splits):
 6c6
 < (progn (progn (:= i 0)
@@ -52,401 +38,152 @@ Comparing outputs/test16.output and samples/test16.sample (ignoring memory addre
 ---
 > (:= n (- n 1))
 Comparing outputs/test17.output and samples/test17.sample (ignoring memory addresses, specific strings, and handling code splits):
-21a22
-> movl	%eax,%edi         	#  %eax -> %edi
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
-22a23
-> movl	%eax,%edi         	#  %eax -> %edi
-24c25
-< movl	%eax,-32(%rbp)     	#  %eax -> john
----
-> movq	%rax,-32(%rbp)     	#  %rax -> john
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
+0a1,34
+> yyparse result =        0
+> Symbol table level 1
+> x  VAR    1 typ    real  lvl  1  siz     8  off     0
+> y  VAR    1 typ    real  lvl  1  siz     8  off     8
+> (program graph1 (progn output)
+> (progn (:= y (funcall exp x))))
+> .file   "foo"
+> .text
+> .globl graph1
+> .type   graph1, @function
+> graph1:
+> .LFB0:
+> .cfi_startproc
+> pushq	%rbp              # save base pointer on stack
+> .cfi_def_cfa_offset 16
+> movq	%rsp, %rbp        # move stack pointer to base pointer
+> .cfi_offset 6, -16
+> .cfi_def_cfa_register 6
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
+> # ------------------------- begin Your code -----------------------------
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	exp@PLT          	#  exp()
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
+> # ----------------------- begin Epilogue code ---------------------------
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
+> leave
+> ret
+> .cfi_endproc
+> .LFE0:
+> .size   graph1, .-graph1
+> # ----------------- end Epilogue; Literal data follows ------------------
+> .section        .rodata
+> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
-6c6
-< (progn (:= n (fix (funcall iround x)))))
----
+0a1,34
+> yyparse result =        0
+> Symbol table level 1
+> x  VAR    1 typ    real  lvl  1  siz     8  off     0
+> n  VAR    0 typ integer  lvl  1  siz     4  off     8
+> (program graph1 (progn output)
 > (progn (:= n (funcall iround x))))
-24d23
-< cvttsd2si	%eax,%eax    	#  fix %eax -> %eax
+> .file   "foo"
+> .text
+> .globl graph1
+> .type   graph1, @function
+> graph1:
+> .LFB0:
+> .cfi_startproc
+> pushq	%rbp              # save base pointer on stack
+> .cfi_def_cfa_offset 16
+> movq	%rsp, %rbp        # move stack pointer to base pointer
+> .cfi_offset 6, -16
+> .cfi_def_cfa_register 6
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
+> # ------------------------- begin Your code -----------------------------
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	iround@PLT          	#  iround()
+> movl	%eax,-24(%rbp)     	#  %eax -> n
+> # ----------------------- begin Epilogue code ---------------------------
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
+> leave
+> ret
+> .cfi_endproc
+> .LFE0:
+> .size   graph1, .-graph1
+> # ----------------- end Epilogue; Literal data follows ------------------
+> .section        .rodata
+> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
-28,30c28,30
-< movsd	-8(%rbp),%xmm0     	#  temp -> %xmm0
-< mulsd	%xmm0,%xmm0         	#  %xmm0 * %xmm0 -> %xmm0
-< movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
----
+0a1,40
+> yyparse result =        0
+> Symbol table level 1
+> x  VAR    1 typ    real  lvl  1  siz     8  off     0
+> y  VAR    1 typ    real  lvl  1  siz     8  off     8
+> (program graph1 (progn output)
+> (progn (:= y (* (funcall exp x)
+> (funcall sin x)))))
+> .file   "foo"
+> .text
+> .globl graph1
+> .type   graph1, @function
+> graph1:
+> .LFB0:
+> .cfi_startproc
+> pushq	%rbp              # save base pointer on stack
+> .cfi_def_cfa_offset 16
+> movq	%rsp, %rbp        # move stack pointer to base pointer
+> .cfi_offset 6, -16
+> .cfi_def_cfa_register 6
+> subq	$32, %rsp 	  # make space for this stack frame
+> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
+> # ------------------------- begin Your code -----------------------------
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	exp@PLT          	#  exp()
+> movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
+> movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+> call	sin@PLT          	#  sin()
 > movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
 > mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
 > movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
+> # ----------------------- begin Epilogue code ---------------------------
+> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
+> leave
+> ret
+> .cfi_endproc
+> .LFE0:
+> .size   graph1, .-graph1
+> # ----------------- end Epilogue; Literal data follows ------------------
+> .section        .rodata
+> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,44
-> yyparse result =        0
-> Symbol table level 1
-> complex  TYPE   typ   lvl  1  siz    16  off     0
-> (RECORD (re real)
-> (im real))
-> ac  VAR    0 typ   lvl  1  siz   160  off     0
-> (ARRAY   1 ..  10 (RECORD (re real)
-> (im real)))
-> (program graph1 (progn output)
-> (progn (:= (aref ac 96)
-> 4.500000e+00)))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$176, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
-> movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
+Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
+27,28c27,29
+< movl	$96,%ecx         	#  96 -> %ecx
+< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
-> movsd	%xmm0,-176(%rbp,%rax)	#  %xmm0 -> ac[%rax]
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .align  8
-> .LC1:
-> .long	0   	#  4.500000
-> .long	1074921472
-> .ident  "CS 375 Compiler - XXXX"
-Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-29c29,30
-< movsd	%r8,-32(%rbp)     	#  %r8 -> y
----
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
-> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,53
-> yyparse result =        0
-> Symbol table level 1
-> complex  TYPE   typ   lvl  1  siz    16  off     0
-> (RECORD (re real)
-> (im real))
-> red  CONST  typ INTEGER  val  0
-> white  CONST  typ INTEGER  val  1
-> blue  CONST  typ INTEGER  val  2
-> color  TYPE   typ   lvl  1  siz     4  off     0
-> 0 ..   2
-> person  TYPE   typ   lvl  1  siz    48  off     0
-> (RECORD (age integer)
-> (friend (^ person))
-> (location (RECORD (re real)
-> (im real)))
-> (favorite   0 ..   2)
-> (salary real))
-> pp  TYPE   typ   lvl  1  siz     8  off     0
-> (^ person)
-> john  VAR    4 typ   lvl  1  siz     8  off     0
-> (^ person)
-> (program graph1 (progn output)
-> (progn (:= (aref (^ john)
-> 0)
-> 19)))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
-41,43c41,43
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
----
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,59
-> yyparse result =        0
-> Symbol table level 1
-> complex  TYPE   typ   lvl  1  siz    16  off     0
-> (RECORD (re real)
-> (im real))
-> red  CONST  typ INTEGER  val  0
-> white  CONST  typ INTEGER  val  1
-> blue  CONST  typ INTEGER  val  2
-> color  TYPE   typ   lvl  1  siz     4  off     0
-> 0 ..   2
-> person  TYPE   typ   lvl  1  siz    48  off     0
-> (RECORD (age integer)
-> (friend (^ person))
-> (location (RECORD (re real)
-> (im real)))
-> (favorite   0 ..   2)
-> (salary real))
-> pp  TYPE   typ   lvl  1  siz     8  off     0
-> (^ person)
-> john  VAR    4 typ   lvl  1  siz     8  off     0
-> (^ person)
-> (program graph1 (progn output)
-> (progn (:= (aref (^ (aref (^ john)
-> 8))
-> 24)
-> 4.500000e+00)))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
-> movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
-> movsd	%xmm0,24(%rcx)         	#  %xmm0 -> ^. [24+%rcx]
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .align  8
-> .LC1:
-> .long	0   	#  4.500000
-> .long	1074921472
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-42,44c42,45
-< movl	$24,%eax         	#  24 -> %eax
-< cltq	                  	#  sign-extend
-< movsd	%r8,-24(%rbp)     	#  %r8 -> y
----
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
-> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
-> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,83
-> yyparse result =        0
-> Symbol table level 1
-> complex  TYPE   typ   lvl  1  siz    16  off     0
-> (RECORD (re real)
-> (im real))
-> red  CONST  typ INTEGER  val  0
-> white  CONST  typ INTEGER  val  1
-> blue  CONST  typ INTEGER  val  2
-> color  TYPE   typ   lvl  1  siz     4  off     0
-> 0 ..   2
-> person  TYPE   typ   lvl  1  siz    48  off     0
-> (RECORD (age integer)
-> (friend (^ person))
-> (location (RECORD (re real)
-> (im real)))
-> (favorite   0 ..   2)
-> (salary real))
-> pp  TYPE   typ   lvl  1  siz     8  off     0
-> (^ person)
-> john  VAR    4 typ   lvl  1  siz     8  off     0
-> (^ person)
-> (program graph1 (progn output)
-> (progn (:= (aref (^ john)
-> 0)
-> 19)
-> (:= (aref (^ john)
-> 0)
-> 19)
-> (:= (aref (^ john)
-> 0)
-> 19)
-> (:= (aref (^ john)
-> 0)
-> 19)
-> (:= (aref (^ john)
-> 0)
-> 19)
-> (:= (aref (^ john)
-> 0)
-> 19)))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
+Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
+-------- end Epilogue; Literal data follows ------------------
 > .section        .rodata
 > .ident  "CS 375 Compiler - XXXX"
-Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-51,68c51,68
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
+Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
+27,28c27,29
+< movl	$96,%ecx         	#  96 -> %ecx
+< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
 ---
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
- john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> movl	$19,%eax         	#  19 -> %eax
-> movq	-32(%rbp),%rcx     	#  john -> %rcx
-> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
+> movl	$96,%eax         	#  96 -> %eax
+> cltq	                  	#  sign-extend
+> movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
+Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-51,68c51,68
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
-< movl	$0,%eax         	#  0 -> %eax
-< cltq	                  	#  sign-extend
-< movl	%r8,-24(%rbp)     	#  %r8 -> sum
----
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-> movq	-32(%rbp),%rax     	#  john -> %rax
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum

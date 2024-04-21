@@ -19,7 +19,7 @@ lexanc:  lexandr.o lexanc.o scanner.o printtoken.o token.h lexan.h
 # To compile your file lexan.l --> lexer
 # 
 lexer:  lex.yy.o lexanl.o printtoken.o token.h lexan.h
-	cc -o lexer lex.yy.o lexanl.o printtoken.o -g
+	cc -o lexer lex.yy.o lexanl.o printtoken.o
 
 # To compile starter file lex2.l --> lex2
 # 
@@ -87,10 +87,10 @@ lexandr.o: lexandr.c token.h lexan.h
 	cc -c lexandr.c -g
 
 lexanl.o: lexanl.c token.h lexan.h
-	cc -c lexanl.c -g
+	cc -c lexanl.c
 
 lex1.o: lex1.c token.h lexan.h
-	cc -c lex1.c -g
+	cc -c lex1.c
 
 lexanc.o: lexanc.c token.h lexan.h
 	cc -c lexanc.c -g
@@ -129,7 +129,7 @@ lex.yy.o: lex.yy.c
 	cc -c lex.yy.c -g
 
 lex.yy.c: lexan.l token.h
-	lex lexan.l -g
+	lex lexan.l
 
 lex2.yy.o: lex2.yy.c
 	cc -c lex2.yy.c -g
