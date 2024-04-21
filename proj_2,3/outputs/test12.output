@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94431057469040           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94431057469136           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94814969417328           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94814969417424           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= x (- y))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -19,38 +19,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= x (- y)))
- PROGNOP detected.
-(:= x (- y))
-
-In genc()
-(:= x (- y))
-
- ASSIGNOP detected.
-(:= x (- y))#####
-x
-entered genarith
-code->tokentype: 0
-(- y)
-code->operands: 
-y
-code->operands->tokentype: 3
-
-In genarith()
-(- y)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-y
-In genarith()
-y
- IDENTIFIERTOK detected; symbol table entry:
-y 94431057469136           y knd 3 1  typ 94431057437344 lvl 1  siz     8  off     8 lnk 0
- offset: 8
-
 	movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
+	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
+	xorpd	%xmm1,%xmm0           	#  negate %xmm0
+	movsd	%xmm1,-32(%rbp)     	#  %xmm1 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -60,5 +32,11 @@ y 94431057469136           y knd 3 1  typ 94431057437344 lvl 1  siz     8  off  
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
+	.align 16
+.LC666:                    # constant for floating negation
+	.long	0
+	.long	-2147483648
+	.long	0
+	.long	0
 
         .ident  "CS 375 Compiler - Spring 2024"

@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94467990638064           n  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94495050333680           n  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= n 1)
                        (progn (label 0)
@@ -23,119 +23,21 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= n 1)
-       (progn (label 0)
-              (progn (:= n (- n 1)))
-              (if (= n 0)
-                  (progn)
-                  (goto 0))))
- PROGNOP detected.
-(:= n 1)
-
-In genc()
-(:= n 1)
-
- ASSIGNOP detected.
-(:= n 1)#####
-n
-entered genarith
-code->tokentype: 5
-1
-In genarith()
-1
 	movl	$1,%eax         	#  1 -> %eax
-
-In genc()
-(progn (label 0)
-       (progn (:= n (- n 1)))
-       (if (= n 0)
-           (progn)
-           (goto 0)))
- PROGNOP detected.
-(label 0)
-
-In genc()
-(label 0)
- LABELOP detected.
-0
+	movl	%eax,-32(%rbp)     	#  %eax -> n
 .L0:
-
-In genc()
-(progn (:= n (- n 1)))
- PROGNOP detected.
-(:= n (- n 1))
-
-In genc()
-(:= n (- n 1))
-
- ASSIGNOP detected.
-(:= n (- n 1))#####
-n
-entered genarith
-code->tokentype: 0
-(- n 1)
-code->operands: 
-n
-code->operands->tokentype: 3
-
-In genarith()
-(- n 1)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-n
-In genarith()
-n
- IDENTIFIERTOK detected; symbol table entry:
-n 94467990638064           n knd 3 0  typ 94467990606592 lvl 1  siz     4  off     0 lnk 0
- offset: 0
-
 	movl	-32(%rbp),%eax     	#  n -> %eax
-
-In genc()
-(if (= n 0)
-    (progn)
-    (goto 0))
- IFOP detected.
-(= n 0)
-entered genarith
-code->tokentype: 0
-(= n 0)
-code->operands: 
-n
-code->operands->tokentype: 3
-
-In genarith()
-(= n 0)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-n
-In genarith()
-n
- IDENTIFIERTOK detected; symbol table entry:
-n 94467990638064           n knd 3 0  typ 94467990606592 lvl 1  siz     4  off     0 lnk 0
- offset: 0
-
+	movl	$1,%ecx         	#  1 -> %ecx
+	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> n
 	movl	-32(%rbp),%eax     	#  n -> %eax
+	movl	$0,%ecx         	#  0 -> %ecx
+	cmpl	%ecx,%eax           	#  compare %eax - %ecx
+	je	.L2 			#  jump if     ==
 	jmp	.L0 			#  jump 
-	jmp	.L2 			#  jump 
-.L0:
-
-In genc()
-(progn)
- PROGNOP detected.
-ppexpr called with bad pointer 0
- token 0  NULL
-
+	jmp	.L3 			#  jump 
 .L2:
-
-In genc()
-(= n 0)
- FUNCALLOP detected.
-(= n 0)n0
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

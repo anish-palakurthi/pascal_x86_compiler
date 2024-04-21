@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94240441319024           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94240441319120           n  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94869121781360           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94869121781456           n  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 0)
@@ -24,139 +24,23 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (progn (:= i 0)
-              (label 0)
-              (if (<= i 32)
-                  (progn (:= n 1)
-                         (:= i (+ i 1))
-                         (goto 0)))))
- PROGNOP detected.
-(progn (:= i 0)
-       (label 0)
-       (if (<= i 32)
-           (progn (:= n 1)
-                  (:= i (+ i 1))
-                  (goto 0))))
-
-In genc()
-(progn (:= i 0)
-       (label 0)
-       (if (<= i 32)
-           (progn (:= n 1)
-                  (:= i (+ i 1))
-                  (goto 0))))
- PROGNOP detected.
-(:= i 0)
-
-In genc()
-(:= i 0)
-
- ASSIGNOP detected.
-(:= i 0)#####
-i
-entered genarith
-code->tokentype: 5
-0
-In genarith()
-0
 	movl	$0,%eax         	#  0 -> %eax
-
-In genc()
-(label 0)
- LABELOP detected.
-0
+	movl	%eax,-32(%rbp)     	#  %eax -> i
 .L0:
-
-In genc()
-(if (<= i 32)
-    (progn (:= n 1)
-           (:= i (+ i 1))
-           (goto 0)))
- IFOP detected.
-(<= i 32)
-entered genarith
-code->tokentype: 0
-(<= i 32)
-code->operands: 
-i
-code->operands->tokentype: 3
-
-In genarith()
-(<= i 32)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-i
-In genarith()
-i
- IDENTIFIERTOK detected; symbol table entry:
-i 94240441319024           i knd 3 0  typ 94240441287424 lvl 1  siz     4  off     0 lnk 94240441319120
- offset: 0
-
 	movl	-32(%rbp),%eax     	#  i -> %eax
-	jmp	.L2 			#  jump 
-.L0:
-
-In genc()
-(progn (:= n 1)
-       (:= i (+ i 1))
-       (goto 0))
- PROGNOP detected.
-(:= n 1)
-
-In genc()
-(:= n 1)
-
- ASSIGNOP detected.
-(:= n 1)#####
-n
-entered genarith
-code->tokentype: 5
-1
-In genarith()
-1
-	movl	$1,%eax         	#  1 -> %eax
-
-In genc()
-(:= i (+ i 1))
-
- ASSIGNOP detected.
-(:= i (+ i 1))#####
-i
-entered genarith
-code->tokentype: 0
-(+ i 1)
-code->operands: 
-i
-code->operands->tokentype: 3
-
-In genarith()
-(+ i 1)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-i
-In genarith()
-i
- IDENTIFIERTOK detected; symbol table entry:
-i 94240441319024           i knd 3 0  typ 94240441287424 lvl 1  siz     4  off     0 lnk 94240441319120
- offset: 0
-
-	movl	-32(%rbp),%eax     	#  i -> %eax
-
-In genc()
-(goto 0)
- GOTOOP detected.
-0
-	jmp	.L0 			#  jump 
+	movl	$32,%ecx         	#  32 -> %ecx
+	cmpl	%ecx,%eax           	#  compare %eax - %ecx
+	jle	.L2 			#  jump if     <=
+	jmp	.L3 			#  jump 
 .L2:
-
-In genc()
-(<= i 32)
- FUNCALLOP detected.
-(<= i 32)i32
+	movl	$1,%eax         	#  1 -> %eax
+	movl	%eax,-28(%rbp)     	#  %eax -> n
+	movl	-32(%rbp),%eax     	#  i -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> i
+	jmp	.L0 			#  jump 
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

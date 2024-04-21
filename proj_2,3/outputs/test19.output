@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94604481326672        john  VAR    4 typ 94604481326576  lvl  1  siz     8  off     0
+ 94620724436560        john  VAR    4 typ 94620724436464  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------
@@ -19,42 +19,9 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= john (funcall new 8)))
- PROGNOP detected.
-(:= john (funcall new 8))
-
-In genc()
-(:= john (funcall new 8))
-
- ASSIGNOP detected.
-(:= john (funcall new 8))#####
-john
-entered genarith
-code->tokentype: 0
-(funcall new 8)
-code->operands: 
-new
-code->operands->tokentype: 3
-
-In genarith()
-(funcall new 8)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-new
-In genarith()
-new
- IDENTIFIERTOK detected; symbol table entry:
-new 94604481297984         new knd 5 0  typ 94604481298080 lvl 0  siz     0  off     0 lnk 94604481298272
- offset: 0
-
-FUNCTIONSYM
-code->link: 
-8
-code->link->tokentype: 5
-code->link->stringval: 
+	movl	$8,%eax         	#  8 -> %eax
+	call	new@PLT          	#  new()
+	movl	%eax,-32(%rbp)     	#  %eax -> john
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

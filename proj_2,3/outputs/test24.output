@@ -1,12 +1,12 @@
 yyparse result =        0
 Symbol table level 1
- 93836069462096     complex  TYPE   typ 93836069461808  lvl  1  siz    16  off     0
+ 94879424618576     complex  TYPE   typ 94879424618288  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93836069463216          ac  VAR    0 typ 93836069463120  lvl  1  siz   160  off     0
+ 94879424619696          ac  VAR    0 typ 94879424619600  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
- 93836069463568           y  VAR    1 typ    real  lvl  1  siz     8  off   160
+ 94879424620048           y  VAR    1 typ    real  lvl  1  siz     8  off   160
 (program graph1 (progn output)
                 (progn (:= y (aref ac 96))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -24,37 +24,9 @@ graph1:
         subq	$192, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= y (aref ac 96)))
- PROGNOP detected.
-(:= y (aref ac 96))
-
-In genc()
-(:= y (aref ac 96))
-
- ASSIGNOP detected.
-(:= y (aref ac 96))#####
-y
-entered genarith
-code->tokentype: 0
-(aref ac 96)
-code->operands: 
-ac
-code->operands->tokentype: 3
-
-In genarith()
-(aref ac 96)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-ac
-In genarith()
-ac
- IDENTIFIERTOK detected; symbol table entry:
-ac 93836069463216          ac knd 3 0  typ 93836069463120 lvl 1  siz   160  off     0 lnk 93836069463568
- offset: 0
-
+	movl	$96,%eax         	#  96 -> %eax
+	cltq	                  	#  sign-extend
+	movsd	%r8,-32(%rbp)     	#  %r8 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

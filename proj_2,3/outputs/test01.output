@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94788546575856           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94137771056624           x  VAR    1 typ    real  lvl  1  siz     8  off     0
 (program graph1 (progn output)
                 (progn (:= x 4.500000e+00)))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,24 +18,8 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= x 4.500000e+00))
- PROGNOP detected.
-(:= x 4.500000e+00)
-
-In genc()
-(:= x 4.500000e+00)
-
- ASSIGNOP detected.
-(:= x 4.500000e+00)#####
-x
-entered genarith
-code->tokentype: 5
-4.500000e+00
-In genarith()
-4.500000e+00
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
+	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

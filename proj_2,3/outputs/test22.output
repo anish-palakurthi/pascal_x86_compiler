@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 93884997578352           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93884997578448           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94847858048624           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94847858048720           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (* (funcall exp x)
                                 (funcall sin x)))))# ---------------- Beginning of Generated Code --------------------
@@ -20,58 +20,14 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= y (* (funcall exp x)
-                (funcall sin x))))
- PROGNOP detected.
-(:= y (* (funcall exp x)
-         (funcall sin x)))
-
-In genc()
-(:= y (* (funcall exp x)
-         (funcall sin x)))
-
- ASSIGNOP detected.
-(:= y (* (funcall exp x)
-         (funcall sin x)))#####
-y
-entered genarith
-code->tokentype: 0
-(* (funcall exp x)
-   (funcall sin x))
-code->operands: 
-(funcall exp x)
-code->operands->tokentype: 0
-
-In genarith()
-(* (funcall exp x)
-   (funcall sin x))
-Should enter this if operator clause
-entered genarith
-code->tokentype: 0
-(funcall exp x)
-code->operands: 
-exp
-code->operands->tokentype: 3
-
-In genarith()
-(funcall exp x)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-exp
-In genarith()
-exp
- IDENTIFIERTOK detected; symbol table entry:
-exp 93884997547040         exp knd 5 0  typ 93884997547136 lvl 0  siz     0  off     0 lnk 93884997547328
- offset: 0
-
-FUNCTIONSYM
-code->link: 
-x
-code->link->tokentype: 3
-code->link->stringval: x
+	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+	call	exp@PLT          	#  exp()
+	movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
+	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+	call	sin@PLT          	#  sin()
+	movsd	-8(%rbp),%xmm0     	#  temp -> %xmm0
+	mulsd	%xmm0,%xmm0         	#  %xmm0 * %xmm0 -> %xmm0
+	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

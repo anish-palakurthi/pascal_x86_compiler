@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94213922135536           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93944587451888           x  VAR    1 typ    real  lvl  1  siz     8  off     0
 (program graph1 (progn output)
                 (progn (:= x (* x 4.500000e+00))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,38 +18,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-
-In genc()
-(progn (:= x (* x 4.500000e+00)))
- PROGNOP detected.
-(:= x (* x 4.500000e+00))
-
-In genc()
-(:= x (* x 4.500000e+00))
-
- ASSIGNOP detected.
-(:= x (* x 4.500000e+00))#####
-x
-entered genarith
-code->tokentype: 0
-(* x 4.500000e+00)
-code->operands: 
-x
-code->operands->tokentype: 3
-
-In genarith()
-(* x 4.500000e+00)
-Should enter this if operator clause
-entered genarith
-code->tokentype: 3
-x
-In genarith()
-x
- IDENTIFIERTOK detected; symbol table entry:
-x 94213922135536           x knd 3 1  typ 94213922103968 lvl 1  siz     8  off     0 lnk 0
- offset: 0
-
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+	movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
+	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -59,5 +31,9 @@ x 94213922135536           x knd 3 1  typ 94213922103968 lvl 1  siz     8  off  
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
+	.align  8
+.LC1:
+	.long	0   	#  4.500000
+	.long	1074921472
 
         .ident  "CS 375 Compiler - Spring 2024"
