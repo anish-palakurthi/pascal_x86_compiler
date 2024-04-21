@@ -282,8 +282,11 @@ int genarith(TOKEN code) {
 
     }
     else if (code->tokentype == OPERATOR) {
-
-        if (code->whichval == FUNCALLOP){
+        // ppexpr(code);
+        // printf("\n");
+        // printf("code->stringval: %s\n", code->stringval);
+        // printf("code->operands->stringval: %s\n", code->operands->stringval);
+        if (code->whichval == FUNCALLOP && strcmp(code->operands->stringval, "new") != 0) {
             return genfun(code);
         }
         if (first_op_genarith == NULL) {
@@ -496,7 +499,6 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         out = lhs_reg;
     }
     else if (which_val == FUNCALLOP) {
-
         if (inline_funcall) {
 
             if (num_funcalls_in_curr_tree > 1) {
