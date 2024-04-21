@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94201410940336           d  CONST  typ    REAL  val  6.250000e-02
- 94201410940688           s  CONST  typ INTEGER  val  32
- 94201410941040           h  CONST  typ INTEGER  val  34
- 94201410941392           c  CONST  typ    REAL  val  6.283180e+00
- 94201410941744         lim  CONST  typ INTEGER  val  32
- 94201410942352           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94201410942448           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94201410942928           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94201410943024           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94096056692144           d  CONST  typ    REAL  val  6.250000e-02
+ 94096056692496           s  CONST  typ INTEGER  val  32
+ 94096056692848           h  CONST  typ INTEGER  val  34
+ 94096056693200           c  CONST  typ    REAL  val  6.283180e+00
+ 94096056693552         lim  CONST  typ INTEGER  val  32
+ 94096056694160           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94096056694256           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94096056694736           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94096056694832           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
