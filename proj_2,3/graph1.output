@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 93888756538800           d  CONST  typ    REAL  val  6.250000e-02
- 93888756539152           s  CONST  typ INTEGER  val  32
- 93888756539504           h  CONST  typ INTEGER  val  34
- 93888756539856           c  CONST  typ    REAL  val  6.283180e+00
- 93888756540208         lim  CONST  typ INTEGER  val  32
- 93888756540816           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93888756540912           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 93888756541392           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 93888756541488           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94185192283568           d  CONST  typ    REAL  val  6.250000e-02
+ 94185192283920           s  CONST  typ INTEGER  val  32
+ 94185192284272           h  CONST  typ INTEGER  val  34
+ 94185192284624           c  CONST  typ    REAL  val  6.283180e+00
+ 94185192284976         lim  CONST  typ INTEGER  val  32
+ 94185192285584           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94185192285680           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94185192286160           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94185192286256           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -80,6 +80,7 @@ graph1:
 	cvttsd2si	%xmm0,%eax    	#  fix %xmm0 -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> n
 .L0:
+	leaq	.LC9(%rip),%rdi  	#  addr of literal .LC9
 	call	write@PLT          	#  write()
 	movl	-28(%rbp),%eax     	#  n -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
@@ -88,11 +89,12 @@ graph1:
 	movl	-28(%rbp),%eax     	#  n -> %eax
 	movl	$0,%ecx         	#  0 -> %ecx
 	cmpl	%ecx,%eax           	#  compare %eax - %ecx
-	je	.L9 			#  jump if     ==
+	je	.L10 			#  jump if     ==
 	jmp	.L0 			#  jump 
-	jmp	.L10 			#  jump 
-.L9:
+	jmp	.L11 			#  jump 
 .L10:
+.L11:
+	leaq	.LC12(%rip),%rdi  	#  addr of literal .LC12
 	call	writelni@PLT          	#  writelni()
 	movl	-32(%rbp),%eax     	#  i -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
@@ -115,6 +117,12 @@ graph1:
 	.long	-2147483648
 	.long	0
 	.long	0
+	.align  4
+.LC9:
+	.string	" "
+	.align  4
+.LC12:
+	.string	"*"
 	.align  8
 .LC5:
 	.long	0   	#  0.062500
