@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94865537437168           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94450387906032           x  VAR    1 typ    real  lvl  1  siz     8  off     0
 (program graph1 (progn output)
                 (progn (:= x (* x 4.500000e+00))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,7 +18,22 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+genarith
+code: 
+(* x 4.500000e+00)
+code->tokentype: 0
+OPERATOR tokentype in genarith
+code->operands: 
+x
+genarith
+code: 
+x
+code->tokentype: 3
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+genarith
+code: 
+4.500000e+00
+code->tokentype: 5
 	movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x

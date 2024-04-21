@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94280514485968         ptr  VAR    4 typ 94280514485872  lvl  1  siz     8  off     0
+ 94765352406736         ptr  VAR    4 typ 94765352406640  lvl  1  siz     8  off     0
 (^ real)
- 94280514486064        john  VAR    4 typ 94280514485872  lvl  1  siz     8  off     8
+ 94765352406832        john  VAR    4 typ 94765352406640  lvl  1  siz     8  off     8
 (^ real)
 (program graph1 (progn output)
                 (progn (:= ptr john)))# ---------------- Beginning of Generated Code --------------------
@@ -21,6 +21,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+genarith
+code: 
+john
+code->tokentype: 3
 	movq	-24(%rbp),%rax     	#  john -> %rax
 	movq	%rax,-32(%rbp)     	#  %rax -> ptr
 # ----------------------- begin Epilogue code ---------------------------

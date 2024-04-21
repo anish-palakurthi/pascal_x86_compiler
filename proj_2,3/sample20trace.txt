@@ -1,8 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94804759567856           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93905579265648           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93905579265744           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
-                (progn (:= x (- x 4.500000e+00))))# ---------------- Beginning of Generated Code --------------------
+                (progn (:= y (funcall exp x))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
         .globl graph1
@@ -18,25 +19,21 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+genc
+ token 93905579265840  OP         progn  dtype  0  link 0  operands 93905579265968
+genc
+ token 93905579265968  OP            :=  dtype  1  link 0  operands 93905579265904
 genarith
-code: 
-(- x 4.500000e+00)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-x
+ token 93905579266096  OP       funcall  dtype  1  link 0  operands 93905579266032
 genarith
-code: 
-x
-code->tokentype: 3
+ token 93905579266160  ID             x  dtype  1  link 0
+getreg
+chosen 16
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
-genarith
-code: 
-4.500000e+00
-code->tokentype: 5
-	movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
-	subsd	%xmm1,%xmm0         	#  %xmm0 - %xmm1 -> %xmm0
-	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+	call	exp@PLT          	#  exp()
+genfunc
+no of arguments: 1 token 93905579266096  OP       funcall  dtype  1  link 0  operands 93905579266032
+	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -46,9 +43,5 @@ code->tokentype: 5
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
-	.align  8
-.LC1:
-	.long	0   	#  4.500000
-	.long	1074921472
 
         .ident  "CS 375 Compiler - Spring 2024"

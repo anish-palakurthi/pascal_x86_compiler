@@ -16,6 +16,8 @@ graph1:
         subq	$16, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+	leaq	.LC1(%rip),%rdi  	#  addr of literal .LC1
+	call	write@PLT          	#  write()
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -25,5 +27,8 @@ graph1:
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
+	.align  4
+.LC1:
+	.string	"i = "
 
         .ident  "CS 375 Compiler - Spring 2024"

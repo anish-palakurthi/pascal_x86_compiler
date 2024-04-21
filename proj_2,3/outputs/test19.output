@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94427577384528        john  VAR    4 typ 94427577384432  lvl  1  siz     8  off     0
+ 93840877121104        john  VAR    4 typ 93840877121008  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------
@@ -19,10 +19,25 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+genarith
+code: 
+(funcall new 8)
+code->tokentype: 0
+OPERATOR tokentype in genarith
+code->operands: 
+new
+genarith
+code: 
+new
+code->tokentype: 3
+code->link->tokentype: 5
+genarith
+code: 
+8
+code->tokentype: 5
 	movl	$8,%eax         	#  8 -> %eax
-	movl	%eax,%edi         	#  %eax -> %edi
-	call	new@PLT          	#  new()
-	movq	%rax,-32(%rbp)     	#  %rax -> john
+INLINE HANDLING
+	movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> john
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
