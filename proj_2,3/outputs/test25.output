@@ -1,23 +1,23 @@
 yyparse result =        0
 Symbol table level 1
- 94110954258512     complex  TYPE   typ 94110954258224  lvl  1  siz    16  off     0
+ 93936713072720     complex  TYPE   typ 93936713072432  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94110954259376         red  CONST  typ INTEGER  val  0
- 94110954259536       white  CONST  typ INTEGER  val  1
- 94110954259696        blue  CONST  typ INTEGER  val  2
- 94110954259888       color  TYPE   typ 94110954259792  lvl  1  siz     4  off     0
+ 93936713073584         red  CONST  typ INTEGER  val  0
+ 93936713073744       white  CONST  typ INTEGER  val  1
+ 93936713073904        blue  CONST  typ INTEGER  val  2
+ 93936713074096       color  TYPE   typ 93936713074000  lvl  1  siz     4  off     0
   0 ..   2
- 94110954260304      person  TYPE   typ 94110954262128  lvl  1  siz    48  off     0
+ 93936713074512      person  TYPE   typ 93936713076336  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94110954260496          pp  TYPE   typ 94110954260400  lvl  1  siz     8  off     0
+ 93936713074704          pp  TYPE   typ 93936713074608  lvl  1  siz     8  off     0
 (^ person)
- 94110954263088        john  VAR    4 typ 94110954260400  lvl  1  siz     8  off     0
+ 93936713077296        john  VAR    4 typ 93936713074608  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)

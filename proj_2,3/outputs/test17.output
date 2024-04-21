@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94426141662704           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94675496369648           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (funcall writelni i)))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,9 +18,6 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	movl	-32(%rbp),%eax     	#  i -> %eax
-	movl	%eax,%edi         	#  %eax -> %edi
-	call	writelni@PLT          	#  writelni()
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

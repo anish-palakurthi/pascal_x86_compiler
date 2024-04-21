@@ -286,10 +286,10 @@ int genarith(TOKEN code) {
         // printf("\n");
         // printf("code->stringval: %s\n", code->stringval);
         // printf("code->operands->stringval: %s\n", code->operands->stringval);
-        if (code->whichval == FUNCALLOP && strcmp(code->operands->stringval, "new") != 0) {
+        // if (code->whichval == FUNCALLOP && strcmp(code->operands->stringval, "new") != 0) {
 
-            return genfun(code);
-        }
+        //     return genfun(code);
+        // }
         if (first_op_genarith == NULL) {
             first_op_genarith = code;
         }
@@ -968,23 +968,20 @@ void genc(TOKEN code) {
         // genc() for else crap?
 
     }
-    else {  // which_val == FUNCALLOP
-        /* Compile short intrinsic functions inline.
-           For others, generate subroutine calls. */
+else if (which_val == FUNCALLOP) {
+    if (DEBUGGEN) {
+        printf(" FUNCALLOP detected.\n");
+        ppexpr(code);
+        ppexpr(code->operands);
+        ppexpr(code->operands->link);
+        printf("\n");
+    }
 
-        if (DEBUGGEN) {
-            printf(" FUNCALLOP detected.\n");
-            ppexpr(code);
-            ppexpr(code->operands);
-            ppexpr(code->operands->link);
-            printf("\n");
-        }
+    lhs = code->operands;
+    rhs = code->operands->link;
+    SYMBOL sym = searchst(lhs->stringval);
 
-        lhs = code->operands;
-        rhs = code->operands->link;
-        SYMBOL argsym;
-
-        if (strstr(lhs->stringval, "write")) {      // != NULL
+    if (strstr(lhs->stringval, "write")) {      // != NULL
             sym = searchst(lhs->stringval);
 
             if (rhs->tokentype == STRINGTOK) {
@@ -1018,63 +1015,36 @@ void genc(TOKEN code) {
                     printf("\nPTROP UNFINISHED\n");
                 }
             }
-
-            else if (sym != NULL && (sym->datatype->basicdt == INTEGER ||
-                sym->datatype->basicdt == REAL)) {
-                
-                SYMBOL argsym;
-
-                if (rhs->tokentype == NUMBERTOK) {
-                    printf("\nNUMBERTOK UNFINISHED\n");
-                }             
-
-                else if (rhs->tokentype == IDENTIFIERTOK) {
-                    argsym = searchst(rhs->stringval);
-                    if (!argsym) {
-                        printf("Error: no symbol table entry for var \"%s\"", rhs->stringval);
-                        return;
-                    }
-
-                    if (argsym->basicdt == INTEGER) {
-                        reg_num = getreg(INTEGER);
-                        offs = argsym->offset - stkframesize;
-
-                        asmld(MOVL, offs, reg_num, argsym->namestring);
-                        asmrr(MOVL, reg_num, EDI);
-                        asmcall(lhs->stringval);
-                    }
-
-                    else if (argsym->basicdt == REAL) {
-                        reg_num = getreg(REAL);
-                        offs = argsym->offset - stkframesize;
-                        asmld(MOVSD, offs, reg_num, argsym->namestring);
-                        asmrr(MOVSD, reg_num, EDI);
-                        asmcall(lhs->stringval);
-                    }
-                }
-            }
-        }
-
-        else if (strcmp(lhs->stringval, "new") == 0) {
-            new_funcall_flag = true;
-            num = lhs->intval;
-            reg_num = getreg(INTEGER);  // ???
-            sym = lhs->symentry;
-            offs = sym->offset - stkframesize;
-
-            if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE) {
-                asmimmed(MOVL, num, reg_num);
-            }
-
-            asmrr(MOVL, reg_num, EDI);
-               
-        }
-        else {
-            
-        }
-        // else ALL OTHERS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     }
+
+    else if (strcmp(lhs->stringval, "new") == 0) {
+        new_funcall_flag = true;
+        num = lhs->intval;
+        reg_num = getreg(INTEGER);  // ???
+        sym = lhs->symentry;
+        offs = sym->offset - stkframesize;
+
+        if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE) {
+            asmimmed(MOVL, num, reg_num);
+        }
+
+        asmrr(MOVL, reg_num, EDI);
+    }
+    else if (sym && (sym->datatype->basicdt == REAL || sym->datatype->basicdt == INTEGER)) {
+        reg_num = genarith(rhs);
+        asmcall(lhs->stringval);
+
+        if (sym->datatype->basicdt == REAL) {
+            saved_float_reg = reg_num;
+            saved_float_reg_num = reg_num;
+        } else {
+            saved_rhs_reg = code;
+            saved_rhs_reg_num = reg_num;
+        }
+    } else {
+        printf("Error: unsupported function call\n");
+    }
+}
 
 }   // genc() end
 
