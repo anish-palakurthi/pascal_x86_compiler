@@ -130,6 +130,7 @@ int getreg(int kind) {
 
     return RBASE;
 }
+
 /* Generate code for a function call */
 int genfun(TOKEN code) {
     TOKEN tok = code->operands; //FUNCTION
@@ -281,20 +282,10 @@ int genarith(TOKEN code) {
 
     }
     else if (code->tokentype == OPERATOR) {
-        // printf("OPERATOR detected, from genarith().\n");
-        if (code->whichval == FUNCALLOP) {
-            // printf("FUNCALLOP detected, from genarith().\n");
+
+        if (code->whichval == FUNCALLOP){
             return genfun(code);
-            // free_reg(lhs_reg);
-            // lhs_reg = saved_inline_regs[num_inlines_processed - 1];
-            // mark_reg_used(lhs_reg);
         }
-        
-        lhs_reg = genarith(code->operands);
-
-    
-        
-
         if (first_op_genarith == NULL) {
             first_op_genarith = code;
         }
@@ -302,14 +293,8 @@ int genarith(TOKEN code) {
             nested_refs = true;
         }
 
-        
-        if (code->operands->whichval == FUNCALLOP) {
-            // printf("FUNCALLOP detected, from genarith().\n");
-            
-            free_reg(lhs_reg);
-            lhs_reg = saved_inline_regs[num_inlines_processed - 1];
-            mark_reg_used(lhs_reg);
-        }
+        lhs_reg = genarith(code->operands);
+
         if (code->operands->link) {
             rhs_reg = genarith(code->operands->link);
         }
@@ -318,7 +303,12 @@ int genarith(TOKEN code) {
             rhs_reg = 0;
         }
 
+        if (code->operands->whichval == FUNCALLOP) {
 
+            free_reg(lhs_reg);
+            lhs_reg = saved_inline_regs[num_inlines_processed - 1];
+            mark_reg_used(lhs_reg);
+        }
         if (code->operands->link) {
             if (code->operands->link->whichval == FUNCALLOP) {
 
@@ -403,7 +393,7 @@ TOKEN get_last_operand(TOKEN tok) {
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
     if (DEBUGGEN) {
-        // printf(" OPERATOR detected, from genarith().\n");
+        printf(" OPERATOR detected, from genarith().\n");
 //        printf(" %s\n", opprint[which_val]);
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }
@@ -773,9 +763,6 @@ void genc(TOKEN code) {
         }
 
         reg_num = genarith(rhs);                        /* generate rhs into a register */
-
-        return;
-
         saved_rhs_reg = rhs;
         saved_rhs_reg_num = reg_num;
 

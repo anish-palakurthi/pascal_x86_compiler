@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94343434763760           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94365404302832           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= i 1)))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -19,6 +19,7 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movl	$1,%eax         	#  1 -> %eax
+	movl	%eax,-32(%rbp)     	#  %eax -> i
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

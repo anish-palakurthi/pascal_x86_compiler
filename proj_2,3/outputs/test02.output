@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94845983866576         ptr  VAR    4 typ 94845983866480  lvl  1  siz     8  off     0
+ 94648814550736         ptr  VAR    4 typ 94648814550640  lvl  1  siz     8  off     0
 (^ real)
- 94845983866672        john  VAR    4 typ 94845983866480  lvl  1  siz     8  off     8
+ 94648814550832        john  VAR    4 typ 94648814550640  lvl  1  siz     8  off     8
 (^ real)
 (program graph1 (progn output)
                 (progn (:= ptr john)))# ---------------- Beginning of Generated Code --------------------
@@ -22,6 +22,7 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movq	-24(%rbp),%rax     	#  john -> %rax
+	movq	%rax,-32(%rbp)     	#  %rax -> ptr
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
