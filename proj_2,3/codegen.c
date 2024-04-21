@@ -281,15 +281,19 @@ int genarith(TOKEN code) {
 
     }
     else if (code->tokentype == OPERATOR) {
-        printf("OPERATOR detected, from genarith().\n");
+        // printf("OPERATOR detected, from genarith().\n");
         if (code->whichval == FUNCALLOP) {
-            printf("FUNCALLOP detected, from genarith().\n");
+            // printf("FUNCALLOP detected, from genarith().\n");
             return genfun(code);
             // free_reg(lhs_reg);
             // lhs_reg = saved_inline_regs[num_inlines_processed - 1];
             // mark_reg_used(lhs_reg);
         }
-        return;
+        
+        lhs_reg = genarith(code->operands);
+
+    
+        
 
         if (first_op_genarith == NULL) {
             first_op_genarith = code;
@@ -298,8 +302,14 @@ int genarith(TOKEN code) {
             nested_refs = true;
         }
 
-        lhs_reg = genarith(code->operands);
-
+        
+        if (code->operands->whichval == FUNCALLOP) {
+            // printf("FUNCALLOP detected, from genarith().\n");
+            
+            free_reg(lhs_reg);
+            lhs_reg = saved_inline_regs[num_inlines_processed - 1];
+            mark_reg_used(lhs_reg);
+        }
         if (code->operands->link) {
             rhs_reg = genarith(code->operands->link);
         }
@@ -393,7 +403,7 @@ TOKEN get_last_operand(TOKEN tok) {
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
     if (DEBUGGEN) {
-        printf(" OPERATOR detected, from genarith().\n");
+        // printf(" OPERATOR detected, from genarith().\n");
 //        printf(" %s\n", opprint[which_val]);
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }

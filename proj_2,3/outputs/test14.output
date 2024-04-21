@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94222357417552         ptr  VAR    4 typ 94222357417456  lvl  1  siz     8  off     0
+ 94669831261776         ptr  VAR    4 typ 94669831261680  lvl  1  siz     8  off     0
 (^ integer)
- 94222357417968           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94669831262192           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (progn (label 0)
                               (if (<> ptr 0)
@@ -24,12 +24,17 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 .L0:
-OPERATOR detected, from genarith().
-	jmp	.L2 			#  jump 
-.L7:
-OPERATOR detected, from genarith().
-	jmp	.L0 			#  jump 
+	movq	-32(%rbp),%rax     	#  ptr -> %rax
+	movq	$0,%rcx         	#  0 -> %rcx
+	cmpq	%rcx,%rax           	#  compare %rax - %rcx
+	jne	.L2 			#  jump if     !=
+	jmp	.L3 			#  jump 
 .L2:
+	movl	-24(%rbp),%eax     	#  i -> %eax
+	movl	$1,%ecx         	#  1 -> %ecx
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	jmp	.L0 			#  jump 
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

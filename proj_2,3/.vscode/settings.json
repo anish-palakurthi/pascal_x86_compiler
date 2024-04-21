@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "ratio": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "random": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "algorithm": "c"
     }
 }
