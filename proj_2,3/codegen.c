@@ -37,7 +37,7 @@
 
 
 /* Set DEBUGGEN to 1 for debug printouts of code generation */
-#define DEBUGGEN 0
+#define DEBUGGEN 1
 
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
@@ -134,7 +134,16 @@ int getreg(int kind) {
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
-
+    printf("entered genarith\n");
+    printf("code->tokentype: %d\n", code->tokentype);
+    ppexpr(code);
+    if (code->operands){
+        printf("\ncode->operands: \n");
+        ppexpr(code->operands);
+        printf("\n");
+        printf("code->operands->tokentype: %d\n", code->operands->tokentype);
+    }
+    // code = code->operands;
     if (DEBUGGEN) {
         printf("\nIn genarith()\n");
 //        dbugprinttok(code);
@@ -185,6 +194,7 @@ int genarith(TOKEN code) {
     
     else if (code->tokentype == IDENTIFIERTOK) {
 
+
         sym = searchst(code->stringval);
         if (!sym) {
             return symbol_is_null_int(code->stringval);
@@ -201,9 +211,21 @@ int genarith(TOKEN code) {
         num = sym->offset;
 
         if (sym->kind == FUNCTIONSYM) {
+            printf("FUNCTIONSYM\n");
+
             reg_num = getreg(sym->datatype->basicdt);
+
             inline_funcall = code;
-            genc(code->link);
+            printf("code->link: \n");
+            ppexpr(code->link);
+            printf("\n");
+            printf("code->link->tokentype: %d\n", code->link->tokentype);
+            printf("code->link->stringval: %s\n", code->link->stringval);
+
+            // return 0;
+
+            // genfun(code);
+
         }
 
         else {
@@ -253,6 +275,7 @@ int genarith(TOKEN code) {
 
     }
     else if (code->tokentype == OPERATOR) {
+        printf("Should enter this if operator clause\n");
 
         if (first_op_genarith == NULL) {
             first_op_genarith = code;
@@ -262,6 +285,7 @@ int genarith(TOKEN code) {
         }
 
         lhs_reg = genarith(code->operands);
+        return 0;
 
         if (code->operands->link) {
             rhs_reg = genarith(code->operands->link);
@@ -633,7 +657,33 @@ else if (which_val == AREFOP) {
 
     return out;
 }
+/* Generate code for a function call */
+int genfun(TOKEN code) {
+    TOKEN tok = code->operands; //FUNCTION
+    TOKEN lhs = tok->link;  //FIRST ARGUMENT
+    int count = 0;
+    while (lhs) {
+      genarith(lhs);        
+      lhs = lhs->link;
+      count ++;
+    }
 
+    asmcall(tok->stringval);  
+    SYMBOL sym = searchst(tok->stringval);
+
+    if (DEBUGGEN) {
+      printf("genfunc\n");
+      printf("no of arguments: %d", count);
+      dbugprinttok(code);
+    }
+    if (sym->datatype->basicdt == REAL) {
+      return XMM0;
+    } else if (sym->datatype->basicdt == INTEGER) {
+      return EAX;
+    } else {
+      return RAX;
+    }
+}
 /* Generate code for a Statement from an intermediate-code form */
 void genc(TOKEN code) {
 
@@ -652,6 +702,7 @@ void genc(TOKEN code) {
         printf("\tError: bad code token! (genc())\n");
         dbugprinttok(code);
         printf("\n");
+        return;
     }
 
     SYMBOL sym;
@@ -713,6 +764,7 @@ void genc(TOKEN code) {
             ppexpr(code->operands);
             printf("\n");
         }
+        
 
         TOKEN last_operand = get_last_operand(code);
         TOKEN outer_link = code->operands->link;
@@ -730,7 +782,11 @@ void genc(TOKEN code) {
             nested_ref_stop_at = code->operands->operands;
         }
 
+        //source of segfault 20-22
         reg_num = genarith(rhs);                        /* generate rhs into a register */
+
+        return;
+
         saved_rhs_reg = rhs;
         saved_rhs_reg_num = reg_num;
 
@@ -849,9 +905,7 @@ void genc(TOKEN code) {
                             asmstrr(MOVL, last_ptr_reg_num, offs, 0, lhs->operands->stringval);
                         }
                     }
-                    else {
-                        // ?????????????????????????????????????????????????????????????????????????????
-                    }
+
                 }
                 else {
                     if (reg_num >= 0 && reg_num < 16) {

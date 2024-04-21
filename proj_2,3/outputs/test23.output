@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 93868199743568     complex  TYPE   typ 93868199743280  lvl  1  siz    16  off     0
+ 94529491341392     complex  TYPE   typ 94529491341104  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93868199744688          ac  VAR    0 typ 93868199744592  lvl  1  siz   160  off     0
+ 94529491342512          ac  VAR    0 typ 94529491342416  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
 (program graph1 (progn output)
@@ -24,10 +24,28 @@ graph1:
         subq	$176, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= (aref ac 96)
+           4.500000e+00))
+ PROGNOP detected.
+(:= (aref ac 96)
+    4.500000e+00)
+
+In genc()
+(:= (aref ac 96)
+    4.500000e+00)
+
+ ASSIGNOP detected.
+(:= (aref ac 96)
+    4.500000e+00)#####
+(aref ac 96)
+entered genarith
+code->tokentype: 5
+4.500000e+00
+In genarith()
+4.500000e+00
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
-	movl	$96,%eax         	#  96 -> %eax
-	cltq	                  	#  sign-extend
-	movsd	%xmm0,-176(%rbp,%rax)	#  %xmm0 -> ac[%rax]
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

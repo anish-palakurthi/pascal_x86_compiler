@@ -1,17 +1,494 @@
 Comparing outputs/test00.output and samples/test00.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,34d20
+< In genc()
+< (progn (:= i 1))
+< PROGNOP detected.
+< (:= i 1)
+< In genc()
+< (:= i 1)
+< ASSIGNOP detected.
+< (:= i 1)#####
+< i
+< entered genarith
+< code->tokentype: 5
+< 1
+< In genarith()
+< 1
+35a22
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test01.output and samples/test01.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,34d20
+< In genc()
+< (progn (:= x 4.500000e+00))
+< PROGNOP detected.
+< (:= x 4.500000e+00)
+< In genc()
+< (:= x 4.500000e+00)
+< ASSIGNOP detected.
+< (:= x 4.500000e+00)#####
+< x
+< entered genarith
+< code->tokentype: 5
+< 4.500000e+00
+< In genarith()
+< 4.500000e+00
+35a22
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 Comparing outputs/test02.output and samples/test02.sample (ignoring memory addresses, specific strings, and handling code splits):
+24,40d23
+< In genc()
+< (progn (:= ptr john))
+< PROGNOP detected.
+< (:= ptr john)
+< In genc()
+< (:= ptr john)
+< ASSIGNOP detected.
+< (:= ptr john)#####
+< ptr
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     8 lnk 0
+< offset: 8
+41a25
+> movq	%rax,-32(%rbp)     	#  %rax -> ptr
 Comparing outputs/test03.output and samples/test03.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= i (+ i 1)))
+< PROGNOP detected.
+< (:= i (+ i 1))
+< In genc()
+< (:= i (+ i 1))
+< ASSIGNOP detected.
+< (:= i (+ i 1))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (+ i 1)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (+ i 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+47a22,24
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test04.output and samples/test04.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= i (- i 1)))
+< PROGNOP detected.
+< (:= i (- i 1))
+< In genc()
+< (:= i (- i 1))
+< ASSIGNOP detected.
+< (:= i (- i 1))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (- i 1)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (- i 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+47a22,24
+> movl	$1,%ecx         	#  1 -> %ecx
+> subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test05.output and samples/test05.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= i (* i 2)))
+< PROGNOP detected.
+< (:= i (* i 2))
+< In genc()
+< (:= i (* i 2))
+< ASSIGNOP detected.
+< (:= i (* i 2))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (* i 2)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (* i 2)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+47a22,24
+> movl	$2,%ecx         	#  2 -> %ecx
+> imull	%ecx,%eax         	#  %eax * %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test06.output and samples/test06.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= i (/ i 2)))
+< PROGNOP detected.
+< (:= i (/ i 2))
+< In genc()
+< (:= i (/ i 2))
+< ASSIGNOP detected.
+< (:= i (/ i 2))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (/ i 2)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (/ i 2)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+47a22,24
+> movl	$2,%ecx         	#  2 -> %ecx
+> divl	%ecx,%eax         	#  %eax / %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test07.output and samples/test07.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= x (+ x 4.500000e+00)))
+< PROGNOP detected.
+< (:= x (+ x 4.500000e+00))
+< In genc()
+< (:= x (+ x 4.500000e+00))
+< ASSIGNOP detected.
+< (:= x (+ x 4.500000e+00))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (+ x 4.500000e+00)
+< code->operands:
+< x
+< code->operands->tokentype: 3
+< In genarith()
+< (+ x 4.500000e+00)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< x
+< In genarith()
+< x
+< IDENTIFIERTOK detected; symbol table entry:
+< x            x knd 3 1  typ  lvl 1  siz     8  off     0 lnk 0
+< offset: 0
+47a22,24
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> addsd	%xmm1,%xmm0         	#  %xmm0 + %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+56a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test08.output and samples/test08.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= x (- x 4.500000e+00)))
+< PROGNOP detected.
+< (:= x (- x 4.500000e+00))
+< In genc()
+< (:= x (- x 4.500000e+00))
+< ASSIGNOP detected.
+< (:= x (- x 4.500000e+00))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (- x 4.500000e+00)
+< code->operands:
+< x
+< code->operands->tokentype: 3
+< In genarith()
+< (- x 4.500000e+00)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< x
+< In genarith()
+< x
+< IDENTIFIERTOK detected; symbol table entry:
+< x            x knd 3 1  typ  lvl 1  siz     8  off     0 lnk 0
+< offset: 0
+47a22,24
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> subsd	%xmm1,%xmm0         	#  %xmm0 - %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+56a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test09.output and samples/test09.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= x (* x 4.500000e+00)))
+< PROGNOP detected.
+< (:= x (* x 4.500000e+00))
+< In genc()
+< (:= x (* x 4.500000e+00))
+< ASSIGNOP detected.
+< (:= x (* x 4.500000e+00))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (* x 4.500000e+00)
+< code->operands:
+< x
+< code->operands->tokentype: 3
+< In genarith()
+< (* x 4.500000e+00)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< x
+< In genarith()
+< x
+< IDENTIFIERTOK detected; symbol table entry:
+< x            x knd 3 1  typ  lvl 1  siz     8  off     0 lnk 0
+< offset: 0
+47a22,24
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+56a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test10.output and samples/test10.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,46d20
+< In genc()
+< (progn (:= x (/ x 4.500000e+00)))
+< PROGNOP detected.
+< (:= x (/ x 4.500000e+00))
+< In genc()
+< (:= x (/ x 4.500000e+00))
+< ASSIGNOP detected.
+< (:= x (/ x 4.500000e+00))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (/ x 4.500000e+00)
+< code->operands:
+< x
+< code->operands->tokentype: 3
+< In genarith()
+< (/ x 4.500000e+00)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< x
+< In genarith()
+< x
+< IDENTIFIERTOK detected; symbol table entry:
+< x            x knd 3 1  typ  lvl 1  siz     8  off     0 lnk 0
+< offset: 0
+47a22,24
+> movsd	.LC1(%rip),%xmm1   	#  4.500000 -> %xmm1
+> divsd	%xmm1,%xmm0         	#  %xmm0 / %xmm1 -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+56a34,37
+> .align  8
+> .LC1:
+> .long	0   	#  4.500000
+> .long	1074921472
 Comparing outputs/test11.output and samples/test11.sample (ignoring memory addresses, specific strings, and handling code splits):
+22,47d21
+< In genc()
+< (progn (:= x (float i)))
+< PROGNOP detected.
+< (:= x (float i))
+< In genc()
+< (:= x (float i))
+< ASSIGNOP detected.
+< (:= x (float i))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (float i)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (float i)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     8 lnk 0
+< offset: 8
+48a23,24
+> cvtsi2sd	%eax,%xmm0    	#  float %eax -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
 Comparing outputs/test12.output and samples/test12.sample (ignoring memory addresses, specific strings, and handling code splits):
+22,47d21
+< In genc()
+< (progn (:= x (- y)))
+< PROGNOP detected.
+< (:= x (- y))
+< In genc()
+< (:= x (- y))
+< ASSIGNOP detected.
+< (:= x (- y))#####
+< x
+< entered genarith
+< code->tokentype: 0
+< (- y)
+< code->operands:
+< y
+< code->operands->tokentype: 3
+< In genarith()
+< (- y)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< y
+< In genarith()
+< y
+< IDENTIFIERTOK detected; symbol table entry:
+< y            y knd 3 1  typ  lvl 1  siz     8  off     8 lnk 0
+< offset: 8
+48a23,25
+> movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
+> xorpd	%xmm1,%xmm0           	#  negate %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> x
+57a35,40
+> .align 16
+> .LC666:                    # constant for floating negation
+> .long	0
+> .long	-2147483648
+> .long	0
+> .long	0
 Comparing outputs/test13.output and samples/test13.sample (ignoring memory addresses, specific strings, and handling code splits):
+24,51d23
+< In genc()
+< (progn (:= i (+ i 1))
+< (:= sum (+ sum 1))
+< (:= i (+ i sum)))
+< PROGNOP detected.
+< (:= i (+ i 1))
+< In genc()
+< (:= i (+ i 1))
+< ASSIGNOP detected.
+< (:= i (+ i 1))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (+ i 1)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (+ i 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk
+< offset: 0
+53,74c25,27
+< In genc()
+< (:= sum (+ sum 1))
+< ASSIGNOP detected.
+< (:= sum (+ sum 1))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (+ sum 1)
+< code->operands:
+< sum
+< code->operands->tokentype: 3
+< In genarith()
+< (+ sum 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< sum
+< In genarith()
+< sum
+< IDENTIFIERTOK detected; symbol table entry:
+< sum          sum knd 3 0  typ  lvl 1  siz     4  off     4 lnk 0
+< offset: 4
+---
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+76,97c29,31
+< In genc()
+< (:= i (+ i sum))
+< ASSIGNOP detected.
+< (:= i (+ i sum))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (+ i sum)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (+ i sum)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk
+< offset: 0
+---
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-28(%rbp)     	#  %eax -> sum
+98a33,35
+> movl	-28(%rbp),%ecx     	#  sum -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
 Comparing outputs/test14.output and samples/test14.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (progn (label 0)
@@ -23,6 +500,109 @@ Comparing outputs/test14.output and samples/test14.sample (ignoring memory addre
 ---
 > (progn (:= i (+ i 1))
 > (goto 0)))))
+26,46d25
+< In genc()
+< (progn (progn (label 0)
+< (if (<> ptr 0)
+< (progn (progn (:= i (+ i 1)))
+< (goto 0)))))
+< PROGNOP detected.
+< (progn (label 0)
+< (if (<> ptr 0)
+< (progn (progn (:= i (+ i 1)))
+< (goto 0))))
+< In genc()
+< (progn (label 0)
+< (if (<> ptr 0)
+< (progn (progn (:= i (+ i 1)))
+< (goto 0))))
+< PROGNOP detected.
+< (label 0)
+< In genc()
+< (label 0)
+< LABELOP detected.
+< 0
+48,70d26
+< In genc()
+< (if (<> ptr 0)
+< (progn (progn (:= i (+ i 1)))
+< (goto 0)))
+< IFOP detected.
+< (<> ptr 0)
+< entered genarith
+< code->tokentype: 0
+< (<> ptr 0)
+< code->operands:
+< ptr
+< code->operands->tokentype: 3
+< In genarith()
+< (<> ptr 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< ptr
+< In genarith()
+< ptr
+< IDENTIFIERTOK detected; symbol table entry:
+< ptr          ptr knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+72,104c28,32
+< jmp	.L2 			#  jump
+< .L0:
+< In genc()
+< (progn (progn (:= i (+ i 1)))
+< (goto 0))
+< PROGNOP detected.
+< (progn (:= i (+ i 1)))
+< In genc()
+< (progn (:= i (+ i 1)))
+< PROGNOP detected.
+< (:= i (+ i 1))
+< In genc()
+< (:= i (+ i 1))
+< ASSIGNOP detected.
+< (:= i (+ i 1))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (+ i 1)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (+ i 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     8 lnk 0
+< offset: 8
+---
+> movq	$0,%rcx         	#  0 -> %rcx
+> cmpq	%rcx,%rax           	#  compare %rax - %rcx
+> jne	.L2 			#  jump if     !=
+> jmp	.L3 			#  jump
+> .L2:
+106,109c34,36
+< In genc()
+< (goto 0)
+< GOTOOP detected.
+< 0
+---
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-24(%rbp)     	#  %eax -> i
+111,115c38
+< .L2:
+< In genc()
+< (<> ptr 0)
+< FUNCALLOP detected.
+< (<> ptr 0)ptr0
+---
+> .L3:
 Comparing outputs/test15.output and samples/test15.sample (ignoring memory addresses, specific strings, and handling code splits):
 6c6
 < (progn (progn (:= i 0)
@@ -32,110 +612,449 @@ Comparing outputs/test15.output and samples/test15.sample (ignoring memory addre
 < (goto 0))))))
 ---
 > (goto 0)))))
+27,59d26
+< In genc()
+< (progn (progn (:= i 0)
+< (label 0)
+< (if (<= i 32)
+< (progn (:= n 1)
+< (:= i (+ i 1))
+< (goto 0)))))
+< PROGNOP detected.
+< (progn (:= i 0)
+< (label 0)
+< (if (<= i 32)
+< (progn (:= n 1)
+< (:= i (+ i 1))
+< (goto 0))))
+< In genc()
+< (progn (:= i 0)
+< (label 0)
+< (if (<= i 32)
+< (progn (:= n 1)
+< (:= i (+ i 1))
+< (goto 0))))
+< PROGNOP detected.
+< (:= i 0)
+< In genc()
+< (:= i 0)
+< ASSIGNOP detected.
+< (:= i 0)#####
+< i
+< entered genarith
+< code->tokentype: 5
+< 0
+< In genarith()
+< 0
+61,64c28
+< In genc()
+< (label 0)
+< LABELOP detected.
+< 0
+---
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+66,89d29
+< In genc()
+< (if (<= i 32)
+< (progn (:= n 1)
+< (:= i (+ i 1))
+< (goto 0)))
+< IFOP detected.
+< (<= i 32)
+< entered genarith
+< code->tokentype: 0
+< (<= i 32)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (<= i 32)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk
+< offset: 0
+91,108c31,35
+< jmp	.L2 			#  jump
+< .L0:
+< In genc()
+< (progn (:= n 1)
+< (:= i (+ i 1))
+< (goto 0))
+< PROGNOP detected.
+< (:= n 1)
+< In genc()
+< (:= n 1)
+< ASSIGNOP detected.
+< (:= n 1)#####
+< n
+< entered genarith
+< code->tokentype: 5
+< 1
+< In genarith()
+< 1
+---
+> movl	$32,%ecx         	#  32 -> %ecx
+> cmpl	%ecx,%eax           	#  compare %eax - %ecx
+> jle	.L2 			#  jump if     <=
+> jmp	.L3 			#  jump
+> .L2:
+110,131c37
+< In genc()
+< (:= i (+ i 1))
+< ASSIGNOP detected.
+< (:= i (+ i 1))#####
+< i
+< entered genarith
+< code->tokentype: 0
+< (+ i 1)
+< code->operands:
+< i
+< code->operands->tokentype: 3
+< In genarith()
+< (+ i 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< i
+< In genarith()
+< i
+< IDENTIFIERTOK detected; symbol table entry:
+< i            i knd 3 0  typ  lvl 1  siz     4  off     0 lnk
+< offset: 0
+---
+> movl	%eax,-28(%rbp)     	#  %eax -> n
+133,136c39,41
+< In genc()
+< (goto 0)
+< GOTOOP detected.
+< 0
+---
+> movl	$1,%ecx         	#  1 -> %ecx
+> addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> i
+138,142c43
+< .L2:
+< In genc()
+< (<= i 32)
+< FUNCALLOP detected.
+< (<= i 32)i32
+---
+> .L3:
 Comparing outputs/test16.output and samples/test16.sample (ignoring memory addresses, specific strings, and handling code splits):
 7c7
 < (progn (:= n (- n 1)))
 ---
 > (:= n (- n 1))
+26,44d25
+< In genc()
+< (progn (:= n 1)
+< (progn (label 0)
+< (progn (:= n (- n 1)))
+< (if (= n 0)
+< (progn)
+< (goto 0))))
+< PROGNOP detected.
+< (:= n 1)
+< In genc()
+< (:= n 1)
+< ASSIGNOP detected.
+< (:= n 1)#####
+< n
+< entered genarith
+< code->tokentype: 5
+< 1
+< In genarith()
+< 1
+46,57c27
+< In genc()
+< (progn (label 0)
+< (progn (:= n (- n 1)))
+< (if (= n 0)
+< (progn)
+< (goto 0)))
+< PROGNOP detected.
+< (label 0)
+< In genc()
+< (label 0)
+< LABELOP detected.
+< 0
+---
+> movl	%eax,-32(%rbp)     	#  %eax -> n
+59,84d28
+< In genc()
+< (progn (:= n (- n 1)))
+< PROGNOP detected.
+< (:= n (- n 1))
+< In genc()
+< (:= n (- n 1))
+< ASSIGNOP detected.
+< (:= n (- n 1))#####
+< n
+< entered genarith
+< code->tokentype: 0
+< (- n 1)
+< code->operands:
+< n
+< code->operands->tokentype: 3
+< In genarith()
+< (- n 1)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< n
+< In genarith()
+< n
+< IDENTIFIERTOK detected; symbol table entry:
+< n            n knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+86,108c30,32
+< In genc()
+< (if (= n 0)
+< (progn)
+< (goto 0))
+< IFOP detected.
+< (= n 0)
+< entered genarith
+< code->tokentype: 0
+< (= n 0)
+< code->operands:
+< n
+< code->operands->tokentype: 3
+< In genarith()
+< (= n 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< n
+< In genarith()
+< n
+< IDENTIFIERTOK detected; symbol table entry:
+< n            n knd 3 0  typ  lvl 1  siz     4  off     0 lnk 0
+< offset: 0
+---
+> movl	$1,%ecx         	#  1 -> %ecx
+> subl	%ecx,%eax         	#  %eax - %ecx -> %eax
+> movl	%eax,-32(%rbp)     	#  %eax -> n
+109a34,36
+> movl	$0,%ecx         	#  0 -> %ecx
+> cmpl	%ecx,%eax           	#  compare %eax - %ecx
+> je	.L2 			#  jump if     ==
+111,117c38
+< jmp	.L2 			#  jump
+< .L0:
+< In genc()
+< (progn)
+< PROGNOP detected.
+< ppexpr called with bad pointer 0
+< token 0  NULL
+---
+> jmp	.L3 			#  jump
+119,122c40
+< In genc()
+< (= n 0)
+< FUNCALLOP detected.
+< (= n 0)n0
+---
+> .L3:
 Comparing outputs/test17.output and samples/test17.sample (ignoring memory addresses, specific strings, and handling code splits):
+21,28d20
+< In genc()
+< (progn (funcall writelni i))
+< PROGNOP detected.
+< (funcall writelni i)
+< In genc()
+< (funcall writelni i)
+< FUNCALLOP detected.
+< (funcall writelni i)writelnii
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
+19,26d18
+< In genc()
+< (progn (funcall write 'i = '))
+< PROGNOP detected.
+< (funcall write 'i = ')
+< In genc()
+< (funcall write 'i = ')
+< FUNCALLOP detected.
+< (funcall write 'i = ')write'i = '
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
+22,52c22,25
+< In genc()
+< (progn (:= john (funcall new 8)))
+< PROGNOP detected.
+< (:= john (funcall new 8))
+< In genc()
+< (:= john (funcall new 8))
+< ASSIGNOP detected.
+< (:= john (funcall new 8))#####
+< john
+< entered genarith
+< code->tokentype: 0
+< (funcall new 8)
+< code->operands:
+< new
+< code->operands->tokentype: 3
+< In genarith()
+< (funcall new 8)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< new
+< In genarith()
+< new
+< IDENTIFIERTOK detected; symbol table entry:
+< new          new knd 5 0  typ  lvl 0  siz     0  off     0 lnk
+< offset: 0
+< FUNCTIONSYM
+< code->link:
+< 8
+< code->link->tokentype: 5
+< code->link->stringval: 
+---
+> movl	$8,%eax         	#  8 -> %eax
+> movl	%eax,%edi         	#  %eax -> %edi
+> call	new@PLT          	#  new()
+> movq	%rax,-32(%rbp)     	#  %rax -> john
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,34
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> y  VAR    1 typ    real  lvl  1  siz     8  off     8
-> (program graph1 (progn output)
-> (progn (:= y (funcall exp x))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
+22,52c22,24
+< In genc()
+< (progn (:= y (funcall exp x)))
+< PROGNOP detected.
+< (:= y (funcall exp x))
+< In genc()
+< (:= y (funcall exp x))
+< ASSIGNOP detected.
+< (:= y (funcall exp x))#####
+< y
+< entered genarith
+< code->tokentype: 0
+< (funcall exp x)
+< code->operands:
+< exp
+< code->operands->tokentype: 3
+< In genarith()
+< (funcall exp x)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< exp
+< In genarith()
+< exp
+< IDENTIFIERTOK detected; symbol table entry:
+< exp          exp knd 5 0  typ  lvl 0  siz     0  off     0 lnk
+< offset: 0
+< FUNCTIONSYM
+< code->link:
+< x
+< code->link->tokentype: 3
+< code->link->stringval: x
+---
 > movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 > call	exp@PLT          	#  exp()
 > movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,34
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> n  VAR    0 typ integer  lvl  1  siz     4  off     8
-> (program graph1 (progn output)
+6c6
+< (progn (:= n (fix (funcall iround x)))))
+---
 > (progn (:= n (funcall iround x))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
+22,61c22,24
+< In genc()
+< (progn (:= n (fix (funcall iround x))))
+< PROGNOP detected.
+< (:= n (fix (funcall iround x)))
+< In genc()
+< (:= n (fix (funcall iround x)))
+< ASSIGNOP detected.
+< (:= n (fix (funcall iround x)))#####
+< n
+< entered genarith
+< code->tokentype: 0
+< (fix (funcall iround x))
+< code->operands:
+< (funcall iround x)
+< code->operands->tokentype: 0
+< In genarith()
+< (fix (funcall iround x))
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (funcall iround x)
+< code->operands:
+< iround
+< code->operands->tokentype: 3
+< In genarith()
+< (funcall iround x)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< iround
+< In genarith()
+< iround
+< IDENTIFIERTOK detected; symbol table entry:
+< iround       iround knd 5 0  typ  lvl 0  siz     0  off     0 lnk
+< offset: 0
+< FUNCTIONSYM
+< code->link:
+< x
+< code->link->tokentype: 3
+< code->link->stringval: x
+---
 > movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 > call	iround@PLT          	#  iround()
 > movl	%eax,-24(%rbp)     	#  %eax -> n
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
-0a1,40
-> yyparse result =        0
-> Symbol table level 1
-> x  VAR    1 typ    real  lvl  1  siz     8  off     0
-> y  VAR    1 typ    real  lvl  1  siz     8  off     8
-> (program graph1 (progn output)
-> (progn (:= y (* (funcall exp x)
-> (funcall sin x)))))
-> .file   "foo"
-> .text
-> .globl graph1
-> .type   graph1, @function
-> graph1:
-> .LFB0:
-> .cfi_startproc
-> pushq	%rbp              # save base pointer on stack
-> .cfi_def_cfa_offset 16
-> movq	%rsp, %rbp        # move stack pointer to base pointer
-> .cfi_offset 6, -16
-> .cfi_def_cfa_register 6
-> subq	$32, %rsp 	  # make space for this stack frame
-> movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
-> # ------------------------- begin Your code -----------------------------
+23,68c23,30
+< In genc()
+< (progn (:= y (* (funcall exp x)
+< (funcall sin x))))
+< PROGNOP detected.
+< (:= y (* (funcall exp x)
+< (funcall sin x)))
+< In genc()
+< (:= y (* (funcall exp x)
+< (funcall sin x)))
+< ASSIGNOP detected.
+< (:= y (* (funcall exp x)
+< (funcall sin x)))#####
+< y
+< entered genarith
+< code->tokentype: 0
+< (* (funcall exp x)
+< (funcall sin x))
+< code->operands:
+< (funcall exp x)
+< code->operands->tokentype: 0
+< In genarith()
+< (* (funcall exp x)
+< (funcall sin x))
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (funcall exp x)
+< code->operands:
+< exp
+< code->operands->tokentype: 3
+< In genarith()
+< (funcall exp x)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< exp
+< In genarith()
+< exp
+< IDENTIFIERTOK detected; symbol table entry:
+< exp          exp knd 5 0  typ  lvl 0  siz     0  off     0 lnk
+< offset: 0
+< FUNCTIONSYM
+< code->link:
+< x
+< code->link->tokentype: 3
+< code->link->stringval: x
+---
 > movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 > call	exp@PLT          	#  exp()
 > movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
@@ -144,46 +1063,878 @@ Comparing outputs/test22.output and samples/test22.sample (ignoring memory addre
 > movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
 > mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
 > movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
-> # ----------------------- begin Epilogue code ---------------------------
-> movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
-> leave
-> ret
-> .cfi_endproc
-> .LFE0:
-> .size   graph1, .-graph1
-> # ----------------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
+27,44d26
+< In genc()
+< (progn (:= (aref ac 96)
+< 4.500000e+00))
+< PROGNOP detected.
+< (:= (aref ac 96)
+< 4.500000e+00)
+< In genc()
+< (:= (aref ac 96)
+< 4.500000e+00)
+< ASSIGNOP detected.
+< (:= (aref ac 96)
+< 4.500000e+00)#####
+< (aref ac 96)
+< entered genarith
+< code->tokentype: 5
+< 4.500000e+00
+< In genarith()
+< 4.500000e+00
+45a28,30
+> movl	$96,%eax         	#  96 -> %eax
+> cltq	                  	#  sign-extend
+> movsd	%xmm0,-176(%rbp,%rax)	#  %xmm0 -> ac[%rax]
 Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
-< movl	$96,%ecx         	#  96 -> %ecx
-< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+27,52c27,30
+< In genc()
+< (progn (:= y (aref ac 96)))
+< PROGNOP detected.
+< (:= y (aref ac 96))
+< In genc()
+< (:= y (aref ac 96))
+< ASSIGNOP detected.
+< (:= y (aref ac 96))#####
+< y
+< entered genarith
+< code->tokentype: 0
+< (aref ac 96)
+< code->operands:
+< ac
+< code->operands->tokentype: 3
+< In genarith()
+< (aref ac 96)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< ac
+< In genarith()
+< ac
+< IDENTIFIERTOK detected; symbol table entry:
+< ac           ac knd 3 0  typ  lvl 1  siz   160  off     0 lnk
+< offset: 0
 ---
 > movl	$96,%eax         	#  96 -> %eax
 > cltq	                  	#  sign-extend
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
+> movsd	%xmm0,-32(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
+41,63d40
+< In genc()
+< (progn (:= (aref (^ john)
+< 0)
+< 19))
+< PROGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+64a42,43
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
+41,81d40
+< In genc()
+< (progn (:= sum (aref (^ john)
+< 0)))
+< PROGNOP detected.
+< (:= sum (aref (^ john)
+< 0))
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+82a42,43
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
+42,69d41
+< In genc()
+< (progn (:= (aref (^ (aref (^ john)
+< 8))
+< 24)
+< 4.500000e+00))
+< PROGNOP detected.
+< (:= (aref (^ (aref (^ john)
+< 8))
+< 24)
+< 4.500000e+00)
+< In genc()
+< (:= (aref (^ (aref (^ john)
+< 8))
+< 24)
+< 4.500000e+00)
+< ASSIGNOP detected.
+< (:= (aref (^ (aref (^ john)
+< 8))
+< 24)
+< 4.500000e+00)#####
+< (aref (^ (aref (^ john)
+< 8))
+< 24)
+< entered genarith
+< code->tokentype: 5
+< 4.500000e+00
+< In genarith()
+< 4.500000e+00
+70a43,45
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
+> movsd	%xmm0,24(%rcx)         	#  %xmm0 -> ^. [24+%rcx]
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
+42,112d41
+< In genc()
+< (progn (:= y (aref (^ (aref (^ john)
+< 8))
+< 24)))
+< PROGNOP detected.
+< (:= y (aref (^ (aref (^ john)
+< 8))
+< 24))
+< In genc()
+< (:= y (aref (^ (aref (^ john)
+< 8))
+< 24))
+< ASSIGNOP detected.
+< (:= y (aref (^ (aref (^ john)
+< 8))
+< 24))#####
+< y
+< entered genarith
+< code->tokentype: 0
+< (aref (^ (aref (^ john)
+< 8))
+< 24)
+< code->operands:
+< (^ (aref (^ john)
+< 8))
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ (aref (^ john)
+< 8))
+< 24)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ (aref (^ john)
+< 8))
+< code->operands:
+< (aref (^ john)
+< 8)
+< code->operands->tokentype: 0
+< In genarith()
+< (^ (aref (^ john)
+< 8))
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 8)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 8)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+113a43,45
+> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
+> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
+> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+56,173d55
+< In genc()
+< (progn (:= (aref (^ john)
+< 0)
+< 19)
+< (:= (aref (^ john)
+< 0)
+< 19)
+< (:= (aref (^ john)
+< 0)
+< 19)
+< (:= (aref (^ john)
+< 0)
+< 19)
+< (:= (aref (^ john)
+< 0)
+< 19)
+< (:= (aref (^ john)
+< 0)
+< 19))
+< PROGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+< movl	$19,%eax         	#  19 -> %eax
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+< movl	$19,%eax         	#  19 -> %eax
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+< movl	$19,%eax         	#  19 -> %eax
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+< movl	$19,%eax         	#  19 -> %eax
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+< movl	$19,%eax         	#  19 -> %eax
+< In genc()
+< (:= (aref (^ john)
+< 0)
+< 19)
+< ASSIGNOP detected.
+< (:= (aref (^ john)
+< 0)
+< 19)#####
+< (aref (^ john)
+< 0)
+< entered genarith
+< code->tokentype: 5
+< 19
+< In genarith()
+< 19
+174a57,73
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+> movl	$19,%eax         	#  19 -> %eax
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+> movl	$19,%eax         	#  19 -> %eax
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+> movl	$19,%eax         	#  19 -> %eax
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+> movl	$19,%eax         	#  19 -> %eax
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+> movl	$19,%eax         	#  19 -> %eax
+> movq	-32(%rbp),%rcx     	#  john -> %rcx
+> movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
--------- end Epilogue; Literal data follows ------------------
-> .section        .rodata
-> .ident  "CS 375 Compiler - XXXX"
-Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test24.output and samples/test24.sample (ignoring memory addresses, specific strings, and handling code splits):
-27,28c27,29
-< movl	$96,%ecx         	#  96 -> %ecx
-< movsd	96(%rax),%xmm0         	#  ^.[96+%rax] -> %xmm0
+51,277c51,68
+< In genc()
+< (progn (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0)))
+< PROGNOP detected.
+< (:= sum (aref (^ john)
+< 0))
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< movq	-32(%rbp),%rax     	#  john -> %rax
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
 ---
-> movl	$96,%eax         	#  96 -> %eax
-> cltq	                  	#  sign-extend
-> movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
-Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
-Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+51,277c51,68
+< In genc()
+< (progn (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0))
+< (:= sum (aref (^ john)
+< 0)))
+< PROGNOP detected.
+< (:= sum (aref (^ john)
+< 0))
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< movq	-32(%rbp),%rax     	#  john -> %rax
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+< In genc()
+< (:= sum (aref (^ john)
+< 0))
+< ASSIGNOP detected.
+< (:= sum (aref (^ john)
+< 0))#####
+< sum
+< entered genarith
+< code->tokentype: 0
+< (aref (^ john)
+< 0)
+< code->operands:
+< (^ john)
+< code->operands->tokentype: 0
+< In genarith()
+< (aref (^ john)
+< 0)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 0
+< (^ john)
+< code->operands:
+< john
+< code->operands->tokentype: 3
+< In genarith()
+< (^ john)
+< Should enter this if operator clause
+< entered genarith
+< code->tokentype: 3
+< john
+< In genarith()
+< john
+< IDENTIFIERTOK detected; symbol table entry:
+< john         john knd 3 4  typ  lvl 1  siz     8  off     0 lnk
+< offset: 0
+---
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+> movq	-32(%rbp),%rax     	#  john -> %rax
+> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+> movl	%ecx,-24(%rbp)     	#  %ecx -> sum

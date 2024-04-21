@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94530794405488           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94530794405584         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94763083304560           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94763083304656         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (:= i (+ i 1))
                        (:= sum (+ sum 1))
@@ -21,18 +21,94 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= i (+ i 1))
+       (:= sum (+ sum 1))
+       (:= i (+ i sum)))
+ PROGNOP detected.
+(:= i (+ i 1))
+
+In genc()
+(:= i (+ i 1))
+
+ ASSIGNOP detected.
+(:= i (+ i 1))#####
+i
+entered genarith
+code->tokentype: 0
+(+ i 1)
+code->operands: 
+i
+code->operands->tokentype: 3
+
+In genarith()
+(+ i 1)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+i
+In genarith()
+i
+ IDENTIFIERTOK detected; symbol table entry:
+i 94763083304560           i knd 3 0  typ 94763083272960 lvl 1  siz     4  off     0 lnk 94763083304656
+ offset: 0
+
 	movl	-32(%rbp),%eax     	#  i -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> i
+
+In genc()
+(:= sum (+ sum 1))
+
+ ASSIGNOP detected.
+(:= sum (+ sum 1))#####
+sum
+entered genarith
+code->tokentype: 0
+(+ sum 1)
+code->operands: 
+sum
+code->operands->tokentype: 3
+
+In genarith()
+(+ sum 1)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+sum
+In genarith()
+sum
+ IDENTIFIERTOK detected; symbol table entry:
+sum 94763083304656         sum knd 3 0  typ 94763083272960 lvl 1  siz     4  off     4 lnk 0
+ offset: 4
+
 	movl	-28(%rbp),%eax     	#  sum -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-	movl	%eax,-28(%rbp)     	#  %eax -> sum
+
+In genc()
+(:= i (+ i sum))
+
+ ASSIGNOP detected.
+(:= i (+ i sum))#####
+i
+entered genarith
+code->tokentype: 0
+(+ i sum)
+code->operands: 
+i
+code->operands->tokentype: 3
+
+In genarith()
+(+ i sum)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+i
+In genarith()
+i
+ IDENTIFIERTOK detected; symbol table entry:
+i 94763083304560           i knd 3 0  typ 94763083272960 lvl 1  siz     4  off     0 lnk 94763083304656
+ offset: 0
+
 	movl	-32(%rbp),%eax     	#  i -> %eax
-	movl	-28(%rbp),%ecx     	#  sum -> %ecx
-	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> i
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

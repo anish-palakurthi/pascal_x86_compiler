@@ -1,25 +1,25 @@
 yyparse result =        0
 Symbol table level 1
- 94786952122448     complex  TYPE   typ 94786952122160  lvl  1  siz    16  off     0
+ 94639489962064     complex  TYPE   typ 94639489961776  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94786952123312         red  CONST  typ INTEGER  val  0
- 94786952123472       white  CONST  typ INTEGER  val  1
- 94786952123632        blue  CONST  typ INTEGER  val  2
- 94786952123824       color  TYPE   typ 94786952123728  lvl  1  siz     4  off     0
+ 94639489962928         red  CONST  typ INTEGER  val  0
+ 94639489963088       white  CONST  typ INTEGER  val  1
+ 94639489963248        blue  CONST  typ INTEGER  val  2
+ 94639489963440       color  TYPE   typ 94639489963344  lvl  1  siz     4  off     0
   0 ..   2
- 94786952124240      person  TYPE   typ 94786952126064  lvl  1  siz    48  off     0
+ 94639489963856      person  TYPE   typ 94639489965680  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94786952124432          pp  TYPE   typ 94786952124336  lvl  1  siz     8  off     0
+ 94639489964048          pp  TYPE   typ 94639489963952  lvl  1  siz     8  off     0
 (^ person)
- 94786952127024        john  VAR    4 typ 94786952124336  lvl  1  siz     8  off     0
+ 94639489966640        john  VAR    4 typ 94639489963952  lvl  1  siz     8  off     0
 (^ person)
- 94786952127376         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94639489966992         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= sum (aref (^ john)
                                      0))))# ---------------- Beginning of Generated Code --------------------
@@ -38,9 +38,54 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= sum (aref (^ john)
+                     0)))
+ PROGNOP detected.
+(:= sum (aref (^ john)
+              0))
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94639489966640        john knd 3 4  typ 94639489963952 lvl 1  siz     8  off     0 lnk 94639489966992
+ offset: 0
+
 	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

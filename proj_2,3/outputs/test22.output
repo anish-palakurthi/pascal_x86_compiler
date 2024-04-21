@@ -1,0 +1,85 @@
+yyparse result =        0
+Symbol table level 1
+ 93884997578352           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93884997578448           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+(program graph1 (progn output)
+                (progn (:= y (* (funcall exp x)
+                                (funcall sin x)))))# ---------------- Beginning of Generated Code --------------------
+        .file   "foo"
+        .text
+        .globl graph1
+        .type   graph1, @function
+graph1:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp              # save base pointer on stack
+	.cfi_def_cfa_offset 16
+	movq	%rsp, %rbp        # move stack pointer to base pointer
+	.cfi_offset 6, -16
+	.cfi_def_cfa_register 6
+        subq	$32, %rsp 	  # make space for this stack frame
+	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
+# ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= y (* (funcall exp x)
+                (funcall sin x))))
+ PROGNOP detected.
+(:= y (* (funcall exp x)
+         (funcall sin x)))
+
+In genc()
+(:= y (* (funcall exp x)
+         (funcall sin x)))
+
+ ASSIGNOP detected.
+(:= y (* (funcall exp x)
+         (funcall sin x)))#####
+y
+entered genarith
+code->tokentype: 0
+(* (funcall exp x)
+   (funcall sin x))
+code->operands: 
+(funcall exp x)
+code->operands->tokentype: 0
+
+In genarith()
+(* (funcall exp x)
+   (funcall sin x))
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(funcall exp x)
+code->operands: 
+exp
+code->operands->tokentype: 3
+
+In genarith()
+(funcall exp x)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+exp
+In genarith()
+exp
+ IDENTIFIERTOK detected; symbol table entry:
+exp 93884997547040         exp knd 5 0  typ 93884997547136 lvl 0  siz     0  off     0 lnk 93884997547328
+ offset: 0
+
+FUNCTIONSYM
+code->link: 
+x
+code->link->tokentype: 3
+code->link->stringval: x
+# ----------------------- begin Epilogue code ---------------------------
+	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
+        leave
+        ret
+        .cfi_endproc
+.LFE0:
+        .size   graph1, .-graph1
+# ----------------- end Epilogue; Literal data follows ------------------
+        .section        .rodata
+
+        .ident  "CS 375 Compiler - Spring 2024"

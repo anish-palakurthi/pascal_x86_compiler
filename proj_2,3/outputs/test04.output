@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 93925553921520           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94627366481392           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= i (- i 1))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,10 +18,38 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= i (- i 1)))
+ PROGNOP detected.
+(:= i (- i 1))
+
+In genc()
+(:= i (- i 1))
+
+ ASSIGNOP detected.
+(:= i (- i 1))#####
+i
+entered genarith
+code->tokentype: 0
+(- i 1)
+code->operands: 
+i
+code->operands->tokentype: 3
+
+In genarith()
+(- i 1)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+i
+In genarith()
+i
+ IDENTIFIERTOK detected; symbol table entry:
+i 94627366481392           i knd 3 0  typ 94627366449920 lvl 1  siz     4  off     0 lnk 0
+ offset: 0
+
 	movl	-32(%rbp),%eax     	#  i -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> i
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

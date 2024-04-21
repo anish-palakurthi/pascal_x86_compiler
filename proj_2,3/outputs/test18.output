@@ -16,6 +16,16 @@ graph1:
         subq	$16, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (funcall write 'i = '))
+ PROGNOP detected.
+(funcall write 'i = ')
+
+In genc()
+(funcall write 'i = ')
+ FUNCALLOP detected.
+(funcall write 'i = ')write'i = '
 	leaq	.LC1(%rip),%rdi  	#  addr of literal .LC1
 	call	write@PLT          	#  write()
 # ----------------------- begin Epilogue code ---------------------------

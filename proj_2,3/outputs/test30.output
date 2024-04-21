@@ -1,25 +1,25 @@
 yyparse result =        0
 Symbol table level 1
- 94120113967184     complex  TYPE   typ 94120113966896  lvl  1  siz    16  off     0
+ 94228014215248     complex  TYPE   typ 94228014214960  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94120113968048         red  CONST  typ INTEGER  val  0
- 94120113968208       white  CONST  typ INTEGER  val  1
- 94120113968368        blue  CONST  typ INTEGER  val  2
- 94120113968560       color  TYPE   typ 94120113968464  lvl  1  siz     4  off     0
+ 94228014216112         red  CONST  typ INTEGER  val  0
+ 94228014216272       white  CONST  typ INTEGER  val  1
+ 94228014216432        blue  CONST  typ INTEGER  val  2
+ 94228014216624       color  TYPE   typ 94228014216528  lvl  1  siz     4  off     0
   0 ..   2
- 94120113968976      person  TYPE   typ 94120113970800  lvl  1  siz    48  off     0
+ 94228014217040      person  TYPE   typ 94228014218864  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94120113969168          pp  TYPE   typ 94120113969072  lvl  1  siz     8  off     0
+ 94228014217232          pp  TYPE   typ 94228014217136  lvl  1  siz     8  off     0
 (^ person)
- 94120113971760        john  VAR    4 typ 94120113969072  lvl  1  siz     8  off     0
+ 94228014219824        john  VAR    4 typ 94228014217136  lvl  1  siz     8  off     0
 (^ person)
- 94120113972112         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94228014220176         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= sum (aref (^ john)
                                      0))
@@ -48,24 +48,264 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
+
+In genc()
+(progn (:= sum (aref (^ john)
+                     0))
+       (:= sum (aref (^ john)
+                     0))
+       (:= sum (aref (^ john)
+                     0))
+       (:= sum (aref (^ john)
+                     0))
+       (:= sum (aref (^ john)
+                     0))
+       (:= sum (aref (^ john)
+                     0)))
+ PROGNOP detected.
+(:= sum (aref (^ john)
+              0))
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
 	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
+
+In genc()
+(:= sum (aref (^ john)
+              0))
+
+ ASSIGNOP detected.
+(:= sum (aref (^ john)
+              0))#####
+sum
+entered genarith
+code->tokentype: 0
+(aref (^ john)
+      0)
+code->operands: 
+(^ john)
+code->operands->tokentype: 0
+
+In genarith()
+(aref (^ john)
+      0)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 0
+(^ john)
+code->operands: 
+john
+code->operands->tokentype: 3
+
+In genarith()
+(^ john)
+Should enter this if operator clause
+entered genarith
+code->tokentype: 3
+john
+In genarith()
+john
+ IDENTIFIERTOK detected; symbol table entry:
+john 94228014219824        john knd 3 4  typ 94228014217136 lvl 1  siz     8  off     0 lnk 94228014220176
+ offset: 0
+
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "ratio": "c"
+        "ratio": "c",
+        "system_error": "c"
     }
 }
