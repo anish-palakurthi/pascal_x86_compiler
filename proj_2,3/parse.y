@@ -404,7 +404,6 @@ TOKEN makefix(TOKEN tok) {
   if(tok->tokentype == NUMBERTOK) {
     tok->basicdt = INTEGER;
     tok->intval = (int) tok->realval;
-    // printf("was numbertoken so truncated\n");
     return tok;
   } else { 
     TOKEN fixop = makeop(FIXOP);
@@ -746,11 +745,11 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     funcOp->operands = fn;
     funcOp->basicdt = args->symtype->datatype->basicdt;
     args->link = funcOp;
-
-    return tok;
   } 
 
-
+  if (strcmp(fn->stringval, "iround") == 0){
+    tok->basicdt = INTEGER;
+  }
      if (DEBUG & DB_MAKEFUNCALL)
         { 
           printf("makefuncall\n");
@@ -758,7 +757,8 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
           dbugprinttok(fn);
           dbugprinttok(args);
         };
-    
+  
+  
     
   return tok;
 }

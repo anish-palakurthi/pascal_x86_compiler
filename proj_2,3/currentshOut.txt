@@ -42,12 +42,6 @@ Comparing outputs/test18.output and samples/test18.sample (ignoring memory addre
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
-6c6
-< (progn (:= n (fix (funcall iround x)))))
----
-> (progn (:= n (funcall iround x))))
-24d23
-< cvttsd2si	%ecx,%edx    	#  fix %ecx -> %edx
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
 25c25
 < movsd	%eax,-8(%rbp)     	#  %eax -> temp
