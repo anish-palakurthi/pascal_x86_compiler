@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 93859603291728        john  VAR    4 typ 93859603291632  lvl  1  siz     8  off     0
+ 94031955578448        john  VAR    4 typ 94031955578352  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------
@@ -19,14 +19,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-code:   (funcall new 8)
-code:   new
-code:   8
-i: 16
-	movl	$8,%xmm0         	#  8 -> %xmm0
-	movl	%xmm0,%edi         	#  %xmm0 -> %edi
+	movl	$8,%eax         	#  8 -> %eax
+	movl	%eax,%edi         	#  %eax -> %edi
 	call	new@PLT          	#  new()
-	movsd	jmp,-32(%rbp)     	#  jmp -> john
+	movq	%rax,-32(%rbp)     	#  %rax -> john
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

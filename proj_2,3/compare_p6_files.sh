@@ -37,13 +37,12 @@ compare_files() {
 }
 
 # Main loop
-# for file1 in "$dir1"/*"$ext1"; do
-#     base_name=$(basename "$file1" "$ext1")
-#     file2="$dir2/$base_name$ext2"
-#     if [[ -e "$file2" ]]; then
-#         compare_files "$file1" "$file2"
-#     else
-#         echo "No corresponding file for $file1 in $dir2"
-    compare_files "outputs/test22.output" "samples/test22.sample"
-    # fi
-# done | tee currentshOut.txt
+for file1 in "$dir1"/*"$ext1"; do
+    base_name=$(basename "$file1" "$ext1")
+    file2="$dir2/$base_name$ext2"
+    if [[ -e "$file2" ]]; then
+        compare_files "$file1" "$file2"
+    else
+        echo "No corresponding file for $file1 in $dir2"
+    fi
+done | tee currentshOut.txt

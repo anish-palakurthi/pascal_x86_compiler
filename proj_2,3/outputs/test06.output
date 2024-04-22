@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 93954765422064           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94720582737392           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= i (/ i 2))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,14 +18,9 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-code:   (/ i 2)
-code:   i
-i: 0
 	movl	-32(%rbp),%eax     	#  i -> %eax
-code:   2
-i: 16
-	movl	$2,%xmm0         	#  2 -> %xmm0
-	divsd	%xmm0,%eax         	#  %eax / %xmm0 -> %eax
+	movl	$2,%ecx         	#  2 -> %ecx
+	divl	%ecx,%eax         	#  %eax / %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9

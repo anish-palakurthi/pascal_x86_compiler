@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94113328217712           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94113328217808           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94721884053104           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94721884053200           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (* (funcall exp x)
                                 (funcall sin x)))))# ---------------- Beginning of Generated Code --------------------
@@ -20,31 +20,14 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-code:   (* (funcall exp x)
-   (funcall sin x))
-code:   (funcall exp x)
-code:   exp
-code:   x
-i: 16
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
-i: 16
-saved_inline_reg: 16
 	call	exp@PLT          	#  exp()
-	movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
-code:   (funcall sin x)
-code:   sin
-code:   x
-i: 16
+	movsd	%eax,-8(%rbp)     	#  %eax -> temp
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
-i: 16
-i: 16
-i: 17
-saved_inline_reg: 17
 	call	sin@PLT          	#  sin()
-	movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
-i: 16
-	mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
-	movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
+	movsd	-8(%rbp),%eax     	#  temp -> %eax
+	imull	%eax,%ecx         	#  %ecx * %eax -> %ecx
+	movl	%eax,-24(%rbp)     	#  %eax -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

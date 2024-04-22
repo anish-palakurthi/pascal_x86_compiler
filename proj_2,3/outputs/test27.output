@@ -1,23 +1,23 @@
 yyparse result =        0
 Symbol table level 1
- 94803480084560     complex  TYPE   typ 94803480084272  lvl  1  siz    16  off     0
+ 94522497577040     complex  TYPE   typ 94522497576752  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94803480085424         red  CONST  typ INTEGER  val  0
- 94803480085584       white  CONST  typ INTEGER  val  1
- 94803480085744        blue  CONST  typ INTEGER  val  2
- 94803480085936       color  TYPE   typ 94803480085840  lvl  1  siz     4  off     0
+ 94522497577904         red  CONST  typ INTEGER  val  0
+ 94522497578064       white  CONST  typ INTEGER  val  1
+ 94522497578224        blue  CONST  typ INTEGER  val  2
+ 94522497578416       color  TYPE   typ 94522497578320  lvl  1  siz     4  off     0
   0 ..   2
- 94803480086352      person  TYPE   typ 94803480088176  lvl  1  siz    48  off     0
+ 94522497578832      person  TYPE   typ 94522497580656  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94803480086544          pp  TYPE   typ 94803480086448  lvl  1  siz     8  off     0
+ 94522497579024          pp  TYPE   typ 94522497578928  lvl  1  siz     8  off     0
 (^ person)
- 94803480089136        john  VAR    4 typ 94803480086448  lvl  1  siz     8  off     0
+ 94522497581616        john  VAR    4 typ 94522497578928  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ (aref (^ john)
@@ -39,24 +39,10 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-code:   4.500000e+00
-i: 16
 	movsd	.LC1(%rip),%xmm0   	#  4.500000 -> %xmm0
-code:   (^ (aref (^ john)
-         8))
-code:   (aref (^ john)
-      8)
-code:   (^ john)
-code:   john
-i: 0
 	movq	-32(%rbp),%rax     	#  john -> %rax
-i: 16
-i: 16
-code:   8
-i: 16
-i: 17
-	movq	8(jmp),jne         	#  ^.[8+jmp] -> jne
-	movsd	%xmm0,24(jne)         	#  %xmm0 -> ^. [24+jne]
+	movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
+	movsd	%xmm0,24(%rcx)         	#  %xmm0 -> ^. [24+%rcx]
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

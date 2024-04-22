@@ -122,7 +122,6 @@ int getreg(int kind) {
     }
 
     for (; i < stop; i++) {
-        printf("i: %d\n", i);
         if (used_regs[i] == 0) {
             used_regs[i] = 1;
             return i;
@@ -135,9 +134,6 @@ int getreg(int kind) {
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
-    printf("code:   ");
-    ppexpr(code);
-    printf("\n");
 
     if (DEBUGGEN) {
         printf("\nIn genarith()\n");
@@ -152,7 +148,7 @@ int genarith(TOKEN code) {
     if (code->tokentype == NUMBERTOK) {
         if (code->basicdt == INTEGER) {
             num = code->intval;
-            reg_num = getreg(REAL);
+            reg_num = getreg(INTEGER);
 
             if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nested_refs) {
                 if (last_ptr && last_ptr_reg_num > -1) {
@@ -169,20 +165,21 @@ int genarith(TOKEN code) {
                 }
 
             }
-            free_reg(reg_num);
+            else {
+                // ?????????????????????????????????????????????????????????????????
+            }
 
         }
         else {
             /* Generate literal for the value of the constant, then
                load the literal into a register. */
-            // printf("literal gen\n");
+
             reg_num = getreg(REAL);
             saved_float_reg = code->realval;
             saved_float_reg_num = reg_num;
-            // printf("182\n");
+
             makeflit(code->realval, nextlabel);
             asmldflit(MOVSD, nextlabel++, reg_num);
-            free_reg(reg_num);
         }
     }
     
@@ -204,7 +201,7 @@ int genarith(TOKEN code) {
         num = sym->offset;
 
         if (sym->kind == FUNCTIONSYM) {
-            // reg_num = getreg(sym->datatype->basicdt);
+            reg_num = getreg(sym->datatype->basicdt);
             inline_funcall = code;
             genc(code->link);
         }
@@ -248,12 +245,10 @@ int genarith(TOKEN code) {
                 }
 
                 else {
-                    
                     last_id_reg_num = reg_num;
                     asmld(MOVSD, sym->offset - stkframesize, reg_num, code->stringval);
                 }
             }       
-            free_reg(reg_num);
         }
 
     }
@@ -291,7 +286,6 @@ int genarith(TOKEN code) {
             }
         }
 
-        //source of error?
         bool same_reg_assn = false;
         if (lhs_reg == rhs_reg) {
             same_reg_assn = true;
@@ -299,11 +293,11 @@ int genarith(TOKEN code) {
                 lhs_reg = getreg(REAL);
             }
             else {
-                lhs_reg = getreg(REAL);
+                lhs_reg = getreg(INTEGER);
+                // lhs_reg = getreg(REAL);
             }
         }
 
-        //source of error?
         lhs_reg = genop(code, rhs_reg, lhs_reg);
         free_reg(rhs_reg);
 
@@ -315,7 +309,7 @@ int genarith(TOKEN code) {
             }
             else {
                 free_reg(lhs_reg);
-                temp = getreg(REAL);
+                temp = getreg(INTEGER);
             }
             lhs_reg = temp;
         }
@@ -368,7 +362,7 @@ TOKEN get_last_operand(TOKEN tok) {
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
     if (DEBUGGEN) {
-        printf(" OPERATOR detected, from genop().\n");
+        printf(" OPERATOR detected, from genarith().\n");
 //        printf(" %s\n", opprint[which_val]);
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }
@@ -406,26 +400,15 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         }
         out = lhs_reg;
     }
-else if (which_val == TIMESOP) {
-    if (both_float(lhs_reg, rhs_reg)) {
-        // Both operands are floating-point
-        asmrr(MULSD, rhs_reg, lhs_reg);
-        out = lhs_reg;
-    } else if (at_least_one_float(lhs_reg, rhs_reg)) {
-        // One operand is floating-point, the other is integer
-        // Handle mixed-mode multiplication
-        // You may need to add additional code here
-        printf("rhs_reg: %d\n", rhs_reg);
-        asmrr(MULSD, rhs_reg, lhs_reg);
-        out = lhs_reg;
-
-        printf("MIXED MODE MULTIPLICATION\n");
-
-    } else {
-        asmrr(IMULL, rhs_reg, lhs_reg);
+    else if (which_val == TIMESOP) {
+        if (at_least_one_float(lhs_reg, rhs_reg)) {
+            asmrr(MULSD, rhs_reg, lhs_reg);
+        }
+        else {
+            asmrr(IMULL, rhs_reg, lhs_reg);
+        }
         out = lhs_reg;
     }
-}
     else if (which_val == DIVIDEOP) {
         if (at_least_one_float(lhs_reg, rhs_reg)) {
             asmrr(DIVSD, rhs_reg, lhs_reg);
@@ -481,28 +464,25 @@ else if (which_val == TIMESOP) {
 
         out = lhs_reg;
     }
-else if (code->whichval == FUNCALLOP) {
-    if (inline_funcall) {
-        if (num_funcalls_in_curr_tree > 1) {
-            saved_inline_reg = getreg(REAL);
-            printf("saved_inline_reg: %d\n", saved_inline_reg);
-            saved_inline_regs[num_inlines_processed] = saved_inline_reg;
-            num_inlines_processed++;
-            if (num_inlines_processed == 1) {
-                asmcall(inline_funcall->stringval);
-                // printf("saved_inline_reg: %d\n", saved_inline_regs[num_inlines_processed - 1]);
-                asmsttemp(saved_inline_regs[num_inlines_processed -1]);
+    else if (which_val == FUNCALLOP) {
+
+        if (inline_funcall) {
+
+            if (num_funcalls_in_curr_tree > 1) {
+                saved_inline_regs[num_inlines_processed] = saved_inline_reg;
+                num_inlines_processed++;
+                if (num_inlines_processed == 1) {
+                    asmcall(inline_funcall->stringval);
+                    asmsttemp(saved_inline_reg);
+                }
+                else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
+                    // load and then store?
+                }
+                else {
+                    asmcall(inline_funcall->stringval);
+                    asmldtemp(saved_inline_reg);
+                }               
             }
-            else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
-                asmcall(inline_funcall->stringval);
-                asmsttemp(saved_inline_regs[num_inlines_processed - 1]);
-                asmldtemp(saved_inline_regs[num_inlines_processed]);
-            }
-            else {
-                asmcall(inline_funcall->stringval);
-                asmldtemp(saved_inline_reg);
-            }               
-        }
             else if (strcmp(inline_funcall->stringval, "new") == 0) {
                 asmrr(MOVL, rhs_reg, EDI);
                 asmcall(inline_funcall->stringval);
@@ -512,9 +492,10 @@ else if (code->whichval == FUNCALLOP) {
             }
 
             inline_funcall = NULL;
-            free_reg(saved_inline_reg);
         }
-
+        else {
+            // ?????????????????????????????
+        }
 
         out = lhs_reg;
     }
@@ -527,7 +508,7 @@ else if (which_val == AREFOP) {
             int temp = rhs_reg;
             if (last_id_reg_num > -1 && last_id_reg_num < 16) {
                 if (last_id_reg_num == rhs_reg) {
-                    rhs_reg = getreg(REAL);
+                    rhs_reg = getreg(INTEGER);
                     free_reg(temp);
                 }
 
@@ -640,7 +621,7 @@ else if (which_val == AREFOP) {
         out = freg;
     }
     else if (which_val == FIXOP) {
-        int dreg = getreg(REAL);
+        int dreg = getreg(INTEGER);
         asmfix(lhs_reg, dreg);
         free_reg(lhs_reg);
         free_reg(rhs_reg);
@@ -649,8 +630,6 @@ else if (which_val == AREFOP) {
 
     if (inline_funcall != NULL && num_funcalls_in_tree > 0) {
         saved_inline_reg = rhs_reg;
-        // printf("IF saved: %d\n", saved_inline_reg);
-
     }
 
     return out;
@@ -785,7 +764,7 @@ void genc(TOKEN code) {
                 if (sym) {
 
                     offs = sym->offset - stkframesize;
-                    int temp = getreg(REAL);
+                    int temp = getreg(INTEGER);
 
                     last_ptr = lhs->operands->operands; // ??????????????????????????????????????????????????????????????????
 
@@ -847,15 +826,15 @@ void genc(TOKEN code) {
                         mark_reg_unused(EAX);
                         mark_reg_used(last_ptr_reg_num);
 
-                        int move_plus_to = getreg(REAL);
-                        int move_mul_to = getreg(REAL);
+                        int move_plus_to = getreg(INTEGER);
+                        int move_mul_to = getreg(INTEGER);
                         int move_last_to;
 
                         asmimmed(MOVL, plus_operand->intval, move_plus_to);
                         asmimmed(MOVL, mul_operand->intval, move_mul_to);
 
                         if (last_operand->tokentype == NUMBERTOK) {
-                            move_last_to = getreg(REAL);
+                            move_last_to = getreg(INTEGER);
                             asmimmed(MOVL, last_operand->intval, move_last_to);
                         }
                         else {
@@ -877,10 +856,10 @@ void genc(TOKEN code) {
                 }
                 else {
                     if (reg_num >= 0 && reg_num < 16) {
-                        asmstrr(MOVL, reg_num, offs, getreg(REAL), sym->namestring);
+                        asmstrr(MOVL, reg_num, offs, getreg(INTEGER), sym->namestring);
                     }
                     else {
-                        asmstrr(MOVSD, reg_num, offs, getreg(REAL), sym->namestring);
+                        asmstrr(MOVSD, reg_num, offs, getreg(INTEGER), sym->namestring);
                     }
                 }
             }
@@ -990,7 +969,7 @@ void genc(TOKEN code) {
                     if (!sym) {
                         sym = searchst(rhs->operands->operands->stringval);
                         if (sym) {
-                            reg_num = getreg(REAL);
+                            reg_num = getreg(INTEGER);
                             offs = sym->offset - stkframesize;
                             asmld(MOVQ, offs, reg_num, sym->namestring);
 
@@ -1026,7 +1005,7 @@ void genc(TOKEN code) {
                     }
 
                     if (argsym->basicdt == INTEGER) {
-                        reg_num = getreg(REAL);
+                        reg_num = getreg(INTEGER);
                         offs = argsym->offset - stkframesize;
 
                         asmld(MOVL, offs, reg_num, argsym->namestring);
@@ -1048,7 +1027,7 @@ void genc(TOKEN code) {
         else if (strcmp(lhs->stringval, "new") == 0) {
             new_funcall_flag = true;
             num = lhs->intval;
-            reg_num = getreg(REAL);  // ???
+            reg_num = getreg(INTEGER);  // ???
             sym = lhs->symentry;
             offs = sym->offset - stkframesize;
 
@@ -1059,8 +1038,10 @@ void genc(TOKEN code) {
             asmrr(MOVL, reg_num, EDI);
                
         }
-
-        
+        else {
+            
+        }
+        // else ALL OTHERS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
 
@@ -1092,7 +1073,7 @@ void reset_regs() {
 
 void free_reg(int reg_num) {
     if (reg_num < 0 || reg_num >= NUM_REGS) {
-        // printf("Error: cannot free register number %d\n", reg_num);
+        printf("Error: cannot free register number %d\n", reg_num);
         return;
     }
     used_regs[reg_num] = 0;
