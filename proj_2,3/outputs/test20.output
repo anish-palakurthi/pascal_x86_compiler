@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94593979858544           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94593979858640           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94573878103664           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94573878103760           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
-                (progn (:= y (funcall exp (- x)))))# ---------------- Beginning of Generated Code --------------------
+                (progn (:= y (funcall exp x))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
         .globl graph1
@@ -19,33 +19,8 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-(funcall exp (- x))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-exp
-genarith
-code: 
-exp
-code->tokentype: 3
-code->link->tokentype: 0
-genarith
-code: 
-(- x)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-x
-genarith
-code: 
-x
-code->tokentype: 3
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
-	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
-	xorpd	%xmm1,%xmm0           	#  negate %xmm0
-INLINE HANDLING
+	call	exp@PLT          	#  exp()
 	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
@@ -56,11 +31,5 @@ INLINE HANDLING
         .size   graph1, .-graph1
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
-	.align 16
-.LC666:                    # constant for floating negation
-	.long	0
-	.long	-2147483648
-	.long	0
-	.long	0
 
         .ident  "CS 375 Compiler - Spring 2024"

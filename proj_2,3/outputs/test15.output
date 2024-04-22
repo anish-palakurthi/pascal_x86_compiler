@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94469316345456           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94469316345552           n  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 93857974152816           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 93857974152912           n  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 0)
@@ -24,56 +24,18 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-0
-code->tokentype: 5
 	movl	$0,%eax         	#  0 -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i
 .L0:
-genarith
-code: 
-(<= i 32)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-32
-code->tokentype: 5
 	movl	$32,%ecx         	#  32 -> %ecx
 	cmpl	%ecx,%eax           	#  compare %eax - %ecx
 	jle	.L2 			#  jump if     <=
 	jmp	.L3 			#  jump 
 .L2:
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%eax         	#  1 -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> n
-genarith
-code: 
-(+ i 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i

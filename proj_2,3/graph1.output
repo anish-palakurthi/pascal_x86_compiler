@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94077846343088           d  CONST  typ    REAL  val  6.250000e-02
- 94077846343440           s  CONST  typ INTEGER  val  32
- 94077846343792           h  CONST  typ INTEGER  val  34
- 94077846344144           c  CONST  typ    REAL  val  6.283180e+00
- 94077846344496         lim  CONST  typ INTEGER  val  32
- 94077846345104           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94077846345200           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94077846345680           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94077846345776           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94193989823920           d  CONST  typ    REAL  val  6.250000e-02
+ 94193989824272           s  CONST  typ INTEGER  val  32
+ 94193989824624           h  CONST  typ INTEGER  val  34
+ 94193989824976           c  CONST  typ    REAL  val  6.283180e+00
+ 94193989825328         lim  CONST  typ INTEGER  val  32
+ 94193989825936           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94193989826032           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94193989826512           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94193989826608           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -45,230 +45,48 @@ graph1:
         subq	$48, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-0
-code->tokentype: 5
 	movl	$0,%eax         	#  0 -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i
 .L1:
-genarith
-code: 
-(<= i 32)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-32
-code->tokentype: 5
 	movl	$32,%ecx         	#  32 -> %ecx
 	cmpl	%ecx,%eax           	#  compare %eax - %ecx
 	jle	.L3 			#  jump if     <=
 	jmp	.L4 			#  jump 
 .L3:
-genarith
-code: 
-(* 6.250000e-02
-   (float i))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-6.250000e-02
-genarith
-code: 
-6.250000e-02
-code->tokentype: 5
 	movsd	.LC5(%rip),%xmm0   	#  0.062500 -> %xmm0
-genarith
-code: 
-(float i)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
 	cvtsi2sd	%eax,%xmm1    	#  float %eax -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 	movsd	%xmm0,-48(%rbp)     	#  %xmm0 -> x
-genarith
-code: 
-(* (funcall exp (- x))
-   (funcall sin (* 6.283180e+00
-                   x)))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-(funcall exp (- x))
-genarith
-code: 
-(funcall exp (- x))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-exp
-genarith
-code: 
-exp
-code->tokentype: 3
-genarith
-code: 
-(- x)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-x
-genarith
-code: 
-x
-code->tokentype: 3
 	movsd	-48(%rbp),%xmm0     	#  x -> %xmm0
 	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
 	xorpd	%xmm1,%xmm0           	#  negate %xmm0
-INLINE HANDLING
-genarith
-code: 
-(funcall sin (* 6.283180e+00
-                x))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-sin
-genarith
-code: 
-sin
-code->tokentype: 3
-genarith
-code: 
-(* 6.283180e+00
-   x)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-6.283180e+00
-genarith
-code: 
-6.283180e+00
-code->tokentype: 5
+	call	exp@PLT          	#  exp()
+	movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
 	movsd	.LC6(%rip),%xmm0   	#  6.283180 -> %xmm0
-genarith
-code: 
-x
-code->tokentype: 3
 	movsd	-48(%rbp),%xmm1     	#  x -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
-INLINE HANDLING
-	imull	%eax,%ecx         	#  %ecx * %eax -> %ecx
-	movl	%eax,-40(%rbp)     	#  %eax -> y
-genarith
-code: 
-(fix (+ (funcall round (* 3.200000e+01
-                          y))
-        3.400000e+01))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-(+ (funcall round (* 3.200000e+01
-                     y))
-   3.400000e+01)
-genarith
-code: 
-(+ (funcall round (* 3.200000e+01
-                     y))
-   3.400000e+01)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-(funcall round (* 3.200000e+01
-                  y))
-genarith
-code: 
-(funcall round (* 3.200000e+01
-                  y))
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-round
-genarith
-code: 
-round
-code->tokentype: 3
-genarith
-code: 
-(* 3.200000e+01
-   y)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-3.200000e+01
-genarith
-code: 
-3.200000e+01
-code->tokentype: 5
+	call	sin@PLT          	#  sin()
+	movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
+	mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
+	movsd	%xmm1,-40(%rbp)     	#  %xmm1 -> y
 	movsd	.LC7(%rip),%xmm0   	#  32.000000 -> %xmm0
-genarith
-code: 
-y
-code->tokentype: 3
 	movsd	-40(%rbp),%xmm1     	#  y -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
-INLINE HANDLING
-genarith
-code: 
-3.400000e+01
-code->tokentype: 5
-	movsd	.LC8(%rip),%xmm2   	#  34.000000 -> %xmm2
-	addsd	%xmm2,%eax         	#  %eax + %xmm2 -> %eax
-	cvttsd2si	%ecx,%edx    	#  fix %ecx -> %edx
+	call	round@PLT          	#  round()
+	movsd	.LC8(%rip),%xmm1   	#  34.000000 -> %xmm1
+	addsd	%xmm1,%xmm0         	#  %xmm0 + %xmm1 -> %xmm0
+	cvttsd2si	%xmm0,%eax    	#  fix %xmm0 -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> n
 .L0:
 	leaq	.LC9(%rip),%rdi  	#  addr of literal .LC9
 	call	write@PLT          	#  write()
-genarith
-code: 
-(- n 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-n
-genarith
-code: 
-n
-code->tokentype: 3
 	movl	-28(%rbp),%eax     	#  n -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> n
-genarith
-code: 
-(= n 0)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-n
-genarith
-code: 
-n
-code->tokentype: 3
 	movl	-28(%rbp),%eax     	#  n -> %eax
-genarith
-code: 
-0
-code->tokentype: 5
 	movl	$0,%ecx         	#  0 -> %ecx
 	cmpl	%ecx,%eax           	#  compare %eax - %ecx
 	je	.L10 			#  jump if     ==
@@ -278,22 +96,7 @@ code->tokentype: 5
 .L11:
 	leaq	.LC12(%rip),%rdi  	#  addr of literal .LC12
 	call	writelni@PLT          	#  writelni()
-genarith
-code: 
-(+ i 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i

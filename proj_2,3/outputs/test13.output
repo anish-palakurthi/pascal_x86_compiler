@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94179214184048           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94179214184144         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94397672517232           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94397672517328         sum  VAR    0 typ integer  lvl  1  siz     4  off     4
 (program graph1 (progn output)
                 (progn (:= i (+ i 1))
                        (:= sum (+ sum 1))
@@ -21,60 +21,15 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-(+ i 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i
-genarith
-code: 
-(+ sum 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-sum
-genarith
-code: 
-sum
-code->tokentype: 3
 	movl	-28(%rbp),%eax     	#  sum -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> sum
-genarith
-code: 
-(+ i sum)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-sum
-code->tokentype: 3
 	movl	-28(%rbp),%ecx     	#  sum -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i

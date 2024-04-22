@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94735483780592           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94195888672240           i  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= i (+ i 1))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -18,22 +18,7 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-(+ i 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-i
-genarith
-code: 
-i
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  i -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> i

@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94793222528496           n  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94798150458864           n  VAR    0 typ integer  lvl  1  siz     4  off     0
 (program graph1 (progn output)
                 (progn (:= n 1)
                        (progn (label 0)
@@ -23,48 +23,14 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%eax         	#  1 -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> n
 .L0:
-genarith
-code: 
-(- n 1)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-n
-genarith
-code: 
-n
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  n -> %eax
-genarith
-code: 
-1
-code->tokentype: 5
 	movl	$1,%ecx         	#  1 -> %ecx
 	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
 	movl	%eax,-32(%rbp)     	#  %eax -> n
-genarith
-code: 
-(= n 0)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-n
-genarith
-code: 
-n
-code->tokentype: 3
 	movl	-32(%rbp),%eax     	#  n -> %eax
-genarith
-code: 
-0
-code->tokentype: 5
 	movl	$0,%ecx         	#  0 -> %ecx
 	cmpl	%ecx,%eax           	#  compare %eax - %ecx
 	je	.L2 			#  jump if     ==

@@ -135,12 +135,6 @@ int getreg(int kind) {
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
 
-    printf("genarith\n");
-    printf("code: \n");
-    ppexpr(code);
-    printf("\n");
-    printf("code->tokentype: %d\n", code->tokentype);
-    // return;
     if (DEBUGGEN) {
         printf("\nIn genarith()\n");
 //        dbugprinttok(code);
@@ -209,7 +203,6 @@ int genarith(TOKEN code) {
         if (sym->kind == FUNCTIONSYM) {
             reg_num = getreg(sym->datatype->basicdt);
             inline_funcall = code;
-            printf("code->link->tokentype: %d\n", code->link->tokentype);
             genc(code->link);
         }
 
@@ -268,10 +261,6 @@ int genarith(TOKEN code) {
             nested_refs = true;
         }
 
-        printf("OPERATOR tokentype in genarith\n");
-        printf("code->operands: \n");
-        ppexpr(code->operands);
-        printf("\n");
         lhs_reg = genarith(code->operands);
 
         if (code->operands->link) {
@@ -476,8 +465,6 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
     }
     else if (which_val == FUNCALLOP) {
 
-        printf("INLINE HANDLING\n");
-        return;
         if (inline_funcall) {
 
             if (num_funcalls_in_curr_tree > 1) {
@@ -662,9 +649,9 @@ void genc(TOKEN code) {
             new_funcall_flag = false;
             return;
         }
-        printf("\tError: bad code token! (genc())\n");
-        dbugprinttok(code);
-        printf("\n");
+        // printf("\tError: bad code token! (genc())\n");
+        // dbugprinttok(code);
+        // printf("\n");
     }
 
     SYMBOL sym;
@@ -945,20 +932,24 @@ void genc(TOKEN code) {
         // genc() for else crap?
 
     }
-    else {  // which_val == FUNCALLOP
-        /* Compile short intrinsic functions inline.
-           For others, generate subroutine calls. */
-
+    else if (which_val == FUNCALLOP) {
         if (DEBUGGEN) {
             printf(" FUNCALLOP detected.\n");
             ppexpr(code);
             ppexpr(code->operands);
-            ppexpr(code->operands->link);
+            if (code->operands->link) {
+                ppexpr(code->operands->link);
+            }
             printf("\n");
         }
 
         lhs = code->operands;
-        rhs = code->operands->link;
+        rhs = NULL; // Initialize rhs to NULL
+
+        if (code->operands->link) { // Check if code->operands->link is not NULL
+            rhs = code->operands->link;
+        }
+
         SYMBOL argsym;
 
         if (strstr(lhs->stringval, "write")) {      // != NULL

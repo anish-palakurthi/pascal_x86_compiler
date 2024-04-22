@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94875991785072           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94875991785168           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94379152338544           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94379152338640           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= x (- y))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -19,17 +19,6 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-genarith
-code: 
-(- y)
-code->tokentype: 0
-OPERATOR tokentype in genarith
-code->operands: 
-y
-genarith
-code: 
-y
-code->tokentype: 3
 	movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
 	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
 	xorpd	%xmm1,%xmm0           	#  negate %xmm0
