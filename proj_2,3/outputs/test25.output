@@ -1,23 +1,23 @@
 yyparse result =        0
 Symbol table level 1
- 93919477452880     complex  TYPE   typ 93919477452592  lvl  1  siz    16  off     0
+ 94908229107792     complex  TYPE   typ 94908229107504  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 93919477453744         red  CONST  typ INTEGER  val  0
- 93919477453904       white  CONST  typ INTEGER  val  1
- 93919477454064        blue  CONST  typ INTEGER  val  2
- 93919477454256       color  TYPE   typ 93919477454160  lvl  1  siz     4  off     0
+ 94908229108656         red  CONST  typ INTEGER  val  0
+ 94908229108816       white  CONST  typ INTEGER  val  1
+ 94908229108976        blue  CONST  typ INTEGER  val  2
+ 94908229109168       color  TYPE   typ 94908229109072  lvl  1  siz     4  off     0
   0 ..   2
- 93919477454672      person  TYPE   typ 93919477456496  lvl  1  siz    48  off     0
+ 94908229109584      person  TYPE   typ 94908229111408  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 93919477454864          pp  TYPE   typ 93919477454768  lvl  1  siz     8  off     0
+ 94908229109776          pp  TYPE   typ 94908229109680  lvl  1  siz     8  off     0
 (^ person)
- 93919477457456        john  VAR    4 typ 93919477454768  lvl  1  siz     8  off     0
+ 94908229112368        john  VAR    4 typ 94908229109680  lvl  1  siz     8  off     0
 (^ person)
 (program graph1 (progn output)
                 (progn (:= (aref (^ john)
@@ -38,9 +38,19 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	movl	$19,%eax         	#  19 -> %eax
-	movq	-32(%rbp),%rcx     	#  john -> %rcx
-	movl	%eax,0(%rcx)         	#  %eax -> ^. [0+%rcx]
+code:   19
+i: 16
+	movl	$19,%xmm0         	#  19 -> %xmm0
+i: 16
+	movq	-32(%rbp),jmp     	#  john -> jmp
+	movl	%xmm0,0(jmp)         	#  %xmm0 -> ^. [0+jmp]
+code:   (^ john)
+code:   john
+i: 0
+i: 16
+i: 17
+i: 16
+i: 17
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
