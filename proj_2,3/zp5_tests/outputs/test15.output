@@ -1,15 +1,15 @@
 yyparse result =        0
 Symbol table level 1
- 94589554196400         red  CONST  typ INTEGER  val  0
- 94589554196560       white  CONST  typ INTEGER  val  1
- 94589554196720        blue  CONST  typ INTEGER  val  2
- 94589554196912       color  TYPE   typ 94589554196816  lvl  1  siz     4  off     0
+ 94140749860784         red  CONST  typ INTEGER  val  0
+ 94140749860944       white  CONST  typ INTEGER  val  1
+ 94140749861104        blue  CONST  typ INTEGER  val  2
+ 94140749861296       color  TYPE   typ 94140749861200  lvl  1  siz     4  off     0
   0 ..   2
- 94589554197520           i  VAR    0 typ integer  lvl  1  siz     4  off     0
- 94589554197616           j  VAR    0 typ integer  lvl  1  siz     4  off     4
- 94589554198832         aco  VAR    0 typ 94589554198736  lvl  1  siz   120  off    16
+ 94140749861904           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94140749862000           j  VAR    0 typ integer  lvl  1  siz     4  off     4
+ 94140749863216         aco  VAR    0 typ 94140749863120  lvl  1  siz   120  off    16
 (ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
- 94589554200048        acoX  VAR    0 typ 94589554199952  lvl  1  siz    60  off   144
+ 94140749864432        acoX  VAR    0 typ 94140749864336  lvl  1  siz    60  off   144
 (ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
 (program graph1 (progn output)
                 (progn (:= (aref aco (+ -8

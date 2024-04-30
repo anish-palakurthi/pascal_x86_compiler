@@ -294,7 +294,6 @@ int genarith(TOKEN code) {
             }
             else {
                 lhs_reg = getreg(INTEGER);
-                // lhs_reg = getreg(REAL);
             }
         }
 

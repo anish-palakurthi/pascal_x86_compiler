@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94527318277616           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94527318277968           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94543236681200           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94543236681552           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= x (float i))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"

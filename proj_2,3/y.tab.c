@@ -3437,11 +3437,10 @@ void insttype(TOKEN typename, TOKEN typetok) {
 int wordaddress(int n, int wordsize)
   { return ((n + wordsize - 1) / wordsize) * wordsize; }
  
-yyerror(s)
-  char * s;
-  { 
-  fputs(s,stderr); putc('\n',stderr);
-  }
+void yyerror (char const *s)
+{
+  fprintf (stderr, "%s\n", s);
+}
 
 int main(void)          /*  */
   { int res;
