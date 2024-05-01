@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94630440971856        john  VAR    4 typ 94630440971760  lvl  1  siz     8  off     0
+ 94483415965264        john  VAR    4 typ 94483415965168  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------

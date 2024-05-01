@@ -142,6 +142,8 @@ int genarith(TOKEN code) {
         printf("\n");
     }
 
+    
+
     int num, reg_num, lhs_reg, rhs_reg;
     SYMBOL sym;
 
@@ -464,22 +466,23 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         out = lhs_reg;
     }
     else if (which_val == FUNCALLOP) {
-
         if (inline_funcall) {
-
             if (num_funcalls_in_curr_tree > 1) {
-                saved_inline_regs[num_inlines_processed] = saved_inline_reg;
+                saved_inline_regs[num_inlines_processed] = lhs_reg;
                 num_inlines_processed++;
                 if (num_inlines_processed == 1) {
                     asmcall(inline_funcall->stringval);
-                    asmsttemp(saved_inline_reg);
+                    asmsttemp(lhs_reg);
                 }
-                else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
-                    // load and then store?
+                else if (num_inlines_processed > 1 && num_inlines_processed < num_funcalls_in_curr_tree) {
+                    int temp_reg = getreg(REAL);
+                    asmldtemp(temp_reg);
+                    asmcall(inline_funcall->stringval);
+                    asmsttemp(lhs_reg);
                 }
                 else {
                     asmcall(inline_funcall->stringval);
-                    asmldtemp(saved_inline_reg);
+                    asmldtemp(lhs_reg);
                 }               
             }
             else if (strcmp(inline_funcall->stringval, "new") == 0) {
@@ -488,12 +491,13 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
             }
             else {
                 asmcall(inline_funcall->stringval);
+                asmsttemp(lhs_reg);
             }
 
             inline_funcall = NULL;
         }
         else {
-            // ?????????????????????????????
+            // Handle non-inline function calls
         }
 
         out = lhs_reg;
