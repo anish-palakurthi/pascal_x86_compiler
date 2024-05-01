@@ -484,16 +484,17 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     asmldtemp(lhs_reg);
                 }               
             }
+            else if (strcmp(inline_funcall->stringval, "new") == 0) {
+                asmrr(MOVL, rhs_reg, EDI);
+                asmcall(inline_funcall->stringval);
+            }
             else {
                 // Handle single inline function call
                 asmcall(inline_funcall->stringval);
                 out = lhs_reg;
             }
 
-            if (strcmp(inline_funcall->stringval, "new") == 0) {
-                asmrr(MOVL, rhs_reg, EDI);
-                asmcall(inline_funcall->stringval);
-            }
+
 
             inline_funcall = NULL;
         }
