@@ -504,6 +504,30 @@ else if (which_val == AREFOP) {
         asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
     } else {
         if (last_id_reg_num > -1) {
+            SYMBOL sym;
+            int reg_num, offs;
+            TOKEN lhs = code->operands;
+
+            if (sym && sym->datatype->kind == ARRAYSYM) {
+                SYMBOL arraysym = sym->datatype;
+                while (arraysym->kind == ARRAYSYM) {
+                    arraysym = arraysym->datatype;
+                }
+                if (arraysym->kind == RECORDSYM) {
+                    // handle array of records
+                printf("array of records\n");
+
+                    asmimmed(MOVL, code->operands->link->intval, EAX);
+                    asmop(CLTQ);
+                    offs = sym->offset - stkframesize;
+                    if (reg_num >= 0 && reg_num < 16) {
+                        asmldr(MOVL, offs, EAX, reg_num, sym->namestring);
+                    } else {
+                        asmldr(MOVSD, offs, EAX, reg_num, sym->namestring);
+                    }
+                }
+            }
+
             int temp = rhs_reg;
             if (last_id_reg_num > -1 && last_id_reg_num < 16) {
                 if (last_id_reg_num == rhs_reg) {
@@ -735,6 +759,27 @@ void genc(TOKEN code) {
         saved_rhs_reg_num = reg_num;
 
         sym = searchst(lhs->stringval);
+        SYMBOL arraysym;
+        if (sym && sym->datatype->kind == ARRAYSYM) {
+            arraysym = sym->datatype;
+            while (arraysym->kind == ARRAYSYM) {
+                arraysym = arraysym->datatype;
+            }
+            if (arraysym->kind == RECORDSYM) {
+                // handle array of records
+                printf("array of records\n");
+                TOKEN last_link = get_last_link(lhs->operands);
+                if (last_link && last_link->tokentype == NUMBERTOK) {
+                    asmimmed(MOVL, last_link->intval, EAX);
+                    asmop(CLTQ);
+                    if (reg_num >= 0 && reg_num < 16) {
+                        asmstrr(MOVL, reg_num, offs, EAX, lhs->stringval);
+                    } else {
+                        asmstrr(MOVSD, reg_num, offs, EAX, lhs->stringval);
+                    }
+                }
+            }
+        }
 
         int datatype = code->basicdt;                  /* store value into lhs  */
 
@@ -759,6 +804,7 @@ void genc(TOKEN code) {
             sym = searchst(lhs->operands->stringval);
 
             if (!sym) {
+
                 sym = searchst(lhs->operands->operands->stringval);
                 if (sym) {
 
@@ -791,9 +837,7 @@ void genc(TOKEN code) {
                     }
 
                 }
-                else {
-                    // printf("\nEMPTY ELSE\n");
-                }
+
             }
             else {
 
@@ -803,9 +847,7 @@ void genc(TOKEN code) {
                 // printf("not not executing yet\n");
 
                 if (last_link) {
-                    // printf("Not executing yet\n");
                     if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
-                        // printf("executing array reference\n");
                         asmimmed(MOVL, last_link->intval, EAX);
                         asmop(CLTQ);
 

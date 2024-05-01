@@ -36,7 +36,6 @@
 #include <string.h>
 #include "lexan.h"
 
-// #include "token.h"
 #include "stdbool.h"
 
 int maketoken(int type, int which);

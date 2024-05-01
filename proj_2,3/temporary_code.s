@@ -1,4 +1,4 @@
-.file   "foo"
+        .file   "foo"
         .text
         .globl graph1
         .type   graph1, @function
@@ -13,19 +13,24 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-.L0:
-	movq	-32(%rbp),%rax     	#  ptr -> %rax
-	movq	$0,%rcx         	#  0 -> %rcx
-	cmpq	%rcx,%rax           	#  compare %rax - %rcx
-	jne	.L2 			#  jump if     !=
-	jmp	.L3 			#  jump 
-.L2:
-	movl	-24(%rbp),%eax     	#  i -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-	movl	%eax,-24(%rbp)     	#  %eax -> i
-	jmp	.L0 			#  jump 
-.L3:
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+	movq	-32(%rbp),%rax     	#  john -> %rax
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
