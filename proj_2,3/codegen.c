@@ -288,40 +288,10 @@ int genarith(TOKEN code) {
     return reg_num;
 }
 
-/* Gets and returns the last TOKEN (in)directly
-   connected via ->link to TOKEN tok. Mostly used 
-   to handle elimination of nested progns. */
-TOKEN get_last_link(TOKEN tok) {
-	if (!tok) {
-		return NULL;
-	}
 
-	TOKEN curr = tok;
-	TOKEN curr_link = curr->link;
-	while (curr_link) {
-		curr = curr_link;
-		curr_link = curr_link->link;
-	}
 
-	return curr;
-}
 
-/* Gets and returns the last TOKEN (in)directly
-   connected via ->operands to TOKEN tok. */
-TOKEN get_last_operand(TOKEN tok) {
-	if (!tok) {
-		return NULL;
-	}
 
-	TOKEN curr = tok;
-	TOKEN curr_operand = curr->operands;
-	while (curr_operand) {
-		curr = curr_operand;
-		curr_operand = curr_operand->operands;
-	}
-
-	return curr;	
-}
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
     if (DEBUGGEN) {
@@ -624,6 +594,35 @@ else if (which_val == AREFOP) {
 }
 
 /* Generate code for a Statement from an intermediate-code form */
+
+/* Gets and returns the last TOKEN (in)directly connected via ->operands to TOKEN tok. */
+TOKEN get_last_operand(TOKEN tokenNode) {
+    TOKEN currentToken = tokenNode;
+    while (currentToken) {
+        TOKEN nextToken = currentToken->operands;
+        if (!nextToken) {
+            return currentToken;
+        }
+        currentToken = nextToken;
+    }
+    return NULL;
+}
+
+/* Gets and returns the last TOKEN (in)directly connected via ->link to TOKEN tok.
+   Mostly used to handle elimination of nested progns. */
+TOKEN get_last_link(TOKEN tokenNode) {
+    TOKEN currentToken = tokenNode;
+    while (currentToken) {
+        TOKEN nextLink = currentToken->link;
+        if (!nextLink) {
+            return currentToken;
+        }
+        currentToken = nextLink;
+    }
+    return NULL;
+}
+
+
 
 void genc(TOKEN code) {
     if (DEBUGGEN) {
@@ -1011,109 +1010,68 @@ void genc(TOKEN code) {
 /* ##################################################################################################################################### */
 
 void reset_regs() {
-    int i;
-    for (i = 0; i < NUM_REGS; i++) {
-        used_regs[i] = 0;
+    memset(used_regs, 0, sizeof(used_regs));
+}
+
+void free_reg(int regNumber) {
+    if (regNumber >= 0 && regNumber < NUM_REGS) {
+        used_regs[regNumber] = 0;
     }
 }
 
-void free_reg(int reg_num) {
-    if (reg_num < 0 || reg_num >= NUM_REGS) {
-        printf("Error: cannot free register number %d\n", reg_num);
-        return;
-    }
-    used_regs[reg_num] = 0;
+bool at_least_one_float(int leftRegister, int rightRegister) {
+    return (leftRegister >= NUM_INT_REGS && leftRegister < NUM_REGS) ||
+           (rightRegister >= NUM_INT_REGS && rightRegister < NUM_REGS);
 }
 
-bool at_least_one_float(int lhs_reg, int rhs_reg) {
-    if ((lhs_reg >= NUM_INT_REGS && lhs_reg < NUM_REGS) || 
-        (rhs_reg >= NUM_INT_REGS && rhs_reg < NUM_REGS)) {
-        return true;
+void mark_reg_unused(int regNumber) {
+    if (regNumber >= 0 && regNumber < NUM_REGS) {
+        used_regs[regNumber] = 0;
     }
-    return false;
 }
 
-void mark_reg_unused(int reg_num) {
-    if (reg_num < 0 || reg_num >= NUM_REGS) {
-        printf("Error: register %d out of bounds\n", reg_num);
-        return;
+void mark_reg_used(int regNumber) {
+    if (regNumber >= 0 && regNumber < NUM_REGS) {
+        used_regs[regNumber] = 1;
     }
-    used_regs[reg_num] = 0;
 }
 
-void mark_reg_used(int reg_num) {
-    if (reg_num < 0 || reg_num >= NUM_REGS) {
-        printf("Error: register %d out of bounds\n", reg_num);
-        return;
+int num_funcalls_in_tree(TOKEN tokenNode, int callCount) {
+    if (!tokenNode) {
+        return callCount;
     }
-    used_regs[reg_num] = 1;    
+    if (tokenNode->whichval == FUNCALLOP) {
+        callCount++;
+    }
+    callCount = num_funcalls_in_tree(tokenNode->link, callCount);
+    callCount = num_funcalls_in_tree(tokenNode->operands, callCount);
+    return callCount;
 }
 
-int num_funcalls_in_tree(TOKEN tok, int num) {
-    if (tok == NULL) {
-        return num;
-    }
-
-    if (tok->whichval == FUNCALLOP) {
-//        ppexpr(tok);
-        num++;
-    }
-    if (tok->link != NULL) {
-        num = num_funcalls_in_tree(tok->link, num);
-    }
-    if (tok->operands != NULL) {
-        num = num_funcalls_in_tree(tok->operands, num);
-    }
-
-    return num;
-}
-
-bool search_tree_str(TOKEN tok, char str[]) {
-    if (tok == NULL) {
+bool search_tree_str(TOKEN tokenNode, char searchString[]) {
+    if (!tokenNode) {
         return false;
     }
-
-//    dbugprinttok(tok);
-
-    bool found = false;
-
-    if (strcmp(tok->stringval, str) == 0) {
+    if (!strcmp(tokenNode->stringval, searchString)) {
         return true;
     }
-    if (tok->link != NULL) {
-        found = search_tree_str(tok->link, str);
-    }
-    if (tok->operands != NULL) {
-        found = search_tree_str(tok->operands, str);
-    }
-
-    return found;
+    return search_tree_str(tokenNode->link, searchString) || search_tree_str(tokenNode->operands, searchString);
 }
 
 void print_used_regs() {
-    printf("\nUsed registers: %d", used_regs[0]);
-    
-    int i;
-    for (i = 1; i < NUM_REGS; i++) {
-        printf(" %d", used_regs[i]);
+    for (int regIndex = 0; regIndex < NUM_REGS; regIndex++) {
+        printf(" %d", used_regs[regIndex]);
     }
-    printf("\n\n");
+    printf("\n");
 }
 
-int symbol_is_null_int(char *str) {
-    if (str) {
-        printf("Error: NULL symbol (\"%s\")\n", str);
+int symbol_is_null_int(char *stringValue) {
+    if (stringValue) {
+        printf("Str not null\n");
     }
     return 0;
 }
 
-bool is_equal(TOKEN a, TOKEN b) {
-    if (!a || !b) {
-        return false;
-    }
-
-    if ((long) a == (long) b) {
-        return true;
-    }
-    return false;
+bool is_equal(TOKEN firstToken, TOKEN secondToken) {
+    return firstToken == secondToken;
 }

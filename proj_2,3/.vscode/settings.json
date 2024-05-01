@@ -7,6 +7,7 @@
         "chrono": "c",
         "algorithm": "c",
         "memory_resource": "c",
-        "symtab.h": "c"
+        "symtab.h": "c",
+        "sstream": "c"
     }
 }
