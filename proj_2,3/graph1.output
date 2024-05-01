@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94195022183856           d  CONST  typ    REAL  val  6.250000e-02
- 94195022184208           s  CONST  typ INTEGER  val  32
- 94195022184560           h  CONST  typ INTEGER  val  34
- 94195022184912           c  CONST  typ    REAL  val  6.283180e+00
- 94195022185264         lim  CONST  typ INTEGER  val  32
- 94195022185872           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94195022185968           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94195022186448           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94195022186544           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 94672265096624           d  CONST  typ    REAL  val  6.250000e-02
+ 94672265096976           s  CONST  typ INTEGER  val  32
+ 94672265097328           h  CONST  typ INTEGER  val  34
+ 94672265097680           c  CONST  typ    REAL  val  6.283180e+00
+ 94672265098032         lim  CONST  typ INTEGER  val  32
+ 94672265098640           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94672265098736           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94672265099216           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 94672265099312           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -63,21 +63,21 @@ graph1:
 	movsd	.LC666(%rip),%xmm1   	#  0.000000 -> %xmm1
 	xorpd	%xmm1,%xmm0           	#  negate %xmm0
 	call	exp@PLT          	#  exp()
-	movsd	%xmm2,-8(%rbp)     	#  %xmm2 -> temp
+	movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
 	movsd	.LC6(%rip),%xmm0   	#  6.283180 -> %xmm0
 	movsd	-48(%rbp),%xmm1     	#  x -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 	call	sin@PLT          	#  sin()
-	movsd	-8(%rbp),%xmm2     	#  temp -> %xmm2
-	mulsd	%xmm2,%xmm0         	#  %xmm0 * %xmm2 -> %xmm0
-	movsd	%xmm0,-40(%rbp)     	#  %xmm0 -> y
+	movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
+	mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
+	movsd	%xmm1,-40(%rbp)     	#  %xmm1 -> y
 	movsd	.LC7(%rip),%xmm0   	#  32.000000 -> %xmm0
 	movsd	-40(%rbp),%xmm1     	#  y -> %xmm1
 	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 	call	round@PLT          	#  round()
 	movsd	.LC8(%rip),%xmm1   	#  34.000000 -> %xmm1
-	addsd	%xmm1,%xmm2         	#  %xmm2 + %xmm1 -> %xmm2
-	cvttsd2si	%xmm2,%eax    	#  fix %xmm2 -> %eax
+	addsd	%xmm1,%xmm0         	#  %xmm0 + %xmm1 -> %xmm0
+	cvttsd2si	%xmm0,%eax    	#  fix %xmm0 -> %eax
 	movl	%eax,-28(%rbp)     	#  %eax -> n
 .L0:
 	leaq	.LC9(%rip),%rdi  	#  addr of literal .LC9
