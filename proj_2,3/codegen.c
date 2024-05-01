@@ -129,10 +129,8 @@ int getreg(int kind) {
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
-
     if (DEBUGGEN) {
         printf("\nIn genarith()\n");
-//        dbugprinttok(code);
         ppexpr(code);
         printf("\n");
     }
@@ -140,177 +138,148 @@ int genarith(TOKEN code) {
     int num, reg_num, lhs_reg, rhs_reg;
     SYMBOL sym;
 
-    if (code->tokentype == NUMBERTOK) {
-        if (code->basicdt == INTEGER) {
-            num = code->intval;
-            reg_num = getreg(INTEGER);
+    switch (code->tokentype) {
+        case NUMBERTOK:
+            if (code->basicdt == INTEGER) {
+                num = code->intval;
+                reg_num = getreg(INTEGER);
 
-            if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nested_refs) {
-                if (last_ptr && last_ptr_reg_num > -1) {
+                if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nested_refs) {
+                    if (last_ptr && last_ptr_reg_num > -1) {
+                        asmimmed(MOVQ, num, reg_num);
+                        last_ptr_reg_num = -1;
+                    } else if (!nil_flag) {
+                        asmimmed(MOVL, num, reg_num);
+                    } else {
+                        asmimmed(MOVQ, num, reg_num);
+                    }
+                } else {
+                    // ?????????????????????????????????????????????????????????????????
+                }
+            } else {
+                reg_num = getreg(REAL);
+                saved_float_reg = code->realval;
 
-                    // asmimmed(MOVQ, num, last_ptr_reg_num);
-                    asmimmed(MOVQ, num, reg_num);
-                    last_ptr_reg_num = -1;
-                }
-                else if (!nil_flag) {
-                    asmimmed(MOVL, num, reg_num);
-                }
-                else {
-                    asmimmed(MOVQ, num, reg_num);
-                }
-
+                makeflit(code->realval, nextlabel);
+                asmldflit(MOVSD, nextlabel++, reg_num);
             }
-            else {
-                // ?????????????????????????????????????????????????????????????????
+            break;
+
+        case IDENTIFIERTOK:
+            sym = searchst(code->stringval);
+            if (!sym) {
+                return symbol_is_null_int(code->stringval);
             }
 
-        }
-        else {
-            /* Generate literal for the value of the constant, then
-               load the literal into a register. */
-
-            reg_num = getreg(REAL);
-            saved_float_reg = code->realval;
-
-            makeflit(code->realval, nextlabel);
-            asmldflit(MOVSD, nextlabel++, reg_num);
-        }
-    }
-    
-    else if (code->tokentype == IDENTIFIERTOK) {
-
-        sym = searchst(code->stringval);
-        if (!sym) {
-            return symbol_is_null_int(code->stringval);
-        }
-
-        if (DEBUGGEN) {
-            printf(" IDENTIFIERTOK detected; symbol table entry:\n");
-            ppexpr(code);
-            dbprsymbol(sym);
-            printf(" offset: %d\n", sym->offset);
-            printf("\n");
-        }
-
-        num = sym->offset;
-
-        if (sym->kind == FUNCTIONSYM) {
-            reg_num = getreg(sym->datatype->basicdt);
-            inline_funcall = code;
-            genc(code->link);
-        }
-
-        else {
-
-            reg_num = getreg(code->basicdt);
-            if (reg_num < NUM_INT_REGS && code->basicdt != POINTER) {
-
-                SYMBOL temp = searchst(code->stringval);
-                if (!temp) {
-                    return symbol_is_null_int(code->stringval);
-                }
-
-                SYMBOL next = temp->datatype;
-
-                if (!next) {
-                    return symbol_is_null_int(NULL);
-                }
-
-                if (next->kind != ARRAYSYM) {
-                    last_id_reg_num = reg_num;
-                    asmld(MOVL, sym->offset - stkframesize, reg_num, code->stringval);
-                }
-
+            if (DEBUGGEN) {
+                printf(" IDENTIFIERTOK detected; symbol table entry:\n");
+                ppexpr(code);
+                dbprsymbol(sym);
+                printf(" offset: %d\n", sym->offset);
+                printf("\n");
             }
-            else {
-                if (code->basicdt == POINTER) {
 
-                    if (last_ptr == NULL) {
-                        last_ptr = code;
-                        last_ptr_reg_num = reg_num;
-                        asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+            num = sym->offset;
+
+            if (sym->kind == FUNCTIONSYM) {
+                reg_num = getreg(sym->datatype->basicdt);
+                inline_funcall = code;
+                genc(code->link);
+            } else {
+                reg_num = getreg(code->basicdt);
+                if (reg_num < NUM_INT_REGS && code->basicdt != POINTER) {
+                    SYMBOL temp = searchst(code->stringval);
+                    if (!temp) {
+                        return symbol_is_null_int(code->stringval);
                     }
 
-                    else if (last_ptr != NULL && strcmp(last_ptr->stringval, code->stringval) != 0) {
-                        last_ptr = code;
-                        last_ptr_reg_num = reg_num;
-                        asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+                    SYMBOL next = temp->datatype;
+
+                    if (!next) {
+                        return symbol_is_null_int(NULL);
+                    }
+
+                    if (next->kind != ARRAYSYM) {
+                        last_id_reg_num = reg_num;
+                        asmld(MOVL, sym->offset - stkframesize, reg_num, code->stringval);
+                    }
+                } else {
+                    if (code->basicdt == POINTER) {
+                        if (last_ptr == NULL) {
+                            last_ptr = code;
+                            last_ptr_reg_num = reg_num;
+                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+                        } else if (last_ptr != NULL && strcmp(last_ptr->stringval, code->stringval) != 0) {
+                            last_ptr = code;
+                            last_ptr_reg_num = reg_num;
+                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+                        }
+                    } else {
+                        last_id_reg_num = reg_num;
+                        asmld(MOVSD, sym->offset - stkframesize, reg_num, code->stringval);
                     }
                 }
+            }
+            break;
 
-                else {
-                    last_id_reg_num = reg_num;
-                    asmld(MOVSD, sym->offset - stkframesize, reg_num, code->stringval);
+        case OPERATOR:
+            if (first_op_genarith == NULL) {
+                first_op_genarith = code;
+            } else {
+                nested_refs = true;
+            }
+
+            lhs_reg = genarith(code->operands);
+
+            if (code->operands->link) {
+                rhs_reg = genarith(code->operands->link);
+            } else {
+                rhs_reg = 0;
+            }
+
+            if (code->operands->whichval == FUNCALLOP) {
+                free_reg(lhs_reg);
+                lhs_reg = saved_inline_regs[num_inlines_processed - 1];
+                mark_reg_used(lhs_reg);
+            }
+            if (code->operands->link) {
+                if (code->operands->link->whichval == FUNCALLOP) {
+                    free_reg(rhs_reg);
+                    rhs_reg = saved_inline_regs[num_inlines_processed - 2];
+                    mark_reg_used(rhs_reg);
                 }
-            }       
-        }
-
-    }
-    else if (code->tokentype == OPERATOR) {
-
-        if (first_op_genarith == NULL) {
-            first_op_genarith = code;
-        }
-        else {
-            nested_refs = true;
-        }
-
-        lhs_reg = genarith(code->operands);
-
-        if (code->operands->link) {
-            rhs_reg = genarith(code->operands->link);
-        }
-        else {
-            // FLOATOP (and possibly FIXOP?)
-            rhs_reg = 0;
-        }
-
-        if (code->operands->whichval == FUNCALLOP) {
-
-            free_reg(lhs_reg);
-            lhs_reg = saved_inline_regs[num_inlines_processed - 1];
-            mark_reg_used(lhs_reg);
-        }
-        if (code->operands->link) {
-            if (code->operands->link->whichval == FUNCALLOP) {
-
-                free_reg(rhs_reg);
-                rhs_reg = saved_inline_regs[num_inlines_processed - 2];
-                mark_reg_used(rhs_reg);
             }
-        }
 
-        bool same_reg_assn = false;
-        if (lhs_reg == rhs_reg) {
-            same_reg_assn = true;
-            if (rhs_reg > 15) {
-                lhs_reg = getreg(REAL);
+            bool same_reg_assn = false;
+            if (lhs_reg == rhs_reg) {
+                same_reg_assn = true;
+                if (rhs_reg > 15) {
+                    lhs_reg = getreg(REAL);
+                } else {
+                    lhs_reg = getreg(INTEGER);
+                }
             }
-            else {
-                lhs_reg = getreg(INTEGER);
-            }
-        }
 
-        lhs_reg = genop(code, rhs_reg, lhs_reg);
-        free_reg(rhs_reg);
+            lhs_reg = genop(code, rhs_reg, lhs_reg);
+            free_reg(rhs_reg);
 
-        if (same_reg_assn) {
-            int temp;
-            if (lhs_reg > 15) {
-                free_reg(lhs_reg);
-                temp = getreg(REAL);
+            if (same_reg_assn) {
+                int temp;
+                if (lhs_reg > 15) {
+                    free_reg(lhs_reg);
+                    temp = getreg(REAL);
+                } else {
+                    free_reg(lhs_reg);
+                    temp = getreg(INTEGER);
+                }
+                lhs_reg = temp;
             }
-            else {
-                free_reg(lhs_reg);
-                temp = getreg(INTEGER);
-            }
-            lhs_reg = temp;
-        }
 
-        reg_num = lhs_reg;
-    }
-    else { 
-        return symbol_is_null_int(NULL);
+            reg_num = lhs_reg;
+            break;
+
+        default:
+            return symbol_is_null_int(NULL);
     }
 
     first_op_genarith = NULL;
