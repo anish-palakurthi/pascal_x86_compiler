@@ -464,10 +464,8 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         out = lhs_reg;
     }
 
-    else if (which_val == FUNCALLOP) {
-
+   else if (which_val == FUNCALLOP) {
         if (inline_funcall) {
-
             if (num_funcalls_in_curr_tree > 1) {
                 saved_inline_regs[num_inlines_processed] = saved_inline_reg;
                 num_inlines_processed++;
@@ -475,8 +473,11 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     asmcall(inline_funcall->stringval);
                     asmsttemp(saved_inline_reg);
                 }
-                else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
-                    // load and then store?
+                else if (num_inlines_processed > 1 && num_inlines_processed < num_funcalls_in_curr_tree) {
+                    int temp_reg = getreg(REAL);
+                    asmldtemp(temp_reg);
+                    asmcall(inline_funcall->stringval);
+                    asmsttemp(saved_inline_reg);
                 }
                 else {
                     asmcall(inline_funcall->stringval);
@@ -488,13 +489,17 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                 asmcall(inline_funcall->stringval);
             }
             else {
+                // Handle single inline function call
                 asmcall(inline_funcall->stringval);
+                out = lhs_reg;
             }
+
+
 
             inline_funcall = NULL;
         }
         else {
-            // ?????????????????????????????
+            // Handle non-inline function calls
         }
 
         out = lhs_reg;
