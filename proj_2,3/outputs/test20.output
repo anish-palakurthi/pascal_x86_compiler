@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 93874356289136           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 93874356289232           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94887448890992           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94887448891088           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (funcall exp x))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -21,7 +21,6 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	call	exp@PLT          	#  exp()
-	movsd	%xmm1,-8(%rbp)     	#  %xmm1 -> temp
 	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9

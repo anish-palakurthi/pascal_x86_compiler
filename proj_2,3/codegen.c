@@ -142,8 +142,6 @@ int genarith(TOKEN code) {
         printf("\n");
     }
 
-    
-
     int num, reg_num, lhs_reg, rhs_reg;
     SYMBOL sym;
 
@@ -403,14 +401,9 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
     }
     else if (which_val == TIMESOP) {
         if (at_least_one_float(lhs_reg, rhs_reg)) {
-            if (both_float(lhs_reg, rhs_reg)) {
-                // If both operands are floating-point registers, swap the order
-                asmrr(MULSD, lhs_reg, rhs_reg);
-            } else {
-                // If only one operand is a floating-point register, keep the order
-                asmrr(MULSD, rhs_reg, lhs_reg);
-            }
-        } else {
+            asmrr(MULSD, rhs_reg, lhs_reg);
+        }
+        else {
             asmrr(IMULL, rhs_reg, lhs_reg);
         }
         out = lhs_reg;
@@ -470,7 +463,8 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
         out = lhs_reg;
     }
-    else if (which_val == FUNCALLOP) {
+
+   else if (which_val == FUNCALLOP) {
         if (inline_funcall) {
             if (num_funcalls_in_curr_tree > 1) {
                 saved_inline_regs[num_inlines_processed] = lhs_reg;
@@ -490,13 +484,15 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     asmldtemp(lhs_reg);
                 }               
             }
-            else if (strcmp(inline_funcall->stringval, "new") == 0) {
+            else {
+                // Handle single inline function call
+                asmcall(inline_funcall->stringval);
+                out = lhs_reg;
+            }
+
+            if (strcmp(inline_funcall->stringval, "new") == 0) {
                 asmrr(MOVL, rhs_reg, EDI);
                 asmcall(inline_funcall->stringval);
-            }
-            else {
-                asmcall(inline_funcall->stringval);
-                asmsttemp(lhs_reg);
             }
 
             inline_funcall = NULL;
@@ -507,6 +503,9 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
         out = lhs_reg;
     }
+
+    // ... (existing code)
+
 else if (which_val == AREFOP) {
     if (saved_float_reg != -DBL_MAX) {
         /* Use MOVSD because saved_float_reg implies floating-point data. */
