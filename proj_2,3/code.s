@@ -1,4 +1,4 @@
-.file   "foo"
+        .file   "foo"
         .text
         .globl graph1
         .type   graph1, @function
@@ -13,19 +13,17 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-.L0:
-	movq	-32(%rbp),%rax     	#  ptr -> %rax
-	movq	$0,%rcx         	#  0 -> %rcx
-	cmpq	%rcx,%rax           	#  compare %rax - %rcx
-	jne	.L2 			#  jump if     !=
-	jmp	.L3 			#  jump 
-.L2:
-	movl	-24(%rbp),%eax     	#  i -> %eax
-	movl	$1,%ecx         	#  1 -> %ecx
-	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
-	movl	%eax,-24(%rbp)     	#  %eax -> i
-	jmp	.L0 			#  jump 
-.L3:
+	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+	call	exp@PLT          	#  exp()
+	movsd	%xmm1,-8(%rbp)     	#  %xmm1 -> temp
+	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
+	call	sin@PLT          	#  sin()
+	movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
+	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
+	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
+	movsd	-24(%rbp),%xmm0     	#  y -> %xmm0
+	movsd	%xmm0,%edi         	#  %xmm0 -> %edi
+	call	writelnf@PLT          	#  writelnf()
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
@@ -36,4 +34,4 @@ graph1:
 # ----------------- end Epilogue; Literal data follows ------------------
         .section        .rodata
 
-        .ident  "CS 375 Compiler - Spring 2022"
+        .ident  "CS 375 Compiler - Spring 2024"

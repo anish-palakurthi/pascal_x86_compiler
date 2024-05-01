@@ -1,6 +1,6 @@
-/* codgen.c       Generate Assembly Code for x86         15 May 13   */
+/* codgen.c       Generate Assembly Code for x86         07 May 18   */
 
-/* Copyright (c) 2013 Gordon S. Novak Jr. and The University of Texas at Austin
+/* Copyright (c) 2018 Gordon S. Novak Jr. and The University of Texas at Austin
     */
 
 /* Starter file for CS 375 Code Generation assignment.           */
@@ -20,22 +20,16 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 
-/*
- * Last modified: 0242 14-08-14
- */
-
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <limits.h>
-#include <float.h>
-#include "token.h"
 #include "symtab.h"
+#include "lexan.h"
 #include "genasm.h"
 #include "codegen.h"
+#include "pprint.h"
+#include <float.h>
  
-
-
 /* Set DEBUGGEN to 1 for debug printouts of code generation */
 #define DEBUGGEN 0
 
@@ -53,7 +47,6 @@ int saved_label_num = -1;           /* saves the label number of the top-level l
 bool new_funcall_flag = false;   /* if a FUNCALLOP is for new(), set to true */
 
 double saved_float_reg = -DBL_MAX;  /* in an ASSIGNOP, holds the value of the float being assigned */
-int saved_float_reg_num = -1;       /* the register where the float in saved_float_reg is stored */
 
 bool nil_flag = false;           /* if assigning a NUMBERTOK with whichval == 0 to a ptr, set to true */
 
@@ -83,9 +76,6 @@ int used_regs[32] = { 0, 0, 0, 0, 0, 0, 0, 0,
 #define NUM_FP_REGS     24
 #define NUM_REGS        32
 
-void print_used_regs();
-int symbol_is_null_int(char *str);
-
 /*  Top-level entry for code generator.
     pcode    = pointer to code:  (program foo (output) (progn ...))
     varsize  = size of local storage in bytes
@@ -97,6 +87,7 @@ int symbol_is_null_int(char *str);
     your .s file.
 */
 
+//good as is
 void gencode(TOKEN pcode, int varsize, int maxlabel)
   {  TOKEN name, code;
      name = pcode->operands;
@@ -107,29 +98,33 @@ void gencode(TOKEN pcode, int varsize, int maxlabel)
      asmexit(name->stringval);
   }
 
+
 /* Trivial version: always returns RBASE + 0 */
 /* Get a register.   */
 /* Need a type parameter or two versions for INTEGER or REAL */
 int getreg(int kind) {
+    int start, stop;
 
-
-    int i = 0;
-    int stop = NUM_INT_REGS;
-    if (kind !=  INTEGER && kind != POINTER) {
-
-        i = 16;
+    // Set the range based on the type of register
+    if (kind == INTEGER || kind == POINTER) {
+        start = 0;
+        stop = NUM_INT_REGS;
+    } else {
+        start = 16;
         stop = NUM_REGS;
     }
 
-    for (; i < stop; i++) {
+    // Search for an unused register within the specified range
+    for (int i = start; i < stop; i++) {
         if (used_regs[i] == 0) {
             used_regs[i] = 1;
             return i;
         }
     }
-
+    // If no register is found, return the base register
     return RBASE;
 }
+
 
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
@@ -176,7 +171,6 @@ int genarith(TOKEN code) {
 
             reg_num = getreg(REAL);
             saved_float_reg = code->realval;
-            saved_float_reg_num = reg_num;
 
             makeflit(code->realval, nextlabel);
             asmldflit(MOVSD, nextlabel++, reg_num);
@@ -581,7 +575,7 @@ else if (which_val == AREFOP) {
                         /* Default to MOVQ to handle potentially larger data
                         safely */
                         // printf("code->basicdt: %d\n", code->basicdt);
-                        if (code->basicdt == 4){
+                        if (code->basicdt == POINTER){
                             asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
 
                         }
@@ -1129,14 +1123,6 @@ bool at_least_one_float(int lhs_reg, int rhs_reg) {
     return false;
 }
 
-bool both_float(int lhs_reg, int rhs_reg) {
-    if ((lhs_reg >= NUM_INT_REGS && lhs_reg < NUM_REGS) &&
-        (rhs_reg >= NUM_INT_REGS && rhs_reg < NUM_REGS)) {
-        return true;
-    }
-    return false;
-}
-
 void mark_reg_unused(int reg_num) {
     if (reg_num < 0 || reg_num >= NUM_REGS) {
         printf("Error: register %d out of bounds\n", reg_num);
@@ -1151,15 +1137,6 @@ void mark_reg_used(int reg_num) {
         return;
     }
     used_regs[reg_num] = 1;    
-}
-
-/* test if there is a function call within code: 1 if true, else 0 */
-bool funcallin(TOKEN code) {
-    int num = num_funcalls_in_tree(code, 0);
-    if (num > 0) {
-        return true;
-    }
-    return false;
 }
 
 int num_funcalls_in_tree(TOKEN tok, int num) {
@@ -1229,18 +1206,4 @@ bool is_equal(TOKEN a, TOKEN b) {
         return true;
     }
     return false;
-}
-
-bool is_gen_purpose_reg(int reg_num) {
-    if (reg_num < 0 || reg_num >= NUM_INT_REGS) {
-        return false;
-    }
-    return true;
-}
-
-bool is_fp_reg(int reg_num) {
-    if (reg_num < NUM_INT_REGS || reg_num >= NUM_REGS) {
-        return false;
-    }
-    return true;
 }

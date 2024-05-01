@@ -11,18 +11,23 @@ ext2=".sample"
 # Function to preprocess files
 preprocess_file() {
     # Use awk for complex pattern recognition and manipulation
-    awk '{
-        # Replace long numbers that look like memory addresses
-        gsub(/9[0-9]{10,}/, "");
-        # Remove leading and trailing whitespace
-        gsub(/^[ \t]+|[ \t]+$/, "");
-        # Print lines, skipping processing if they contain "Beginning of Generated Code" or are empty
-        if ($0 !~ /Beginning of Generated Code/ && $0 != "") {
-            print;
-        } else {
-            # Handle special case where code and "Beginning of Generated Code" are on the same line
-            sub(/#.*/, "");  # Remove comments starting with #
-            if ($0 != "") print;  # Only print if the line is not empty after removal
+    awk 'BEGIN {processing = 0}
+    {
+        if (processing) {
+            # Replace long numbers that look like memory addresses
+            gsub(/9[0-9]{10,}/, "");
+            # Remove leading and trailing whitespace
+            gsub(/^[ \t]+|[ \t]+$/, "");
+            # Print lines, skipping processing if they contain "Beginning of Generated Code" or are empty
+            if ($0 !~ /Beginning of Generated Code/ && $0 != "") {
+                print;
+            } else {
+                # Handle special case where code and "Beginning of Generated Code" are on the same line
+                sub(/#.*/, "");  # Remove comments starting with #
+                if ($0 != "") print;  # Only print if the line is not empty after removal
+            }
+        } else if ($0 ~ /\.file[ \t]+"foo"/) {
+            processing = 1;  # Start processing lines after this pattern
         }
     }' "$1" | sed -E 's/(CS 375 Compiler - )[A-Za-z]+ [0-9]{4}/\1XXXX/g' 
 }

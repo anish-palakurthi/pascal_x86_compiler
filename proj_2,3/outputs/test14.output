@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94769253199440         ptr  VAR    4 typ 94769253199344  lvl  1  siz     8  off     0
+ 94056354197072         ptr  VAR    4 typ 94056354196976  lvl  1  siz     8  off     0
 (^ integer)
- 94769253199856           i  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94056354197488           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (progn (label 0)
                               (if (<> ptr 0)
