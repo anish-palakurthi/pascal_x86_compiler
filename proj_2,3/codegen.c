@@ -467,20 +467,25 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
    else if (which_val == FUNCALLOP) {
         if (inline_funcall) {
             if (num_funcalls_in_curr_tree > 1) {
+                //no clue
                 saved_inline_regs[num_inlines_processed] = saved_inline_reg;
                 num_inlines_processed++;
                 if (num_inlines_processed == 1) {
                     asmcall(inline_funcall->stringval);
+
+                    //no clue
                     asmsttemp(saved_inline_reg);
                 }
                 else if (num_inlines_processed > 1 && num_inlines_processed < num_funcalls_in_curr_tree) {
                     int temp_reg = getreg(REAL);
                     asmldtemp(temp_reg);
                     asmcall(inline_funcall->stringval);
+                    //doesn't even seem to matter
                     asmsttemp(saved_inline_reg);
                 }
                 else {
                     asmcall(inline_funcall->stringval);
+                    //keep as saved_inline
                     asmldtemp(saved_inline_reg);
                 }               
             }
