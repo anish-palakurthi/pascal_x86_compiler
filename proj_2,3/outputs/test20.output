@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94449486802544           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94449486802640           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94142898986608           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94142898986704           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (funcall exp x))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"

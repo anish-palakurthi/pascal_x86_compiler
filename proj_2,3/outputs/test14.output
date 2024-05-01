@@ -1,8 +1,13 @@
 yyparse result =        0
 Symbol table level 1
- 94233265933808           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+ 94352749743696         ptr  VAR    4 typ 94352749743600  lvl  1  siz     8  off     0
+(^ integer)
+ 94352749744112           i  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
-                (progn (:= i (- i 1))))# ---------------- Beginning of Generated Code --------------------
+                (progn (progn (label 0)
+                              (if (<> ptr 0)
+                                  (progn (progn (:= i (+ i 1)))
+                                         (goto 0))))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
         .text
         .globl graph1
@@ -18,10 +23,19 @@ graph1:
         subq	$32, %rsp 	  # make space for this stack frame
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
-	movl	-32(%rbp),%eax     	#  i -> %eax
+.L0:
+	movq	-32(%rbp),%rax     	#  ptr -> %rax
+	movq	$0,%rcx         	#  0 -> %rcx
+	cmpq	%rcx,%rax           	#  compare %rax - %rcx
+	jne	.L2 			#  jump if     !=
+	jmp	.L3 			#  jump 
+.L2:
+	movl	-24(%rbp),%eax     	#  i -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
-	subl	%ecx,%eax         	#  %eax - %ecx -> %eax
-	movl	%eax,-32(%rbp)     	#  %eax -> i
+	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
+	movl	%eax,-24(%rbp)     	#  %eax -> i
+	jmp	.L0 			#  jump 
+.L3:
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

@@ -1,14 +1,14 @@
 yyparse result =        0
 Symbol table level 1
- 94905108503984           d  CONST  typ    REAL  val  6.250000e-02
- 94905108504336           s  CONST  typ INTEGER  val  32
- 94905108504688           h  CONST  typ INTEGER  val  34
- 94905108505040           c  CONST  typ    REAL  val  6.283180e+00
- 94905108505392         lim  CONST  typ INTEGER  val  32
- 94905108506000           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94905108506096           y  VAR    1 typ    real  lvl  1  siz     8  off     8
- 94905108506576           i  VAR    0 typ integer  lvl  1  siz     4  off    16
- 94905108506672           n  VAR    0 typ integer  lvl  1  siz     4  off    20
+ 93892996394416           d  CONST  typ    REAL  val  6.250000e-02
+ 93892996394768           s  CONST  typ INTEGER  val  32
+ 93892996395120           h  CONST  typ INTEGER  val  34
+ 93892996395472           c  CONST  typ    REAL  val  6.283180e+00
+ 93892996395824         lim  CONST  typ INTEGER  val  32
+ 93892996396432           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 93892996396528           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 93892996397008           i  VAR    0 typ integer  lvl  1  siz     4  off    16
+ 93892996397104           n  VAR    0 typ integer  lvl  1  siz     4  off    20
 (program graph1 (progn output)
                 (progn (progn (:= i 0)
                               (label 1)
@@ -27,7 +27,7 @@ Symbol table level 1
                                                        (if (= n 0)
                                                            (progn)
                                                            (goto 0)))
-                                                (funcall writelni '*'))
+                                                (funcall writeln '*'))
                                          (:= i (+ i 1))
                                          (goto 1))))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -95,7 +95,7 @@ graph1:
 .L10:
 .L11:
 	leaq	.LC12(%rip),%rdi  	#  addr of literal .LC12
-	call	writelni@PLT          	#  writelni()
+	call	writeln@PLT          	#  writeln()
 	movl	-32(%rbp),%eax     	#  i -> %eax
 	movl	$1,%ecx         	#  1 -> %ecx
 	addl	%ecx,%eax         	#  %eax + %ecx -> %eax
