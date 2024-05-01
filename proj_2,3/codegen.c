@@ -102,6 +102,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel)
 /* Trivial version: always returns RBASE + 0 */
 /* Get a register.   */
 /* Need a type parameter or two versions for INTEGER or REAL */
+//good
 int getreg(int kind) {
     int start, stop;
 
@@ -623,23 +624,20 @@ else if (which_val == AREFOP) {
 }
 
 /* Generate code for a Statement from an intermediate-code form */
-void genc(TOKEN code) {
 
+void genc(TOKEN code) {
     if (DEBUGGEN) {
         printf("\nIn genc()\n");
         ppexpr(code);
-//        dbugprinttok(code);
         printf("\n");
     }
+
     if (code->tokentype != OPERATOR) {
         if (code->tokentype == NUMBERTOK && code->basicdt == INTEGER && new_funcall_flag) {
             reset_regs();
             new_funcall_flag = false;
             return;
         }
-        // printf("\tError: bad code token! (genc())\n");
-        // dbugprinttok(code);
-        // printf("\n");
     }
 
     SYMBOL sym;
@@ -649,221 +647,190 @@ void genc(TOKEN code) {
     reset_regs();
     which_val = code->whichval;
 
-    if (which_val == PROGNOP) {
-
-        if (DEBUGGEN) {
-            printf(" PROGNOP detected.\n");
-            ppexpr(code->operands);
-            printf("\n");
-        }
-
-        last_ptr = NULL;
-        last_ptr_reg_num = -1;
-        last_ptr_deref_offs = -1;
-
-        nested_ref_stop_at = NULL;
-
-        int i;
-        for (i = 0; i < 10; i++) {
-            saved_inline_regs[i] = -1;
-        }
-        num_inlines_processed = 0;
-
-        last_id_reg_num = -1;
-
-        tok = code->operands;
-        while (tok) {
-
-            num_funcalls_in_curr_tree = num_funcalls_in_tree(tok->operands, 0);
-            saved_inline_reg = 0;       // may need to set to -1 as sentinel value
-
-            if (tok->whichval == LABELOP) {
-                saved_label_num = tok->operands->intval;
+    switch (which_val) {
+        case PROGNOP:
+            if (DEBUGGEN) {
+                printf(" PROGNOP detected.\n");
+                ppexpr(code->operands);
+                printf("\n");
             }
 
-            if (search_tree_str(tok, "new")) {
-                new_funcall_flag = true;
+            last_ptr = NULL;
+            last_ptr_reg_num = -1;
+            last_ptr_deref_offs = -1;
+
+            nested_ref_stop_at = NULL;
+
+            int i;
+            for (i = 0; i < 10; i++) {
+                saved_inline_regs[i] = -1;
             }
+            num_inlines_processed = 0;
 
-            genc(tok);
-            tok = tok->link;
-        }
-    }
-    else if (which_val == ASSIGNOP) {
-        /* Generate the RHS into a register using genarith().
-           Then store the register into the location specified
-           by the LHS. */
+            last_id_reg_num = -1;
 
-        if (DEBUGGEN) {
-            printf("\n ASSIGNOP detected.\n");
-            ppexpr(code);
-            printf("#####\n");
-            ppexpr(code->operands);
-            printf("\n");
-        }
+            tok = code->operands;
+            while (tok) {
+                num_funcalls_in_curr_tree = num_funcalls_in_tree(tok->operands, 0);
+                saved_inline_reg = 0;
 
-        TOKEN last_operand = get_last_operand(code);
-        TOKEN outer_link = code->operands->link;
-        if (last_operand) {
-            if (last_operand->basicdt == POINTER && outer_link->tokentype == NUMBERTOK &&
-                outer_link->basicdt == INTEGER && outer_link->intval == 0) {
-                nil_flag = true;
-            }
-        }
-
-        lhs = code->operands;
-        rhs = lhs->link;
-
-        if (code->operands->operands != NULL) {
-            nested_ref_stop_at = code->operands->operands;
-        }
-
-        reg_num = genarith(rhs);                        /* generate rhs into a register */
-        saved_rhs_reg = rhs;
-        saved_rhs_reg_num = reg_num;
-
-        sym = searchst(lhs->stringval);
-        SYMBOL arraysym;
-        if (sym && sym->datatype->kind == ARRAYSYM) {
-            arraysym = sym->datatype;
-            while (arraysym->kind == ARRAYSYM) {
-                arraysym = arraysym->datatype;
-            }
-            if (arraysym->kind == RECORDSYM) {
-                // handle array of records
-                printf("array of records\n");
-                TOKEN last_link = get_last_link(lhs->operands);
-                if (last_link && last_link->tokentype == NUMBERTOK) {
-                    asmimmed(MOVL, last_link->intval, EAX);
-                    asmop(CLTQ);
-                    if (reg_num >= 0 && reg_num < 16) {
-                        asmstrr(MOVL, reg_num, offs, EAX, lhs->stringval);
-                    } else {
-                        asmstrr(MOVSD, reg_num, offs, EAX, lhs->stringval);
-                    }
-                }
-            }
-        }
-
-        int datatype = code->basicdt;                  /* store value into lhs  */
-
-        if (sym) {
-
-            offs = sym->offset - stkframesize;          /* net offset of the var   */
-
-            if (reg_num >= 0 && reg_num < 16) {
-                if (lhs->basicdt == 4) { 
-                    asmst(MOVQ, reg_num, offs, lhs->stringval);
-                }
-                else {
-                    asmst(MOVL, reg_num, offs, lhs->stringval);
-                }
-            }
-            else {
-                asmst(MOVSD, reg_num, offs, lhs->stringval);
-            }
-        }
-        else {
-
-            sym = searchst(lhs->operands->stringval);
-
-            if (!sym) {
-
-                sym = searchst(lhs->operands->operands->stringval);
-                if (sym) {
-
-                    offs = sym->offset - stkframesize;
-                    int temp = getreg(INTEGER);
-
-                    last_ptr = lhs->operands->operands; // ??????????????????????????????????????????????????????????????????
-
-                    asmld(MOVQ, offs, temp, sym->namestring);
-                    offs = lhs->operands->link->intval;
-
-                    if (basicsizes[rhs->basicdt] > basicsizes[INTEGER]) {
-                        // see third line in L1 for pasrec
-                        if (saved_float_reg != -DBL_MAX) {
-                            asmstr(MOVSD, reg_num, offs, temp, "^. ");
-                            // saved_float_reg = -DBL_MAX;
-                        }
-                        else {
-                           asmstr(MOVQ, reg_num, offs, temp, "^. ");
-                        }
-                    }
-                    else {
-                        if (!nil_flag) {     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                            asmstr(MOVL, reg_num, offs, temp, "^. ");
-                        }
-                        else {
-                            asmstr(MOVQ, reg_num, offs, temp, "^. ");
-                            // nil_flag = false;
-                        }
-                    }
-
+                if (tok->whichval == LABELOP) {
+                    saved_label_num = tok->operands->intval;
                 }
 
+                if (search_tree_str(tok, "new")) {
+                    new_funcall_flag = true;
+                }
+
+                genc(tok);
+                tok = tok->link;
             }
-            else {
+            break;
 
-                offs = sym->offset - stkframesize;
+        case ASSIGNOP:
+            if (DEBUGGEN) {
+                printf("\n ASSIGNOP detected.\n");
+                ppexpr(code);
+                printf("#####\n");
+                ppexpr(code->operands);
+                printf("\n");
+            }
 
-                TOKEN last_link = get_last_link(lhs->operands);
-                // printf("not not executing yet\n");
+            TOKEN last_operand = get_last_operand(code);
+            TOKEN outer_link = code->operands->link;
+            if (last_operand) {
+                if (last_operand->basicdt == POINTER && outer_link->tokentype == NUMBERTOK &&
+                    outer_link->basicdt == INTEGER && outer_link->intval == 0) {
+                    nil_flag = true;
+                }
+            }
 
-                if (last_link) {
-                    if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
+            lhs = code->operands;
+            rhs = lhs->link;
+
+            if (code->operands->operands != NULL) {
+                nested_ref_stop_at = code->operands->operands;
+            }
+
+            reg_num = genarith(rhs);
+            saved_rhs_reg = rhs;
+            saved_rhs_reg_num = reg_num;
+
+            sym = searchst(lhs->stringval);
+            SYMBOL arraysym;
+            if (sym && sym->datatype->kind == ARRAYSYM) {
+                arraysym = sym->datatype;
+                while (arraysym->kind == ARRAYSYM) {
+                    arraysym = arraysym->datatype;
+                }
+                if (arraysym->kind == RECORDSYM) {
+                    printf("array of records\n");
+                    TOKEN last_link = get_last_link(lhs->operands);
+                    if (last_link && last_link->tokentype == NUMBERTOK) {
                         asmimmed(MOVL, last_link->intval, EAX);
                         asmop(CLTQ);
-
                         if (reg_num >= 0 && reg_num < 16) {
-                            asmstrr(MOVL, reg_num, offs, EAX, sym->namestring);
+                            asmstrr(MOVL, reg_num, offs, EAX, lhs->stringval);
+                        } else {
+                            asmstrr(MOVSD, reg_num, offs, EAX, lhs->stringval);
                         }
-                        else {
-                            asmstrr(MOVSD, reg_num, offs, EAX, sym->namestring);
-                        }
-
-                    }
-                    else if (last_link->tokentype == OPERATOR && last_link->whichval == PLUSOP) {
-                        TOKEN plus_operand = last_link->operands;
-                        TOKEN mul_operand = plus_operand->link->operands;
-                        TOKEN last_operand = mul_operand->link;
-
-                        mark_reg_unused(EAX);
-                        mark_reg_used(last_ptr_reg_num);
-
-                        int move_plus_to = getreg(INTEGER);
-                        int move_mul_to = getreg(INTEGER);
-                        int move_last_to;
-
-                        asmimmed(MOVL, plus_operand->intval, move_plus_to);
-                        asmimmed(MOVL, mul_operand->intval, move_mul_to);
-
-                        if (last_operand->tokentype == NUMBERTOK) {
-                            move_last_to = getreg(INTEGER);
-                            asmimmed(MOVL, last_operand->intval, move_last_to);
-                        }
-                        else {
-                            sym = searchst(last_operand->stringval);
-                            offs = sym->offset - stkframesize;          // NOT NULL CHECKED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                            asmld(MOVL, offs, EBX, sym->namestring);    // CONTENTS AREN'T ACTUALLY IN CALLEE-SAVE REG EBX (SEE last_ptr_reg_num)
-                            asmrr(IMULL, EBX, move_mul_to);
-                            asmrr(ADDL, move_mul_to, move_plus_to);
-                            asmop(CLTQ);
-
-                            sym = searchst(lhs->operands->stringval);
-                            offs = sym->offset - stkframesize;          // NOT NULL CHECKED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                            asmstrr(MOVL, last_ptr_reg_num, offs, 0, lhs->operands->stringval);
-                        }
-                    }
-                    else {
-                        // ?????????????????????????????????????????????????????????????????????????????
                     }
                 }
-                else {
+            }
+
+            int datatype = code->basicdt;
+
+            if (sym) {
+                offs = sym->offset - stkframesize;
+
+                if (reg_num >= 0 && reg_num < 16) {
+                    if (lhs->basicdt == 4) {
+                        asmst(MOVQ, reg_num, offs, lhs->stringval);
+                    } else {
+                        asmst(MOVL, reg_num, offs, lhs->stringval);
+                    }
+                } else {
+                    asmst(MOVSD, reg_num, offs, lhs->stringval);
+                }
+            } else {
+                sym = searchst(lhs->operands->stringval);
+
+                if (!sym) {
+                    sym = searchst(lhs->operands->operands->stringval);
+                    if (sym) {
+                        offs = sym->offset - stkframesize;
+                        int temp = getreg(INTEGER);
+
+                        last_ptr = lhs->operands->operands;
+
+                        asmld(MOVQ, offs, temp, sym->namestring);
+                        offs = lhs->operands->link->intval;
+
+                        if (basicsizes[rhs->basicdt] > basicsizes[INTEGER]) {
+                            if (saved_float_reg != -DBL_MAX) {
+                                asmstr(MOVSD, reg_num, offs, temp, "^. ");
+                            } else {
+                                asmstr(MOVQ, reg_num, offs, temp, "^. ");
+                            }
+                        } else {
+                            if (!nil_flag) {
+                                asmstr(MOVL, reg_num, offs, temp, "^. ");
+                            } else {
+                                asmstr(MOVQ, reg_num, offs, temp, "^. ");
+                            }
+                        }
+                    }
+                } else {
+                    offs = sym->offset - stkframesize;
+
+                    TOKEN last_link = get_last_link(lhs->operands);
+
+                    if (last_link) {
+                        if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
+                            asmimmed(MOVL, last_link->intval, EAX);
+                            asmop(CLTQ);
+
+                            if (reg_num >= 0 && reg_num < 16) {
+                                asmstrr(MOVL, reg_num, offs, EAX, sym->namestring);
+                            } else {
+                                asmstrr(MOVSD, reg_num, offs, EAX, sym->namestring);
+                            }
+                        } else if (last_link->tokentype == OPERATOR && last_link->whichval == PLUSOP) {
+                            TOKEN plus_operand = last_link->operands;
+                            TOKEN mul_operand = plus_operand->link->operands;
+                            TOKEN last_operand = mul_operand->link;
+
+                            mark_reg_unused(EAX);
+                            mark_reg_used(last_ptr_reg_num);
+
+                            int move_plus_to = getreg(INTEGER);
+                            int move_mul_to = getreg(INTEGER);
+                            int move_last_to;
+
+                            asmimmed(MOVL, plus_operand->intval, move_plus_to);
+                            asmimmed(MOVL, mul_operand->intval, move_mul_to);
+
+                            if (last_operand->tokentype == NUMBERTOK) {
+                                move_last_to = getreg(INTEGER);
+                                asmimmed(MOVL, last_operand->intval, move_last_to);
+                            } else {
+                                sym = searchst(last_operand->stringval);
+                                offs = sym->offset - stkframesize;
+                                asmld(MOVL, offs, EBX, sym->namestring);
+                                asmrr(IMULL, EBX, move_mul_to);
+                                asmrr(ADDL, move_mul_to, move_plus_to);
+                                asmop(CLTQ);
+                                sym = searchst(lhs->operands->stringval);
+                            offs = sym->offset - stkframesize;
+                            asmstrr(MOVL, last_ptr_reg_num, offs, 0, lhs->operands->stringval);
+                        }
+                    } else {
+                        // ?????????????????????????????????????????????????????????????????????????????
+                    }
+                } else {
                     if (reg_num >= 0 && reg_num < 16) {
                         asmstrr(MOVL, reg_num, offs, getreg(INTEGER), sym->namestring);
-                    }
-                    else {
+                    } else {
                         asmstrr(MOVSD, reg_num, offs, getreg(INTEGER), sym->namestring);
                     }
                 }
@@ -878,17 +845,15 @@ void genc(TOKEN code) {
         saved_float_reg = -DBL_MAX;
         saved_rhs_reg = NULL;
         saved_rhs_reg_num = -1;
-        nested_refs = false;    
+        nested_refs = false;
 
         last_ptr = NULL;
         last_ptr_reg_num = -1;
 
         nested_ref_stop_at = NULL;
+        break;
 
-    }
-    else if (which_val == GOTOOP) {
-        /* Generate a branch to the label number (see genasm.c). */
-
+    case GOTOOP:
         if (DEBUGGEN) {
             printf(" GOTOOP detected.\n");
             ppexpr(code->operands);
@@ -897,11 +862,9 @@ void genc(TOKEN code) {
 
         lhs = code->operands;
         asmjump(JMP, lhs->intval);
+        break;
 
-    }
-    else if (which_val == LABELOP) {
-        /* Generate a label with the label number (see genasm.c). */
-
+    case LABELOP:
         if (DEBUGGEN) {
             printf(" LABELOP detected.\n");
             ppexpr(code->operands);
@@ -910,11 +873,9 @@ void genc(TOKEN code) {
 
         lhs = code->operands;
         asmlabel(lhs->intval);
+        break;
 
-    }
-    else if (which_val == IFOP) {
-        /* See S207. */
-
+    case IFOP:
         if (DEBUGGEN) {
             printf(" IFOP detected.\n");
             ppexpr(code->operands);
@@ -935,10 +896,9 @@ void genc(TOKEN code) {
         genc(rhs);
         asmlabel(else_label_num);
         genc(lhs);
-        // genc() for else crap?
+        break;
 
-    }
-    else if (which_val == FUNCALLOP) {
+    case FUNCALLOP:
         if (DEBUGGEN) {
             printf(" FUNCALLOP detected.\n");
             ppexpr(code);
@@ -950,26 +910,23 @@ void genc(TOKEN code) {
         }
 
         lhs = code->operands;
-        rhs = NULL; // Initialize rhs to NULL
+        rhs = NULL;
 
-        if (code->operands->link) { // Check if code->operands->link is not NULL
+        if (code->operands->link) {
             rhs = code->operands->link;
         }
 
         SYMBOL argsym;
 
-        if (strstr(lhs->stringval, "write")) {      // != NULL
+        if (strstr(lhs->stringval, "write")) {
             sym = searchst(lhs->stringval);
 
             if (rhs->tokentype == STRINGTOK) {
                 asmlitarg(nextlabel, EDI);
                 asmcall(lhs->stringval);
                 makeblit(rhs->stringval, nextlabel++);
-            }
-
-            else if (rhs->tokentype == OPERATOR) {
+            } else if (rhs->tokentype == OPERATOR) {
                 if (rhs->whichval == AREFOP) {
-
                     sym = searchst(rhs->operands->stringval);
                     if (!sym) {
                         sym = searchst(rhs->operands->operands->stringval);
@@ -983,26 +940,17 @@ void genc(TOKEN code) {
                             asmldr(MOVSD, offs, reg_num, temp, "^.");
 
                             asmcall(lhs->stringval);
-
                         }
                     }
-                }
-
-                else if (rhs->whichval == POINTEROP) {
+                } else if (rhs->whichval == POINTEROP) {
                     printf("\nPTROP UNFINISHED\n");
                 }
-            }
-
-            else if (sym != NULL && (sym->datatype->basicdt == INTEGER ||
-                sym->datatype->basicdt == REAL)) {
-                
+            } else if (sym != NULL && (sym->datatype->basicdt == INTEGER || sym->datatype->basicdt == REAL)) {
                 SYMBOL argsym;
 
                 if (rhs->tokentype == NUMBERTOK) {
                     printf("\nNUMBERTOK UNFINISHED\n");
-                }             
-
-                else if (rhs->tokentype == IDENTIFIERTOK) {
+                } else if (rhs->tokentype == IDENTIFIERTOK) {
                     argsym = searchst(rhs->stringval);
                     if (!argsym) {
                         printf("Error: no symbol table entry for var \"%s\"", rhs->stringval);
@@ -1016,9 +964,7 @@ void genc(TOKEN code) {
                         asmld(MOVL, offs, reg_num, argsym->namestring);
                         asmrr(MOVL, reg_num, EDI);
                         asmcall(lhs->stringval);
-                    }
-
-                    else if (argsym->basicdt == REAL) {
+                    } else if (argsym->basicdt == REAL) {
                         reg_num = getreg(REAL);
                         offs = argsym->offset - stkframesize;
                         asmld(MOVSD, offs, reg_num, argsym->namestring);
@@ -1027,12 +973,10 @@ void genc(TOKEN code) {
                     }
                 }
             }
-        }
-
-        else if (strcmp(lhs->stringval, "new") == 0) {
+        } else if (strcmp(lhs->stringval, "new") == 0) {
             new_funcall_flag = true;
             num = lhs->intval;
-            reg_num = getreg(INTEGER);  // ???
+            reg_num = getreg(INTEGER);
             sym = lhs->symentry;
             offs = sym->offset - stkframesize;
 
@@ -1041,18 +985,15 @@ void genc(TOKEN code) {
             }
 
             asmrr(MOVL, reg_num, EDI);
-               
+        } else {
+            // Other function call operations...
         }
-        else {
-            
-        }
-        // else ALL OTHERS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        break;
 
-    }
-
-}   // genc() end
-
-
+    default:
+        break;
+}
+}
 
 
 

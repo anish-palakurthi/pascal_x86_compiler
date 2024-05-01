@@ -1,8 +1,8 @@
 yyparse result =        0
 Symbol table level 1
- 94451482930896         ptr  VAR    4 typ 94451482930800  lvl  1  siz     8  off     0
+ 94899131354832         ptr  VAR    4 typ 94899131354736  lvl  1  siz     8  off     0
 (^ real)
- 94451482930992        john  VAR    4 typ 94451482930800  lvl  1  siz     8  off     8
+ 94899131354928        john  VAR    4 typ 94899131354736  lvl  1  siz     8  off     8
 (^ real)
 (program graph1 (progn output)
                 (progn (:= ptr john)))# ---------------- Beginning of Generated Code --------------------
