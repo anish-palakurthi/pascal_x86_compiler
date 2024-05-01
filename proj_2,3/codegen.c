@@ -499,6 +499,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         out = lhs_reg;
     }
 else if (which_val == AREFOP) {
+    // printf("AREFOP\n");
     if (saved_float_reg != -DBL_MAX) {
         /* Use MOVSD because saved_float_reg implies floating-point data. */
         asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
