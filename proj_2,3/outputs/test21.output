@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94832193031664           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94832193032016           n  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94504553217520           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94504553217872           n  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= n (funcall iround x))))# ---------------- Beginning of Generated Code --------------------
         .file   "foo"
@@ -21,7 +21,7 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	call	iround@PLT          	#  iround()
-	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> n
+	movl	%eax,-24(%rbp)     	#  %eax -> n
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

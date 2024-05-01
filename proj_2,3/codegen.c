@@ -359,16 +359,14 @@ TOKEN get_last_operand(TOKEN tok) {
 	return curr;	
 }
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
-    int out, num, reg_num, offs;
-    TOKEN lhs, rhs;
-    SYMBOL sym, argsym;
+
     if (DEBUGGEN) {
         printf(" OPERATOR detected, from genarith().\n");
 //        printf(" %s\n", opprint[which_val]);
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }
 
-    out = 0;
+    int out = 0;
     int which_val = code->whichval;
 
     if (which_val == PLUSOP) {
@@ -465,108 +463,41 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
         out = lhs_reg;
     }
+    else if (which_val == FUNCALLOP) {
 
- else if (which_val == FUNCALLOP) {
-        if (DEBUGGEN) {
-            printf(" FUNCALLOP detected.\n");
-            ppexpr(code);
-            ppexpr(code->operands);
-            if (code->operands->link) {
-                ppexpr(code->operands->link);
+        if (inline_funcall) {
+
+            if (num_funcalls_in_curr_tree > 1) {
+                saved_inline_regs[num_inlines_processed] = lhs_reg;
+                num_inlines_processed++;
+                if (num_inlines_processed == 1) {
+                    asmcall(inline_funcall->stringval);
+                    asmsttemp(lhs_reg);
+                }
+                else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
+                    // load and then store?
+                }
+                else {
+                    asmcall(inline_funcall->stringval);
+                    asmldtemp(lhs_reg);
+                }               
             }
-            printf("\n");
-        }
-
-        lhs = code->operands;
-        rhs = NULL; // Initialize rhs to NULL
-
-        if (code->operands->link) { // Check if code->operands->link is not NULL
-            rhs = code->operands->link;
-        }
-
-        SYMBOL argsym;
-
-        if (strstr(lhs->stringval, "write")) {
-            // ... (handle "write" function calls)
-        }
-
-        else if (strcmp(lhs->stringval, "new") == 0) {
-            new_funcall_flag = true;
-            num = lhs->intval;
-            reg_num = getreg(INTEGER);  // ???
-            sym = lhs->symentry;
-            offs = sym->offset - stkframesize;
-
-            if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE) {
-                asmimmed(MOVL, num, reg_num);
+            else if (strcmp(inline_funcall->stringval, "new") == 0) {
+                asmrr(MOVL, rhs_reg, EDI);
+                asmcall(inline_funcall->stringval);
+            }
+            else {
+                asmcall(inline_funcall->stringval);
             }
 
-            asmrr(MOVL, reg_num, EDI);
+            inline_funcall = NULL;
         }
         else {
-            // Handle other function calls
-            if (inline_funcall) {
-                if (num_funcalls_in_curr_tree > 1) {
-                    saved_inline_regs[num_inlines_processed] = rhs_reg;
-                    num_inlines_processed++;
-                    if (num_inlines_processed == 1) {
-                        asmcall(inline_funcall->stringval);
-                        asmsttemp(rhs_reg);
-                    } else if (num_inlines_processed > 1 && num_inlines_processed < num_funcalls_in_curr_tree) {
-                        int temp_reg = getreg(REAL);
-                        asmldtemp(temp_reg);
-                        asmcall(inline_funcall->stringval);
-                        asmsttemp(rhs_reg);
-                    } else {
-                        asmcall(inline_funcall->stringval);
-                        asmldtemp(rhs_reg);
-                    }
-                } else {
-                    // Handle single inline function call
-                    asmcall(inline_funcall->stringval);
-                    out = rhs_reg;
-                }
-
-                inline_funcall = NULL;
-            } else {
-                // Handle non-inline function calls
-                if (rhs) {
-                    if (rhs->tokentype == IDENTIFIERTOK) {
-                        argsym = searchst(rhs->stringval);
-                        if (argsym) {
-                            if (argsym->basicdt == INTEGER) {
-                                reg_num = getreg(INTEGER);
-                                offs = argsym->offset - stkframesize;
-                                asmld(MOVL, offs, reg_num, argsym->namestring);
-                                asmrr(MOVL, reg_num, EDI);
-                            } else if (argsym->basicdt == REAL) {
-                                reg_num = getreg(REAL);
-                                offs = argsym->offset - stkframesize;
-                                asmld(MOVSD, offs, reg_num, argsym->namestring);
-                                asmrr(MOVSD, reg_num, EDI);
-                            }
-                        }
-                    } else if (rhs->tokentype == NUMBERTOK) {
-                        if (rhs->basicdt == INTEGER) {
-                            asmimmed(MOVL, rhs->intval, EDI);
-                        } else if (rhs->basicdt == REAL) {
-                            reg_num = getreg(REAL);
-                            asmldflit(MOVSD, nextlabel++, reg_num);
-                            makeflit(rhs->realval, nextlabel);
-                            asmrr(MOVSD, reg_num, EDI);
-                        }
-                    }
-                }
-
-                asmcall(lhs->stringval);
-                out = rhs_reg;
-            }
+            // ?????????????????????????????
         }
 
-        out = rhs_reg;
+        out = lhs_reg;
     }
-
-
 else if (which_val == AREFOP) {
     if (saved_float_reg != -DBL_MAX) {
         /* Use MOVSD because saved_float_reg implies floating-point data. */

@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94562505973360           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94562505973456           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94558047202928           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94558047203024           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (* (funcall exp x)
                                 (funcall sin x)))))# ---------------- Beginning of Generated Code --------------------
@@ -22,11 +22,11 @@ graph1:
 # ------------------------- begin Your code -----------------------------
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	call	exp@PLT          	#  exp()
-	movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
+	movsd	%xmm1,-8(%rbp)     	#  %xmm1 -> temp
 	movsd	-32(%rbp),%xmm0     	#  x -> %xmm0
 	call	sin@PLT          	#  sin()
-	movsd	-8(%rbp),%xmm0     	#  temp -> %xmm0
-	mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
+	movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
+	mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 	movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
