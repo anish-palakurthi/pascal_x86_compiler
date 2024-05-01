@@ -403,9 +403,14 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
     }
     else if (which_val == TIMESOP) {
         if (at_least_one_float(lhs_reg, rhs_reg)) {
-            asmrr(MULSD, rhs_reg, lhs_reg);
-        }
-        else {
+            if (both_float(lhs_reg, rhs_reg)) {
+                // If both operands are floating-point registers, swap the order
+                asmrr(MULSD, lhs_reg, rhs_reg);
+            } else {
+                // If only one operand is a floating-point register, keep the order
+                asmrr(MULSD, rhs_reg, lhs_reg);
+            }
+        } else {
             asmrr(IMULL, rhs_reg, lhs_reg);
         }
         out = lhs_reg;
