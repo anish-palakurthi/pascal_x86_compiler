@@ -8,6 +8,7 @@
         "algorithm": "c",
         "memory_resource": "c",
         "symtab.h": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "ranges": "c"
     }
 }

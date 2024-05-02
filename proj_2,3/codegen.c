@@ -36,45 +36,44 @@
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
-TOKEN inline_funcall = NULL;        /* to handle function calls in the RHS of an ASSIGNOP statement */
-int num_funcalls_in_curr_tree;
-int num_inlines_processed;
-int saved_inline_reg;
-int saved_inline_regs[10];
-
-int saved_label_num = -1;           /* saves the label number of the top-level label; used to handle repeat statements */
-
-bool new_funcall_flag = false;   /* if a FUNCALLOP is for new(), set to true */
-
-double saved_float_reg = -DBL_MAX;  /* in an ASSIGNOP, holds the value of the float being assigned */
-
-bool nil_flag = false;           /* if assigning a NUMBERTOK with whichval == 0 to a ptr, set to true */
-
-TOKEN saved_rhs_reg = NULL;         /* in an ASSIGNOP, save the TOKEN representing the RHS (value to be assigned) */
-int saved_rhs_reg_num = -1;         /* in an ASSIGNOP, save the register location of saved_rhs_reg */
-
-bool nested_refs = false;        /* used in POINTEROP in genop(). probably can be deprecated but have not checked */
-TOKEN first_op_genarith = NULL;     /* used to signal if multiple pointer dereferences are made in a single statement */
-TOKEN nested_ref_stop_at = NULL;    /* in an AREFOP in genop(), and if multiple ptr dereferences are made in a single statement,
-                                       signals the second-to-last pointer dereference */
-
-TOKEN last_ptr = NULL;              /* the last pointer to be referenced in any single statement */
-int last_ptr_reg_num;               /* the register number last_ptr */
-int last_ptr_deref_offs;            /* the offset of the field being dereferenced by the statement in which last_ptr is set */
-
-int last_id_reg_num;                /* the register number location of the last identifier referenced in a statement (EXCEPT pointers) */
-
-                     /* integer regs */
-int used_regs[32] = { 0, 0, 0, 0, 0, 0, 0, 0,
-                     /* FP regs; r8d to r15d */
-                      0, 0, 0, 0, 0, 0, 0, 0,
-                     /* xmm0 to xmm15 */
-                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                    };
-
-#define NUM_INT_REGS    8
-#define NUM_FP_REGS     24
+#define I_REGS 8
+#define TOT_REGS 32
 #define NUM_REGS        32
+
+// Register array initialization for integer and floating-point registers
+int registers[TOT_REGS] = {0};
+
+// Token for function calls, specifically in right-hand side of ASSIGNOP
+TOKEN inline_call = NULL;
+
+// Flags to indicate specific conditions during operations
+bool funcFlag = false;         // Indicates if FUNCALLOP is for "new"
+bool nilFlag = false;          // Indicates NUMBERTOK assignment of zero to a pointer
+bool nestRefs = false;         // Legacy flag, usage under review
+
+// Handling of labels and function calls within tree structures
+int numTreeCalls;              // Counts function calls within a tree
+int numLinesProcs;             // Processes lines within structured blocks
+int savedLineReg;              // Temporary storage for current line's register
+int savedLineRegs[10];         // Array to save registers across multiple lines
+int labelNum = -1;             // Top-level label number for control structures
+
+// Assignments and operations involving pointers and identifiers
+TOKEN rhsReg = NULL;           // TOKEN for the right-hand side in ASSIGNOP
+int rhsReg_num = -1;           // Register number for rhsReg
+double floatReg = -DBL_MAX;    // Floating-point register for ASSIGNOP
+
+// Pointer dereferencing within operations
+TOKEN opGenarith = NULL;       // Indicates multiple pointer dereferences
+TOKEN stopRef = NULL;          // Marks the penultimate pointer dereference in AREFOP
+TOKEN finalPtr = NULL;         // Last pointer referenced in any statement
+int finalPtr_reg_num;          // Register number for finalPtr
+int finalPtr_deref_offs;       // Offset for field dereferenced by finalPtr
+
+// Register tracking for the last non-pointer identifier referenced
+int lastIdReg;                 // Register number of the last identifier referenced (excluding pointers)
+
+
 
 /*  Top-level entry for code generator.
     pcode    = pointer to code:  (program foo (output) (progn ...))
@@ -109,16 +108,16 @@ int getreg(int kind) {
     // Set the range based on the type of register
     if (kind == INTEGER || kind == POINTER) {
         start = 0;
-        stop = NUM_INT_REGS;
+        stop = I_REGS;
     } else {
         start = 16;
-        stop = NUM_REGS;
+        stop = TOT_REGS;
     }
 
     // Search for an unused register within the specified range
     for (int i = start; i < stop; i++) {
-        if (used_regs[i] == 0) {
-            used_regs[i] = 1;
+        if (registers[i] == 0) {
+            registers[i] = 1;
             return i;
         }
     }
@@ -130,99 +129,124 @@ int getreg(int kind) {
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
-    int immediate_val, target_reg, left_operand_reg, right_operand_reg;
-    SYMBOL symbol_info;
+
+    int num, reg_num, lhs_reg, rhs_reg;
+    SYMBOL sym;
 
     switch (code->tokentype) {
-        case IDENTIFIERTOK:
-            symbol_info = searchst(code->stringval);
-            immediate_val = symbol_info->offset;
-
-            if (symbol_info->kind == FUNCTIONSYM) {
-                target_reg = getreg(symbol_info->datatype->basicdt);
-                inline_funcall = code;
-                genc(code->link);
-            } else {
-                int dtype = code->basicdt;
-                target_reg = getreg(dtype);
-
-                if (dtype != POINTER && NUM_INT_REGS > target_reg) {
-                    SYMBOL symbol_entry = searchst(code->stringval);
-
-                    if (symbol_entry->datatype->kind != ARRAYSYM) {
-                        asmld(MOVL, symbol_info->offset - stkframesize, target_reg, code->stringval);
-                        last_id_reg_num = target_reg;
-                    }
-                } else if (dtype != POINTER) {
-                    asmld(MOVSD, symbol_info->offset - stkframesize, target_reg, code->stringval);
-                    last_id_reg_num = target_reg;
-                } else if ((last_ptr != NULL && strcmp(last_ptr->stringval, code->stringval) != 0) || last_ptr == NULL) {
-                    asmld(MOVQ, symbol_info->offset - stkframesize, target_reg, code->stringval);
-                    last_ptr_reg_num = target_reg;
-                    last_ptr = code;
-                }
-            }
-            break;
-
         case NUMBERTOK:
-            target_reg = getreg(code->basicdt);
+            reg_num = getreg(code->basicdt);
 
             if (code->basicdt == INTEGER) {
-                immediate_val = code->intval;
+                num = code->intval;
 
-                if (immediate_val >= MINIMMEDIATE && immediate_val <= MAXIMMEDIATE && !nested_refs) {
-                    if (last_ptr && last_ptr_reg_num > -1) {
-                        asmimmed(MOVQ, immediate_val, target_reg);
+                if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nestRefs) {
+                    if (finalPtr && finalPtr_reg_num > -1) {
+                        asmimmed(MOVQ, num, reg_num);
                     } else {
-                        asmimmed(nil_flag ? MOVQ : MOVL, immediate_val, target_reg);
+                        asmimmed(nilFlag ? MOVQ : MOVL, num, reg_num);
                     }
                 }
-            } else {
+            } 
+            else {
                 makeflit(code->realval, nextlabel);
-                asmldflit(MOVSD, nextlabel++, target_reg);
+                asmldflit(MOVSD, nextlabel++, reg_num);
+            }
+
+            break;
+
+        case IDENTIFIERTOK:
+            sym = searchst(code->stringval);
+            num = sym->offset;
+
+            if (sym->kind == FUNCTIONSYM) {
+                reg_num = getreg(sym->datatype->basicdt);
+                inline_call = code;
+                genc(code->link);
+            } 
+            
+            else {
+                int bdt = code->basicdt;
+                reg_num = getreg(bdt);
+
+                if (code->basicdt != POINTER && I_REGS > reg_num) {
+                    SYMBOL symEnt = searchst(code->stringval);
+
+                    if (symEnt->datatype->kind != ARRAYSYM) {
+                        asmld(MOVL, sym->offset - stkframesize, reg_num, code->stringval);
+                        lastIdReg = reg_num;
+                    }
+                } 
+
+
+                else {
+                    if (bdt != POINTER) {
+                        asmld(MOVSD, sym->offset - stkframesize, reg_num, code->stringval);
+                        finalPtr_reg_num = reg_num;
+
+                    }
+
+                    else {
+ 
+                        if ((finalPtr != NULL && strcmp(finalPtr->stringval, code->stringval)) || finalPtr == NULL) {
+                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+                            finalPtr_reg_num = reg_num;
+                            finalPtr = code;
+
+                        }
+                    }
+                }
             }
             break;
+
 
         case OPERATOR:
-            if (first_op_genarith != NULL) {
-                nested_refs = true;
-            } else {
-                first_op_genarith = code;
+            if (opGenarith != NULL) {
+                nestRefs = true;
+            } 
+            else {
+                opGenarith = code;
             }
 
-            left_operand_reg = genarith(code->operands);
-            right_operand_reg = 0;
+            lhs_reg = genarith(code->operands);
+            rhs_reg = 0;
 
             if (code->operands->link != NULL) {
-                right_operand_reg = genarith(code->operands->link);
-            }
+                rhs_reg = genarith(code->operands->link);
 
-            bool same_register = left_operand_reg == right_operand_reg;
-            if (same_register) {
-                left_operand_reg = getreg(INTEGER);
-                if (right_operand_reg > 15) {
-                    left_operand_reg = getreg(REAL);
+            } 
+
+            bool same_reg_assn = lhs_reg == rhs_reg;
+            if (same_reg_assn) {
+                
+                lhs_reg = getreg(INTEGER);
+                if (rhs_reg > 15) {
+                    lhs_reg = getreg(REAL);
                 }
             }
 
-            left_operand_reg = genop(code, right_operand_reg, left_operand_reg);
-            free_reg(right_operand_reg);
+            lhs_reg = genop(code, rhs_reg, lhs_reg);
+            free_reg(rhs_reg);
 
-            if (same_register) {
-                free_reg(left_operand_reg);
-                int temp_reg = getreg(INTEGER);
-                if (left_operand_reg > 15) {
-                    temp_reg = getreg(REAL);
+            if (same_reg_assn) {
+                
+                free_reg(lhs_reg);
+                int temp = getreg(INTEGER);
+                if (lhs_reg > 15) {
+                    temp = getreg(REAL);
                 }
-                left_operand_reg = temp_reg;
+                lhs_reg = temp;
             }
 
-            target_reg = left_operand_reg;
+            reg_num = lhs_reg;
+
             break;
+
     }
 
-    first_op_genarith = NULL;
-    return target_reg;
+    opGenarith = NULL;
+
+    return reg_num;
 }
 
 
@@ -272,7 +296,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
             out = lhs_reg;
             break;
         case MINUSOP:
-            if (lhs_reg > 15 && lhs_reg < NUM_REGS && rhs_reg == 0) {
+            if (lhs_reg > 15 && lhs_reg < TOT_REGS && rhs_reg == 0) {
                 asmfneg(lhs_reg, getreg(REAL));
                 rhs_reg = lhs_reg;
             } else if (at_least_one_float(lhs_reg, rhs_reg)) {
@@ -299,16 +323,16 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
             out = lhs_reg;
             break;
         case POINTEROP:
-            last_ptr_deref_offs = code->link->intval;
+            finalPtr_deref_offs = code->link->intval;
 
-            if (nested_ref_stop_at && nested_refs && is_equal(nested_ref_stop_at, code)) {
-                asmstr(MOVSD, saved_rhs_reg_num, code->link->intval, lhs_reg, "^. ");
+            if (stopRef && nestRefs && is_equal(stopRef, code)) {
+                asmstr(MOVSD, rhsReg_num, code->link->intval, lhs_reg, "^. ");
             }
 
-            if (!nested_refs) {
-                saved_rhs_reg = code->operands;
+            if (!nestRefs) {
+                rhsReg = code->operands;
             } else {
-                saved_rhs_reg = code->link;
+                rhsReg = code->link;
             }
 
             out = lhs_reg;
@@ -335,37 +359,37 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         }
 
         case FUNCALLOP:
-            if (inline_funcall) {
-                if (num_funcalls_in_curr_tree > 1) {
-                    saved_inline_regs[num_inlines_processed] = lhs_reg;
-                    num_inlines_processed++;
-                    if (num_inlines_processed == 1) {
-                        asmcall(inline_funcall->stringval);
+            if (inline_call) {
+                if (numTreeCalls > 1) {
+                    savedLineRegs[numLinesProcs] = lhs_reg;
+                    numLinesProcs++;
+                    if (numLinesProcs == 1) {
+                        asmcall(inline_call->stringval);
                         asmsttemp(lhs_reg);
                     } 
                      else {
-                        asmcall(inline_funcall->stringval);
+                        asmcall(inline_call->stringval);
                         asmldtemp(lhs_reg);
                     }
-                } else if (strcmp(inline_funcall->stringval, "new") == 0) {
+                } else if (strcmp(inline_call->stringval, "new") == 0) {
                     asmrr(MOVL, rhs_reg, EDI);
-                    asmcall(inline_funcall->stringval);
+                    asmcall(inline_call->stringval);
                 } else {
-                    asmcall(inline_funcall->stringval);
+                    asmcall(inline_call->stringval);
                 }
 
-                inline_funcall = NULL;
+                inline_call = NULL;
             }
 
             out = lhs_reg;
             break;
 
         case AREFOP:
-            if (saved_float_reg != -DBL_MAX) {
-                /* Use MOVSD because saved_float_reg implies floating-point data. */
+            if (floatReg != -DBL_MAX) {
+                /* Use MOVSD because floatReg implies floating-point data. */
                 asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
             } else {
-                if (last_id_reg_num > -1) {
+                if (lastIdReg > -1) {
                     SYMBOL sym;
                     int reg_num, offs;
                     TOKEN lhs = code->operands;
@@ -389,16 +413,16 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     }
 
                     int temp = rhs_reg;
-                    if (last_id_reg_num > -1 && last_id_reg_num < 16) {
-                        if (last_id_reg_num == rhs_reg) {
+                    if (lastIdReg > -1 && lastIdReg < 16) {
+                        if (lastIdReg == rhs_reg) {
                             rhs_reg = getreg(INTEGER);
                             free_reg(temp);
                         }
 
-                        if (last_ptr && last_ptr_reg_num > -1) {
+                        if (finalPtr && finalPtr_reg_num > -1) {
                             bool found = false;
                             SYMBOL temp0, temp1, temp2, temp3, typsym;
-                            temp0 = searchst(last_ptr->stringval);
+                            temp0 = searchst(finalPtr->stringval);
 
 
                             temp1 = searchst(temp0->link->namestring);
@@ -415,7 +439,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                                 if (temp2 && temp2->kind == RECORDSYM) {
                                     temp3 = temp2->datatype;
                                     while (temp3 && !found) {
-                                        if (temp3->offset == last_ptr_deref_offs) {
+                                        if (temp3->offset == finalPtr_deref_offs) {
                                             found = true;
                                             if (temp3->size > basicsizes[INTEGER]) {
                                                 /* Use MOVQ for pointer or larger than integer size data */
@@ -442,7 +466,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                                 }
                             }
 
-                            last_ptr_reg_num = -1;
+                            finalPtr_reg_num = -1;
                         } 
 
                         else {
@@ -452,7 +476,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     } 
                     
                     else {
-                        if (last_id_reg_num == rhs_reg) {
+                        if (lastIdReg == rhs_reg) {
                             rhs_reg = getreg(REAL);
                             free_reg(temp);
                         }
@@ -477,7 +501,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                 }
             }
 
-            last_ptr_reg_num = rhs_reg;
+            finalPtr_reg_num = rhs_reg;
             out = rhs_reg;
             break;
 
@@ -491,13 +515,11 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 /* Generate code for a Statement from an intermediate-code form */
 void genc(TOKEN code) {
 
-    if (code->tokentype != OPERATOR) {
-        if (code->tokentype == NUMBERTOK && code->basicdt == INTEGER && new_funcall_flag) {
+    if (code->tokentype != OPERATOR && (funcFlag && code->tokentype == NUMBERTOK && code->basicdt == INTEGER )) {
             reset_regs();
-            new_funcall_flag = false;
             return;
         }
-    }
+    
 
     SYMBOL sym;
     TOKEN tok, lhs, rhs;
@@ -531,7 +553,7 @@ void genc(TOKEN code) {
             // Check if the right-hand side is a PROGNOP, which might indicate a structured block of statements.
             if (rhs->link != NULL && rhs->whichval == PROGNOP) {
                 // Jump to a saved label if the right side is PROGNOP and has a continuation.
-                asmjump(JMP, saved_label_num);
+                asmjump(JMP, labelNum);
             }
 
             // Generate a jump to the else label which will be defined next.
@@ -556,52 +578,45 @@ void genc(TOKEN code) {
         case PROGNOP:
 
             // Reset tracking variables to initial values
-            last_ptr = NULL;
-            last_ptr_reg_num = -1;
-            last_ptr_deref_offs = -1;
-
-            nested_ref_stop_at = NULL;
-            num_inlines_processed = 0;
-            last_id_reg_num = -1;
+            finalPtr_reg_num = -1;
+            lastIdReg = -1;
 
             // Initialize saved inline registers to -1
             for (int i = 0; i < 10; i++) {
-                saved_inline_regs[i] = -1;
+                savedLineRegs[i] = -1;
             }
 
             // Iterate over each token in the operands of the code
             TOKEN tok = code->operands;
             while (tok) {
-                // Process each token to count function calls and handle specific operations
-                int num_funcalls_in_curr_tree = 0;
-                TOKEN temp_tok = tok->operands;
-                while (temp_tok) {
+                // Initialize count of function calls within this token's operands
+                int numTreeCalls = 0;
+                for (TOKEN temp_tok = tok->operands; temp_tok; temp_tok = temp_tok->link) {
                     if (temp_tok->whichval == FUNCALLOP) {
-                        num_funcalls_in_curr_tree++;
+                        numTreeCalls++;
                     }
-                    temp_tok = temp_tok->link;
                 }
                 
-                // Reset flag before potentially setting it based on search conditions
-                new_funcall_flag = false;
-
-                // Check if the current token or any nested tokens have a specific operation
-                TOKEN search_tok = tok;
-                while (search_tok) {
-                    if (search_tree_str(tok, "new")) {
-                        new_funcall_flag = true;
+                // Only search for "new" if it's necessary based on the context or previous results
+                funcFlag = false;  // Reset flag for each token processed
+                if (numTreeCalls > 0) {  // Only check for "new" if there are function calls
+                    for (TOKEN search_tok = tok; search_tok; search_tok = search_tok->link) {
+                        if (search_tree_str(search_tok, "new")) {  // Ensure to pass search_tok instead of tok
+                            funcFlag = true;
+                            break;  // Exit the loop early once "new" is found
+                        }
                     }
-                    search_tok = search_tok->link;
                 }
 
-                // Label operation handling if present
+                // Handle specific label operations
                 if (tok->whichval == LABELOP && tok->operands) {
-                    saved_label_num = tok->operands->intval;
+                    labelNum = tok->operands->intval;
                 }
 
-                genc(tok);  // Process the current token to generate code
-                tok = tok->link;  // Move to the next token in the list
+                genc(tok);  // Generate code for the current token
+                tok = tok->link;  // Proceed to the next token in the list
             }
+
 
             break;
 
@@ -617,236 +632,196 @@ void genc(TOKEN code) {
             }
 
             SYMBOL argsym;
+            if (strcmp(lhs->stringval, "new") == 0) {
+                funcFlag = true;  // Flag indicating 'new' function call
 
-            if (strstr(lhs->stringval, "write")) {
+                // Obtain and initialize the required register and offset for the operation
+                int reg_num = getreg(INTEGER);
+                int offset = lhs->symentry->offset - stkframesize;
+                int immediate_value = lhs->intval;
+
+                // If the immediate value is within a valid range, move it to the register
+                if (immediate_value >= MINIMMEDIATE && immediate_value <= MAXIMMEDIATE) {
+                    asmimmed(MOVL, immediate_value, reg_num);
+                }
+
+                // Always move the value in the register to EDI
+                asmrr(MOVL, reg_num, EDI);
+            }
+
+
+            else if (strstr(lhs->stringval, "write")) {
                 sym = searchst(lhs->stringval);
-
-                if (rhs->tokentype == STRINGTOK) {
-                    asmlitarg(nextlabel, EDI);
-                    asmcall(lhs->stringval);
-                    makeblit(rhs->stringval, nextlabel++);
-                } else if (rhs->tokentype == OPERATOR) {
-                    if (rhs->whichval == AREFOP) {
+                if (rhs->tokentype == OPERATOR && rhs->whichval == AREFOP) {
                         sym = searchst(rhs->operands->stringval);
                         if (!sym) {
                             sym = searchst(rhs->operands->operands->stringval);
                             if (sym) {
-                                reg_num = getreg(INTEGER);
-                                offs = sym->offset - stkframesize;
-                                asmld(MOVQ, offs, reg_num, sym->namestring);
-
-                                offs = rhs->operands->link->intval;
-                                int temp = getreg(REAL);
-                                asmldr(MOVSD, offs, reg_num, temp, "^.");
-
+                                asmld(MOVQ, sym->offset - stkframesize, getreg(INTEGER), sym->namestring);
+                                asmldr(MOVSD, rhs->operands->link->intval, getreg(INTEGER),  getreg(REAL), "^.");
                                 asmcall(lhs->stringval);
                             }
                         }
-                    } 
-                } else if (sym != NULL && (sym->datatype->basicdt == INTEGER || sym->datatype->basicdt == REAL)) {
+                    
+                } 
+                
+                else if (rhs->tokentype == STRINGTOK) {
+                    asmlitarg(nextlabel, EDI);
+                    asmcall(lhs->stringval);
+                    makeblit(rhs->stringval, nextlabel++);
+                } 
+                
+                else if (sym->datatype->basicdt == INTEGER || sym->datatype->basicdt == REAL) {
                     SYMBOL argsym;
 
                     if (rhs->tokentype == IDENTIFIERTOK) {
                         argsym = searchst(rhs->stringval);
-                        if (!argsym) {
-                            return;
-                        }
 
-                        if (argsym->basicdt == INTEGER) {
-                            reg_num = getreg(INTEGER);
-                            offs = argsym->offset - stkframesize;
+                        reg_num = getreg(argsym->basicdt);
+                        asmld(argsym->basicdt, argsym->offset - stkframesize, reg_num, argsym->namestring);
+                        asmrr(argsym->basicdt, reg_num, EDI);
+                        asmcall(lhs->stringval);
 
-                            asmld(MOVL, offs, reg_num, argsym->namestring);
-                            asmrr(MOVL, reg_num, EDI);
-                            asmcall(lhs->stringval);
-                        } else if (argsym->basicdt == REAL) {
-                            reg_num = getreg(REAL);
-                            offs = argsym->offset - stkframesize;
-                            asmld(MOVSD, offs, reg_num, argsym->namestring);
-                            asmrr(MOVSD, reg_num, EDI);
-                            asmcall(lhs->stringval);
-                        }
                     }
                 }
-            } else if (strcmp(lhs->stringval, "new") == 0) {
-                new_funcall_flag = true;
-                num = lhs->intval;
-                reg_num = getreg(INTEGER);
-                sym = lhs->symentry;
-                offs = sym->offset - stkframesize;
-
-                if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE) {
-                    asmimmed(MOVL, num, reg_num);
-                }
-
-                asmrr(MOVL, reg_num, EDI);
             } 
+
             break;
 
 
         case ASSIGNOP:
             {
-            TOKEN last_operand = NULL;
             TOKEN currentToken = code->operands;
             while (currentToken) {
                 TOKEN nextLink = currentToken->link;
                 if (!nextLink) {
-                    last_operand = currentToken;
                     break;
                 }
                 currentToken = nextLink;
             }
-            last_operand = currentToken;
-            TOKEN outer_link = code->operands->link;
-            if (last_operand) {
-                if (last_operand->basicdt == POINTER && outer_link->tokentype == NUMBERTOK &&
-                    outer_link->basicdt == INTEGER && outer_link->intval == 0) {
-                    nil_flag = true;
-                }
+            
+            
+            if (currentToken && (code->operands->link->tokentype == NUMBERTOK && currentToken->basicdt == POINTER && code->operands->link->basicdt == INTEGER && code->operands->link->intval == 0)) {
+                nilFlag = true;
             }
+            
 
             lhs = code->operands;
             rhs = lhs->link;
 
-            if (code->operands->operands != NULL) {
-                nested_ref_stop_at = code->operands->operands;
+            if (code->operands->operands) {
+                stopRef = code->operands->operands;
             }
 
-            reg_num = genarith(rhs);
-            saved_rhs_reg = rhs;
-            saved_rhs_reg_num = reg_num;
+            reg_num = genarith(lhs->link);
+            rhsReg = rhs;
+            rhsReg_num = reg_num;
 
             sym = searchst(lhs->stringval);
-            SYMBOL arraysym;
             if (sym && sym->datatype->kind == ARRAYSYM) {
-                arraysym = sym->datatype;
-                while (arraysym->kind == ARRAYSYM) {
-                    arraysym = arraysym->datatype;
+                
+                SYMBOL arrSym = sym->datatype;
+                while (arrSym->kind == ARRAYSYM) {
+                    arrSym = arrSym->datatype;
                 }
-                if (arraysym->kind == RECORDSYM) {
-                    
 
-                    TOKEN lastLink = lhs->operands;
+                if (arrSym->kind == RECORDSYM) {
+                    
+                    TOKEN prev = lhs->operands;
                     TOKEN currentToken = lhs->operands;
                     while (currentToken) {
-                        lastLink = currentToken;
+                        prev = currentToken;
                         currentToken = currentToken->link;
                     }
-                    TOKEN last_link = lastLink;
+
                     
-                    if (last_link && last_link->tokentype == NUMBERTOK) {
-                        asmimmed(MOVL, last_link->intval, EAX);
+                    if (prev && prev->tokentype == NUMBERTOK) {
+                        asmimmed(MOVL, prev->intval, EAX);
                         asmop(CLTQ);
                         if (reg_num >= 0 && reg_num < 16) {
                             asmstrr(MOVL, reg_num, offs, EAX, lhs->stringval);
-                        } else {
+                        } 
+                        else {
                             asmstrr(MOVSD, reg_num, offs, EAX, lhs->stringval);
                         }
                     }
                 }
             }
 
-            int datatype = code->basicdt;
 
             if (sym) {
                 offs = sym->offset - stkframesize;
 
                 if (reg_num >= 0 && reg_num < 16) {
-                    if (lhs->basicdt == 4) {
-                        asmst(MOVQ, reg_num, offs, lhs->stringval);
-                    } else {
+                    if (lhs->basicdt != POINTER) {
                         asmst(MOVL, reg_num, offs, lhs->stringval);
+                    } 
+                    else {
+                        asmst(MOVQ, reg_num, offs, lhs->stringval);
                     }
-                } else {
+                } 
+                else {
                     asmst(MOVSD, reg_num, offs, lhs->stringval);
                 }
-            } else {
+            } 
+            else {
                 sym = searchst(lhs->operands->stringval);
 
                 if (!sym) {
                     sym = searchst(lhs->operands->operands->stringval);
+                    
                     if (sym) {
-                        offs = sym->offset - stkframesize;
+                        
                         int temp = getreg(INTEGER);
 
-                        last_ptr = lhs->operands->operands;
+                        finalPtr = lhs->operands->operands;
 
-                        asmld(MOVQ, offs, temp, sym->namestring);
+                        asmld(MOVQ, sym->offset - stkframesize, temp, sym->namestring);
+
                         offs = lhs->operands->link->intval;
 
-                        if (basicsizes[rhs->basicdt] > basicsizes[INTEGER]) {
-                            if (saved_float_reg != -DBL_MAX) {
-                                asmstr(MOVSD, reg_num, offs, temp, "^. ");
-                            } else {
+                        if (basicsizes[rhs->basicdt] <= basicsizes[INTEGER]) {
+                            if (nilFlag) {
+                                asmstr(MOVQ, reg_num, offs, temp, "^. ");
+                            } 
+                            else {
+                                asmstr(MOVL, reg_num, offs, temp, "^. ");
+                            }
+                            
+                        } 
+                        else {
+                            if (floatReg == -DBL_MAX) {
                                 asmstr(MOVQ, reg_num, offs, temp, "^. ");
                             }
-                        } else {
-                            if (!nil_flag) {
-                                asmstr(MOVL, reg_num, offs, temp, "^. ");
-                            } else {
-                                asmstr(MOVQ, reg_num, offs, temp, "^. ");
+                            else {
+                                asmstr(MOVSD, reg_num, offs, temp, "^. ");
                             }
                         }
                     }
-                } else {
-                    offs = sym->offset - stkframesize;
+                } 
+                
+                else {
 
-                    TOKEN lastLink = lhs->operands;
-                    TOKEN currentToken = lhs->operands;
-                    while (currentToken) {
-                        lastLink = currentToken;
-                        currentToken = currentToken->link;
+                    TOKEN prev = lhs->operands;
+                    TOKEN curTok = lhs->operands;
+                    while (curTok) {
+                        prev = curTok;
+                        curTok = curTok->link;
                     }
-                    TOKEN last_link = lastLink;
+                    
 
-                    if (last_link) {
-                        if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
-                            asmimmed(MOVL, last_link->intval, EAX);
+                    if (prev) {
+                        if (prev->tokentype == NUMBERTOK && prev->basicdt == INTEGER) {
+                            asmimmed(MOVL, prev->intval, EAX);
                             asmop(CLTQ);
 
                             if (reg_num >= 0 && reg_num < 16) {
-                                asmstrr(MOVL, reg_num, offs, EAX, sym->namestring);
+                                asmstrr(MOVL, reg_num, sym->offset - stkframesize, EAX, sym->namestring);
                             } else {
-                                asmstrr(MOVSD, reg_num, offs, EAX, sym->namestring);
+                                asmstrr(MOVSD, reg_num, sym->offset - stkframesize, EAX, sym->namestring);
                             }
-                        } else if (last_link->tokentype == OPERATOR && last_link->whichval == PLUSOP) {
-                            TOKEN plus_operand = last_link->operands;
-                            TOKEN mul_operand = plus_operand->link->operands;
-                            TOKEN last_operand = mul_operand->link;
-
-                            mark_reg_unused(EAX);
-                            mark_reg_used(last_ptr_reg_num);
-
-                            int move_plus_to = getreg(INTEGER);
-                            int move_mul_to = getreg(INTEGER);
-                            int move_last_to;
-
-                            asmimmed(MOVL, plus_operand->intval, move_plus_to);
-                            asmimmed(MOVL, mul_operand->intval, move_mul_to);
-
-                            if (last_operand->tokentype == NUMBERTOK) {
-                                move_last_to = getreg(INTEGER);
-                                asmimmed(MOVL, last_operand->intval, move_last_to);
-                            } else {
-                                sym = searchst(last_operand->stringval);
-                                offs = sym->offset - stkframesize;
-                                asmld(MOVL, offs, EBX, sym->namestring);
-                                asmrr(IMULL, EBX, move_mul_to);
-                                asmrr(ADDL, move_mul_to, move_plus_to);
-                                asmop(CLTQ);
-                                sym = searchst(lhs->operands->stringval);
-                            offs = sym->offset - stkframesize;
-                            asmstrr(MOVL, last_ptr_reg_num, offs, 0, lhs->operands->stringval);
-                        }
+                        } 
                     } 
-                } else {
-                    if (reg_num >= 0 && reg_num < 16) {
-                        asmstrr(MOVL, reg_num, offs, getreg(INTEGER), sym->namestring);
-                    } 
-                    else {
-                        asmstrr(MOVSD, reg_num, offs, getreg(INTEGER), sym->namestring);
-                    }
-                }
             }
         }
 
@@ -854,23 +829,15 @@ void genc(TOKEN code) {
             reg_num = genarith(lhs->operands);
         }
 
-        nil_flag = false;
-        saved_float_reg = -DBL_MAX;
-        saved_rhs_reg = NULL;
-        saved_rhs_reg_num = -1;
-        nested_refs = false;
+        finalPtr = NULL;
 
-        last_ptr = NULL;
-        last_ptr_reg_num = -1;
-
-        nested_ref_stop_at = NULL;
+        stopRef = NULL;
         break;
-            }
+        }
 
-
-
+    }
 }
-}
+
 
 
 
@@ -878,26 +845,28 @@ void genc(TOKEN code) {
 
 
 void reset_regs() {
-    memset(used_regs, 0, sizeof(used_regs));
-}
+    int i;
+    for (i = 0; i < NUM_REGS; i++) {
+        registers[i] = 0;
+    }}
 
 void free_reg(int reg_num) {
-    used_regs[reg_num] = 0;
+    registers[reg_num] = 0;
     
 }
 
 bool at_least_one_float(int lhs_reg, int rhs_reg) {
-    return (lhs_reg >= NUM_INT_REGS && lhs_reg < NUM_REGS) ||
-           (rhs_reg >= NUM_INT_REGS && rhs_reg < NUM_REGS);
+    return (lhs_reg >= I_REGS && lhs_reg < TOT_REGS) ||
+           (rhs_reg >= I_REGS && rhs_reg < TOT_REGS);
 }
 
 void mark_reg_unused(int reg) {
-    used_regs[reg] = 0;
+    registers[reg] = 0;
     
 }
 
 void mark_reg_used(int reg) {
-    used_regs[reg] = 1;
+    registers[reg] = 1;
     
 }
 
