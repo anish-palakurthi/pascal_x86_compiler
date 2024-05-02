@@ -130,134 +130,99 @@ int getreg(int kind) {
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code) {
-    if (DEBUGGEN) {
-        printf("\nIn genarith()\n");
-        ppexpr(code);
-        printf("\n");
-    }
 
     int num, reg_num, lhs_reg, rhs_reg;
     SYMBOL sym;
 
     switch (code->tokentype) {
         case NUMBERTOK:
+            reg_num = getreg(code->basicdt);
+
             if (code->basicdt == INTEGER) {
                 num = code->intval;
-                reg_num = getreg(INTEGER);
 
                 if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nested_refs) {
                     if (last_ptr && last_ptr_reg_num > -1) {
                         asmimmed(MOVQ, num, reg_num);
-                        last_ptr_reg_num = -1;
-                    } else if (!nil_flag) {
-                        asmimmed(MOVL, num, reg_num);
                     } else {
-                        asmimmed(MOVQ, num, reg_num);
+                        asmimmed(nil_flag ? MOVQ : MOVL, num, reg_num);
                     }
-                } else {
-                    // ?????????????????????????????????????????????????????????????????
                 }
-            } else {
-                reg_num = getreg(REAL);
-                saved_float_reg = code->realval;
-
+            } 
+            else {
                 makeflit(code->realval, nextlabel);
                 asmldflit(MOVSD, nextlabel++, reg_num);
             }
+
             break;
 
         case IDENTIFIERTOK:
             sym = searchst(code->stringval);
-            if (!sym) {
-                return symbol_is_null_int(code->stringval);
-            }
-
-            if (DEBUGGEN) {
-                printf(" IDENTIFIERTOK detected; symbol table entry:\n");
-                ppexpr(code);
-                dbprsymbol(sym);
-                printf(" offset: %d\n", sym->offset);
-                printf("\n");
-            }
-
             num = sym->offset;
 
             if (sym->kind == FUNCTIONSYM) {
                 reg_num = getreg(sym->datatype->basicdt);
                 inline_funcall = code;
                 genc(code->link);
-            } else {
-                reg_num = getreg(code->basicdt);
-                if (reg_num < NUM_INT_REGS && code->basicdt != POINTER) {
-                    SYMBOL temp = searchst(code->stringval);
-                    if (!temp) {
-                        return symbol_is_null_int(code->stringval);
-                    }
+            } 
+            
+            else {
+                int bdt = code->basicdt;
+                reg_num = getreg(bdt);
 
-                    SYMBOL next = temp->datatype;
+                if (code->basicdt != POINTER && NUM_INT_REGS > reg_num) {
+                    SYMBOL symEnt = searchst(code->stringval);
 
-                    if (!next) {
-                        return symbol_is_null_int(NULL);
-                    }
-
-                    if (next->kind != ARRAYSYM) {
-                        last_id_reg_num = reg_num;
+                    if (symEnt->datatype->kind != ARRAYSYM) {
                         asmld(MOVL, sym->offset - stkframesize, reg_num, code->stringval);
-                    }
-                } else {
-                    if (code->basicdt == POINTER) {
-                        if (last_ptr == NULL) {
-                            last_ptr = code;
-                            last_ptr_reg_num = reg_num;
-                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
-                        } else if (last_ptr != NULL && strcmp(last_ptr->stringval, code->stringval) != 0) {
-                            last_ptr = code;
-                            last_ptr_reg_num = reg_num;
-                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
-                        }
-                    } else {
                         last_id_reg_num = reg_num;
+                    }
+                } 
+
+
+                else {
+                    if (bdt != POINTER) {
                         asmld(MOVSD, sym->offset - stkframesize, reg_num, code->stringval);
+                        last_id_reg_num = reg_num;
+
+                    }
+
+                    else {
+ 
+                        if ((last_ptr != NULL && strcmp(last_ptr->stringval, code->stringval)) || last_ptr == NULL) {
+                            asmld(MOVQ, sym->offset - stkframesize, reg_num, code->stringval);
+                            last_ptr_reg_num = reg_num;
+                            last_ptr = code;
+
+                        }
                     }
                 }
             }
             break;
 
+
         case OPERATOR:
-            if (first_op_genarith == NULL) {
-                first_op_genarith = code;
-            } else {
+            if (first_op_genarith != NULL) {
                 nested_refs = true;
+            } 
+            else {
+                first_op_genarith = code;
             }
 
             lhs_reg = genarith(code->operands);
+            rhs_reg = 0;
 
-            if (code->operands->link) {
+            if (code->operands->link != NULL) {
                 rhs_reg = genarith(code->operands->link);
-            } else {
-                rhs_reg = 0;
-            }
 
-            if (code->operands->whichval == FUNCALLOP) {
-                free_reg(lhs_reg);
-                lhs_reg = saved_inline_regs[num_inlines_processed - 1];
-                mark_reg_used(lhs_reg);
-            }
-            if (code->operands->link) {
-                if (code->operands->link->whichval == FUNCALLOP) {
-                    free_reg(rhs_reg);
-                    rhs_reg = saved_inline_regs[num_inlines_processed - 2];
-                    mark_reg_used(rhs_reg);
-                }
-            }
+            } 
 
-            bool same_reg_assn = false;
-            if (lhs_reg == rhs_reg) {
-                same_reg_assn = true;
+            bool same_reg_assn = lhs_reg == rhs_reg;
+            if (same_reg_assn) {
+                
+                lhs_reg = getreg(INTEGER);
                 if (rhs_reg > 15) {
                     lhs_reg = getreg(REAL);
-                } else {
-                    lhs_reg = getreg(INTEGER);
                 }
             }
 
@@ -265,22 +230,19 @@ int genarith(TOKEN code) {
             free_reg(rhs_reg);
 
             if (same_reg_assn) {
-                int temp;
+                
+                free_reg(lhs_reg);
+                int temp = getreg(INTEGER);
                 if (lhs_reg > 15) {
-                    free_reg(lhs_reg);
                     temp = getreg(REAL);
-                } else {
-                    free_reg(lhs_reg);
-                    temp = getreg(INTEGER);
                 }
                 lhs_reg = temp;
             }
 
             reg_num = lhs_reg;
+
             break;
 
-        default:
-            return symbol_is_null_int(NULL);
     }
 
     first_op_genarith = NULL;
@@ -595,8 +557,9 @@ else if (which_val == AREFOP) {
 
 /* Generate code for a Statement from an intermediate-code form */
 
+
 /* Gets and returns the last TOKEN (in)directly connected via ->operands to TOKEN tok. */
-TOKEN get_last_operand(TOKEN tokenNode) {
+TOKEN getLastOp(TOKEN tokenNode) {
     TOKEN currentToken = tokenNode;
     while (currentToken) {
         TOKEN nextToken = currentToken->operands;
@@ -610,7 +573,7 @@ TOKEN get_last_operand(TOKEN tokenNode) {
 
 /* Gets and returns the last TOKEN (in)directly connected via ->link to TOKEN tok.
    Mostly used to handle elimination of nested progns. */
-TOKEN get_last_link(TOKEN tokenNode) {
+TOKEN getLastLink(TOKEN tokenNode) {
     TOKEN currentToken = tokenNode;
     while (currentToken) {
         TOKEN nextLink = currentToken->link;
@@ -695,7 +658,7 @@ void genc(TOKEN code) {
                 printf("\n");
             }
 
-            TOKEN last_operand = get_last_operand(code);
+            TOKEN last_operand = getLastOp(code);
             TOKEN outer_link = code->operands->link;
             if (last_operand) {
                 if (last_operand->basicdt == POINTER && outer_link->tokentype == NUMBERTOK &&
@@ -724,7 +687,7 @@ void genc(TOKEN code) {
                 }
                 if (arraysym->kind == RECORDSYM) {
                     printf("array of records\n");
-                    TOKEN last_link = get_last_link(lhs->operands);
+                    TOKEN last_link = getLastLink(lhs->operands);
                     if (last_link && last_link->tokentype == NUMBERTOK) {
                         asmimmed(MOVL, last_link->intval, EAX);
                         asmop(CLTQ);
@@ -782,7 +745,7 @@ void genc(TOKEN code) {
                 } else {
                     offs = sym->offset - stkframesize;
 
-                    TOKEN last_link = get_last_link(lhs->operands);
+                    TOKEN last_link = getLastLink(lhs->operands);
 
                     if (last_link) {
                         if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
@@ -996,74 +959,57 @@ void genc(TOKEN code) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 /* ##################################################################################################################################### */
 
 void reset_regs() {
     memset(used_regs, 0, sizeof(used_regs));
 }
 
-void free_reg(int regNumber) {
-    if (regNumber >= 0 && regNumber < NUM_REGS) {
-        used_regs[regNumber] = 0;
+void free_reg(int reg_num) {
+    if (reg_num >= 0 && reg_num < NUM_REGS) {
+        used_regs[reg_num] = 0;
     }
 }
 
-bool at_least_one_float(int leftRegister, int rightRegister) {
-    return (leftRegister >= NUM_INT_REGS && leftRegister < NUM_REGS) ||
-           (rightRegister >= NUM_INT_REGS && rightRegister < NUM_REGS);
+bool at_least_one_float(int lhs_reg, int rhs_reg) {
+    return (lhs_reg >= NUM_INT_REGS && lhs_reg < NUM_REGS) ||
+           (rhs_reg >= NUM_INT_REGS && rhs_reg < NUM_REGS);
 }
 
-void mark_reg_unused(int regNumber) {
-    if (regNumber >= 0 && regNumber < NUM_REGS) {
-        used_regs[regNumber] = 0;
+void mark_reg_unused(int reg) {
+    if (reg >= 0 && reg < NUM_REGS) {
+        used_regs[reg] = 0;
     }
 }
 
-void mark_reg_used(int regNumber) {
-    if (regNumber >= 0 && regNumber < NUM_REGS) {
-        used_regs[regNumber] = 1;
+void mark_reg_used(int reg) {
+    if (reg >= 0 && reg < NUM_REGS) {
+        used_regs[reg] = 1;
     }
 }
 
-int num_funcalls_in_tree(TOKEN tokenNode, int callCount) {
-    if (!tokenNode) {
-        return callCount;
+int num_funcalls_in_tree(TOKEN tok, int num) {
+    if (!tok) {
+        return num;
     }
-    if (tokenNode->whichval == FUNCALLOP) {
-        callCount++;
+    if (tok->whichval == FUNCALLOP) {
+        num++;
     }
-    callCount = num_funcalls_in_tree(tokenNode->link, callCount);
-    callCount = num_funcalls_in_tree(tokenNode->operands, callCount);
-    return callCount;
+    num = num_funcalls_in_tree(tok->link, num);
+    num = num_funcalls_in_tree(tok->operands, num);
+    return num;
 }
 
-bool search_tree_str(TOKEN tokenNode, char searchString[]) {
-    if (!tokenNode) {
+bool search_tree_str(TOKEN tok, char str[]) {
+    if (!tok) {
         return false;
     }
-    if (!strcmp(tokenNode->stringval, searchString)) {
+    if (!strcmp(tok->stringval, str)) {
         return true;
     }
-    return search_tree_str(tokenNode->link, searchString) || search_tree_str(tokenNode->operands, searchString);
+    return search_tree_str(tok->link, str) || search_tree_str(tok->operands, str);
 }
 
-void print_used_regs() {
-    for (int regIndex = 0; regIndex < NUM_REGS; regIndex++) {
-        printf(" %d", used_regs[regIndex]);
-    }
-    printf("\n");
-}
 
 int symbol_is_null_int(char *stringValue) {
     if (stringValue) {
