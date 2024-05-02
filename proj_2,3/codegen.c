@@ -260,10 +260,10 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }
 
-    int out = 0;
-    int which_val = code->whichval;
+    int out;
+    
 
-    switch (which_val) {
+    switch (code->whichval) {
         case PLUSOP:
             if (at_least_one_float(lhs_reg, rhs_reg)) {
                 asmrr(ADDSD, rhs_reg, lhs_reg);
@@ -537,43 +537,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 }
 
 /* Generate code for a Statement from an intermediate-code form */
-
-
-/* Gets and returns the last TOKEN (in)directly connected via ->operands to TOKEN tok. */
-TOKEN getLastOp(TOKEN tokenNode) {
-    TOKEN currentToken = tokenNode;
-    while (currentToken) {
-        TOKEN nextToken = currentToken->operands;
-        if (!nextToken) {
-            return currentToken;
-        }
-        currentToken = nextToken;
-    }
-    return NULL;
-}
-
-/* Gets and returns the last TOKEN (in)directly connected via ->link to TOKEN tok.
-   Mostly used to handle elimination of nested progns. */
-TOKEN getLastLink(TOKEN tokenNode) {
-    TOKEN currentToken = tokenNode;
-    while (currentToken) {
-        TOKEN nextLink = currentToken->link;
-        if (!nextLink) {
-            return currentToken;
-        }
-        currentToken = nextLink;
-    }
-    return NULL;
-}
-
-
-
 void genc(TOKEN code) {
-    if (DEBUGGEN) {
-        printf("\nIn genc()\n");
-        ppexpr(code);
-        printf("\n");
-    }
 
     if (code->tokentype != OPERATOR) {
         if (code->tokentype == NUMBERTOK && code->basicdt == INTEGER && new_funcall_flag) {
@@ -592,11 +556,6 @@ void genc(TOKEN code) {
 
     switch (which_val) {
         case PROGNOP:
-            if (DEBUGGEN) {
-                printf(" PROGNOP detected.\n");
-                ppexpr(code->operands);
-                printf("\n");
-            }
 
             last_ptr = NULL;
             last_ptr_reg_num = -1;
@@ -631,15 +590,18 @@ void genc(TOKEN code) {
             break;
 
         case ASSIGNOP:
-            if (DEBUGGEN) {
-                printf("\n ASSIGNOP detected.\n");
-                ppexpr(code);
-                printf("#####\n");
-                ppexpr(code->operands);
-                printf("\n");
+            {
+            TOKEN last_operand = NULL;
+            TOKEN currentToken = code->operands;
+            while (currentToken) {
+                TOKEN nextLink = currentToken->link;
+                if (!nextLink) {
+                    last_operand = currentToken;
+                    break;
+                }
+                currentToken = nextLink;
             }
-
-            TOKEN last_operand = getLastOp(code);
+            last_operand = currentToken;
             TOKEN outer_link = code->operands->link;
             if (last_operand) {
                 if (last_operand->basicdt == POINTER && outer_link->tokentype == NUMBERTOK &&
@@ -667,8 +629,16 @@ void genc(TOKEN code) {
                     arraysym = arraysym->datatype;
                 }
                 if (arraysym->kind == RECORDSYM) {
-                    printf("array of records\n");
-                    TOKEN last_link = getLastLink(lhs->operands);
+                    
+
+                    TOKEN lastLink = lhs->operands;
+                    TOKEN currentToken = lhs->operands;
+                    while (currentToken) {
+                        lastLink = currentToken;
+                        currentToken = currentToken->link;
+                    }
+                    TOKEN last_link = lastLink;
+                    
                     if (last_link && last_link->tokentype == NUMBERTOK) {
                         asmimmed(MOVL, last_link->intval, EAX);
                         asmop(CLTQ);
@@ -726,7 +696,13 @@ void genc(TOKEN code) {
                 } else {
                     offs = sym->offset - stkframesize;
 
-                    TOKEN last_link = getLastLink(lhs->operands);
+                    TOKEN lastLink = lhs->operands;
+                    TOKEN currentToken = lhs->operands;
+                    while (currentToken) {
+                        lastLink = currentToken;
+                        currentToken = currentToken->link;
+                    }
+                    TOKEN last_link = lastLink;
 
                     if (last_link) {
                         if (last_link->tokentype == NUMBERTOK && last_link->basicdt == INTEGER) {
@@ -767,13 +743,12 @@ void genc(TOKEN code) {
                             offs = sym->offset - stkframesize;
                             asmstrr(MOVL, last_ptr_reg_num, offs, 0, lhs->operands->stringval);
                         }
-                    } else {
-                        // ?????????????????????????????????????????????????????????????????????????????
-                    }
+                    } 
                 } else {
                     if (reg_num >= 0 && reg_num < 16) {
                         asmstrr(MOVL, reg_num, offs, getreg(INTEGER), sym->namestring);
-                    } else {
+                    } 
+                    else {
                         asmstrr(MOVSD, reg_num, offs, getreg(INTEGER), sym->namestring);
                     }
                 }
@@ -795,35 +770,21 @@ void genc(TOKEN code) {
 
         nested_ref_stop_at = NULL;
         break;
-
+            }
     case GOTOOP:
-        if (DEBUGGEN) {
-            printf(" GOTOOP detected.\n");
-            ppexpr(code->operands);
-            printf("\n");
-        }
 
         lhs = code->operands;
         asmjump(JMP, lhs->intval);
         break;
 
     case LABELOP:
-        if (DEBUGGEN) {
-            printf(" LABELOP detected.\n");
-            ppexpr(code->operands);
-            printf("\n");
-        }
+
 
         lhs = code->operands;
         asmlabel(lhs->intval);
         break;
 
     case IFOP:
-        if (DEBUGGEN) {
-            printf(" IFOP detected.\n");
-            ppexpr(code->operands);
-            printf("\n");
-        }
 
         lhs = code->operands;
         rhs = code->operands->link;
@@ -842,15 +803,6 @@ void genc(TOKEN code) {
         break;
 
     case FUNCALLOP:
-        if (DEBUGGEN) {
-            printf(" FUNCALLOP detected.\n");
-            ppexpr(code);
-            ppexpr(code->operands);
-            if (code->operands->link) {
-                ppexpr(code->operands->link);
-            }
-            printf("\n");
-        }
 
         lhs = code->operands;
         rhs = NULL;
@@ -885,18 +837,13 @@ void genc(TOKEN code) {
                             asmcall(lhs->stringval);
                         }
                     }
-                } else if (rhs->whichval == POINTEROP) {
-                    printf("\nPTROP UNFINISHED\n");
-                }
+                } 
             } else if (sym != NULL && (sym->datatype->basicdt == INTEGER || sym->datatype->basicdt == REAL)) {
                 SYMBOL argsym;
 
-                if (rhs->tokentype == NUMBERTOK) {
-                    printf("\nNUMBERTOK UNFINISHED\n");
-                } else if (rhs->tokentype == IDENTIFIERTOK) {
+                if (rhs->tokentype == IDENTIFIERTOK) {
                     argsym = searchst(rhs->stringval);
                     if (!argsym) {
-                        printf("Error: no symbol table entry for var \"%s\"", rhs->stringval);
                         return;
                     }
 
@@ -928,19 +875,11 @@ void genc(TOKEN code) {
             }
 
             asmrr(MOVL, reg_num, EDI);
-        } else {
-            // Other function call operations...
-        }
+        } 
         break;
 
-    default:
-        break;
 }
 }
-
-
-
-/* ##################################################################################################################################### */
 
 void reset_regs() {
     memset(used_regs, 0, sizeof(used_regs));
