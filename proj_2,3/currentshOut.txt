@@ -21,14 +21,13 @@ Comparing outputs/test19.output and samples/test19.sample (ignoring memory addre
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
-17c17
-< movsd	%xmm1,-8(%rbp)     	#  %xmm1 -> temp
----
+16a17
 > movsd	%xmm0,-8(%rbp)     	#  %xmm0 -> temp
-21,22c21,22
+19,20c20,22
 < mulsd	%xmm1,%xmm0         	#  %xmm0 * %xmm1 -> %xmm0
 < movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 ---
+> movsd	-8(%rbp),%xmm1     	#  temp -> %xmm1
 > mulsd	%xmm0,%xmm1         	#  %xmm1 * %xmm0 -> %xmm1
 > movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
 Comparing outputs/test23.output and samples/test23.sample (ignoring memory addresses, specific strings, and handling code splits):
@@ -46,6 +45,6 @@ Comparing outputs/test27.output and samples/test27.sample (ignoring memory addre
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-ses, specific strings, and handling code splits):
+ specific strings, and handling code splits):
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
