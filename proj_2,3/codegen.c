@@ -136,26 +136,6 @@ int genarith(TOKEN code) {
     SYMBOL sym;
 
     switch (code->tokentype) {
-        case NUMBERTOK:
-            reg_num = getreg(code->basicdt);
-
-            if (code->basicdt == INTEGER) {
-                num = code->intval;
-
-                if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nestRefs) {
-                    if (finalPtr && finalPtr_reg_num > -1) {
-                        asmimmed(MOVQ, num, reg_num);
-                    } else {
-                        asmimmed(nilFlag ? MOVQ : MOVL, num, reg_num);
-                    }
-                }
-            } 
-            else {
-                makeflit(code->realval, nextlabel);
-                asmldflit(MOVSD, nextlabel++, reg_num);
-            }
-
-            break;
 
         case IDENTIFIERTOK:
             sym = searchst(code->stringval);
@@ -204,6 +184,26 @@ int genarith(TOKEN code) {
             }
             break;
 
+        case NUMBERTOK:
+            reg_num = getreg(code->basicdt);
+
+            if (code->basicdt == INTEGER) {
+                num = code->intval;
+
+                if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE && !nestRefs) {
+                    if (finalPtr && finalPtr_reg_num > -1) {
+                        asmimmed(MOVQ, num, reg_num);
+                    } else {
+                        asmimmed(nilFlag ? MOVQ : MOVL, num, reg_num);
+                    }
+                }
+            } 
+            else {
+                makeflit(code->realval, nextlabel);
+                asmldflit(MOVSD, nextlabel++, reg_num);
+            }
+
+            break;
 
         case OPERATOR:
             if (opGenarith != NULL) {
@@ -263,39 +263,34 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
     
     switch (code->whichval) {
         case EQOP:
-            out = nextlabel++;
-            asmrr(CMPL, rhs_reg, lhs_reg);
-            asmjump(JE, out);
-            break;
         case NEOP:
-            out = nextlabel++;
-            asmrr(CMPQ, rhs_reg, lhs_reg);
-            asmjump(JNE, out);
-            break;
         case LTOP:
-            out = nextlabel++;
-            asmrr(CMPL, rhs_reg, lhs_reg);
-            asmjump(JL, out);
-            break;
         case LEOP:
-            out = nextlabel++;
-            asmrr(CMPL, rhs_reg, lhs_reg);
-            asmjump(JLE, out);
-            break;
         case GEOP:
-            out = nextlabel++;
-            asmrr(CMPL, rhs_reg, lhs_reg);
-            asmjump(JGE, out);
-            break;
         case GTOP:
             out = nextlabel++;
-            asmrr(CMPL, rhs_reg, lhs_reg);
-            asmjump(JG, out);
+            if (code->whichval == NEOP){
+                asmrr(CMPQ, rhs_reg, lhs_reg);
+            }
+            else{
+                asmrr(CMPL, rhs_reg, lhs_reg);
+
+            }
+            switch (code->whichval) {
+                case EQOP:  asmjump(JE, out); break;
+                case NEOP:  asmjump(JNE, out); break;
+                case LTOP:  asmjump(JL, out); break;
+                case LEOP:  asmjump(JLE, out); break;
+                case GEOP:  asmjump(JGE, out); break;
+                case GTOP:  asmjump(JG, out); break;
+            }
             break;
+        
         case PLUSOP:
             if (at_least_one_float(lhs_reg, rhs_reg)) {
                 asmrr(ADDSD, rhs_reg, lhs_reg);
-            } else {
+            } 
+            else {
                 asmrr(ADDL, rhs_reg, lhs_reg);
             }
             out = lhs_reg;
@@ -304,9 +299,11 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
             if (lhs_reg > 15 && lhs_reg < TOT_REGS && rhs_reg == 0) {
                 asmfneg(lhs_reg, getreg(REAL));
                 rhs_reg = lhs_reg;
-            } else if (at_least_one_float(lhs_reg, rhs_reg)) {
+            } 
+            else if (at_least_one_float(lhs_reg, rhs_reg)) {
                 asmrr(SUBSD, rhs_reg, lhs_reg);
-            } else {
+            } 
+            else {
                 asmrr(SUBL, rhs_reg, lhs_reg);
             }
             out = lhs_reg;
@@ -314,7 +311,8 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         case TIMESOP:
             if (at_least_one_float(lhs_reg, rhs_reg)) {
                 asmrr(MULSD, rhs_reg, lhs_reg);
-            } else {
+            } 
+            else {
                 asmrr(IMULL, rhs_reg, lhs_reg);
             }
             out = lhs_reg;
@@ -322,23 +320,25 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         case DIVIDEOP:
             if (at_least_one_float(lhs_reg, rhs_reg)) {
                 asmrr(DIVSD, rhs_reg, lhs_reg);
-            } else {
+            } 
+            else {
                 asmrr(DIVL, rhs_reg, lhs_reg);
             }
             out = lhs_reg;
             break;
+            
         case POINTEROP:
             finalPtr_deref_offs = code->link->intval;
 
             if (stopRef && nestRefs && is_equal(stopRef, code)) {
                 asmstr(MOVSD, rhsReg_num, code->link->intval, lhs_reg, "^. ");
             }
+            rhsReg = code->operands;
 
-            if (!nestRefs) {
-                rhsReg = code->operands;
-            } else {
+            if (nestRefs) {
                 rhsReg = code->link;
-            }
+            } 
+
 
             out = lhs_reg;
             break;
@@ -365,7 +365,11 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
         case FUNCALLOP:
             if (inline_call) {
-                if (numTreeCalls > 1) {
+                if (strcmp(inline_call->stringval, "new") == 0) {
+                    asmrr(MOVL, rhs_reg, EDI);
+                    asmcall(inline_call->stringval);
+                }
+                else if (numTreeCalls > 1) {
                     savedLineRegs[numLinesProcs++] = lhs_reg;
                     
                     asmcall(inline_call->stringval);
@@ -378,10 +382,8 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                         asmsttemp(lhs_reg);
 
                     }
-                } else if (strcmp(inline_call->stringval, "new") == 0) {
-                    asmrr(MOVL, rhs_reg, EDI);
-                    asmcall(inline_call->stringval);
-                } else {
+                } 
+                else {
                     asmcall(inline_call->stringval);
                 }
 
