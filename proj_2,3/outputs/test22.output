@@ -1,7 +1,7 @@
 yyparse result =        0
 Symbol table level 1
- 94489939959408           x  VAR    1 typ    real  lvl  1  siz     8  off     0
- 94489939959504           y  VAR    1 typ    real  lvl  1  siz     8  off     8
+ 94680012004976           x  VAR    1 typ    real  lvl  1  siz     8  off     0
+ 94680012005072           y  VAR    1 typ    real  lvl  1  siz     8  off     8
 (program graph1 (progn output)
                 (progn (:= y (* (funcall exp x)
                                 (funcall sin x)))))# ---------------- Beginning of Generated Code --------------------

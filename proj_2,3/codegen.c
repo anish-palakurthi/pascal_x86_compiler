@@ -24,6 +24,8 @@
 #include <ctype.h>
 #include <string.h>
 #include "symtab.h"
+#include "token.h"
+
 #include "lexan.h"
 #include "genasm.h"
 #include "codegen.h"
