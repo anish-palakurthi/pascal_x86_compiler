@@ -46,12 +46,16 @@
            the IF statement, but Yacc's default resolves it in the right way.*/
 
 #include <stdio.h>
+#include <assert.h>
 #include <ctype.h>
 #include <string.h>
+// #include "token.h"
 #include "lexan.h"
 #include "symtab.h"
+#include "pprint.h"
 #include "parse.h"
 #include "codegen.h"
+
 
         /* define the type of the Yacc stack element to be TOKEN */
 

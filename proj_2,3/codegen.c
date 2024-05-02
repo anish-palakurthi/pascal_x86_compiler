@@ -38,7 +38,7 @@ int stkframesize;   /* total stack frame size */
 
 #define I_REGS 8
 #define TOT_REGS 32
-#define NUM_REGS        32
+
 
 // Register array initialization for integer and floating-point registers
 int registers[TOT_REGS] = {0};
@@ -159,17 +159,12 @@ int genarith(TOKEN code) {
             sym = searchst(code->stringval);
             num = sym->offset;
 
-            if (sym->kind == FUNCTIONSYM) {
-                reg_num = getreg(sym->datatype->basicdt);
-                inline_call = code;
-                genc(code->link);
-            } 
-            
-            else {
+            if (sym->kind != FUNCTIONSYM) {
+
                 int bdt = code->basicdt;
                 reg_num = getreg(bdt);
 
-                if (code->basicdt != POINTER && I_REGS > reg_num) {
+                if (bdt != POINTER && I_REGS > reg_num) {
                     SYMBOL symEnt = searchst(code->stringval);
 
                     if (symEnt->datatype->kind != ARRAYSYM) {
@@ -196,6 +191,14 @@ int genarith(TOKEN code) {
                         }
                     }
                 }
+            } 
+            
+            else {
+                inline_call = code;
+
+                reg_num = getreg(sym->datatype->basicdt);
+                genc(code->link);
+
             }
             break;
 
@@ -361,15 +364,17 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         case FUNCALLOP:
             if (inline_call) {
                 if (numTreeCalls > 1) {
-                    savedLineRegs[numLinesProcs] = lhs_reg;
-                    numLinesProcs++;
-                    if (numLinesProcs == 1) {
-                        asmcall(inline_call->stringval);
-                        asmsttemp(lhs_reg);
+                    savedLineRegs[numLinesProcs++] = lhs_reg;
+                    
+                    asmcall(inline_call->stringval);
+
+                    if (numLinesProcs != 1) {
+                        asmldtemp(lhs_reg);
+
                     } 
                      else {
-                        asmcall(inline_call->stringval);
-                        asmldtemp(lhs_reg);
+                        asmsttemp(lhs_reg);
+
                     }
                 } else if (strcmp(inline_call->stringval, "new") == 0) {
                     asmrr(MOVL, rhs_reg, EDI);
@@ -385,10 +390,10 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
             break;
 
         case AREFOP:
-            if (floatReg != -DBL_MAX) {
+            if (floatReg == -DBL_MAX) {
                 /* Use MOVSD because floatReg implies floating-point data. */
-                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-            } else {
+                // asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            
                 if (lastIdReg > -1) {
                     SYMBOL sym;
                     int reg_num, offs;
@@ -419,55 +424,51 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                             free_reg(temp);
                         }
 
-                        if (finalPtr && finalPtr_reg_num > -1) {
-                            bool found = false;
-                            SYMBOL temp0, temp1, temp2, temp3, typsym;
-                            temp0 = searchst(finalPtr->stringval);
+                    if (finalPtr && finalPtr_reg_num > -1) {
+                        bool isFieldFound = false;
+                        SYMBOL typeSymbol, deepestType, recordType, field;
 
+                        // Lookup symbol from string value and navigate to its type description.
+                        typeSymbol = searchst(finalPtr->stringval);
+                        deepestType = searchst(typeSymbol->link->namestring);
 
-                            temp1 = searchst(temp0->link->namestring);
+                        // Navigate down array types to the base type.
+                        while (deepestType && deepestType->kind == ARRAYSYM) {
+                            deepestType = deepestType->datatype;
+                        }
 
-
-                            if (temp1->datatype->kind == ARRAYSYM) {
-                                typsym = temp1->datatype;
-                                while (typsym && typsym->kind == ARRAYSYM) {
-                                    typsym = typsym->datatype;
-                                }
-
-
-                                temp2 = typsym->datatype;
-                                if (temp2 && temp2->kind == RECORDSYM) {
-                                    temp3 = temp2->datatype;
-                                    while (temp3 && !found) {
-                                        if (temp3->offset == finalPtr_deref_offs) {
-                                            found = true;
-                                            if (temp3->size > basicsizes[INTEGER]) {
-                                                /* Use MOVQ for pointer or larger than integer size data */
-                                                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                            } 
-                                            else {
-                                                /* Use MOVL for data fitting in an integer */
-                                                asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                            }
-                                        }
-                                        temp3 = temp3->link;
+                        // If the deepest type is a record, search its fields for a matching offset.
+                        if (deepestType && deepestType->kind == RECORDSYM) {
+                            recordType = deepestType;
+                            field = recordType->datatype;
+                            while (field && !isFieldFound) {
+                                if (field->offset == finalPtr_deref_offs) {
+                                    isFieldFound = true;
+                                    
+                                    // Execute appropriate assembly load based on field size.
+                                    if (field->size > basicsizes[INTEGER]) {
+                                        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                                    } else {
+                                        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
                                     }
                                 }
+                                field = field->link;
                             }
+                        }
 
-                            if (!found) {
-                                /* Default to MOVQ to handle potentially larger data
-                                safely */
-                                if (code->basicdt == POINTER){
-                                    asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                }
-                                else{
-                                    asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                }
+                        // Default operation if no matching field is found.
+                        if (!isFieldFound) {
+                            if (code->basicdt == POINTER) {
+                                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                            } else {
+                                asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
                             }
+                        }
 
-                            finalPtr_reg_num = -1;
-                        } 
+                        // Reset the register number indicating that it's been handled.
+                        finalPtr_reg_num = -1;
+                    }
+
 
                         else {
                             /* Use MOVL as this seems to handle standard integer data */
@@ -513,13 +514,7 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 }
 
 /* Generate code for a Statement from an intermediate-code form */
-void genc(TOKEN code) {
-
-    if (code->tokentype != OPERATOR && (funcFlag && code->tokentype == NUMBERTOK && code->basicdt == INTEGER )) {
-            reset_regs();
-            return;
-        }
-    
+void genc(TOKEN code) {    
 
     SYMBOL sym;
     TOKEN tok, lhs, rhs;
@@ -846,7 +841,7 @@ void genc(TOKEN code) {
 
 void reset_regs() {
     int i;
-    for (i = 0; i < NUM_REGS; i++) {
+    for (i = 0; i < TOT_REGS; i++) {
         registers[i] = 0;
     }}
 
