@@ -255,297 +255,278 @@ int genarith(TOKEN code) {
 
 
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
-
     if (DEBUGGEN) {
         printf(" OPERATOR detected, from genarith().\n");
-//        printf(" %s\n", opprint[which_val]);
         printf(" %d %d %d\n", code->whichval, rhs_reg, lhs_reg);
     }
 
     int out = 0;
     int which_val = code->whichval;
 
-    if (which_val == PLUSOP) {
-        if (at_least_one_float(lhs_reg, rhs_reg)) {
-            asmrr(ADDSD, rhs_reg, lhs_reg);
-        }
-        else {
-            asmrr(ADDL, rhs_reg, lhs_reg);
-        }
-        out = lhs_reg;
-    }
-    else if (which_val == MINUSOP) {
-        // printf("MINUSOP\n");
-        
-        //left hand is a float register? maybe when minusop is used a negative sign
-        if (lhs_reg > 15 && lhs_reg < NUM_REGS && rhs_reg == 0) {
-            // printf("NEGATE\n");
-
-            asmfneg(lhs_reg, getreg(REAL));
-            rhs_reg = lhs_reg;
-        }
-        else if (at_least_one_float(lhs_reg, rhs_reg)) {
-            // printf("SUBSD\n");
-            asmrr(SUBSD, rhs_reg, lhs_reg);
-        }
-        else {
-            // printf("SUBL\n");
-
-            asmrr(SUBL, rhs_reg, lhs_reg);
-        }
-        out = lhs_reg;
-    }
-    else if (which_val == TIMESOP) {
-        if (at_least_one_float(lhs_reg, rhs_reg)) {
-            asmrr(MULSD, rhs_reg, lhs_reg);
-        }
-        else {
-            asmrr(IMULL, rhs_reg, lhs_reg);
-        }
-        out = lhs_reg;
-    }
-    else if (which_val == DIVIDEOP) {
-        if (at_least_one_float(lhs_reg, rhs_reg)) {
-            asmrr(DIVSD, rhs_reg, lhs_reg);
-        }
-        else {
-            asmrr(DIVL, rhs_reg, lhs_reg);
-        }
-        out = lhs_reg;
-    }
-    else if (which_val == EQOP) {
-        out = nextlabel++;
-        asmrr(CMPL, rhs_reg, lhs_reg);
-        asmjump(JE, out);
-    }
-    else if (which_val == NEOP) {
-        out = nextlabel++;
-        asmrr(CMPQ, rhs_reg, lhs_reg);
-        asmjump(JNE, out);
-    }
-    else if (which_val == LTOP) {
-        out = nextlabel++;
-        asmrr(CMPL, rhs_reg, lhs_reg);
-        asmjump(JL, out);
-    }
-    else if (which_val == LEOP) {
-        out = nextlabel++;
-        asmrr(CMPL, rhs_reg, lhs_reg);
-        asmjump(JLE, out);
-    }
-    else if (which_val == GEOP) {
-        out = nextlabel++;
-        asmrr(CMPL, rhs_reg, lhs_reg);
-        asmjump(JGE, out);
-    }
-    else if (which_val == GTOP) {
-        out = nextlabel++;
-        asmrr(CMPL, rhs_reg, lhs_reg);
-        asmjump(JG, out);
-    }
-    else if (which_val == POINTEROP) {
-        last_ptr_deref_offs = code->link->intval;
-
-        if (nested_ref_stop_at && nested_refs && is_equal(nested_ref_stop_at, code)) {
-            asmstr(MOVSD, saved_rhs_reg_num, code->link->intval, lhs_reg, "^. ");
-        }
-
-        if (!nested_refs) {
-            saved_rhs_reg = code->operands;
-        }
-        else {
-            saved_rhs_reg = code->link;
-        }
-
-        out = lhs_reg;
-    }
-    else if (which_val == FUNCALLOP) {
-
-        if (inline_funcall) {
-
-            if (num_funcalls_in_curr_tree > 1) {
-                saved_inline_regs[num_inlines_processed] = lhs_reg;
-                num_inlines_processed++;
-                if (num_inlines_processed == 1) {
-                    asmcall(inline_funcall->stringval);
-                    asmsttemp(lhs_reg);
-                }
-                else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
-                    // load and then store?
-                }
-                else {
-                    asmcall(inline_funcall->stringval);
-                    asmldtemp(lhs_reg);
-                }               
+    switch (which_val) {
+        case PLUSOP:
+            if (at_least_one_float(lhs_reg, rhs_reg)) {
+                asmrr(ADDSD, rhs_reg, lhs_reg);
+            } else {
+                asmrr(ADDL, rhs_reg, lhs_reg);
             }
-            else if (strcmp(inline_funcall->stringval, "new") == 0) {
-                asmrr(MOVL, rhs_reg, EDI);
-                asmcall(inline_funcall->stringval);
+            out = lhs_reg;
+            break;
+        case MINUSOP:
+            if (lhs_reg > 15 && lhs_reg < NUM_REGS && rhs_reg == 0) {
+                asmfneg(lhs_reg, getreg(REAL));
+                rhs_reg = lhs_reg;
+            } else if (at_least_one_float(lhs_reg, rhs_reg)) {
+                asmrr(SUBSD, rhs_reg, lhs_reg);
+            } else {
+                asmrr(SUBL, rhs_reg, lhs_reg);
             }
-            else {
-                asmcall(inline_funcall->stringval);
+            out = lhs_reg;
+            break;
+        case TIMESOP:
+            if (at_least_one_float(lhs_reg, rhs_reg)) {
+                asmrr(MULSD, rhs_reg, lhs_reg);
+            } else {
+                asmrr(IMULL, rhs_reg, lhs_reg);
+            }
+            out = lhs_reg;
+            break;
+        case DIVIDEOP:
+            if (at_least_one_float(lhs_reg, rhs_reg)) {
+                asmrr(DIVSD, rhs_reg, lhs_reg);
+            } else {
+                asmrr(DIVL, rhs_reg, lhs_reg);
+            }
+            out = lhs_reg;
+            break;
+        case EQOP:
+            out = nextlabel++;
+            asmrr(CMPL, rhs_reg, lhs_reg);
+            asmjump(JE, out);
+            break;
+        case NEOP:
+            out = nextlabel++;
+            asmrr(CMPQ, rhs_reg, lhs_reg);
+            asmjump(JNE, out);
+            break;
+        case LTOP:
+            out = nextlabel++;
+            asmrr(CMPL, rhs_reg, lhs_reg);
+            asmjump(JL, out);
+            break;
+        case LEOP:
+            out = nextlabel++;
+            asmrr(CMPL, rhs_reg, lhs_reg);
+            asmjump(JLE, out);
+            break;
+        case GEOP:
+            out = nextlabel++;
+            asmrr(CMPL, rhs_reg, lhs_reg);
+            asmjump(JGE, out);
+            break;
+        case GTOP:
+            out = nextlabel++;
+            asmrr(CMPL, rhs_reg, lhs_reg);
+            asmjump(JG, out);
+            break;
+        case POINTEROP:
+            last_ptr_deref_offs = code->link->intval;
+
+            if (nested_ref_stop_at && nested_refs && is_equal(nested_ref_stop_at, code)) {
+                asmstr(MOVSD, saved_rhs_reg_num, code->link->intval, lhs_reg, "^. ");
             }
 
-            inline_funcall = NULL;
-        }
-        else {
-            // ?????????????????????????????
-        }
+            if (!nested_refs) {
+                saved_rhs_reg = code->operands;
+            } else {
+                saved_rhs_reg = code->link;
+            }
 
-        out = lhs_reg;
-    }
-else if (which_val == AREFOP) {
-    // printf("AREFOP\n");
-    if (saved_float_reg != -DBL_MAX) {
-        /* Use MOVSD because saved_float_reg implies floating-point data. */
-        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-    } else {
-        if (last_id_reg_num > -1) {
-            SYMBOL sym;
-            int reg_num, offs;
-            TOKEN lhs = code->operands;
-
-            if (sym && sym->datatype->kind == ARRAYSYM) {
-                SYMBOL arraysym = sym->datatype;
-                while (arraysym->kind == ARRAYSYM) {
-                    arraysym = arraysym->datatype;
-                }
-                if (arraysym->kind == RECORDSYM) {
-                    // handle array of records
-                printf("array of records\n");
-
-                    asmimmed(MOVL, code->operands->link->intval, EAX);
-                    asmop(CLTQ);
-                    offs = sym->offset - stkframesize;
-                    if (reg_num >= 0 && reg_num < 16) {
-                        asmldr(MOVL, offs, EAX, reg_num, sym->namestring);
+            out = lhs_reg;
+            break;
+        case FUNCALLOP:
+            if (inline_funcall) {
+                if (num_funcalls_in_curr_tree > 1) {
+                    saved_inline_regs[num_inlines_processed] = lhs_reg;
+                    num_inlines_processed++;
+                    if (num_inlines_processed == 1) {
+                        asmcall(inline_funcall->stringval);
+                        asmsttemp(lhs_reg);
+                    } else if (num_inlines_processed > 0 && num_inlines_processed < num_funcalls_in_curr_tree) {
+                        // load and then store?
                     } else {
-                        asmldr(MOVSD, offs, EAX, reg_num, sym->namestring);
+                        asmcall(inline_funcall->stringval);
+                        asmldtemp(lhs_reg);
                     }
+                } else if (strcmp(inline_funcall->stringval, "new") == 0) {
+                    asmrr(MOVL, rhs_reg, EDI);
+                    asmcall(inline_funcall->stringval);
+                } else {
+                    asmcall(inline_funcall->stringval);
                 }
+
+                inline_funcall = NULL;
+            } else {
+                // ?????????????????????????????
             }
 
-            int temp = rhs_reg;
-            if (last_id_reg_num > -1 && last_id_reg_num < 16) {
-                if (last_id_reg_num == rhs_reg) {
-                    rhs_reg = getreg(INTEGER);
-                    free_reg(temp);
-                }
+            out = lhs_reg;
+            break;
 
-                if (last_ptr && last_ptr_reg_num > -1) {
-                    bool found = false;
-                    SYMBOL temp0, temp1, temp2, temp3, typsym;
-                    temp0 = searchst(last_ptr->stringval);
-                    if (!temp0) {
-                        return symbol_is_null_int(code->stringval);
-                    }
+        case AREFOP:
+            // printf("AREFOP\n");
+            if (saved_float_reg != -DBL_MAX) {
+                /* Use MOVSD because saved_float_reg implies floating-point data. */
+                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+            } else {
+                if (last_id_reg_num > -1) {
+                    SYMBOL sym;
+                    int reg_num, offs;
+                    TOKEN lhs = code->operands;
 
-                    temp1 = searchst(temp0->link->namestring);
-                    if (!temp1) {
-                        return symbol_is_null_int(code->stringval);
-                    }
-
-                    if (temp1->datatype->kind == ARRAYSYM) {
-                        typsym = temp1->datatype;
-                        while (typsym && typsym->kind == ARRAYSYM) {
-                            typsym = typsym->datatype;
+                    if (sym && sym->datatype->kind == ARRAYSYM) {
+                        SYMBOL arraysym = sym->datatype;
+                        while (arraysym->kind == ARRAYSYM) {
+                            arraysym = arraysym->datatype;
                         }
-                        if (!typsym) {
-                            return symbol_is_null_int(code->stringval);
-                        }
+                        if (arraysym->kind == RECORDSYM) {
+                            // handle array of records
+                        printf("array of records\n");
 
-                        temp2 = typsym->datatype;
-                        if (temp2 && temp2->kind == RECORDSYM) {
-                            temp3 = temp2->datatype;
-                            while (temp3 && !found) {
-                                if (temp3->offset == last_ptr_deref_offs) {
-                                    found = true;
-                                    if (temp3->size > basicsizes[INTEGER]) {
-                                        /* Use MOVQ for pointer or larger than integer size data */
-                                        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                    } else {
-                                        /* Use MOVL for data fitting in an integer */
-                                        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-                                    }
-                                }
-                                temp3 = temp3->link;
+                            asmimmed(MOVL, code->operands->link->intval, EAX);
+                            asmop(CLTQ);
+                            offs = sym->offset - stkframesize;
+                            if (reg_num >= 0 && reg_num < 16) {
+                                asmldr(MOVL, offs, EAX, reg_num, sym->namestring);
+                            } else {
+                                asmldr(MOVSD, offs, EAX, reg_num, sym->namestring);
                             }
                         }
                     }
 
-                    if (!found) {
-                        /* Default to MOVQ to handle potentially larger data
-                        safely */
-                        // printf("code->basicdt: %d\n", code->basicdt);
-                        if (code->basicdt == POINTER){
-                            asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-
+                    int temp = rhs_reg;
+                    if (last_id_reg_num > -1 && last_id_reg_num < 16) {
+                        if (last_id_reg_num == rhs_reg) {
+                            rhs_reg = getreg(INTEGER);
+                            free_reg(temp);
                         }
-                        else{
-                            asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
 
+                        if (last_ptr && last_ptr_reg_num > -1) {
+                            bool found = false;
+                            SYMBOL temp0, temp1, temp2, temp3, typsym;
+                            temp0 = searchst(last_ptr->stringval);
+                            if (!temp0) {
+                                return symbol_is_null_int(code->stringval);
+                            }
+
+                            temp1 = searchst(temp0->link->namestring);
+                            if (!temp1) {
+                                return symbol_is_null_int(code->stringval);
+                            }
+
+                            if (temp1->datatype->kind == ARRAYSYM) {
+                                typsym = temp1->datatype;
+                                while (typsym && typsym->kind == ARRAYSYM) {
+                                    typsym = typsym->datatype;
+                                }
+                                if (!typsym) {
+                                    return symbol_is_null_int(code->stringval);
+                                }
+
+                                temp2 = typsym->datatype;
+                                if (temp2 && temp2->kind == RECORDSYM) {
+                                    temp3 = temp2->datatype;
+                                    while (temp3 && !found) {
+                                        if (temp3->offset == last_ptr_deref_offs) {
+                                            found = true;
+                                            if (temp3->size > basicsizes[INTEGER]) {
+                                                /* Use MOVQ for pointer or larger than integer size data */
+                                                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                                            } else {
+                                                /* Use MOVL for data fitting in an integer */
+                                                asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                                            }
+                                        }
+                                        temp3 = temp3->link;
+                                    }
+                                }
+                            }
+
+                            if (!found) {
+                                /* Default to MOVQ to handle potentially larger data
+                                safely */
+                                // printf("code->basicdt: %d\n", code->basicdt);
+                                if (code->basicdt == POINTER){
+                                    asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+                                }
+                                else{
+                                    asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+                                }
+                            }
+
+                            last_ptr_reg_num = -1;
+                        } else {
+                            /* Use MOVL as this seems to handle standard integer data */
+                            asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");                        
                         }
+                    } else {
+                        if (last_id_reg_num == rhs_reg) {
+                            rhs_reg = getreg(REAL);
+                            free_reg(temp);
+                        }
+                        /* Use MOVSD for floating-point data */
+                        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                    }
+                } else {
+                    
+                    // printf("code->basicdt: %d\n", code->basicdt);
+                    if(code->basicdt == 4){
+                        asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
                     }
 
-                    last_ptr_reg_num = -1;
-                } else {
-                    /* Use MOVL as this seems to handle standard integer data */
-                    asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");                        
+                    else if (code->basicdt == 1){
+                        free_reg(rhs_reg);
+                        rhs_reg = getreg(REAL);
+                        asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+                    }
+                    else{
+                        //its this one
+
+                        asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
+
+                    }
+
+                    
                 }
-            } else {
-                if (last_id_reg_num == rhs_reg) {
-                    rhs_reg = getreg(REAL);
-                    free_reg(temp);
-                }
-                /* Use MOVSD for floating-point data */
-                asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-            }
-        } else {
-            // free_reg(rhs_reg);
-            // rhs_reg = getreg(REAL);
-            /* Use MOVSD as a default when no information about the data type is available */
-            //asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg,
-            //"^.");
-            
-            // printf("code->basicdt: %d\n", code->basicdt);
-            if(code->basicdt == 4){
-                asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-
             }
 
-            else if (code->basicdt == 1){
-                free_reg(rhs_reg);
-                rhs_reg = getreg(REAL);
-                asmldr(MOVSD, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-            }
-            else{
-                //its this one
+            last_ptr_reg_num = rhs_reg;
+            out = rhs_reg;
+            break;
 
-                asmldr(MOVL, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
-
-            }
-
-            
+    case FLOATOP:
+        {
+            int freg = getreg(REAL);
+            asmfloat(rhs_reg, freg);
+            free_reg(lhs_reg);
+            free_reg(rhs_reg);
+            out = freg;
+            break;
         }
-    }
 
-    last_ptr_reg_num = rhs_reg;
-    out = rhs_reg;
-}
+    case FIXOP:
+        {
+            int dreg = getreg(INTEGER);
+            asmfix(rhs_reg, dreg);
+            free_reg(lhs_reg);
+            free_reg(rhs_reg);
+            out = dreg;
+            break;
+        }
 
-    else if (which_val == FLOATOP) {
-        int freg = getreg(REAL);
-        asmfloat(rhs_reg, freg);
-        free_reg(lhs_reg);
-        free_reg(rhs_reg);
-        out = freg;
-    }
-    else if (which_val == FIXOP) {
-        int dreg = getreg(INTEGER);
-        asmfix(lhs_reg, dreg);
-        free_reg(lhs_reg);
-        free_reg(rhs_reg);
-        out = dreg;
     }
 
     if (inline_funcall != NULL && num_funcalls_in_tree > 0) {

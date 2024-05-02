@@ -1,9 +1,9 @@
 yyparse result =        0
 Symbol table level 1
- 94241544810576     complex  TYPE   typ 94241544810288  lvl  1  siz    16  off     0
+ 94835343171664     complex  TYPE   typ 94835343171376  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94241544811696          ac  VAR    0 typ 94241544811600  lvl  1  siz   160  off     0
+ 94835343172784          ac  VAR    0 typ 94835343172688  lvl  1  siz   160  off     0
 (ARRAY   1 ..  10 (RECORD (re real)
                           (im real)))
 (program graph1 (progn output)
