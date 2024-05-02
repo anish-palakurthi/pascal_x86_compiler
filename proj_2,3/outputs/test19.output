@@ -1,6 +1,6 @@
 yyparse result =        0
 Symbol table level 1
- 94252726054480        john  VAR    4 typ 94252726054384  lvl  1  siz     8  off     0
+ 94685955382864        john  VAR    4 typ 94685955382768  lvl  1  siz     8  off     0
 (^ real)
 (program graph1 (progn output)
                 (progn (:= john (funcall new 8))))# ---------------- Beginning of Generated Code --------------------
@@ -22,7 +22,7 @@ graph1:
 	movl	$8,%eax         	#  8 -> %eax
 	movl	%eax,%edi         	#  %eax -> %edi
 	call	new@PLT          	#  new()
-	movq	%rcx,-32(%rbp)     	#  %rcx -> john
+	movq	%rax,-32(%rbp)     	#  %rax -> john
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave

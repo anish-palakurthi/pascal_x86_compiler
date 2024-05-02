@@ -18,15 +18,7 @@ Comparing outputs/test16.output and samples/test16.sample (ignoring memory addre
 Comparing outputs/test17.output and samples/test17.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test18.output and samples/test18.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test19.output and samples/test19.sample (ignoring memory addresses, specific strings, and handling code splits):
-18c18
-< movq	%rcx,-32(%rbp)     	#  %rcx -> john
----
-> movq	%rax,-32(%rbp)     	#  %rax -> john
 Comparing outputs/test20.output and samples/test20.sample (ignoring memory addresses, specific strings, and handling code splits):
-17c17
-< movsd	%xmm1,-24(%rbp)     	#  %xmm1 -> y
----
-> movsd	%xmm0,-24(%rbp)     	#  %xmm0 -> y
 Comparing outputs/test21.output and samples/test21.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test22.output and samples/test22.sample (ignoring memory addresses, specific strings, and handling code splits):
 17c17
@@ -50,97 +42,10 @@ Comparing outputs/test24.output and samples/test24.sample (ignoring memory addre
 > movsd	-192(%rbp,%rax),%xmm0         	#  ac[-192] -> %xmm0
 Comparing outputs/test25.output and samples/test25.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test26.output and samples/test26.sample (ignoring memory addresses, specific strings, and handling code splits):
-16,17c16,17
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 Comparing outputs/test27.output and samples/test27.sample (ignoring memory addresses, specific strings, and handling code splits):
-17,18c17,18
-< movq	8(%rcx),%rax         	#  ^.[8+%rcx] -> %rax
-< movsd	%xmm0,24(%rax)         	#  %xmm0 -> ^. [24+%rax]
----
-> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
-> movsd	%xmm0,24(%rcx)         	#  %xmm0 -> ^. [24+%rcx]
 Comparing outputs/test28.output and samples/test28.sample (ignoring memory addresses, specific strings, and handling code splits):
-16,17c16,17
-< movq	8(%rcx),%rax         	#  ^.[8+%rcx] -> %rax
-< movsd	24(%rdx),%xmm0         	#  ^.[24+%rdx] -> %xmm0
----
-> movq	8(%rax),%rcx         	#  ^.[8+%rax] -> %rcx
-> movsd	24(%rcx),%xmm0         	#  ^.[24+%rcx] -> %xmm0
 Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
 Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):
-16,17c16,17
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-19,20c19,20
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-22,23c22,23
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-25,26c25,26
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-28,29c28,29
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-31,32c31,32
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-16,17c16,17
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-19,20c19,20
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-22,23c22,23
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-25,26c25,26
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-28,29c28,29
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
-31,32c31,32
-< movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-< movl	%eax,-24(%rbp)     	#  %eax -> sum
----
-> movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
-> movl	%ecx,-24(%rbp)     	#  %ecx -> sum
+ses, specific strings, and handling code splits):
+Comparing outputs/test29.output and samples/test29.sample (ignoring memory addresses, specific strings, and handling code splits):
+Comparing outputs/test30.output and samples/test30.sample (ignoring memory addresses, specific strings, and handling code splits):

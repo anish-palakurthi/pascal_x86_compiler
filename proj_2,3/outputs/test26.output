@@ -1,25 +1,25 @@
 yyparse result =        0
 Symbol table level 1
- 94850084642896     complex  TYPE   typ 94850084642608  lvl  1  siz    16  off     0
+ 94886143668304     complex  TYPE   typ 94886143668016  lvl  1  siz    16  off     0
 (RECORD (re real)
         (im real))
- 94850084643760         red  CONST  typ INTEGER  val  0
- 94850084643920       white  CONST  typ INTEGER  val  1
- 94850084644080        blue  CONST  typ INTEGER  val  2
- 94850084644272       color  TYPE   typ 94850084644176  lvl  1  siz     4  off     0
+ 94886143669168         red  CONST  typ INTEGER  val  0
+ 94886143669328       white  CONST  typ INTEGER  val  1
+ 94886143669488        blue  CONST  typ INTEGER  val  2
+ 94886143669680       color  TYPE   typ 94886143669584  lvl  1  siz     4  off     0
   0 ..   2
- 94850084644688      person  TYPE   typ 94850084646512  lvl  1  siz    48  off     0
+ 94886143670096      person  TYPE   typ 94886143671920  lvl  1  siz    48  off     0
 (RECORD (age integer)
         (friend (^ person))
         (location (RECORD (re real)
                           (im real)))
         (favorite   0 ..   2)
         (salary real))
- 94850084644880          pp  TYPE   typ 94850084644784  lvl  1  siz     8  off     0
+ 94886143670288          pp  TYPE   typ 94886143670192  lvl  1  siz     8  off     0
 (^ person)
- 94850084647472        john  VAR    4 typ 94850084644784  lvl  1  siz     8  off     0
+ 94886143672880        john  VAR    4 typ 94886143670192  lvl  1  siz     8  off     0
 (^ person)
- 94850084647824         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
+ 94886143673232         sum  VAR    0 typ integer  lvl  1  siz     4  off     8
 (program graph1 (progn output)
                 (progn (:= sum (aref (^ john)
                                      0))))# ---------------- Beginning of Generated Code --------------------
@@ -39,8 +39,8 @@ graph1:
 	movq	%rbx, %r9        # save %rbx (callee-saved) in %r9
 # ------------------------- begin Your code -----------------------------
 	movq	-32(%rbp),%rax     	#  john -> %rax
-	movl	0(%rcx),%eax         	#  ^.[0+%rcx] -> %eax
-	movl	%eax,-24(%rbp)     	#  %eax -> sum
+	movl	0(%rax),%ecx         	#  ^.[0+%rax] -> %ecx
+	movl	%ecx,-24(%rbp)     	#  %ecx -> sum
 # ----------------------- begin Epilogue code ---------------------------
 	movq	%r9, %rbx        # restore %rbx (callee-saved) from %r9
         leave
