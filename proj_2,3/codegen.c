@@ -25,12 +25,12 @@
 #include <string.h>
 #include "symtab.h"
 #include "token.h"
-
 #include "lexan.h"
 #include "genasm.h"
 #include "codegen.h"
 #include "pprint.h"
 #include <float.h>
+#include "stdbool.h"
  
 /* Set DEBUGGEN to 1 for debug printouts of code generation */
 #define DEBUGGEN 0
@@ -75,6 +75,65 @@ int finalPtr_deref_offs;       // Offset for field dereferenced by finalPtr
 // Register tracking for the last non-pointer identifier referenced
 int lastIdReg;                 // Register number of the last identifier referenced (excluding pointers)
 
+
+
+
+
+
+
+
+
+void reset_regs() {
+    int i;
+    for (i = 0; i < TOT_REGS; i++) {
+        registers[i] = 0;
+    }}
+
+void free_reg(int reg_num) {
+    registers[reg_num] = 0;
+    
+}
+
+bool at_least_one_float(int lhs_reg, int rhs_reg) {
+    return (lhs_reg >= I_REGS && lhs_reg < TOT_REGS) ||
+           (rhs_reg >= I_REGS && rhs_reg < TOT_REGS);
+}
+
+void mark_reg_unused(int reg) {
+    registers[reg] = 0;
+    
+}
+
+void mark_reg_used(int reg) {
+    registers[reg] = 1;
+    
+}
+
+int num_funcalls_in_tree(TOKEN tok, int num) {
+    if (!tok) {
+        return num;
+    }
+    if (tok->whichval == FUNCALLOP) {
+        num++;
+    }
+    num = num_funcalls_in_tree(tok->link, num);
+    num = num_funcalls_in_tree(tok->operands, num);
+    return num;
+}
+
+bool search_tree_str(TOKEN tok, char str[]) {
+    if (!tok) {
+        return false;
+    }
+    if (!strcmp(tok->stringval, str)) {
+        return true;
+    }
+    return search_tree_str(tok->link, str) || search_tree_str(tok->operands, str);
+}
+
+bool is_equal(TOKEN firstToken, TOKEN secondToken) {
+    return firstToken == secondToken;
+}
 
 
 /*  Top-level entry for code generator.
@@ -380,7 +439,6 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
                     } 
                      else {
                         asmsttemp(lhs_reg);
-
                     }
                 } 
                 else {
@@ -396,7 +454,6 @@ int genop(TOKEN code, int rhs_reg, int lhs_reg) {
         case AREFOP:
             if (floatReg == -DBL_MAX) {
                 /* Use MOVSD because floatReg implies floating-point data. */
-                // asmldr(MOVQ, code->operands->link->intval, lhs_reg, rhs_reg, "^.");
             
                 if (lastIdReg > -1) {
                     SYMBOL sym;
@@ -835,62 +892,4 @@ void genc(TOKEN code) {
         }
 
     }
-}
-
-
-
-
-
-
-
-void reset_regs() {
-    int i;
-    for (i = 0; i < TOT_REGS; i++) {
-        registers[i] = 0;
-    }}
-
-void free_reg(int reg_num) {
-    registers[reg_num] = 0;
-    
-}
-
-bool at_least_one_float(int lhs_reg, int rhs_reg) {
-    return (lhs_reg >= I_REGS && lhs_reg < TOT_REGS) ||
-           (rhs_reg >= I_REGS && rhs_reg < TOT_REGS);
-}
-
-void mark_reg_unused(int reg) {
-    registers[reg] = 0;
-    
-}
-
-void mark_reg_used(int reg) {
-    registers[reg] = 1;
-    
-}
-
-int num_funcalls_in_tree(TOKEN tok, int num) {
-    if (!tok) {
-        return num;
-    }
-    if (tok->whichval == FUNCALLOP) {
-        num++;
-    }
-    num = num_funcalls_in_tree(tok->link, num);
-    num = num_funcalls_in_tree(tok->operands, num);
-    return num;
-}
-
-bool search_tree_str(TOKEN tok, char str[]) {
-    if (!tok) {
-        return false;
-    }
-    if (!strcmp(tok->stringval, str)) {
-        return true;
-    }
-    return search_tree_str(tok->link, str) || search_tree_str(tok->operands, str);
-}
-
-bool is_equal(TOKEN firstToken, TOKEN secondToken) {
-    return firstToken == secondToken;
 }
