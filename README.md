@@ -1,6 +1,8 @@
 # Pascal to x86 Compiler
 
 This project compiles the Pascal programming language into x86 instructions. The compiler is structured into three main components: the Lexer, Parser, and Code Generator.
+We use lex for our lexical analyzer and yacc for our parser. This was developed and tested on x86 machines, but the lexer and parser will work on ARM machines as well.
+Various shell scripts are included to automate generation for unit tests and compare output to expected instructions.
 
 ## Components
 
