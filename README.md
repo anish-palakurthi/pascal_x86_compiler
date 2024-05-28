@@ -25,7 +25,7 @@ To generate assembly instructions from a Pascal source file, run:
 ```
 ./compiler < /path/to/pascal/file > /path/to/output/file
 ```
-Move instructions to code.s
+Move only the outputted instructions (not the IR that is also shown) from the output file to `code.s`.
 ```
 cc driver.c code.s -lm
 ./a.out
