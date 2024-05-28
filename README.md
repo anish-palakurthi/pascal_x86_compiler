@@ -21,7 +21,6 @@ make compiler
 ```
 To generate assembly instructions from a Pascal source file, run:
 ```
-Copy code
 ./compiler < /path/to/pascal/file > /path/to/output/file
 ```
 Move instructions to code.s
