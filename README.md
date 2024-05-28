@@ -7,8 +7,8 @@ Various shell scripts are included to automate generation for unit tests and com
 ## Components
 
 - **Lexer**: The lexer (`lexan.l`) processes raw Pascal code and generates tokens. It sets the stage for syntactic analysis by breaking down the code into meaningful symbols.
-- **Parser**: Utilizing a Context-Free Grammar, the parser builds an Abstract Syntax Tree (AST) that represents the hierarchical structure of the program code.
-- **Code Generator**: This component takes the AST and translates it into executable x86 assembly instructions.
+- **Parser**: Utilizing a Context-Free Grammar, the parser (`parse.y`) builds an Abstract Syntax Tree (AST) that represents the hierarchical structure of the program code.
+- **Code Generator**: The generator (`codegen.c`) takes the AST and translates it into executable x86 assembly instructions.
 
 ## Getting Started
 
