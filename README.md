@@ -16,18 +16,16 @@ To run the compiler, follow these steps in the `/src` directory:
 
 Compile the source code using Make:
 
-```bash
+```
 make compiler
 ```
 To generate assembly instructions from a Pascal source file, run:
 ```
-bash
 Copy code
 ./compiler < /path/to/pascal/file > /path/to/output/file
 ```
 Move instructions to code.s
 ```
-bash
 cc driver.c code.s -lm
 ./a.out
 ```
