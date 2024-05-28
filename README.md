@@ -7,7 +7,7 @@ Various shell scripts are included to automate generation for unit tests and com
 ## Components
 
 - **Lexer**: The lexer (`lexan.l`) processes raw Pascal code and generates tokens. It sets the stage for syntactic analysis by breaking down the code into meaningful symbols.
-- **Parser**: Utilizing a Context-Free Grammar, the parser (`parse.y`) builds an Abstract Syntax Tree (AST) that represents the hierarchical structure of the program code.
+- **Parser**: Utilizing a Context-Free Grammar, the parser (`parse.y`) builds an Abstract Syntax Tree (AST) and symbol table that represent the hierarchical structure of the program code.
 - **Code Generator**: The generator (`codegen.c`) takes the AST and translates it into executable x86 assembly instructions.
 
 ## Getting Started
@@ -25,7 +25,7 @@ To generate assembly instructions from a Pascal source file, run:
 ```
 ./compiler < /path/to/pascal/file > /path/to/output/file
 ```
-Move only the outputted instructions (not the IR that is also shown) from the output file to `code.s`.
+Move only the outputted instructions (not the IR and symbol table that is also shown) from the output file to `code.s`.
 ```
 cc driver.c code.s -lm
 ./a.out
