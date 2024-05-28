@@ -1,9 +1,0 @@
-yyparse result =        0
-Symbol table level 1
- 94434043739632           i  VAR    0 typ integer  lvl  1  siz     4  off     0
-(program graph1 (progn output)
-                (progn (:= i 0)
-                       (progn (label 0)
-                              (if (<> i 10)
-                                  (progn (progn (:= i (+ i 1)))
-                                         (goto 0))))))

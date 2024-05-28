@@ -194,8 +194,11 @@ int genarith(TOKEN code) {
     int num, reg_num, lhs_reg, rhs_reg;
     SYMBOL sym;
 
+    //Various cases for the token type
     switch (code->tokentype) {
 
+
+        //If the token is an identifier, search the symbol table for the identifier
         case IDENTIFIERTOK:
             sym = searchst(code->stringval);
             num = sym->offset;
@@ -315,11 +318,12 @@ int genarith(TOKEN code) {
 
 
 
-
+// Genop generates code for an operator, given the operator and the registers for the operands.
 int genop(TOKEN code, int rhs_reg, int lhs_reg) {
 
     int out;
     
+    // Switch statement to handle the various operator types
     switch (code->whichval) {
         case EQOP:
         case NEOP:
@@ -705,7 +709,7 @@ void genc(TOKEN code) {
                 asmrr(MOVL, reg_num, EDI);
             }
 
-
+            //specified implementation for write
             else if (strstr(lhs->stringval, "write")) {
                 sym = searchst(lhs->stringval);
                 if (rhs->tokentype == OPERATOR && rhs->whichval == AREFOP) {
@@ -804,7 +808,7 @@ void genc(TOKEN code) {
                 }
             }
 
-
+            // If the symbol is found in the symbol table, assign the value to the symbol's offset
             if (sym) {
                 offs = sym->offset - stkframesize;
 
